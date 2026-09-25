@@ -980,6 +980,171 @@ def autoreplant():
     img.convert("RGB").save(r"C:\Users\Sid\CoreKeeperMods\release\autoreplant_logo.png")
     print("autoreplant_logo.png")
 
+# ---------- Quick Buff: a "B" key and a burst of potions / food ----------
+PQ = dict(P, **{
+    'p': (120, 110, 130),  # keycap side
+    'q': (232, 228, 240),  # keycap top
+    'Q': (190, 184, 205),  # keycap top shade
+    'v': (150, 80, 220),   # violet potion
+    'V': (100, 50, 160),
+    'e': (80, 210, 120),   # green potion
+    'E': (40, 140, 80),
+    'a': (230, 70, 80),    # red apple / meat
+    'A': (150, 40, 50),
+    't': (250, 180, 90),   # bread / tan
+    'T': (190, 120, 50),
+    'm': (200, 150, 110),  # mushroom cap
+    'M': (140, 90, 60),
+    'l': (255, 255, 255),  # glass highlight
+    'h': (90, 130, 180),   # blue potion
+    'H': (50, 80, 130),
+})
+
+QB_KEYCAP_B = [
+    "..kkkkkkkkkkkkkkkkkk..",
+    ".kqqqqqqqqqqqqqqqqqqk.",
+    "kqqqqqqqqqqqqqqqqqqqqk",
+    "kqqqqkkkkkkkkqqqqqqqqk",
+    "kqqqqkkkkkkkkkkqqqqqqk",
+    "kqqqqkkkqqqqkkkkqqqqqk",
+    "kqqqqkkkqqqqqkkkqqqqqk",
+    "kqqqqkkkqqqqkkkkqqqqqk",
+    "kqqqqkkkkkkkkkkqqqqqqk",
+    "kqqqqkkkkkkkkkkkqqqqqk",
+    "kqqqqkkkqqqqqkkkkqqqqk",
+    "kqqqqkkkqqqqqqkkkqqqqk",
+    "kqqqqkkkqqqqqkkkkqqqqk",
+    "kqqqqkkkkkkkkkkkqqqqqk",
+    "kqqqqkkkkkkkkkkqqqqqqk",
+    "kQQQQQQQQQQQQQQQQQQQQk",
+    "kQQQQQQQQQQQQQQQQQQQQk",
+    ".kppppppppppppppppppk.",
+    ".kppppppppppppppppppk.",
+    "..kkkkkkkkkkkkkkkkkk..",
+]
+
+def qb_potion(body, shade):
+    return [
+        "....kkkk....",
+        "...kGGGGk...",
+        "...kBBBBk...",
+        "....kllk....",
+        "...kllllk...",
+        "..kl" + body * 4 + "lk..",
+        ".kl" + body * 6 + "lk.",
+        ".k" + body * 8 + "k.",
+        ".k" + body * 3 + "l" + body * 4 + "k.",
+        ".k" + body * 8 + "k.",
+        ".k" + shade + body * 6 + shade + "k.",
+        "..k" + shade * 6 + "k..",
+        "...kkkkkk...",
+    ]
+
+QB_APPLE = [
+    "......kk....",
+    ".....kBk....",
+    "....kBk.....",
+    "..kkkakkkk..",
+    ".kaaaaaaaak.",
+    "kaalaaaaaaak",
+    "kaalaaaaaaak",
+    "kaaaaaaaaaak",
+    "kAaaaaaaaaAk",
+    ".kAAaaaaAAk.",
+    "..kAAAAAAk..",
+    "...kkkkkk...",
+]
+QB_MUSHROOM = [
+    "....kkkkkk....",
+    "..kkmmmmmmkk..",
+    ".kmmlmmmmmmmk.",
+    "kmmmmmmlmmmmmk",
+    "kMmmmmmmmmmMMk",
+    ".kMMMMMMMMMMk.",
+    "..kkkttttkkk..",
+    ".....kttk.....",
+    ".....kttk.....",
+    ".....kTTk.....",
+    "......kk......",
+]
+QB_BREAD = [
+    "....kkkkkkk...",
+    "..kktttttttkk.",
+    ".kttlttttttttk",
+    "kttlttttttttTk",
+    "kttttttttttTTk",
+    "kTtttttttTTTTk",
+    ".kTTTTTTTTTTk.",
+    "..kkkkkkkkkk..",
+]
+QB_MEAT = [
+    "..kkkkkkk.....",
+    ".kaaaaaaakk...",
+    "kaalaaaaaaakk.",
+    "kaaaaaaAaaaak.",
+    "kaaaaAAAaaaak.",
+    ".kAAAAaaaaAk..",
+    "..kkkAAAAkk...",
+    ".....kttk.....",
+    "......kttk....",
+    ".......kwk....",
+    "........k.....",
+]
+
+def quickbuff():
+    img = cave_bg(seed=11, top=(20, 16, 36), bottom=(52, 26, 70)).convert("RGBA")
+    cx, cy = 380, 390
+    glow = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    gd = ImageDraw.Draw(glow)
+    for r in range(260, 0, -8):
+        a = int(90 * (1 - r / 260))
+        gd.ellipse([cx - r, cy - r, cx + r, cy + r], fill=(200, 150, 255, a))
+    img = Image.alpha_composite(img, glow)
+    d = ImageDraw.Draw(img)
+
+    key = sprite(QB_KEYCAP_B, PQ, 12)
+    img.paste(key, (cx - key.width // 2, cy - key.height // 2), key)
+
+    rnd = random.Random(9)
+    for ang in range(-70, 71, 14):
+        a = math.radians(ang)
+        x0, y0 = cx + 150 * math.cos(a), cy + 150 * math.sin(a)
+        ln = rnd.randint(40, 90)
+        x1, y1 = cx + (150 + ln) * math.cos(a), cy + (150 + ln) * math.sin(a)
+        d.line([(x0, y0), (x1, y1)], fill=(255, 230, 150), width=6)
+
+    items = [
+        (qb_potion('v', 'V'), 7), (QB_APPLE, 7), (qb_potion('e', 'E'), 7), (QB_MUSHROOM, 6),
+        (qb_potion('h', 'H'), 7), (QB_MEAT, 6), (QB_BREAD, 6), (FISH, 5),
+    ]
+    n = len(items)
+    for i, (spr, sc) in enumerate(items):
+        a = math.radians(-30 + i * (60 / (n - 1)))
+        radius = 300 if i % 2 == 0 else 385
+        x, y = cx + radius * math.cos(a), cy + radius * math.sin(a)
+        s = sprite(spr, PQ, sc)
+        hr = max(s.width, s.height) // 2 + 14
+        d.ellipse([x - hr, y - hr, x + hr, y + hr], fill=(70, 50, 100), outline=(150, 120, 200), width=4)
+        img.paste(s, (int(x - s.width / 2), int(y - s.height / 2)), s)
+
+    # four buff tags with timer bars: everything applied at once
+    bx, by = 890, 330
+    for j, col in enumerate([(150, 80, 220), (80, 210, 120), (90, 130, 180), (230, 70, 80)]):
+        x = bx + j * 78
+        d.rounded_rectangle([x, by, x + 62, by + 62], radius=10, fill=(40, 30, 60), outline=col, width=5)
+        d.rectangle([x + 27, by + 14, x + 35, by + 48], fill=col)
+        d.rectangle([x + 14, by + 27, x + 48, by + 35], fill=col)
+        d.rectangle([x, by + 74, x + 62, by + 84], fill=(30, 24, 44))
+        d.rectangle([x, by + 74, x + 62 - j * 9, by + 84], fill=col)
+    text_shadow(d, (bx + 155, by - 44), "ALL BUFFS AT ONCE", font(28), (230, 220, 250))
+
+    text_shadow(d, (W // 2, 22), "QUICK BUFF", font(84), (245, 240, 255))
+    text_shadow(d, (W // 2, 112), "Press B.  Eat one of every food, drink one of every potion.", font(28), (210, 200, 235))
+    d.rounded_rectangle([W // 2 - 470, 640, W // 2 + 470, 706], radius=16, fill=(14, 12, 30, 230), outline=(140, 110, 200), width=3)
+    text_shadow(d, (W // 2, 656), "All your buffs in one key press.  Skips buffs that are still running.", font(26), (230, 220, 250))
+    img.convert("RGB").save(r"C:\Users\Sid\CoreKeeperMods\release\quickbuff_logo.png")
+    print("quickbuff_logo.png")
+
 which = sys.argv[1] if len(sys.argv) > 1 else "all"
 if which in ("fiveloadouts", "all"): fiveloadouts()
 if which in ("betterfishingloot", "all"): betterfishingloot()
@@ -990,3 +1155,4 @@ if which in ("wateringcans", "all"): wateringcans()
 if which in ("buffduration", "all"): buffduration()
 if which in ("durability", "all"): durability()
 if which in ("autoreplant", "all"): autoreplant()
+if which in ("quickbuff", "all"): quickbuff()

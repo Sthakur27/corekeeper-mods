@@ -1,0 +1,19 @@
+{
+    "guid": "4b7e2d19c6a04f3b8e5d1c2a9f7b6e40",
+    "name": "QuickBuff",
+    "displayName": "Quick Buff",
+    "skipSafetyChecks": false,
+    "disableScripts": false,
+    "accessesExtraAssemblies": true,
+    "disableHarmonyPatching": false,
+    "requiredOn": 3,
+    "files": [
+        { "path": "Scripts/QuickBuffMod.cs", "guid": "4b7e2d19c6a04f3b8e5d1c2a9f7b6e41" },
+        { "path": "Scripts/QuickBuffCommand.cs", "guid": "4b7e2d19c6a04f3b8e5d1c2a9f7b6e42" },
+        { "path": "Scripts/Systems/QuickBuffServerSystem.cs", "guid": "4b7e2d19c6a04f3b8e5d1c2a9f7b6e43" }
+    ],
+    "dependencies": [
+        { "modName": "CoreLib", "required": true },
+        { "modName": "ModSettingsMenu", "required": true }
+    ]
+}

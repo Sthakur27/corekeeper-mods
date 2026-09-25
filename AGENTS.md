@@ -212,14 +212,14 @@ name/summary; click Select on the crop first, then re-check fields with JS befor
 their own mod folder (`git add <ModName>` then commit); the manager pushes. Never commit the mod.io
 token, game DLLs, decompiled sources, zips or the `MasterPet_original_bundles` folder (see .gitignore).
 
-**mod.io: use the REST API, not the browser.** Base URL `https://api.mod.io/v1`, game id **5289**
+**mod.io: use the REST API, not the browser.** Base URL `https://g-5289.modapi.io/v1` (api.mod.io is deprecated for writes), game id **5289**
 (Core Keeper). Writes need an OAuth access token: `Authorization: Bearer <token>` (Sid generates it at
 https://mod.io/me/access → "OAuth Access" → create token with read+write; it is stored OUTSIDE the
 repo history (gitignored) at `C:\Users\Sid\CoreKeeperMods\.modio_token`, one line). Reads can use an API key (`?api_key=`), but just use
 the bearer token for everything. All write requests are `multipart/form-data` (or
 `application/x-www-form-urlencoded`) with `Accept: application/json`.
 ```bash
-TOK=$(cat /c/Users/Sid/CoreKeeperMods/.modio_token); API=https://api.mod.io/v1; GAME=5289
+TOK=$(cat /c/Users/Sid/CoreKeeperMods/.modio_token); API=https://g-5289.modapi.io/v1; GAME=5289
 # find tag options (game version tags etc.)
 curl -s "$API/games/$GAME/tags" -H "Authorization: Bearer $TOK" -H "Accept: application/json"
 # create mod (logo required, 16:9 >=512x288). visible: 0 hidden, 1 public
@@ -275,3 +275,17 @@ Multiplier), and broken-on-1.3 mods (MinerKart fails to compile). Active third-p
 5128201, MoreMapReveal 5476385, EternalOreBoulders 6042718, RoofingGadgetPlus 6124697,
 MapTeleport1215 6161255, FastSmelter1215 6163010, BoatTurbo 6265625, CraftingReach 6312780,
 SkipIntro 6363825. Refresh the list from Player.log (`loaded mod X from mod.io`) before editing.
+
+### 9b. What actually works with a personal access token (learned 2026-09-25)
+- Host must be `https://g-5289.modapi.io/v1`. Non-file writes MUST be `application/x-www-form-urlencoded`
+  (`--data-urlencode k@file`); only `/files` and `/media` take multipart.
+- `POST /games/5289/mods` (create) and `POST /games/5289/collections` return 403 for personal tokens.
+  Create the page in the browser (name, summary, logo → click **Select** on the crop dialog — take a
+  screenshot first or the click misses — tags, Public, Create Mod), then `python release/publish.py setup
+  <mod_id> <Folder> <version> [dep ids]` does description, tags, dependencies and the file upload.
+  `python release/publish.py file <mod_id> <Folder> <version> "<changelog>"` for updates.
+  New mod id: `GET /me/mods?game_id=5289` (public search skips mods without a file).
+- Our mod ids: Loadout Fallback 6403817, Skill XP Multiplier 6403827, Master Pet Plus 6403829,
+  Fast Auto Fishing 6403836, Durability Multiplier 6405262, Buff Duration Floor 6405266,
+  Faster Mushrooms 6405268, Bigger Watering Cans 6405271, Five Loadouts 6405273,
+  Better Fishing Loot 6405276, Auto Replant 6405281, Quick Buff 6405282.

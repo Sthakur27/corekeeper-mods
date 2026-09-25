@@ -289,3 +289,14 @@ SkipIntro 6363825. Refresh the list from Player.log (`loaded mod X from mod.io`)
   Fast Auto Fishing 6403836, Durability Multiplier 6405262, Buff Duration Floor 6405266,
   Faster Mushrooms 6405268, Bigger Watering Cans 6405271, Five Loadouts 6405273,
   Better Fishing Loot 6405276, Auto Replant 6405281, Quick Buff 6405282.
+
+### 10b. Collection facts (2026-09-25)
+- Live: **Sid's Core Keeper Pack** https://mod.io/g/corekeeper/c/sids-core-keeper-pack (collection id 116637, 22 mods).
+- mod.io refuses to put any mod that declares dependencies into a collection (error 29609) and only
+  reports one offender per save. So our mods' mod.io dependency records were DELETED (the in-game
+  manifest deps are untouched; the loader still enforces them). Do not re-add dependencies via the API.
+- Excluded because they declare deps: PlacementPlus, Mod Settings Menu, AutoDoors, Higher Crafting
+  distance, Double Chest Inventory, Boat Turbo. **Mod Settings Menu is required by 8 of our mods**, so the
+  collection summary tells players to subscribe to it (and CoreLib is inside the collection).
+- Collections API: GET works, POST/collection edits are browser-only for personal tokens. Dialog
+  "Add mods": type a name, wait 3 s, it stages automatically; repeat; then **Add mod**, then **Save**.

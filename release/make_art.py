@@ -847,7 +847,7 @@ def fiveloadouts():
                     (255, 235, 150) if new else (200, 190, 225))
 
     text_shadow(d, (W // 2, 664), "Pairs with Loadout Fallback: loadouts 4 and 5 inherit from loadout 1 too.", font(26), (170, 160, 200))
-    img.convert("RGB").save(r"C:\Users\Sid\CoreKeeperMods\FiveLoadouts\release\fiveloadouts_logo.png")
+    img.convert("RGB").save(r"C:\Users\Sid\CoreKeeperMods\release\fiveloadouts_logo.png")
     print("fiveloadouts_logo.png")
 
 # ---------- Auto Replant ----------
@@ -1145,14 +1145,15 @@ def quickbuff():
     img.convert("RGB").save(r"C:\Users\Sid\CoreKeeperMods\release\quickbuff_logo.png")
     print("quickbuff_logo.png")
 
-which = sys.argv[1] if len(sys.argv) > 1 else "all"
-if which in ("fiveloadouts", "all"): fiveloadouts()
-if which in ("betterfishingloot", "all"): betterfishingloot()
-if which in ("fastermushrooms", "all"): fastermushrooms()
-if which in ("loadout", "all"): loadout()
-if which in ("fishing", "all"): fishing()
-if which in ("wateringcans", "all"): wateringcans()
-if which in ("buffduration", "all"): buffduration()
-if which in ("durability", "all"): durability()
-if which in ("autoreplant", "all"): autoreplant()
-if which in ("quickbuff", "all"): quickbuff()
+if __name__ == "__main__":
+    which = sys.argv[1] if len(sys.argv) > 1 else "all"
+    if which in ("fiveloadouts", "all"): fiveloadouts()
+    if which in ("betterfishingloot", "all"): betterfishingloot()
+    if which in ("fastermushrooms", "all"): fastermushrooms()
+    if which in ("loadout", "all"): loadout()
+    if which in ("fishing", "all"): fishing()
+    if which in ("wateringcans", "all"): wateringcans()
+    if which in ("buffduration", "all"): buffduration()
+    if which in ("durability", "all"): durability()
+    if which in ("autoreplant", "all"): autoreplant()
+    if which in ("quickbuff", "all"): quickbuff()

@@ -58,11 +58,15 @@ save/load of the active preset 4 or 5, multiplayer (no extra replication needed)
 Not done:
 - Dedicated hotkeys for loadouts 4 and 5 (no input actions to bind; would need a Rewired
   action injected into the input map, out of scope).
-- The generated tab digits are plain white 3x5 pixel glyphs; they may not match the vanilla
-  numeral style exactly. If vanilla tab icons are not numerals the clones still work, they just
-  show a digit.
-- If tab clones do not fit the window art there is no repositioning logic beyond "same spacing
-  as tabs 2 to 3".
+- Tab icons: tabs 4 and 5 show Roman numerals IV (gold) and V (purple) generated at runtime in
+  the vanilla pixel style. The vanilla "I" sprite is read back (blit to a RenderTexture) to copy
+  its canvas size, pixels-per-unit, stroke width, glyph height, letter gap and shadow/outline
+  shade; the I pixels are reused recoloured and the V is drawn to match. If the sprite cannot be
+  read, a plain 1px, 5-high style is used instead. The style found is logged as
+  `[FiveLoadouts] Numeral style (...)`.
+- Tab placement: the five tabs keep vanilla spacing and the column is shifted up (or, if that
+  is not enough, compressed) so all tabs stay inside the vertical extent of the window frame
+  (largest sprite under the window root). Logged as `[FiveLoadouts] Tab column: ...`.
 
 ## Save-safety notes
 

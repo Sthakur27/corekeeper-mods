@@ -39,7 +39,8 @@ namespace LoadoutSharing.Systems
             {
                 var entity = entities[i];
                 var presets = EntityManager.GetBuffer<EquipmentPresetsBuffer>(entity);
-                if (presets.Length < SlotLayout.PresetCount) continue;
+                if (presets.Length < SlotLayout.VanillaPresetCount) continue;
+                int presetCount = System.Math.Min(SlotLayout.PresetCount, presets.Length);
 
                 var contained = EntityManager.GetBuffer<ContainedObjectsBuffer>(entity);
                 if (_isServer)
@@ -48,7 +49,7 @@ namespace LoadoutSharing.Systems
                         contained.Add(default);
                 }
 
-                for (int p = 0; p < SlotLayout.PresetCount; p++)
+                for (int p = 0; p < presetCount; p++)
                 {
                     var e = presets[p].equipment;
                     if (SlotLayout.ApplyTo(ref e, p, contained))

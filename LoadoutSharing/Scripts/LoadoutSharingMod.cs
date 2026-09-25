@@ -13,7 +13,7 @@ namespace LoadoutSharing
     public class LoadoutSharingMod : IMod
     {
         public const string Name = "LoadoutSharing";
-        public const string Version = "2.0.0";
+        public const string Version = "2.1.0";
 
         public void EarlyInit()
         {

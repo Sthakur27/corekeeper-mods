@@ -34,18 +34,46 @@ namespace LoadoutSharing
     public static class SlotLayout
     {
         public const int KindCount = 10;
-        public const int PresetCount = 3;
+        public const int VanillaPresetCount = 3;
+        /// <summary>Upper bound for presets another mod may register (Five Loadouts uses 5).</summary>
+        public const int MaxPresetCount = 8;
+        /// <summary>Number of presets with a known private-slot table. 3 unless another mod registers more.</summary>
+        public static int PresetCount { get; private set; } = VanillaPresetCount;
 
         public static bool Ready { get; private set; }
 
         /// <summary>Private slot index per [preset, kind], captured from the player prefab.</summary>
-        private static readonly int[,] _private = new int[PresetCount, KindCount];
+        private static readonly int[,] _private = new int[MaxPresetCount, KindCount];
 
         /// <summary>Highest slot index we rely on; the contained-objects buffer must be longer than this.</summary>
         public static int MaxIndex { get; private set; } = -1;
 
         /// <summary>The slot this preset owns for the kind.</summary>
         public static int PrivateSlot(int preset, SlotKind kind) => _private[preset, (int)kind];
+
+        /// <summary>
+        /// Lets another mod (Five Loadouts) add presets beyond the vanilla three. Called at prefab
+        /// time in every world with that preset's own slot indices; the fallback rule, UI sync and
+        /// pet/bag sync then cover it like presets 2 and 3.
+        /// </summary>
+        public static void RegisterPreset(int preset, EquipmentCD e, int petSlot)
+        {
+            if (preset < VanillaPresetCount || preset >= MaxPresetCount) return;
+            _private[preset, (int)SlotKind.Helm] = e.helmSlotIndex;
+            _private[preset, (int)SlotKind.Necklace] = e.necklaceSlotIndex;
+            _private[preset, (int)SlotKind.Breast] = e.breastSlotIndex;
+            _private[preset, (int)SlotKind.Pants] = e.pantsSlotIndex;
+            _private[preset, (int)SlotKind.Ring1] = e.ring1SlotIndex;
+            _private[preset, (int)SlotKind.Ring2] = e.ring2SlotIndex;
+            _private[preset, (int)SlotKind.OffHand] = e.offHandIndex;
+            _private[preset, (int)SlotKind.Bag] = e.bagIndex;
+            _private[preset, (int)SlotKind.Lantern] = e.lanternIndex;
+            _private[preset, (int)SlotKind.Pet] = petSlot;
+            for (int k = 0; k < KindCount; k++)
+                if (_private[preset, k] > MaxIndex) MaxIndex = _private[preset, k];
+            if (preset + 1 > PresetCount) PresetCount = preset + 1;
+            Debug.Log($"[{LoadoutSharingMod.Name}] Registered preset {preset + 1}: helm={e.helmSlotIndex} bag={e.bagIndex} lantern={e.lanternIndex} pet={petSlot}; presets={PresetCount}");
+        }
 
         private static bool HasItem(DynamicBuffer<ContainedObjectsBuffer> contained, int slot)
         {
@@ -105,7 +133,7 @@ namespace LoadoutSharing
             if (!em.HasBuffer<ContainedObjectsBuffer>(entity)) return;
 
             var presets = em.GetBuffer<EquipmentPresetsBuffer>(entity);
-            if (presets.Length < PresetCount) return;
+            if (presets.Length < VanillaPresetCount) return;
 
             var contained = em.GetBuffer<ContainedObjectsBuffer>(entity);
 
@@ -130,7 +158,7 @@ namespace LoadoutSharing
             presets[2] = new EquipmentPresetsBuffer { equipment = e2 };
 
             int prevBag2 = _private[1, (int)SlotKind.Bag];
-            for (int p = 0; p < PresetCount; p++)
+            for (int p = 0; p < VanillaPresetCount; p++)
             {
                 var e = presets[p].equipment;
                 _private[p, (int)SlotKind.Helm] = e.helmSlotIndex;
@@ -146,7 +174,7 @@ namespace LoadoutSharing
             _private[0, (int)SlotKind.Pet] = p1Pet;
             _private[1, (int)SlotKind.Pet] = p2Pet;
             _private[2, (int)SlotKind.Pet] = p3Pet;
-            MaxIndex = p3Pet;
+            if (p3Pet > MaxIndex) MaxIndex = p3Pet;
 
             if (Ready && prevBag2 != p2Bag)
             {

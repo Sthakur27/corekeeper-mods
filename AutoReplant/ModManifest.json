@@ -1,0 +1,18 @@
+{
+    "guid": "4773d2d852474d7583b130c407bfc9fa",
+    "name": "AutoReplant",
+    "displayName": "Auto Replant",
+    "skipSafetyChecks": false,
+    "disableScripts": false,
+    "accessesExtraAssemblies": true,
+    "disableHarmonyPatching": true,
+    "requiredOn": 3,
+    "files": [
+        { "path": "Scripts/AutoReplantMod.cs", "guid": "" },
+        { "path": "Scripts/Systems/AutoReplantSystem.cs", "guid": "" }
+    ],
+    "dependencies": [
+        { "modName": "CoreLib", "required": true },
+        { "modName": "ModSettingsMenu", "required": true }
+    ]
+}

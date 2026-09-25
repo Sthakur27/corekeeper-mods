@@ -16,3 +16,5 @@ Check `%USERPROFILE%\AppData\LocalLow\Pugstorm\Core Keeper\Player.log` for
 `Successfully compiled LoadoutSharing` and `[LoadoutSharing] Player layout: ...`.
 
 Known limit: right-clicking gear on the hotbar while in loadout 2/3 equips it through the server's own path and will replace loadout 1's item if that slot is currently inherited. Use drag-and-drop or shift-click from the inventory to give the loadout its own item.
+
+Works with **Five Loadouts**: loadouts 4 and 5 fall back to loadout 1 the same way.

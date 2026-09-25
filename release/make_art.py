@@ -669,10 +669,324 @@ def fastermushrooms():
     img.convert("RGB").save(r"C:\Users\Sid\CoreKeeperMods\release\fastermushrooms_logo.png")
     print("fastermushrooms_logo.png")
 
+# ---------- Better Fishing Loot ----------
+PF = dict(P)
+PF.update({
+    'v': (232, 196, 88),   # gold trim
+    'V': (170, 132, 50),
+    'h': (70, 74, 96),     # dark steel (miner)
+    'H': (44, 46, 62),
+    'l': (255, 200, 80),   # lamp glow
+    'L': (255, 240, 180),
+    'e': (52, 52, 70),     # ninja cloth
+    'E': (30, 30, 42),
+    'x': (214, 60, 70),    # ninja trim
+    'q': (90, 200, 230),   # water drip
+})
+# miner helm: dark steel dome with a lamp on the front
+MINER_HELM = [
+    ".....kkkkkk.....",
+    "...kkhhhhhhkk...",
+    "..khhhhhhhhhhk..",
+    ".khhhhkkkkhhhhk.",
+    ".khhhklLLlkhhhk.",
+    "khhhhklLLlkhhhhk",
+    "khhhhhkllkhhhhhk",
+    "kHHHHHHkkHHHHHHk",
+    "kHkkkkkkkkkkkkHk",
+    ".kk..........kk.",
+]
+# ninja hood: dark cloth with an eye slit and red trim
+NINJA_HELM = [
+    "....kkkkkkkk....",
+    "..kkeeeeeeeekk..",
+    ".keeeeeeeeeeeek.",
+    ".keeeeeeeeeeeek.",
+    "keeekkkkkkkkeeek",
+    "keekwwwkkwwwkeek",
+    "keeekkkkkkkkeeek",
+    "kEEEEExxxxEEEEEk",
+    ".kEEEEEEEEEEEEk.",
+    "..kkkkkkkkkkkk..",
+]
+NINJA_CHEST = [
+    "..kkk......kkk..",
+    ".keeekkkkkkeeek.",
+    "keeeeeeeeeeeeeek",
+    "keeeeexxxxeeeeek",
+    ".kkeeeeeeeeeekk.",
+    "..keeeexxeeeek..",
+    "..kEEEEEEEEEEk..",
+    "..kEEEkkkkEEEk..",
+    "..kkkk....kkkk..",
+]
+MINER_PANTS = [
+    "kkkkkkkkkkkkkk",
+    "khhhhhhhhhhhhk",
+    "khhhhhkkhhhhhk",
+    "khhhhk..khhhhk",
+    "kHHHHk..kHHHHk",
+    "kHHHHk..kHHHHk",
+    "kkkkkk..kkkkkk",
+]
+GOLD_RING = [
+    "....kkkk....",
+    "...kvvvvk...",
+    "..kvkccckv..",
+    ".kvk.ccc.kv.",
+    ".kv......vk.",
+    ".kV......Vk.",
+    "..kV....Vk..",
+    "...kVVVVk...",
+    "....kkkk....",
+]
+DRIP = [
+    ".q.",
+    "qqq",
+    ".q.",
+]
+
+def betterfishingloot():
+    img = cave_bg(seed=9, top=(12, 20, 38), bottom=(16, 44, 76)).convert("RGBA")
+    d = ImageDraw.Draw(img)
+    # water from the middle down
+    wy = 430
+    for y in range(wy, H):
+        t = (y - wy) / (H - wy)
+        d.line([(0, y), (W, y)], fill=(int(16 + 8 * t), int(76 - 26 * t), int(136 - 46 * t)))
+    rnd = random.Random(13)
+    for _ in range(70):
+        x = rnd.randrange(0, W, 8); y = rnd.randrange(wy + 10, H - 8, 8)
+        d.rectangle([x, y, x + rnd.choice([16, 24, 40]), y + 3], fill=(56, 144, 196))
+    # rod bending under the weight, from the left bank up and over
+    d.line([(120, 420), (330, 150)], fill=(40, 28, 26), width=14)
+    d.line([(120, 420), (330, 150)], fill=(120, 80, 60), width=6)
+    d.line([(330, 150), (470, 110)], fill=(40, 28, 26), width=12)
+    d.line([(330, 150), (470, 110)], fill=(120, 80, 60), width=5)
+    # taut line down to the catch
+    d.line([(470, 110), (640, 300)], fill=(236, 236, 244), width=3)
+    # the catch: a miner helm on the hook, dripping, with the rest of the set surfacing behind it
+    helm = sprite(MINER_HELM, PF, 9)
+    img.paste(helm, (640 - helm.width // 2, 300), helm)
+    for (dx, dy, sc) in [(600, 405, 4), (665, 420, 4), (640, 440, 3)]:
+        dr = sprite(DRIP, PF, sc); img.paste(dr, (dx, dy), dr)
+    # splash rings where it broke the surface
+    for r in (36, 70, 110):
+        d.ellipse([640 - r, 470 - r // 4, 640 + r, 470 + r // 4], outline=(200, 232, 255), width=3)
+    # more gear bobbing up out of the water to the right, brighter = closer
+    chest = sprite(NINJA_CHEST, PF, 8); img.paste(chest, (800, 372), chest)
+    hood = sprite(NINJA_HELM, PF, 7); img.paste(hood, (960, 300), hood)
+    pants = sprite(MINER_PANTS, PF, 7); img.paste(pants, (1080, 400), pants)
+    ring = sprite(GOLD_RING, PF, 6); img.paste(ring, (880, 250), ring)
+    for (cx, cy) in [(864, 470), (1016, 470), (1130, 500)]:
+        for r in (24, 48):
+            d.ellipse([cx - r, cy - r // 4, cx + r, cy + r // 4], outline=(180, 220, 250), width=2)
+    # odds tag: vanilla vs boosted
+    d.rounded_rectangle([50, 470, 450, 600], radius=16, fill=(20, 18, 34, 235), outline=(232, 196, 88), width=4)
+    text_shadow(d, (250, 486), "MINER SET PIECE", font(30), (232, 196, 88))
+    text_shadow(d, (250, 528), "1%  ->  4.5%  per bite", font(28), (245, 245, 255))
+    text_shadow(d, (250, 566), "at the default 5x", font(22), (170, 180, 210))
+    # title + footer
+    text_shadow(d, (W // 2, 36), "BETTER FISHING LOOT", font(80), (245, 245, 255))
+    d.rounded_rectangle([W // 2 - 500, 618, W // 2 + 500, 700], radius=16, fill=(14, 20, 34, 230), outline=(90, 140, 190), width=3)
+    text_shadow(d, (W // 2, 632), "Armor, rings, necklaces and rare finds bite 1x to 25x more often.", font(28), (220, 240, 255))
+    text_shadow(d, (W // 2, 668), "Fish, ore and kelp are exactly as in vanilla.", font(24), (160, 200, 230))
+    img.convert("RGB").save(r"C:\Users\Sid\CoreKeeperMods\release\betterfishingloot_logo.png")
+    print("betterfishingloot_logo.png")
+
+# ---------- Five Loadouts ----------
+def fiveloadouts():
+    """A character window with five loadout tabs; tabs 4 and 5 are the new ones."""
+    img = cave_bg(seed=13, top=(20, 16, 36), bottom=(48, 30, 66)).convert("RGBA")
+    d = ImageDraw.Draw(img)
+    text_shadow(d, (W // 2, 40), "FIVE LOADOUTS", font(84), (245, 240, 255))
+    text_shadow(d, (W // 2, 138), "Two more equipment loadouts. Same window, same cycle key.", font(28), (200, 190, 225))
+
+    # window frame
+    fx0, fy0, fx1, fy1 = 120, 262, W - 120, 636
+    d.rounded_rectangle([fx0, fy0, fx1, fy1], radius=20, fill=(34, 28, 50), outline=(90, 76, 130), width=5)
+
+    # five tabs along the top edge of the window
+    tabw, tabh, gap = 170, 56, 20
+    total = 5 * tabw + 4 * gap
+    tx0 = (W - total) // 2
+    ty = fy0 - tabh + 8
+    for i in range(5):
+        x = tx0 + i * (tabw + gap)
+        new = i >= 3
+        fill = (76, 62, 108) if new else (52, 44, 74)
+        outline = (255, 210, 110) if new else (140, 120, 190)
+        d.rounded_rectangle([x, ty, x + tabw, ty + tabh + 16], radius=12, fill=fill, outline=outline, width=4)
+        text_shadow(d, (x + tabw // 2, ty + 10), str(i + 1), font(38), (255, 235, 150) if new else (220, 210, 245))
+        if new:
+            d.rounded_rectangle([x + tabw - 62, ty - 22, x + tabw + 8, ty + 6], radius=8, fill=(214, 60, 70), outline=(28, 22, 30), width=3)
+            text_shadow(d, (x + tabw - 27, ty - 19), "NEW", font(20), (255, 245, 245))
+
+    # inside the window: one column of three gear slots per loadout
+    slot, sgap = 80, 12
+    y0 = fy0 + 36
+    icons_by_col = [
+        [(HELM, 5), (CHEST, 5), (SWORD, 5)],
+        [(HELM, 5), (RING, 6), (BAG, 6)],
+        [(CHEST, 5), (PANTS, 6), (LANTERN, 6)],
+        [(RING, 6), (SWORD, 5), (BAG, 6)],
+        [(HELM, 5), (LANTERN, 6), (PANTS, 6)],
+    ]
+    for i in range(5):
+        new = i >= 3
+        cx = tx0 + i * (tabw + gap) + (tabw - slot) // 2
+        for r in range(3):
+            sy = y0 + r * (slot + sgap)
+            slot_panel(d, cx, sy, slot,
+                       fill=(66, 54, 96) if new else (58, 50, 78),
+                       outline=(255, 210, 110) if new else (140, 120, 190))
+            spr, sc = icons_by_col[i][r]
+            s = sprite(spr, P, sc)
+            img.paste(s, (cx + (slot - s.width) // 2, sy + (slot - s.height) // 2), s)
+        text_shadow(d, (cx + slot // 2, y0 + 3 * (slot + sgap) + 4), f"LOADOUT {i + 1}", font(24),
+                    (255, 235, 150) if new else (200, 190, 225))
+
+    text_shadow(d, (W // 2, 664), "Pairs with Loadout Fallback: loadouts 4 and 5 inherit from loadout 1 too.", font(26), (170, 160, 200))
+    img.convert("RGB").save(r"C:\Users\Sid\CoreKeeperMods\FiveLoadouts\release\fiveloadouts_logo.png")
+    print("fiveloadouts_logo.png")
+
+# ---------- Auto Replant ----------
+AR_P = dict(P, **{
+    'l': (150, 220, 120),  # leaf light
+    'n': (70, 160, 90),    # leaf
+    'N': (36, 100, 60),    # leaf shade
+    'd': (86, 58, 40),     # soil
+    'D': (120, 84, 56),    # soil light
+    'g': (250, 210, 90),   # gold leaf light
+    'e': (232, 184, 60),   # gold leaf
+    'G': (200, 150, 40),   # gold leaf shade
+})
+AR_RIPE = [
+    "....kk...kk...",
+    "...kllk.kllk..",
+    "..klnnlknnlnk.",
+    ".klnnrnnnnrnlk",
+    ".knnnnnrnnnnnk",
+    ".kNnrnnnnrnnNk",
+    "..kNNnrnnnNNk.",
+    "...kkNNNNNkk..",
+    ".....kNNNk....",
+    "......kNk.....",
+    "......kkk.....",
+]
+AR_SPROUT = [
+    "..kk...kk.",
+    ".kllk.kllk",
+    ".klnnknnlk",
+    "..knnnnnk.",
+    "...kknkk..",
+    ".....kNk..",
+    "....kNNk..",
+    ".....kk...",
+]
+AR_GOLD_SPROUT = [r.replace('l', 'g').replace('n', 'e').replace('N', 'G') for r in AR_SPROUT]
+AR_SEED = [
+    "..kk..",
+    ".kbBk.",
+    "kbBBBk",
+    "kBBBbk",
+    ".kBBk.",
+    "..kk..",
+]
+AR_BERRY = [
+    "..kk..",
+    ".krrk.",
+    "krrwrk",
+    "krrrrk",
+    ".krrk.",
+    "..kk..",
+]
+AR_SPARK = [
+    "..k..",
+    ".kyk.",
+    "kyyyk",
+    ".kyk.",
+    "..k..",
+]
+
+def ar_soil_tile(d, x, y, w, h, seed):
+    rnd = random.Random(seed)
+    d.rounded_rectangle([x, y, x + w, y + h], radius=10, fill=AR_P['d'], outline=(40, 26, 20), width=4)
+    for _ in range(26):
+        px, py = x + 10 + rnd.randrange(0, w - 26, 6), y + 10 + rnd.randrange(0, h - 26, 6)
+        d.rectangle([px, py, px + 6, py + 6], fill=AR_P['D'])
+
+def autoreplant():
+    img = cave_bg(seed=11, top=(16, 26, 22), bottom=(30, 56, 40)).convert("RGBA")
+    d = ImageDraw.Draw(img)
+    text_shadow(d, (W // 2, 40), "AUTO REPLANT", font(80), (235, 255, 235))
+    text_shadow(d, (W // 2, 134), "Harvest a crop and it is planted right back from your seeds.", font(28), (190, 225, 195))
+
+    tile_w, tile_h, gap = 190, 150, 50
+    x0 = (W - (4 * tile_w + 3 * gap)) // 2
+    y0 = 330
+    labels = ["HARVEST", "REPLANTED", "GROWING", "GOLDEN"]
+    for i in range(4):
+        tx = x0 + i * (tile_w + gap)
+        ar_soil_tile(d, tx, y0, tile_w, tile_h, seed=20 + i)
+        text_shadow(d, (tx + tile_w // 2, y0 + tile_h + 16), labels[i], font(26), (215, 235, 215))
+
+    # tile 0: ripe bush, crop popping out with an up arrow
+    tx = x0
+    s = sprite(AR_RIPE, AR_P, 11)
+    img.paste(s, (tx + (tile_w - s.width) // 2, y0 + tile_h - s.height - 6), s)
+    b = sprite(AR_BERRY, AR_P, 8)
+    img.paste(b, (tx + tile_w // 2 - b.width // 2 + 40, y0 - 70), b)
+    d.polygon([(tx + 60, y0 - 18), (tx + 84, y0 - 54), (tx + 108, y0 - 18)], fill=(240, 240, 240))
+    d.rectangle([tx + 76, y0 - 22, tx + 92, y0 + 10], fill=(240, 240, 240))
+
+    # arrow tile0 -> tile1
+    ax = x0 + tile_w + gap // 2
+    ay = y0 + tile_h // 2
+    d.rectangle([ax - 22, ay - 7, ax + 4, ay + 7], fill=(215, 235, 215))
+    d.polygon([(ax + 2, ay - 18), (ax + 26, ay), (ax + 2, ay + 18)], fill=(215, 235, 215))
+
+    # tile 1: seed dropping in, fresh sprout with motion lines
+    tx = x0 + (tile_w + gap)
+    sd = sprite(AR_SEED, AR_P, 8)
+    img.paste(sd, (tx + tile_w // 2 - sd.width // 2 + 46, y0 - 60), sd)
+    for k in range(3):
+        yy = y0 - 8 + k * 14
+        d.line([(tx + tile_w // 2 + 40, yy), (tx + tile_w // 2 + 40, yy + 6)], fill=(230, 230, 200), width=3)
+    sp = sprite(AR_SPROUT, AR_P, 9)
+    img.paste(sp, (tx + (tile_w - sp.width) // 2 - 10, y0 + tile_h - sp.height - 10), sp)
+    for (dx, dy) in [(-26, -30), (26, -30), (-34, -6), (34, -6)]:
+        cx, cy = tx + tile_w // 2 - 10 + dx, y0 + tile_h - sp.height - 4 + dy
+        d.line([(cx, cy), (cx + (6 if dx > 0 else -6), cy - 8)], fill=(200, 255, 200), width=4)
+
+    # tile 2: growing sprout
+    tx = x0 + 2 * (tile_w + gap)
+    sp2 = sprite(AR_SPROUT, AR_P, 11)
+    img.paste(sp2, (tx + (tile_w - sp2.width) // 2, y0 + tile_h - sp2.height - 8), sp2)
+
+    # tile 3: golden sprout with sparkles
+    tx = x0 + 3 * (tile_w + gap)
+    gs = sprite(AR_GOLD_SPROUT, AR_P, 11)
+    img.paste(gs, (tx + (tile_w - gs.width) // 2, y0 + tile_h - gs.height - 8), gs)
+    for (dx, dy, sc) in [(-64, -40, 5), (70, -60, 6), (60, 20, 4), (-70, 30, 4)]:
+        sk = sprite(AR_SPARK, AR_P, sc)
+        img.paste(sk, (tx + tile_w // 2 + dx - sk.width // 2, y0 + 40 + dy - sk.height // 2), sk)
+    d.rounded_rectangle([tx + 18, y0 - 78, tx + tile_w - 18, y0 - 30], radius=12, fill=(40, 34, 20), outline=(220, 180, 70), width=3)
+    text_shadow(d, (tx + tile_w // 2, y0 - 70), "5% GOLDEN", font(26), (250, 220, 110))
+
+    d.rounded_rectangle([W // 2 - 500, 590, W // 2 + 500, 690], radius=16, fill=(12, 22, 16, 230), outline=(90, 160, 110), width=3)
+    text_shadow(d, (W // 2, 604), "Uses the seed the harvest drops, or one you already carry.", font(28), (215, 240, 220))
+    text_shadow(d, (W // 2, 646), "Same XP and growth as planting by hand.  Golden chance is configurable.", font(24), (160, 205, 170))
+    img.convert("RGB").save(r"C:\Users\Sid\CoreKeeperMods\release\autoreplant_logo.png")
+    print("autoreplant_logo.png")
+
 which = sys.argv[1] if len(sys.argv) > 1 else "all"
+if which in ("fiveloadouts", "all"): fiveloadouts()
+if which in ("betterfishingloot", "all"): betterfishingloot()
 if which in ("fastermushrooms", "all"): fastermushrooms()
 if which in ("loadout", "all"): loadout()
 if which in ("fishing", "all"): fishing()
 if which in ("wateringcans", "all"): wateringcans()
 if which in ("buffduration", "all"): buffduration()
 if which in ("durability", "all"): durability()
+if which in ("autoreplant", "all"): autoreplant()

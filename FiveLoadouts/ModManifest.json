@@ -1,0 +1,21 @@
+{
+    "guid": "5f1d0a7c9e3b4d2a8c6f0b1e2d3a4c55",
+    "name": "FiveLoadouts",
+    "displayName": "Five Loadouts",
+    "skipSafetyChecks": false,
+    "disableScripts": false,
+    "accessesExtraAssemblies": true,
+    "disableHarmonyPatching": false,
+    "requiredOn": 3,
+    "files": [
+        { "path": "Scripts/FiveLoadoutsMod.cs", "guid": "5f1d0a7c9e3b4d2a8c6f0b1e2d3a4c01" },
+        { "path": "Scripts/PresetLayout.cs", "guid": "5f1d0a7c9e3b4d2a8c6f0b1e2d3a4c02" },
+        { "path": "Scripts/LoadoutSharingBridge.cs", "guid": "5f1d0a7c9e3b4d2a8c6f0b1e2d3a4c03" },
+        { "path": "Scripts/PresetTabsUI.cs", "guid": "5f1d0a7c9e3b4d2a8c6f0b1e2d3a4c04" },
+        { "path": "Scripts/Systems/PresetMigrationSystem.cs", "guid": "5f1d0a7c9e3b4d2a8c6f0b1e2d3a4c05" },
+        { "path": "Scripts/Patches/PresetCyclePatch.cs", "guid": "5f1d0a7c9e3b4d2a8c6f0b1e2d3a4c06" }
+    ],
+    "dependencies": [
+        { "modName": "LoadoutSharing", "required": false }
+    ]
+}

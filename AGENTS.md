@@ -215,11 +215,11 @@ token, game DLLs, decompiled sources, zips or the `MasterPet_original_bundles` f
 **mod.io: use the REST API, not the browser.** Base URL `https://api.mod.io/v1`, game id **5289**
 (Core Keeper). Writes need an OAuth access token: `Authorization: Bearer <token>` (Sid generates it at
 https://mod.io/me/access → "OAuth Access" → create token with read+write; it is stored OUTSIDE the
-repo in `%USERPROFILE%\.modio_token`, one line). Reads can use an API key (`?api_key=`), but just use
+repo history (gitignored) at `C:\Users\Sid\CoreKeeperMods\.modio_token`, one line). Reads can use an API key (`?api_key=`), but just use
 the bearer token for everything. All write requests are `multipart/form-data` (or
 `application/x-www-form-urlencoded`) with `Accept: application/json`.
 ```bash
-TOK=$(cat ~/.modio_token); API=https://api.mod.io/v1; GAME=5289
+TOK=$(cat /c/Users/Sid/CoreKeeperMods/.modio_token); API=https://api.mod.io/v1; GAME=5289
 # find tag options (game version tags etc.)
 curl -s "$API/games/$GAME/tags" -H "Authorization: Bearer $TOK" -H "Accept: application/json"
 # create mod (logo required, 16:9 >=512x288). visible: 0 hidden, 1 public
@@ -258,3 +258,20 @@ swapped. Each mod gets its own `release/<mod>_logo.png`.
 5. Report back: mechanism, files, compile result, defaults, anything you could not do and why.
 Prefer ModSettingsMenu toggles/sliders for tunables (deps CoreLib + ModSettingsMenu), 1x/vanilla defaults
 unless the spec says otherwise, and `PugSimulationSystemBase` systems + Harmony only where needed.
+
+## 10. Mod pack = a mod.io Collection
+
+The "pack" is a mod.io **Collection** (mod.io/g/corekeeper/c), not a merged mod: players subscribe
+once, every mod stays independently updatable, and no third-party code is redistributed.
+`GET /games/5289/collections` works with the API key; creating/editing needs the OAuth token
+(`POST /games/5289/collections`, then add mods; if the write endpoints are missing from API v1,
+fall back to the browser at /g/corekeeper/c → Add). Contents = all of Sid's mods (section 8 list +
+the 2026-09-25 batch) + the third-party mods Sid keeps active, EXCLUDING ones his mods replace:
+Loadout Plus (→ Loadout Fallback), Autofish/mikufish (→ Fast Auto Fishing), Master Pet
+(→ Master Pet Plus), XP Multiplier (→ Skill XP Multiplier), Disable Durability (→ Durability
+Multiplier), and broken-on-1.3 mods (MinerKart fails to compile). Active third-party list as of
+2026-09-25 (mod.io id): CoreLib 3177992, ModSettingsMenu 6211950, AutoDoor 3342278, PlacementPlus
+3400322, HealthBars 4164578, AllSkills 4297529, ExpandedChestUI 5079247, Double Chest Inventory
+5128201, MoreMapReveal 5476385, EternalOreBoulders 6042718, RoofingGadgetPlus 6124697,
+MapTeleport1215 6161255, FastSmelter1215 6163010, BoatTurbo 6265625, CraftingReach 6312780,
+SkipIntro 6363825. Refresh the list from Player.log (`loaded mod X from mod.io`) before editing.

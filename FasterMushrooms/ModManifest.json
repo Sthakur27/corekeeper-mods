@@ -1,0 +1,19 @@
+{
+    "guid": "f4a5b6c7d8e9401ab2c3d4e5f6071829",
+    "name": "FasterMushrooms",
+    "displayName": "Faster Mushrooms",
+    "skipSafetyChecks": false,
+    "disableScripts": false,
+    "accessesExtraAssemblies": true,
+    "disableHarmonyPatching": false,
+    "requiredOn": 3,
+    "files": [
+        { "path": "Scripts/FasterMushroomsMod.cs", "guid": "f4a5b6c7d8e9401ab2c3d4e5f607182a" },
+        { "path": "Scripts/MushroomSpeed.cs", "guid": "f4a5b6c7d8e9401ab2c3d4e5f607182b" },
+        { "path": "Scripts/Systems/FasterMushroomsSystem.cs", "guid": "f4a5b6c7d8e9401ab2c3d4e5f607182c" }
+    ],
+    "dependencies": [
+        { "modName": "CoreLib", "required": true },
+        { "modName": "ModSettingsMenu", "required": true }
+    ]
+}

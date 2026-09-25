@@ -450,24 +450,26 @@ PW = {
 }
 
 def can_sprite(body, shade, hi):
-    """Watering can pointing down-left, spout at top-left, handle on top. body/shade/hi are palette keys."""
-    b, S, w = body, shade, hi
+    """Side view watering can: handle arc on top, body on the right, spout rising to a rose at top-left.
+    body/shade/hi are palette keys substituted for b/S/w."""
     rows = [
-        "..........kkkkkk......",
-        ".........k" + b*6 + "k.....",
-        "........k" + b + "kkkk" + b + "k....",
-        ".kk.....k" + b + "k..k" + b + "k....",
-        "k" + b + b + "k...k" + b + "k..k" + b + "k....",
-        "k" + b + b + b + "kkk" + b + "kkkk" + b + "kkkk.",
-        "k" + b + w + b + b + b + b + b + b + b + b + b + b + b + b + b + b + "k",
-        ".k" + b + b + b + b + "k" + b + b + w + w + b + b + b + b + S + S + b + "k",
-        "..k" + b + b + "k.k" + b + b + b + b + b + b + b + S + S + S + b + "k",
-        "...kkk..k" + b + b + b + b + b + b + S + S + S + S + b + "k",
-        "........k" + S + b + b + b + b + S + S + S + S + S + b + "k",
-        "........k" + S + S + S + S + S + S + S + S + S + S + S + "k",
-        ".........kkkkkkkkkkkkk.",
+        "...........kkkkkk.......",
+        "..........kbbbbbbk......",
+        ".........kbk....kbk.....",
+        ".........kbk....kbk.....",
+        "kkk.....kkkkkkkkkkkkkk..",
+        "kwwk...kbbbbbbbbbbbbbbk.",
+        "kwwwk.kbbwwbbbbbbbbbSSk.",
+        ".kwwwkbbbbbbbbbbbbbbSSk.",
+        "..kwwbbbbbbbbbbbbbbbSSk.",
+        "...kbbbbbbbbbbbbbbbbSSk.",
+        "....kbbbbbbbbbbbbbbbSSk.",
+        ".....kbSSSSSSSSSSSSSSSk.",
+        ".....kSSSSSSSSSSSSSSSSk.",
+        ".....kkkkkkkkkkkkkkkkkk.",
     ]
-    return rows
+    tr = str.maketrans({'b': body, 'S': shade, 'w': hi})
+    return [r.translate(tr) for r in rows]
 
 DROPS = [
     "c.c.c",
@@ -511,25 +513,25 @@ def wateringcans():
     text_shadow(d, (W // 2, 36), "BIGGER WATERING CANS", font(76), (235, 250, 245))
     text_shadow(d, (W // 2, 126), "Water more crops per pour.", font(30), (180, 225, 215))
 
-    # left: basic watering can over a 2x2 patch
-    lx = 150
-    gsize = crop_grid(img, lx + 40, 330, 2, 9, seed=2)
-    can = sprite(can_sprite('s', 'S', 'w'), PW, 7)
-    img.paste(can, (lx + 40 + gsize - 60, 170), can)
-    drops = sprite(DROPS, PW, 7)
-    img.paste(drops, (lx + 40 + gsize - 40, 262), drops)
-    d.rounded_rectangle([lx - 20, 520, lx + 360, 590], radius=14, fill=(24, 40, 36), outline=(110, 200, 240), width=3)
-    text_shadow(d, (lx + 170, 534), "WATERING CAN   2 x 2", font(30), (220, 245, 240))
+    # left: basic watering can over a 2x2 patch (rose of the can sits above the patch, drops fall onto it)
+    gx, gy = 200, 330
+    gsize = crop_grid(img, gx, gy, 2, 9, seed=2)          # 148 px
+    can = sprite(can_sprite('s', 'S', 'w'), PW, 7)          # 168 x 98
+    img.paste(can, (gx + gsize // 2 - 14, gy - 130), can)
+    drops = sprite(DROPS, PW, 6)
+    img.paste(drops, (gx + gsize // 2 - 12, gy - 40), drops)
+    d.rounded_rectangle([130, 520, 510, 590], radius=14, fill=(24, 40, 36), outline=(110, 200, 240), width=3)
+    text_shadow(d, (320, 534), "WATERING CAN   2 x 2", font(30), (220, 245, 240))
 
     # right: iron watering can over a 4x4 patch
-    rx = 680
-    gsize = crop_grid(img, rx + 20, 205, 4, 9, seed=5)
-    can = sprite(can_sprite('i', 'I', 'w'), PW, 8)
-    img.paste(can, (rx + 20 + gsize - 110, 60), can)
-    drops = sprite(DROPS, PW, 8)
-    img.paste(drops, (rx + 20 + gsize - 80, 165), drops)
-    d.rounded_rectangle([rx - 30, 520, rx + 430, 590], radius=14, fill=(24, 40, 36), outline=(110, 200, 240), width=3)
-    text_shadow(d, (rx + 200, 534), "IRON WATERING CAN   4 x 4", font(30), (220, 245, 240))
+    gx, gy = 720, 240
+    gsize = crop_grid(img, gx, gy, 4, 8, seed=5)          # 268 px
+    can = sprite(can_sprite('i', 'I', 'w'), PW, 8)          # 192 x 112
+    img.paste(can, (gx + gsize // 2 + 30, gy - 130), can)
+    drops = sprite(DROPS, PW, 7)
+    img.paste(drops, (gx + gsize // 2 + 34, gy - 36), drops)
+    d.rounded_rectangle([650, 520, 1110, 590], radius=14, fill=(24, 40, 36), outline=(110, 200, 240), width=3)
+    text_shadow(d, (880, 534), "IRON WATERING CAN   4 x 4", font(30), (220, 245, 240))
 
     # divider arrow
     d.polygon([(560, 380), (610, 410), (560, 440)], fill=(110, 200, 240))
@@ -537,7 +539,138 @@ def wateringcans():
     img.convert("RGB").save(r"C:\Users\Sid\CoreKeeperMods\release\wateringcans_logo.png")
     print("wateringcans_logo.png")
 
+# ---------- Faster Mushrooms ----------
+PM = {
+    'k': (30, 20, 26),     # outline
+    'r': (206, 62, 58),    # cap red
+    'R': (240, 120, 100),  # cap highlight
+    'd': (140, 36, 44),    # cap shade
+    'w': (240, 232, 214),  # cap spots / stem
+    'W': (255, 250, 240),
+    's': (214, 196, 160),  # stem
+    'S': (150, 130, 100),  # stem shade
+    'g': (120, 200, 110),  # gills glow
+    'y': (255, 230, 120),  # speed lines
+}
+FM_BIG = [
+    "......kkkkkkkk......",
+    "....kkrrRRRRrrkk....",
+    "...krrRRwwRRRrrrk...",
+    "..krrRRRwwRRrrrwwk..",
+    ".krrwwRRRRRRrrrwwrk.",
+    ".krrwwrrrRRrrrrrrrk.",
+    "kdrrrrrrrrrrrwwrrrdk",
+    "kddrrwwrrrrrrwwrrddk",
+    "kdddrrrrrrrrrrrrdddk",
+    ".kkkkkkkggggkkkkkkk.",
+    "......kssWWssk......",
+    "......kssWWssk......",
+    "......ksssWssSk.....",
+    "......kssssssSk.....",
+    "......kSssssSSk.....",
+    ".....kkSSSSSSSkk....",
+    ".....kkkkkkkkkkk....",
+]
+FM_MID = [
+    "....kkkkkk....",
+    "..kkrrRRrrkk..",
+    ".krrRwwRRrrrk.",
+    "krrwwrrrrrwwrk",
+    "kdrrrrrwwrrrdk",
+    "kddrrrrrrrrddk",
+    ".kkkkkggggkkk.",
+    "....kssWssk...",
+    "....kssWssk...",
+    "....kSsssSk...",
+    "....kkkkkkk...",
+]
+FM_SMALL = [
+    "...kkkk...",
+    "..krRRrk..",
+    ".krrwrrrk.",
+    "kdrrrrrwdk",
+    ".kkkkggkk.",
+    "...kssk...",
+    "...kSsk...",
+    "...kkkk...",
+]
+FM_SPROUT = [
+    "..kkk..",
+    ".krrrk.",
+    "kdrRrdk",
+    ".kkkkk.",
+    "..ksk..",
+    "..kkk..",
+]
+
+def mycelium(d, rnd, x0, y0, x1, y1):
+    """Ground patch with branching pale threads (the mycelium) and a few root nodes."""
+    d.rounded_rectangle([x0, y0, x1, y1], radius=22, fill=(74, 52, 40), outline=(40, 28, 22), width=6)
+    for _ in range(90):
+        x, y = rnd.randrange(x0 + 12, x1 - 12, 8), rnd.randrange(y0 + 12, y1 - 12, 8)
+        d.rectangle([x, y, x + 7, y + 7], fill=(66, 46, 36))
+    # threads: random walks in 8px steps, purple-white like the in-game roots
+    for _ in range(46):
+        x, y = rnd.randrange(x0 + 40, x1 - 40, 8), rnd.randrange(y0 + 30, y1 - 30, 8)
+        for _ in range(rnd.randint(8, 22)):
+            dx, dy = rnd.choice([(8, 0), (-8, 0), (0, 8), (0, -8), (8, 8), (-8, 8)])
+            nx, ny = x + dx, y + dy
+            if not (x0 + 16 < nx < x1 - 16 and y0 + 16 < ny < y1 - 16): break
+            d.line([(x, y), (nx, ny)], fill=(196, 170, 214), width=4)
+            x, y = nx, ny
+        d.rectangle([x - 4, y - 4, x + 4, y + 4], fill=(226, 208, 236))
+    # a few glowing nodes
+    for _ in range(14):
+        x, y = rnd.randrange(x0 + 40, x1 - 40, 8), rnd.randrange(y0 + 30, y1 - 30, 8)
+        d.ellipse([x - 5, y - 5, x + 5, y + 5], fill=(232, 220, 250))
+
+def fastermushrooms():
+    img = cave_bg(seed=21, top=(20, 14, 30), bottom=(52, 30, 44)).convert("RGBA")
+    d = ImageDraw.Draw(img)
+    rnd = random.Random(42)
+    text_shadow(d, (W // 2, 40), "FASTER MUSHROOMS", font(80), (250, 240, 235))
+    text_shadow(d, (W // 2, 134), "Mushrooms spread over mycelium and grow up to 100x faster.", font(28), (225, 200, 215))
+
+    # the mycelium bed across the middle
+    gy0, gy1 = 220, 600
+    mycelium(d, rnd, 70, gy0, W - 70, gy1)
+
+    # growth stages left to right: sprout, small, mid, big, with speed lines between
+    stages = [(FM_SPROUT, 8, 150), (FM_SMALL, 9, 340), (FM_MID, 10, 560), (FM_BIG, 12, 840)]
+    base_y = gy1 - 50
+    for i, (spr, sc, cx) in enumerate(stages):
+        s = sprite(spr, PM, sc)
+        sx, sy = cx - s.width // 2, base_y - s.height
+        # soft shadow on the ground
+        d.ellipse([sx - 6, base_y - 12, sx + s.width + 6, base_y + 14], fill=(52, 36, 30))
+        img.paste(s, (sx, sy), s)
+        if i < len(stages) - 1:
+            nx = stages[i + 1][2]
+            ax = (cx + nx) // 2
+            ay = base_y - 90
+            # three speed lines then an arrowhead
+            for k in range(3):
+                ly = ay - 18 + k * 18
+                d.line([(ax - 46 + k * 6, ly), (ax - 6, ly)], fill=(255, 230, 120), width=5)
+            d.polygon([(ax, ay - 24), (ax + 34, ay), (ax, ay + 24)], fill=(255, 230, 120))
+
+    # a second big one and a couple of extra small ones so the bed looks populated
+    extra = sprite(FM_BIG, PM, 9); img.paste(extra, (1030, base_y - extra.height - 20), extra)
+    for (ex, ey, sc) in [(1120, base_y - 6, 6), (960, base_y - 90, 5), (250, base_y - 140, 5), (680, base_y - 160, 5)]:
+        e = sprite(FM_SMALL, PM, sc); img.paste(e, (ex, ey - e.height), e)
+
+    # multiplier tag
+    d.rounded_rectangle([W - 330, 232, W - 90, 316], radius=16, fill=(28, 22, 40), outline=(255, 230, 120), width=4)
+    text_shadow(d, (W - 210, 248), "SPEED  x4", font(44), (255, 230, 120))
+
+    d.rounded_rectangle([W // 2 - 500, 620, W // 2 + 500, 700], radius=16, fill=(16, 12, 24, 230), outline=(160, 120, 190), width=3)
+    text_shadow(d, (W // 2, 634), "Pick 1x to 100x in Mod Settings.  Default 4x, 1x = vanilla.", font(28), (240, 230, 245))
+    text_shadow(d, (W // 2, 670), "Only mushrooms.  Other crops and root plants stay as they are.", font(22), (180, 160, 200))
+    img.convert("RGB").save(r"C:\Users\Sid\CoreKeeperMods\release\fastermushrooms_logo.png")
+    print("fastermushrooms_logo.png")
+
 which = sys.argv[1] if len(sys.argv) > 1 else "all"
+if which in ("fastermushrooms", "all"): fastermushrooms()
 if which in ("loadout", "all"): loadout()
 if which in ("fishing", "all"): fishing()
 if which in ("wateringcans", "all"): wateringcans()

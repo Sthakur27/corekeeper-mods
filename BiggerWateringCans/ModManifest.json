@@ -1,0 +1,17 @@
+{
+    "guid": "7c3e9a1d5b2f4e8a9c6d0f1b2a3e4d51",
+    "name": "BiggerWateringCans",
+    "displayName": "Bigger Watering Cans",
+    "skipSafetyChecks": false,
+    "disableScripts": false,
+    "accessesExtraAssemblies": true,
+    "disableHarmonyPatching": false,
+    "requiredOn": 3,
+    "files": [
+        { "path": "Scripts/BiggerWateringCansMod.cs", "guid": "7c3e9a1d5b2f4e8a9c6d0f1b2a3e4d52" },
+        { "path": "Scripts/CanSizes.cs", "guid": "7c3e9a1d5b2f4e8a9c6d0f1b2a3e4d53" },
+        { "path": "Scripts/Patches/ObjectAuthoringPatch.cs", "guid": "7c3e9a1d5b2f4e8a9c6d0f1b2a3e4d54" },
+        { "path": "Scripts/Systems/WateringCanSizeSystem.cs", "guid": "7c3e9a1d5b2f4e8a9c6d0f1b2a3e4d55" }
+    ],
+    "dependencies": []
+}

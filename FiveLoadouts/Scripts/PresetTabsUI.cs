@@ -74,11 +74,9 @@ namespace FiveLoadouts
 
         private static void WireClick(CharacterWindowTab tab, CharacterWindowUI window, int index)
         {
-            if (tab.onClick == null) tab.onClick = new UnityEvent();
-            int persistent = tab.onClick.GetPersistentEventCount();
-            for (int i = 0; i < persistent; i++)
-                tab.onClick.SetPersistentListenerState(i, UnityEventCallState.Off);
-            tab.onClick.RemoveAllListeners();
+            // Replace the whole event: the clone's inspector-wired listener would select preset 3,
+            // and the persistent-listener API is rejected by the mod loader's security check.
+            tab.onClick = new UnityEvent();
             tab.onClick.AddListener(() => window.SetActivePreset(index));
         }
 

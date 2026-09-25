@@ -1,0 +1,57 @@
+{
+    "guid": "1d65fab77546451690726836152a07d2",
+    "name": "mikufish",
+    "displayName": "Fast Auto Fishing",
+    "skipSafetyChecks": false,
+    "disableScripts": false,
+    "accessesExtraAssemblies": true,
+    "disableHarmonyPatching": true,
+    "requiredOn": 3,
+    "files": [
+        {
+            "path": "Localization/Localization.csv",
+            "guid": "1db1ea2efc481ece097db3be4e39c3b3"
+        },
+        {
+            "path": "Scripts/switch.cs",
+            "guid": "6e4c65c2620c5bff8a0c4fbcdc5116da"
+        },
+        {
+            "path": "Scripts/state.cs",
+            "guid": "07425fde2f2a9716881f1c48d2ce32d1"
+        },
+        {
+            "path": "Scripts/spoof.cs",
+            "guid": "32edab8ebb6c5dfbb9474e945f1759c6"
+        },
+        {
+            "path": "Scripts/init.cs",
+            "guid": "93c14f75827a676159819f553a373729"
+        },
+        {
+            "path": "Scripts/Generated/spoof__System_12394320590.g.cs",
+            "guid": ""
+        },
+        {
+            "path": "Bundles/FastAutoFishing_Windows.assetbundle",
+            "guid": ""
+        },
+        {
+            "path": "Bundles/FastAutoFishing_Windows.assetbundle.manifest",
+            "guid": ""
+        },
+        {
+            "path": "Bundles/FastAutoFishing_Linux.assetbundle",
+            "guid": ""
+        },
+        {
+            "path": "Bundles/FastAutoFishing_Linux.assetbundle.manifest",
+            "guid": ""
+        },
+        {
+            "path": "Scripts/fastfish.cs",
+            "guid": "dd2b67bd1da643beb2f80d69f0f62fc5"
+        }
+    ],
+    "dependencies": []
+}

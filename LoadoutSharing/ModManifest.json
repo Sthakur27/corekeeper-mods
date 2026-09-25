@@ -1,0 +1,20 @@
+{
+    "guid": "3c9f1b7a52e04d8fa6b2c0d4e9f17a55",
+    "name": "LoadoutSharing",
+    "displayName": "Loadout Fallback",
+    "skipSafetyChecks": false,
+    "disableScripts": false,
+    "accessesExtraAssemblies": true,
+    "disableHarmonyPatching": false,
+    "requiredOn": 3,
+    "files": [
+        { "path": "Scripts/LoadoutSharingMod.cs", "guid": "8d1e2a3b4c5f4e6f9a0b1c2d3e4f5a61" },
+        { "path": "Scripts/SlotLayout.cs", "guid": "8d1e2a3b4c5f4e6f9a0b1c2d3e4f5a62" },
+        { "path": "Scripts/HandlerSync.cs", "guid": "8d1e2a3b4c5f4e6f9a0b1c2d3e4f5a67" },
+        { "path": "Scripts/Systems/LoadoutLayoutSystem.cs", "guid": "8d1e2a3b4c5f4e6f9a0b1c2d3e4f5a63" },
+        { "path": "Scripts/Systems/LoadoutPresetSyncSystem.cs", "guid": "8d1e2a3b4c5f4e6f9a0b1c2d3e4f5a64" },
+        { "path": "Scripts/Patches/EquipmentPresetPatch.cs", "guid": "8d1e2a3b4c5f4e6f9a0b1c2d3e4f5a66" },
+        { "path": "Scripts/Patches/UIPatches.cs", "guid": "8d1e2a3b4c5f4e6f9a0b1c2d3e4f5a68" }
+    ],
+    "dependencies": []
+}

@@ -1,0 +1,16 @@
+{
+    "assets": [
+        {
+            "path": "Assets/mikufish/switch.prefab",
+            "guid": "f33cec1b22b71c7b981bf5f9d4645b47"
+        },
+        {
+            "path": "Assets/mikufish/rod.png",
+            "guid": "3e1ef4efac20dd59796266bd0c9051fa"
+        },
+        {
+            "path": "Assets/mikufish/mikufish.asmdef",
+            "guid": "0ec5a12bb8cb787348db9414f7876656"
+        }
+    ]
+}

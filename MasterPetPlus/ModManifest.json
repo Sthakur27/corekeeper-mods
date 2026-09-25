@@ -1,0 +1,101 @@
+{
+    "guid": "d3c465e42f9b44cc9dca13cc70a782f6",
+    "name": "MasterPetPlus",
+    "displayName": "Master Pet Plus",
+    "skipSafetyChecks": false,
+    "disableScripts": false,
+    "accessesExtraAssemblies": true,
+    "disableHarmonyPatching": false,
+    "requiredOn": 3,
+    "files": [
+        {
+            "path": "Scripts/UI/TalentSlot.cs",
+            "guid": "4117a9dba89b92a4d904a7026cfc866b"
+        },
+        {
+            "path": "Scripts/UI/TalentSelectorButton.cs",
+            "guid": "c9ce543988dfb1647a7e52930a883f84"
+        },
+        {
+            "path": "Scripts/UI/OpenMasterPetButton.cs",
+            "guid": "f23d7a44462b1da40b59f5ae75c6961b"
+        },
+        {
+            "path": "Scripts/UI/MasterPetUI.cs",
+            "guid": "0a1cf009a734cb043911574e9b6cc44b"
+        },
+        {
+            "path": "Scripts/UI/LevelButton.cs",
+            "guid": "ef25e107e08a39d4bad2d2681f69b7b4"
+        },
+        {
+            "path": "Scripts/UI/ColorSwatch.cs",
+            "guid": "5950c58cf9850764d8b4c6622ebcd2e5"
+        },
+        {
+            "path": "Scripts/UI/BackButton.cs",
+            "guid": "59fdb2856cc0ef44c9dc677f3c06a94f"
+        },
+        {
+            "path": "Scripts/UI/ApplyButton.cs",
+            "guid": "b67b75b39c2b3ce4b986a546265fc031"
+        },
+        {
+            "path": "Scripts/Systems/SetPetTalentIDSystem.cs",
+            "guid": "17fc4e34474f89d48bee4f8a2ca09c5d"
+        },
+        {
+            "path": "Scripts/Patches/MasterPetUIPatches.cs",
+            "guid": "1d2d080d3d32d744a8b59f56ad6a1863"
+        },
+        {
+            "path": "Scripts/MasterPetMod.cs",
+            "guid": "fb61a7b3705cdc04687ab188bd85c623"
+        },
+        {
+            "path": "Scripts/Helpers/UIHelper.cs",
+            "guid": "1216bdb7347846d43afdd94b944ef172"
+        },
+        {
+            "path": "Scripts/Helpers/MasterPetSounds.cs",
+            "guid": "3c2e87195c72ecf4a885695f3a7dc7b9"
+        },
+        {
+            "path": "Scripts/Handlers/PetDataHandler.cs",
+            "guid": "700497fadb24cf549b08446a697f8bfd"
+        },
+        {
+            "path": "Scripts/Handlers/PetActionHandler.cs",
+            "guid": "9a92f463ab1c4a54dba015020839d206"
+        },
+        {
+            "path": "Scripts/Components/SetPetTalentIDRPC.cs",
+            "guid": "f4ea8a06f4ddc2642bc50bb43f44c337"
+        },
+        {
+            "path": "Scripts/Generated/SetPetTalentIDSystem__System_19995521690.g.cs",
+            "guid": ""
+        },
+        {
+            "path": "Scripts/Generated/MasterPet_SetPetTalentIDRPCCommandSerializer.cs",
+            "guid": ""
+        },
+        {
+            "path": "Bundles/MasterPetPlus_Windows.assetbundle",
+            "guid": ""
+        },
+        {
+            "path": "Bundles/MasterPetPlus_Windows.assetbundle.manifest",
+            "guid": ""
+        },
+        {
+            "path": "Bundles/MasterPetPlus_Linux.assetbundle",
+            "guid": ""
+        },
+        {
+            "path": "Bundles/MasterPetPlus_Linux.assetbundle.manifest",
+            "guid": ""
+        }
+    ],
+    "dependencies": []
+}

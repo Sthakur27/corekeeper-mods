@@ -1,0 +1,40 @@
+{
+    "assets": [
+        {
+            "path": "Assets/MasterPet/UI/OpenMasterPetButton.prefab",
+            "guid": "cba9be514bdfc3d4b8605174b8e2f611"
+        },
+        {
+            "path": "Assets/MasterPet/UI/MasterPetWindow.prefab",
+            "guid": "556d2d89c47c1f941aebc720a48dd0a0"
+        },
+        {
+            "path": "Assets/MasterPet/MasterPet.asmdef",
+            "guid": "c6ece55dd8341334d96f8b4ecf5258b0"
+        },
+        {
+            "path": "Assets/MasterPet/Data/MasterPet.asset",
+            "guid": "ed25c99014fa6224b8f5f9f85e03ab15"
+        },
+        {
+            "path": "Assets/MasterPet/Art/WhitePixelLeft.png",
+            "guid": "070ee62947f59c34bbd4d8444864d794"
+        },
+        {
+            "path": "Assets/MasterPet/Art/WhitePixel.png",
+            "guid": "7d15d9e234bb69545a15926ad7c12b9a"
+        },
+        {
+            "path": "Assets/MasterPet/Art/ui_classic.png",
+            "guid": "ef3229da67de4154badb0ed8d4b2f689"
+        },
+        {
+            "path": "Assets/MasterPet/Art/pet_ui.png",
+            "guid": "2897624a7bbeda94daf74ad34c1d32a5"
+        },
+        {
+            "path": "Assets/MasterPet/Art/creative_ui.png",
+            "guid": "606a9f27e8dc3a948b546f37acf3b755"
+        }
+    ]
+}

@@ -429,8 +429,117 @@ def buffduration():
     img.convert("RGB").save(r"C:\Users\Sid\CoreKeeperMods\release\buffduration_logo.png")
     print("buffduration_logo.png")
 
+# ---------- Bigger Watering Cans ----------
+PW = {
+    'k': (28, 22, 30),    # outline
+    's': (196, 206, 220), # steel
+    'S': (120, 132, 156), # steel shade
+    'w': (245, 245, 250), # highlight
+    'i': (150, 160, 178), # iron
+    'I': (84, 92, 112),   # iron shade
+    'r': (214, 60, 70),   # red trim
+    'c': (110, 200, 240), # water
+    'C': (60, 140, 210),  # water shade
+    'd': (110, 74, 44),   # tilled soil
+    'D': (74, 48, 30),    # soil furrow
+    'm': (70, 52, 44),    # wet soil
+    'M': (46, 34, 30),    # wet furrow
+    'n': (70, 170, 80),   # sprout
+    'N': (40, 110, 55),   # sprout shade
+    'y': (255, 230, 120),
+}
+
+def can_sprite(body, shade, hi):
+    """Watering can pointing down-left, spout at top-left, handle on top. body/shade/hi are palette keys."""
+    b, S, w = body, shade, hi
+    rows = [
+        "..........kkkkkk......",
+        ".........k" + b*6 + "k.....",
+        "........k" + b + "kkkk" + b + "k....",
+        ".kk.....k" + b + "k..k" + b + "k....",
+        "k" + b + b + "k...k" + b + "k..k" + b + "k....",
+        "k" + b + b + b + "kkk" + b + "kkkk" + b + "kkkk.",
+        "k" + b + w + b + b + b + b + b + b + b + b + b + b + b + b + b + b + "k",
+        ".k" + b + b + b + b + "k" + b + b + w + w + b + b + b + b + S + S + b + "k",
+        "..k" + b + b + "k.k" + b + b + b + b + b + b + b + S + S + S + b + "k",
+        "...kkk..k" + b + b + b + b + b + b + S + S + S + S + b + "k",
+        "........k" + S + b + b + b + b + S + S + S + S + S + b + "k",
+        "........k" + S + S + S + S + S + S + S + S + S + S + S + "k",
+        ".........kkkkkkkkkkkkk.",
+    ]
+    return rows
+
+DROPS = [
+    "c.c.c",
+    ".c.c.",
+    "C...C",
+    ".c.c.",
+    "c.C.c",
+]
+
+def soil_tile(wet, sprout, rnd):
+    """8x8 pixel tile of tilled ground, optionally watered and with a sprout."""
+    g, f = ('m', 'M') if wet else ('d', 'D')
+    rows = []
+    for y in range(8):
+        row = ''.join(f if (y % 3 == 1) else g for _ in range(8))
+        rows.append(row)
+    if sprout:
+        sx = rnd.choice([2, 3])
+        rows[2] = rows[2][:sx+1] + 'n' + rows[2][sx+2:]
+        rows[3] = rows[3][:sx] + 'nNn' + rows[3][sx+3:]
+        rows[4] = rows[4][:sx+1] + 'N' + rows[4][sx+2:]
+    return rows
+
+def crop_grid(img, x, y, n, scale, seed, wet_all=True):
+    """n x n grid of soil tiles, each 8px * scale, with a 2px gap, watered ones marked with a bright frame."""
+    rnd = random.Random(seed)
+    d = ImageDraw.Draw(img)
+    tile = 8 * scale
+    for r in range(n):
+        for c in range(n):
+            tx, ty = x + c * (tile + 4), y + r * (tile + 4)
+            t = sprite(soil_tile(wet_all, rnd.random() < 0.7, rnd), PW, scale)
+            img.paste(t, (tx, ty), t)
+    # frame around the whole watered area
+    d.rectangle([x - 6, y - 6, x + n * (tile + 4) - 4 + 5, y + n * (tile + 4) - 4 + 5], outline=(110, 200, 240), width=4)
+    return n * (tile + 4) - 4
+
+def wateringcans():
+    img = cave_bg(seed=11, top=(16, 30, 26), bottom=(30, 60, 44)).convert("RGBA")
+    d = ImageDraw.Draw(img)
+    text_shadow(d, (W // 2, 36), "BIGGER WATERING CANS", font(76), (235, 250, 245))
+    text_shadow(d, (W // 2, 126), "Water more crops per pour.", font(30), (180, 225, 215))
+
+    # left: basic watering can over a 2x2 patch
+    lx = 150
+    gsize = crop_grid(img, lx + 40, 330, 2, 9, seed=2)
+    can = sprite(can_sprite('s', 'S', 'w'), PW, 7)
+    img.paste(can, (lx + 40 + gsize - 60, 170), can)
+    drops = sprite(DROPS, PW, 7)
+    img.paste(drops, (lx + 40 + gsize - 40, 262), drops)
+    d.rounded_rectangle([lx - 20, 520, lx + 360, 590], radius=14, fill=(24, 40, 36), outline=(110, 200, 240), width=3)
+    text_shadow(d, (lx + 170, 534), "WATERING CAN   2 x 2", font(30), (220, 245, 240))
+
+    # right: iron watering can over a 4x4 patch
+    rx = 680
+    gsize = crop_grid(img, rx + 20, 205, 4, 9, seed=5)
+    can = sprite(can_sprite('i', 'I', 'w'), PW, 8)
+    img.paste(can, (rx + 20 + gsize - 110, 60), can)
+    drops = sprite(DROPS, PW, 8)
+    img.paste(drops, (rx + 20 + gsize - 80, 165), drops)
+    d.rounded_rectangle([rx - 30, 520, rx + 430, 590], radius=14, fill=(24, 40, 36), outline=(110, 200, 240), width=3)
+    text_shadow(d, (rx + 200, 534), "IRON WATERING CAN   4 x 4", font(30), (220, 245, 240))
+
+    # divider arrow
+    d.polygon([(560, 380), (610, 410), (560, 440)], fill=(110, 200, 240))
+    text_shadow(d, (W // 2, 640), "Same water per pour. Same preview. Just a bigger patch.", font(26), (170, 210, 200))
+    img.convert("RGB").save(r"C:\Users\Sid\CoreKeeperMods\release\wateringcans_logo.png")
+    print("wateringcans_logo.png")
+
 which = sys.argv[1] if len(sys.argv) > 1 else "all"
 if which in ("loadout", "all"): loadout()
 if which in ("fishing", "all"): fishing()
+if which in ("wateringcans", "all"): wateringcans()
 if which in ("buffduration", "all"): buffduration()
 if which in ("durability", "all"): durability()

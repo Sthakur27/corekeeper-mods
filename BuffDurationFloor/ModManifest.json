@@ -1,0 +1,19 @@
+{
+    "guid": "4b7d1e9a6c2f4a3e8d5b0c9f1a2e3d47",
+    "name": "BuffDurationFloor",
+    "displayName": "Buff Duration Floor",
+    "skipSafetyChecks": false,
+    "disableScripts": false,
+    "accessesExtraAssemblies": true,
+    "disableHarmonyPatching": false,
+    "requiredOn": 3,
+    "files": [
+        { "path": "Scripts/BuffDurationFloorMod.cs", "guid": "4b7d1e9a6c2f4a3e8d5b0c9f1a2e3d48" },
+        { "path": "Scripts/FloorSettings.cs", "guid": "4b7d1e9a6c2f4a3e8d5b0c9f1a2e3d49" },
+        { "path": "Scripts/Systems/ConsumableDurationFloorSystem.cs", "guid": "4b7d1e9a6c2f4a3e8d5b0c9f1a2e3d4a" }
+    ],
+    "dependencies": [
+        { "modName": "CoreLib", "required": true },
+        { "modName": "ModSettingsMenu", "required": true }
+    ]
+}

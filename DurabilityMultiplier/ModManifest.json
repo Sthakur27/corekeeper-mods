@@ -1,0 +1,19 @@
+{
+    "guid": "5d7e1c3a9b2f4e6d8a0c1b3d5f7e9a21",
+    "name": "DurabilityMultiplier",
+    "displayName": "Durability Multiplier",
+    "skipSafetyChecks": false,
+    "disableScripts": false,
+    "accessesExtraAssemblies": true,
+    "disableHarmonyPatching": false,
+    "requiredOn": 3,
+    "files": [
+        { "path": "Scripts/DurabilityMultiplierMod.cs", "guid": "5d7e1c3a9b2f4e6d8a0c1b3d5f7e9a22" },
+        { "path": "Scripts/DurabilityRate.cs", "guid": "5d7e1c3a9b2f4e6d8a0c1b3d5f7e9a23" },
+        { "path": "Scripts/Systems/ScaleDurabilityLossSystem.cs", "guid": "5d7e1c3a9b2f4e6d8a0c1b3d5f7e9a24" }
+    ],
+    "dependencies": [
+        { "modName": "CoreLib", "required": true },
+        { "modName": "ModSettingsMenu", "required": true }
+    ]
+}

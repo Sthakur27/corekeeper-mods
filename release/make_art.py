@@ -1,4 +1,4 @@
-"""Pixel-art style mod.io listing images (1280x720). python make_art.py [loadout|fishing|all]"""
+"""Pixel-art style mod.io listing images (1280x720). python make_art.py [loadout|fishing|buffduration|all]"""
 import sys, math, random
 from PIL import Image, ImageDraw, ImageFont
 
@@ -237,6 +237,200 @@ def fishing():
     img.convert("RGB").save(r"C:\Users\Sid\CoreKeeperMods\release\fishing_logo.png")
     print("fishing_logo.png")
 
+PICKAXE = [
+    ".......kkkkkk.....",
+    ".....kksssssskk...",
+    "....kssswwsssssk..",
+    "...kssSk...kSsssk.",
+    "..kssSk.....kSSsk.",
+    ".kssSk.......kSSk.",
+    ".ksSk...kk....kSk.",
+    "kssk...kbbk...kkk.",
+    "kSk...kbBbk.......",
+    "kk...kbBbk........",
+    "....kbBbk.........",
+    "...kbBbk..........",
+    "..kbBbk...........",
+    ".kbBbk............",
+    "kbBbk.............",
+    "kBBk..............",
+    "kkk...............",
+]
+SPARK = [
+    "..y..",
+    ".yyy.",
+    "yywyy",
+    ".yyy.",
+    "..y..",
+]
+
+def durability_bar(d, img, x, y, w, h, fill_frac, color, dim=False):
+    """Pixel-segmented durability bar in a dark frame."""
+    frame = (70, 62, 90) if dim else (140, 120, 190)
+    d.rounded_rectangle([x, y, x + w, y + h], radius=8, fill=(24, 20, 36), outline=frame, width=4)
+    seg, gap = 22, 6
+    inner_w = w - 16
+    n = inner_w // (seg + gap)
+    lit = int(round(n * fill_frac))
+    hi = tuple(min(255, c + 60) for c in color)
+    lo = tuple(int(c * 0.55) for c in color)
+    for i in range(n):
+        sx = x + 8 + i * (seg + gap)
+        if i < lit:
+            d.rectangle([sx, y + 8, sx + seg - 1, y + h - 8], fill=color)
+            d.rectangle([sx, y + 8, sx + seg - 1, y + 13], fill=hi)
+            d.rectangle([sx, y + h - 13, sx + seg - 1, y + h - 8], fill=lo)
+        else:
+            d.rectangle([sx, y + 8, sx + seg - 1, y + h - 8], fill=(40, 34, 56))
+
+def durability():
+    img = cave_bg(seed=11, top=(20, 24, 30), bottom=(34, 48, 52)).convert("RGBA")
+    d = ImageDraw.Draw(img)
+    text_shadow(d, (W // 2, 40), "DURABILITY MULTIPLIER", font(74), (245, 245, 250))
+    text_shadow(d, (W // 2, 130), "Tools, weapons and armor wear out slower.  Or never.", font(28), (200, 220, 215))
+
+    # big pickaxe on the left with a few sparks off the head
+    pick = sprite(PICKAXE, P, 18)
+    px, py = 90, 215
+    img.paste(pick, (px, py), pick)
+    for (sx, sy, sc) in [(px + 300, py - 30, 6), (px + 350, py + 40, 4), (px + 260, py - 55, 3)]:
+        s = sprite(SPARK, P, sc); img.paste(s, (sx, sy), s)
+
+    # right side: vanilla bar (short, dim) vs the long bar from this mod
+    bx, bw = 520, 660
+    d.rounded_rectangle([bx - 30, 205, bx + bw + 30, 600], radius=20, fill=(26, 24, 40, 235), outline=(90, 100, 130), width=4)
+
+    text_shadow(d, (bx, 232), "1x  vanilla", font(30), (170, 170, 190), anchor="lt")
+    durability_bar(d, img, bx, 272, 300, 54, 0.30, (170, 90, 80), dim=True)
+    text_shadow(d, (bx + 320, 282), "worn out", font(26), (150, 130, 140), anchor="lt")
+
+    text_shadow(d, (bx, 372), "0.5x  this mod", font(30), (220, 240, 225), anchor="lt")
+    durability_bar(d, img, bx, 412, bw, 54, 0.65, (96, 200, 120))
+
+    text_shadow(d, (bx, 500), "0x  never breaks", font(30), (220, 240, 225), anchor="lt")
+    durability_bar(d, img, bx, 540, bw, 40, 1.0, (90, 190, 230))
+
+    text_shadow(d, (W // 2, 655), "Pick 0x, 0.1x, 0.25x, 0.5x, 0.75x or 1x in Mod Settings.  Repairs untouched.", font(26), (170, 190, 200))
+    img.convert("RGB").save(r"C:\Users\Sid\CoreKeeperMods\release\durability_logo.png")
+    print("durability_logo.png")
+
+
+# ---------- Buff Duration Floor ----------
+POTION = [
+    "....kkkk....",
+    "....kbbk....",
+    "....kbbk....",
+    "...kkkkkk...",
+    "..kwwwwwwk..",
+    ".kwwmmmmwwk.",
+    ".kwmmMMmmwk.",
+    "kwmmMMMMmmwk",
+    "kwmMMMMMMmwk",
+    "kwmMMyyMMmwk",
+    "kwmmMMMMmmwk",
+    ".kwmmMMmmwk.",
+    "..kkkkkkkk..",
+]
+BOWL = [
+    "......kkkk......",
+    ".....kppppk.....",
+    "....kpPPPPpk....",
+    "...kppPPPPppk...",
+    "..kkkkppppkkkk..",
+    ".ktttkkkkkkttk..",
+    ".kttttkkkkttttk.",
+    "kttttttttttttttk",
+    "kTtttttttttttTk.",
+    ".kTTttttttttTk..",
+    "..kTTTTTTTTTk...",
+    "...kkkkkkkkk....",
+]
+MUSHROOM = [
+    "...kkkkkk...",
+    "..kppPPppk..",
+    ".kpPPppPPpk.",
+    "kpppPPPPpppk",
+    "kkkkkkkkkkkk",
+    "...kwwwwk...",
+    "...kwwwwk...",
+    "...kwWWwk...",
+    "...kkkkkk...",
+]
+CLOCK = [
+    "....kkkk....",
+    "..kkwwwwkk..",
+    ".kwwwwwwwwk.",
+    ".kwwwwkwwwk.",
+    "kwwwwwkwwwwk",
+    "kwwwwwkkkwwk",
+    "kwwwwwwwwwwk",
+    ".kwwwwwwwwk.",
+    ".kwwwwwwwwk.",
+    "..kkwwwwkk..",
+    "....kkkk....",
+]
+PB = dict(P)
+PB.update({
+    'm': (120, 90, 220),   # potion liquid
+    'M': (170, 130, 255),  # potion liquid bright
+    'p': (232, 110, 90),   # mushroom cap
+    'P': (250, 160, 130),  # cap highlight
+    't': (110, 74, 44),    # bowl wood
+    'T': (70, 46, 28),
+    'W': (210, 210, 220),
+})
+
+def timer_bar(d, x, y, w, h, frac, colour, label, f, ghost_frac=None):
+    d.rounded_rectangle([x, y, x + w, y + h], radius=h // 2, fill=(30, 26, 44), outline=(120, 104, 168), width=4)
+    if ghost_frac is not None:
+        gw = int((w - 8) * ghost_frac)
+        d.rounded_rectangle([x + 4, y + 4, x + 4 + gw, y + h - 4], radius=(h - 8) // 2, fill=(70, 60, 96))
+    fw = int((w - 8) * frac)
+    d.rounded_rectangle([x + 4, y + 4, x + 4 + fw, y + h - 4], radius=(h - 8) // 2, fill=colour)
+    d.text((x + w + 26, y + h // 2), label, font=f, fill=(245, 240, 255), anchor="lm")
+
+def buffduration():
+    img = cave_bg(seed=11, top=(18, 16, 36), bottom=(40, 28, 66)).convert("RGBA")
+    d = ImageDraw.Draw(img)
+    text_shadow(d, (W // 2, 40), "BUFF DURATION FLOOR", font(78), (245, 240, 255))
+    text_shadow(d, (W // 2, 134), "Every food and potion buff lasts at least as long as you choose.", font(28), (200, 190, 225))
+
+    # left: the consumables
+    panel_x, panel_y = 90, 210
+    d.rounded_rectangle([panel_x, panel_y, panel_x + 330, panel_y + 400], radius=18, fill=(34, 28, 50), outline=(90, 76, 130), width=4)
+    pot = sprite(POTION, PB, 9); img.paste(pot, (panel_x + 40, panel_y + 40), pot)
+    bowl = sprite(BOWL, PB, 9); img.paste(bowl, (panel_x + 170, panel_y + 60), bowl)
+    mush = sprite(MUSHROOM, PB, 8); img.paste(mush, (panel_x + 190, panel_y + 235), mush)
+    small_pot = sprite(POTION, PB, 6, alpha=230); img.paste(small_pot, (panel_x + 60, panel_y + 230), small_pot)
+    text_shadow(d, (panel_x + 165, panel_y + 355), "POTIONS + FOOD", font(28), (220, 210, 245))
+
+    # right: timer bars, vanilla ghost vs floored
+    bx, by, bw, bh = 500, 230, 520, 54
+    f = font(34)
+    clock = sprite(CLOCK, PB, 5); img.paste(clock, (bx - 70, by - 4), clock)
+    d.text((bx, by - 30), "before", font=font(22), fill=(150, 140, 180), anchor="lb")
+    timer_bar(d, bx, by, bw, bh, 0.12, (150, 90, 90), "0:20", f)
+    d.text((bx, by + 95), "after (floor 3:00)", font=font(22), fill=(150, 140, 180), anchor="lb")
+    timer_bar(d, bx, by + 105, bw, bh, 1.0, (110, 220, 130), "3:00", f, ghost_frac=0.12)
+    d.text((bx, by + 215), "already longer stays as is", font=font(22), fill=(150, 140, 180), anchor="lb")
+    timer_bar(d, bx, by + 225, bw, bh, 1.0, (90, 190, 240), "5:00", f)
+
+    # floor slider illustration
+    sx, sy, sw = 500, 560, 520
+    d.rounded_rectangle([sx, sy, sx + sw, sy + 14], radius=7, fill=(70, 60, 96))
+    for i, t in enumerate(["0:30", "3:00", "10:00"]):
+        px = sx + int(sw * (0, 0.263, 1)[i])
+        d.rectangle([px - 3, sy - 8, px + 3, sy + 22], fill=(160, 140, 210))
+        d.text((px, sy + 40), t, font=font(22), fill=(200, 190, 225), anchor="mm")
+    kx = sx + int(sw * 0.263)
+    d.ellipse([kx - 16, sy - 9, kx + 16, sy + 23], fill=(232, 196, 88), outline=(28, 22, 30), width=3)
+    text_shadow(d, (W // 2, 665), "Set the minimum in Mod Settings, 30 s steps up to 10 min.  Debuffs untouched.", font(26), (170, 160, 200))
+
+    img.convert("RGB").save(r"C:\Users\Sid\CoreKeeperMods\release\buffduration_logo.png")
+    print("buffduration_logo.png")
+
 which = sys.argv[1] if len(sys.argv) > 1 else "all"
 if which in ("loadout", "all"): loadout()
 if which in ("fishing", "all"): fishing()
+if which in ("buffduration", "all"): buffduration()
+if which in ("durability", "all"): durability()

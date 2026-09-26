@@ -304,3 +304,8 @@ SkipIntro 6363825. Refresh the list from Player.log (`loaded mod X from mod.io`)
   Collection "Save" gotcha: the Save button click can silently do nothing if an "unsaved changes" modal
   is open behind the Add-mods dialog; check `document.querySelectorAll('[role=dialog]').length == 0`,
   then click Save by ref and confirm the "Collection updated successfully" toast before navigating.
+
+## 11. Lessons from bug reports
+
+- Wild plants (mushrooms etc.) do NOT regrow via RootPlantCD: that is the bigRoot/mycelium spread. They come back through `SpawnEnvironmentObjectsPeriodicallySystem` (one 16x16 area per tick, ~4 h per area, skips areas within 200 tiles of any player). To respawn something near players, queue `SpawnEnvironmentObjectsCD { respawn = true }` and temporarily zero other entries in the `EnvironmentSpawnObjectBuffer` table (see FasterMushrooms `MushroomRespawnSystem`).
+- Never hardcode a vanilla formula the UI also shows (pet talent points, skill points): call the game method (`PetExtensions.GetTotalTalentPoints`) so Harmony patches from other mods (AllSkills makes pet points level-1) stay consistent.

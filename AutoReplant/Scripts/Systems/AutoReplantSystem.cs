@@ -196,7 +196,7 @@ namespace AutoReplant.Systems
         private bool RollGolden(Entity player, SeedInfo seed)
         {
             if (seed.goldenVariation <= 0) return false;
-            float chance = AutoReplantMod.GoldenChancePercent;
+            float chance = AutoReplantMod.GoldenOverride ? AutoReplantMod.GoldenChancePercent : 3f; // vanilla base is 3%
             if (EntityManager.HasBuffer<SummarizedConditionsBuffer>(player))
             {
                 var conditions = EntityManager.GetBuffer<SummarizedConditionsBuffer>(player);

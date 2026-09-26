@@ -58,3 +58,7 @@ Install: run `..\install.bat AutoReplant` (copies into `CoreKeeper_Data\Streamin
 restart the game. Requires CoreLib and ModSettingsMenu. Check
 `%USERPROFILE%\AppData\LocalLow\Pugstorm\Core Keeper\Player.log` for `Successfully compiled AutoReplant`,
 `[AutoReplant] Loaded.` and `[AutoReplant] seed map built: N plants.`
+
+
+## 1.1.0
+- New toggle **Override golden chance** (default off). Off = the golden roll is exactly vanilla (3% base + your Gardening rare-plant bonus). On = the "Golden plant chance (%)" value replaces the 3% base; the bonus still adds on top.

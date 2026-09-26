@@ -17,20 +17,24 @@ namespace AutoReplant
     public sealed class AutoReplantMod : IMod
     {
         public const string Name = "AutoReplant";
-        public const string Version = "1.0.0";
+        public const string Version = "1.1.0";
 
         public const bool DefaultEnabled = true;
         public const int DefaultGoldenChancePercent = 5;
         public const bool DefaultUseInventorySeeds = true;
 
         private static SettingHandle<bool> _enabled;
+        private static SettingHandle<bool> _goldenOverride;
         private static SettingHandle<int> _goldenChance;
         private static SettingHandle<bool> _useInventorySeeds;
 
         /// <summary>Master switch. Off = vanilla behaviour.</summary>
         public static bool Enabled => _enabled != null ? _enabled.Value : DefaultEnabled;
 
-        /// <summary>Base chance (0..100) that an auto-replant plants the golden variant.</summary>
+        /// <summary>When false the golden roll is pure vanilla (3% base + talent bonus).</summary>
+        public static bool GoldenOverride => _goldenOverride != null && _goldenOverride.Value;
+
+        /// <summary>Base chance (0..100) that an auto-replant plants the golden variant (only used when GoldenOverride is on).</summary>
         public static int GoldenChancePercent
         {
             get
@@ -54,13 +58,14 @@ namespace AutoReplant
         public void Init()
         {
             ModSettings.Section(this)
-                .Hint("Harvesting a ripe crop replants it from a seed in your inventory. Golden chance replaces the vanilla 3% base roll; your Gardening rare-plant bonus still adds on top.")
+                .Hint("Harvesting a ripe crop replants it from a seed in your inventory. Golden roll is vanilla (3% + Gardening bonus) unless 'Override golden chance' is on; then the % below replaces the 3% base.")
                 .Toggle(out _enabled, "Auto replant", DefaultEnabled)
+                .Toggle(out _goldenOverride, "Override golden chance", false)
                 .Stepper(out _goldenChance, "Golden plant chance (%)", 0, 100, DefaultGoldenChancePercent)
                 .Toggle(out _useInventorySeeds, "Use seeds from inventory", DefaultUseInventorySeeds)
                 .Build();
 
-            Debug.Log($"[{Name}] Loaded. enabled={Enabled} golden={GoldenChancePercent}% useInventorySeeds={UseInventorySeeds}");
+            Debug.Log($"[{Name}] Loaded. enabled={Enabled} goldenOverride={GoldenOverride} golden={GoldenChancePercent}% useInventorySeeds={UseInventorySeeds}");
         }
 
         public void Shutdown() { }

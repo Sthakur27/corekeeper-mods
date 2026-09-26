@@ -21,9 +21,13 @@ namespace FiveLoadouts
     /// reused recoloured, and a V is drawn in the same stroke and height. Falls back to a plain
     /// 1px 5-high style when the sprite cannot be read.
     ///
-    /// Placement: the five tabs form one column with vanilla spacing; the column is shifted up
-    /// (or, if that is not enough, compressed) so that all tabs stay inside the vertical extent
-    /// of the window's largest sprite (the window frame).
+    /// Placement: computed purely from the three vanilla tabs. With y1/y3 the local y of tabs
+    /// 1 and 3 and spacing = (y1 - y3) / 2, the five tabs are spread evenly from y1 down to
+    /// y3 - spacing (one vanilla step below tab 3, which is still inside the window frame), so
+    /// newSpacing = 3/4 of vanilla. Vanilla tabs 1-3 are moved too (the game never repositions
+    /// them). If the tab background is taller than newSpacing, every tab is scaled uniformly by
+    /// newSpacing / tabHeight so they never overlap. The layout is re-applied whenever a tab's
+    /// y or scale drifts from the target (e.g. if the UI were reset on open).
     /// </summary>
     public static class PresetTabsUI
     {
@@ -45,7 +49,12 @@ namespace FiveLoadouts
                 var window = ui.characterWindow;
                 if (window == null || window.presetTabs == null) return;
                 var tabs = window.presetTabs;
-                if (tabs.Count >= PresetLayout.PresetCount || tabs.Count < PresetLayout.VanillaPresetCount) return;
+                if (tabs.Count < PresetLayout.VanillaPresetCount) return;
+                if (tabs.Count >= PresetLayout.PresetCount)
+                {
+                    ReapplyLayout(window, tabs);
+                    return;
+                }
 
                 var t1 = tabs[0];
                 var t2 = tabs[1];
@@ -53,6 +62,9 @@ namespace FiveLoadouts
                 if (t1 == null || t2 == null || t3 == null) return;
 
                 _style = _style ?? NumeralStyle.FromVanilla(t1, t2);
+
+                // Measure the vanilla column BEFORE anything is moved or cloned.
+                ComputeLayout(window, t1, t3);
 
                 Vector3 step = t3.transform.localPosition - t2.transform.localPosition;
                 var prev = t3;
@@ -84,7 +96,7 @@ namespace FiveLoadouts
                     prev = tab;
                 }
 
-                LayoutColumn(window, tabs);
+                ApplyLayout(tabs, force: true);
                 Debug.Log($"[{FiveLoadoutsMod.Name}] Character window extended to {tabs.Count} preset tabs.");
             }
             catch (System.Exception ex)
@@ -160,123 +172,89 @@ namespace FiveLoadouts
 
         // ------------------------------------------------------------------ column placement
 
-        private static void LayoutColumn(CharacterWindowUI window, List<CharacterWindowTab> tabs)
+        private static CharacterWindowUI _layoutWindow;   // window the targets were computed for
+        private static float[] _targetY;                  // local y per tab index
+        private static Vector3 _targetScale;              // local scale for every tab
+        private static bool _layoutValid;
+
+        /// <summary>
+        /// Derives the five-tab column from the untouched vanilla tabs 1 and 3:
+        /// top = y1, bottom = y3 - spacing, newSpacing = (top - bottom) / 4.
+        /// </summary>
+        private static void ComputeLayout(CharacterWindowUI window, CharacterWindowTab t1, CharacterWindowTab t3)
         {
-            var t1 = tabs[0];
-            var t3 = tabs[PresetLayout.VanillaPresetCount - 1];
-            Transform parent = t1.transform.parent;
+            _layoutWindow = window;
+            _layoutValid = false;
+
+            int n = PresetLayout.PresetCount;
             float y1 = t1.transform.localPosition.y;
             float y3 = t3.transform.localPosition.y;
             float spacing = (y1 - y3) / (PresetLayout.VanillaPresetCount - 1);
             if (spacing <= 0.0001f)
             {
-                // Tabs are not stacked downward (horizontal or unknown layout): keep "same step".
-                Debug.Log($"[{FiveLoadoutsMod.Name}] Preset tabs are not a downward column; positions left as cloned.");
+                Debug.Log($"[{FiveLoadoutsMod.Name}] Preset tabs are not a downward column (y1={y1:F3} y3={y3:F3}); positions left as cloned.");
                 return;
             }
 
-            int n = tabs.Count;
-            float halfTab = TabHalfHeight(t1, parent, spacing);
-            float span = (n - 1) * spacing;
-            float start = y1;
-            string mode;
+            float top = y1;
+            float bottom = y3 - spacing;
+            float newSpacing = (top - bottom) / (n - 1);
 
-            if (TryGetWindowExtent(window, parent, tabs, out float wTop, out float wBot))
-            {
-                float topMargin = wTop - (y1 + halfTab);
-                float botMargin = (y3 - halfTab) - wBot;
-                float margin = Mathf.Clamp(Mathf.Min(topMargin, botMargin), 0f, halfTab);
-                float highLimit = wTop - margin - halfTab;   // highest allowed tab centre
-                float lowLimit = wBot + margin + halfTab;    // lowest allowed tab centre
-                if (highLimit - lowLimit >= span)
-                {
-                    // Keep vanilla spacing; shift the column up only as far as needed.
-                    start = Mathf.Min(Mathf.Max(y1, lowLimit + span), highLimit);
-                    mode = Mathf.Approximately(start, y1) ? "vanilla spacing, unchanged start" : "vanilla spacing, shifted up";
-                }
-                else
-                {
-                    spacing = (highLimit - lowLimit) / (n - 1);
-                    start = highLimit;
-                    mode = "compressed spacing";
-                }
-                Debug.Log($"[{FiveLoadoutsMod.Name}] Tab column: window y[{wBot:F2}..{wTop:F2}] vanilla y1={y1:F2} y3={y3:F2} halfTab={halfTab:F2} -> {mode}, start={start:F2} spacing={spacing:F2}");
-            }
-            else
-            {
-                // No window frame found: centre the five tabs on the span the three used.
-                start = y1 + spacing;
-                Debug.Log($"[{FiveLoadoutsMod.Name}] Tab column: window extent unknown, centring five tabs on the vanilla span (start={start:F2} spacing={spacing:F2}).");
-            }
+            Vector3 baseScale = t1.transform.localScale;
+            float tabHeight = TabHeight(t1);
+            float scale = 1f;
+            if (tabHeight > newSpacing && tabHeight > 0.0001f) scale = newSpacing / tabHeight;
 
-            for (int i = 0; i < n; i++)
-            {
-                var tr = tabs[i].transform;
-                Vector3 p = tr.localPosition;
-                tr.localPosition = new Vector3(p.x, start - i * spacing, p.z);
-            }
+            _targetY = new float[n];
+            for (int i = 0; i < n; i++) _targetY[i] = top - i * newSpacing;
+            _targetScale = baseScale * scale;
+            _layoutValid = true;
+
+            Debug.Log($"[{FiveLoadoutsMod.Name}] Tab column: y1={y1:F3} y3={y3:F3} spacing={spacing:F3} -> top={top:F3} bottom={bottom:F3} newSpacing={newSpacing:F3} tabHeight={tabHeight:F3} scale={scale:F3}");
         }
 
-        private static float TabHalfHeight(CharacterWindowTab tab, Transform parent, float spacing)
+        /// <summary>Height of the tab background in the tab's parent space (local units of the column).</summary>
+        private static float TabHeight(CharacterWindowTab tab)
         {
             var sr = tab.background;
-            if (sr != null && sr.sprite != null)
+            if (sr == null || sr.sprite == null) return 0f;
+            float size = sr.drawMode == SpriteDrawMode.Simple ? sr.sprite.bounds.size.y : sr.size.y;
+            // Scale of the renderer relative to the tab's parent = product of local scales from
+            // the renderer up to (and including) the tab itself.
+            float s = 1f;
+            Transform t = sr.transform;
+            Transform stop = tab.transform.parent;
+            while (t != null && t != stop)
             {
-                float size = sr.drawMode == SpriteDrawMode.Simple ? sr.sprite.bounds.size.y : sr.size.y;
-                float scale = parent.lossyScale.y != 0f ? sr.transform.lossyScale.y / parent.lossyScale.y : 1f;
-                float h = Mathf.Abs(size * scale);
-                if (h > 0.0001f) return h * 0.5f;
-            }
-            return spacing * 0.5f;
-        }
-
-        /// <summary>Vertical extent (in the tab parent's local space) of the window's largest sprite.</summary>
-        private static bool TryGetWindowExtent(CharacterWindowUI window, Transform parent, List<CharacterWindowTab> tabs, out float top, out float bottom)
-        {
-            top = 0f;
-            bottom = 0f;
-            var root = window.root != null ? window.root.transform : window.transform;
-            var renderers = root.GetComponentsInChildren<SpriteRenderer>(true);
-            float bestArea = 0f;
-            bool found = false;
-            foreach (var sr in renderers)
-            {
-                if (sr == null || sr.sprite == null || IsUnderTab(sr.transform, root)) continue;
-                Vector2 min, max;
-                if (sr.drawMode == SpriteDrawMode.Simple)
-                {
-                    min = sr.sprite.bounds.min;
-                    max = sr.sprite.bounds.max;
-                }
-                else
-                {
-                    Vector2 pn = new Vector2(sr.sprite.pivot.x / sr.sprite.rect.width, sr.sprite.pivot.y / sr.sprite.rect.height);
-                    min = -Vector2.Scale(pn, sr.size);
-                    max = min + sr.size;
-                }
-                Vector3 a = parent.InverseTransformPoint(sr.transform.TransformPoint(new Vector3(min.x, min.y, 0f)));
-                Vector3 b = parent.InverseTransformPoint(sr.transform.TransformPoint(new Vector3(max.x, max.y, 0f)));
-                float lo = Mathf.Min(a.y, b.y), hi = Mathf.Max(a.y, b.y);
-                float area = Mathf.Abs(a.x - b.x) * (hi - lo);
-                if (area > bestArea)
-                {
-                    bestArea = area;
-                    top = hi;
-                    bottom = lo;
-                    found = true;
-                }
-            }
-            return found && top - bottom > 0.01f;
-        }
-
-        private static bool IsUnderTab(Transform t, Transform root)
-        {
-            while (t != null && t != root)
-            {
-                if (t.GetComponent<CharacterWindowTab>() != null) return true;
+                s *= t.localScale.y;
                 t = t.parent;
             }
-            return false;
+            return Mathf.Abs(size * s);
+        }
+
+        /// <summary>Writes the target y and scale to every tab; x and z are left alone.</summary>
+        private static void ApplyLayout(List<CharacterWindowTab> tabs, bool force)
+        {
+            if (!_layoutValid || _targetY == null) return;
+            int n = Mathf.Min(tabs.Count, _targetY.Length);
+            for (int i = 0; i < n; i++)
+            {
+                var tab = tabs[i];
+                if (tab == null) continue;
+                var tr = tab.transform;
+                Vector3 p = tr.localPosition;
+                if (force || Mathf.Abs(p.y - _targetY[i]) > 0.0005f)
+                    tr.localPosition = new Vector3(p.x, _targetY[i], p.z);
+                if (force || (tr.localScale - _targetScale).sqrMagnitude > 1e-8f)
+                    tr.localScale = _targetScale;
+            }
+        }
+
+        /// <summary>Every frame once five tabs exist: put them back if anything moved them.</summary>
+        private static void ReapplyLayout(CharacterWindowUI window, List<CharacterWindowTab> tabs)
+        {
+            if (!_layoutValid || _layoutWindow != window) return;
+            ApplyLayout(tabs, force: false);
         }
 
         // ------------------------------------------------------------------ numeral sprites

@@ -1,5 +1,7 @@
 # Five Loadouts (Core Keeper mod)
 
+Version 1.0.2.
+
 Raises the number of equipment loadouts from 3 to 5. Loadouts 4 and 5 get their own helmet,
 necklace, chest, pants, both rings and off-hand slots; the four pouch slots stay shared, exactly
 like vanilla. Two more tabs appear in the character window and the "cycle loadout" key wraps at 5.
@@ -64,9 +66,16 @@ Not done:
   shade; the I pixels are reused recoloured and the V is drawn to match. If the sprite cannot be
   read, a plain 1px, 5-high style is used instead. The style found is logged as
   `[FiveLoadouts] Numeral style (...)`.
-- Tab placement: the five tabs keep vanilla spacing and the column is shifted up (or, if that
-  is not enough, compressed) so all tabs stay inside the vertical extent of the window frame
-  (largest sprite under the window root). Logged as `[FiveLoadouts] Tab column: ...`.
+- Tab placement (1.0.2): computed only from the vanilla tabs. With `y1`/`y3` the local y of
+  tabs 1 and 3 and `spacing = (y1 - y3) / 2`, all five tabs (vanilla 1-3 included, the game
+  never repositions them) are spread evenly from `y1` down to `y3 - spacing` (one vanilla step
+  below tab 3, still inside the frame), i.e. 3/4 of the vanilla spacing; x is untouched. If the
+  tab background is taller than the new spacing every tab is scaled uniformly by
+  `newSpacing / tabHeight` so they cannot overlap. The layout is re-applied whenever a tab's y
+  or scale drifts from the target. Logged as `[FiveLoadouts] Tab column: y1=.. y3=.. spacing=..
+  newSpacing=.. tabHeight=.. scale=..`. (1.0.1 measured the window frame from the largest
+  SpriteRenderer under the root, which picked the wrong sprite and let tabs IV/V hang below
+  the window.)
 
 ## Save-safety notes
 
@@ -92,7 +101,7 @@ Not done:
 - `Scripts/FiveLoadoutsMod.cs`: entry point.
 - `Scripts/PresetLayout.cs`: prefab-time slot allocation and layout table.
 - `Scripts/LoadoutSharingBridge.cs`: reflection bridge to Loadout Fallback.
-- `Scripts/PresetTabsUI.cs`: tab cloning.
+- `Scripts/PresetTabsUI.cs`: tab cloning, numeral sprites and column layout.
 - `Scripts/Systems/PresetMigrationSystem.cs`: buffer growth for existing saves.
 - `Scripts/Patches/PresetCyclePatch.cs`: cycle key wraps at 5.
 - `LoadoutSharing.patch.md`: exact edits Loadout Fallback needs (validated to compile).

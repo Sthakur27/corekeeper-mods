@@ -392,12 +392,20 @@ namespace MasterPet.UI
 
             int petLevel = _currentLevel;
 
+            // Total points come from the game (PetExtensions.GetTotalTalentPoints), so mods that
+            // change the pet point formula (e.g. AllSkills: level - 1) are respected. Vanilla is
+            // floor(level / 2). _currentLevel can be ahead of the synced XP right after +/-, so
+            // ask with the XP of the level shown.
+            int maxPoints = PetExtensions.GetTotalTalentPoints(PetExtensions.GetXPFromLevel(petLevel));
+
             bool row1HasPoints = HasPointsInRow(talents, 0, 1, 2);
             bool row2HasPoints = HasPointsInRow(talents, 3, 4, 5);
 
-            bool row1Unlocked = petLevel >= 2;
-            bool row2Unlocked = petLevel >= 4 && row1HasPoints;
-            bool row3Unlocked = petLevel >= 6 && row2HasPoints;
+            // Row N needs N points available in total and a point in the row above
+            // (vanilla scale: level 2 / 4 / 6).
+            bool row1Unlocked = maxPoints >= 1;
+            bool row2Unlocked = maxPoints >= 2 && row1HasPoints;
+            bool row3Unlocked = maxPoints >= 3 && row2HasPoints;
 
             bool[] unlocked = new bool[talentSlots.Length];
             unlocked[0] = row1Unlocked;
@@ -410,19 +418,10 @@ namespace MasterPet.UI
             unlocked[7] = row3Unlocked;
             unlocked[8] = row3Unlocked;
 
-            int maxPoints = 0;
-            if (petLevel >= 2) maxPoints = 1;
-            if (petLevel >= 4) maxPoints = 2;
-            if (petLevel >= 6) maxPoints = 3;
-            if (petLevel >= 8) maxPoints = 4;
-            if (petLevel >= 10) maxPoints = 5;
-
+            // Same count as the vanilla window (sum of points in every slot).
             int spent = 0;
-            for (int i = 0; i < talents.Length && i < unlocked.Length; i++)
-            {
-                if (unlocked[i] && talents[i].points > 0)
-                    spent++;
-            }
+            for (int i = 0; i < talents.Length; i++)
+                spent += talents[i].points;
             int available = maxPoints - spent;
 
             if (pointsCounter != null)

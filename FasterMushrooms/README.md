@@ -1,7 +1,8 @@
 # Faster Mushrooms
 
-Core Keeper mod: mushrooms that grow on mycelium spread and grow faster. Only mushrooms; every
-other crop and root plant keeps its vanilla timing.
+Core Keeper mod: mycelium roots spread faster, mushrooms grow faster, and picked wild mushrooms
+respawn near you instead of almost never. Only mushrooms; every other crop and root plant keeps
+its vanilla timing.
 
 ## What it does
 
@@ -17,6 +18,19 @@ Settings (Mod Settings menu, section "Faster Mushrooms"):
 | Setting | Choices | Default |
 |---|---|---|
 | Mushroom growth speed | 1x, 1.5x, 2x, 3x, 4x, 5x, 6x, 8x, 10x, 15x, 20x, 30x, 50x, 100x | **4x** |
+| Wild mushroom respawn | Off, 15 s, 30 s, 1 min, 2 min, 5 min, 10 min, 30 min | **1 min** |
+
+### Wild mushroom respawn
+
+In vanilla, wild mushrooms come back only through the world's environment respawn, which visits
+one 16x16 area at a time (each area roughly once every 4 hours) and skips everything within 200
+tiles of a player. Mushrooms you pick near your base essentially never return.
+
+With this setting on, every interval the mod asks the game to run its own respawn roll, for
+mushrooms only, in every 16x16 area within 48 tiles of each player. The vanilla rules still decide
+where they can appear: the right ground and biome, a free tile, not within 6 tiles of a player,
+and fewer new ones when an area already has plenty. Other plants, ores and critters are not
+respawned by this.
 
 `1x` is exactly vanilla. Changes apply on the next simulation tick, no restart or reload needed;
 countdowns that are already running are shortened to the new maximum immediately.
@@ -49,6 +63,10 @@ before `RootPlantGrowSystem`) edits component data every tick:
 Every write is guarded by a compare, so at `1x` nothing is ever written.
 
 ## Limitations
+
+- Wild respawn works by briefly zeroing the respawn chance of every non-mushroom entry in the
+  environment spawn table while its own requests are processed (a frame or two), then restoring
+  it. A vanilla respawn that lands in that same frame skips its non-mushroom objects once.
 
 - Which tiles mycelium can spread onto, how far it spreads, what mushrooms drop and how they are
   harvested are unchanged; only the waiting is shorter.

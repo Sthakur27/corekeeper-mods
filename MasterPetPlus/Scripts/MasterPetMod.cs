@@ -10,7 +10,7 @@ namespace MasterPet
         public const string Name = "Master Pet Plus";
         // Asset paths inside the bundle still start with Assets/MasterPet/ - do not change.
         public const string InternalName = "MasterPet";
-        public const string Version = "1.1.0";
+        public const string Version = "1.1.1";
 
         internal static LoadedMod ModInfo { get; private set; }
         internal static AssetBundle AssetBundle { get; private set; }

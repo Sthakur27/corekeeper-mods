@@ -300,3 +300,7 @@ SkipIntro 6363825. Refresh the list from Player.log (`loaded mod X from mod.io`)
   collection summary tells players to subscribe to it (and CoreLib is inside the collection).
 - Collections API: GET works, POST/collection edits are browser-only for personal tokens. Dialog
   "Add mods": type a name, wait 3 s, it stages automatically; repeat; then **Add mod**, then **Save**.
+- **Potion Seller** → https://mod.io/g/corekeeper/m/potion-seller (mod id 6405806, v1.0.1, in the collection; collection now 23 mods).
+  Collection "Save" gotcha: the Save button click can silently do nothing if an "unsaved changes" modal
+  is open behind the Add-mods dialog; check `document.querySelectorAll('[role=dialog]').length == 0`,
+  then click Save by ref and confirm the "Collection updated successfully" toast before navigating.

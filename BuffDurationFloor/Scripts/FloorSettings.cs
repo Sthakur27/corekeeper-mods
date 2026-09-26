@@ -24,6 +24,19 @@ namespace BuffDurationFloor
         /// <summary>Bumped on every effective change; systems compare it to their last-applied value.</summary>
         public static int Version { get; private set; }
 
+        /// <summary>
+        /// When false (default) health/mana regeneration-over-time conditions keep their vanilla
+        /// duration; the floor applies to every other positive timed buff.
+        /// </summary>
+        public static bool ExtendHealing { get; private set; }
+
+        public static void SetExtendHealing(bool value)
+        {
+            if (ExtendHealing == value) return;
+            ExtendHealing = value;
+            Version++;
+        }
+
         public static void Set(int seconds)
         {
             if (seconds < MinSeconds) seconds = MinSeconds;

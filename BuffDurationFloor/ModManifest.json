@@ -10,6 +10,7 @@
     "files": [
         { "path": "Scripts/BuffDurationFloorMod.cs", "guid": "4b7d1e9a6c2f4a3e8d5b0c9f1a2e3d48" },
         { "path": "Scripts/FloorSettings.cs", "guid": "4b7d1e9a6c2f4a3e8d5b0c9f1a2e3d49" },
+        { "path": "Scripts/ConditionFilter.cs", "guid": "4b7d1e9a6c2f4a3e8d5b0c9f1a2e3d4b" },
         { "path": "Scripts/Systems/ConsumableDurationFloorSystem.cs", "guid": "4b7d1e9a6c2f4a3e8d5b0c9f1a2e3d4a" }
     ],
     "dependencies": [

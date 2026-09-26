@@ -19,7 +19,9 @@ namespace BuffDurationFloor.Systems
     ///
     /// Skipped on purpose: entries whose duration is 0 (instant effects such as healing or
     /// hunger), infinite durations, conditions flagged isPermanent (e.g. permanent max health
-    /// from certain foods) and conditions flagged isNegative in the game's ConditionsTable.
+    /// from certain foods), conditions flagged isNegative in the game's ConditionsTable and,
+    /// unless "Also extend healing" is on, health/mana regeneration effects (see
+    /// <see cref="ConditionFilter"/>).
     /// </summary>
     [UpdateInGroup(typeof(SimulationSystemGroup))]
     [UpdateAfter(typeof(PredictedSimulationSystemGroup))]
@@ -57,6 +59,8 @@ namespace BuffDurationFloor.Systems
 
             float floor = FloorSettings.FloorSeconds;
             int raised = 0, restored = 0, entries = 0;
+            var seen = new HashSet<ConditionID>();
+            var excluded = new HashSet<ConditionID>();
 
             var entities = _consumables.ToEntityArray(Allocator.Temp);
             int prefabCount = entities.Length;
@@ -80,8 +84,8 @@ namespace BuffDurationFloor.Systems
                 for (int i = 0; i < buffer.Length; i++)
                 {
                     var element = buffer[i];
-                    bool changed = Apply(ref element.conditionDataContainer.conditionData, original[2 * i], floor, in table, ref raised, ref restored);
-                    changed |= Apply(ref element.conditionDataContainer.conditionDataWhenCooked, original[2 * i + 1], floor, in table, ref raised, ref restored);
+                    bool changed = Apply(ref element.conditionDataContainer.conditionData, original[2 * i], floor, in table, ref raised, ref restored, seen, excluded);
+                    changed |= Apply(ref element.conditionDataContainer.conditionDataWhenCooked, original[2 * i + 1], floor, in table, ref raised, ref restored, seen, excluded);
                     if (changed) buffer[i] = element;
                 }
             }
@@ -89,28 +93,30 @@ namespace BuffDurationFloor.Systems
 
             _appliedVersion = FloorSettings.Version;
             _appliedCount = count;
-            Debug.Log($"[BuffDurationFloor] {(isServer ? "server" : "client")}: floor {floor:0}s applied to {prefabCount} consumable prefabs ({entries} entries): {raised} durations raised, {restored} restored.");
+            Debug.Log($"[BuffDurationFloor] {(isServer ? "server" : "client")}: floor {floor:0}s applied to {prefabCount} consumable prefabs ({entries} entries): {raised} durations raised, {restored} restored. "
+                + $"Timed condition ids seen: {string.Join(", ", seen)}. Excluded (regen/permanent/negative): {string.Join(", ", excluded)}.");
         }
 
         /// <summary>Sets <c>data.duration</c> to max(original, floor) when the buff qualifies, else back to original.</summary>
-        private static bool Apply(ref ConditionData data, float original, float floor, in ConditionsTableCD table, ref int raised, ref int restored)
+        private static bool Apply(ref ConditionData data, float original, float floor, in ConditionsTableCD table, ref int raised, ref int restored,
+            HashSet<ConditionID> seen, HashSet<ConditionID> excluded)
         {
             float target = original;
-            if (Qualifies(data.conditionID, original, in table) && original < floor)
-                target = floor;
+            bool timed = data.conditionID != ConditionID.None && original > 0f && !float.IsInfinity(original);
+            if (timed) seen.Add(data.conditionID);
+            if (ConditionFilter.Qualifies(data.conditionID, original, in table))
+            {
+                if (original < floor) target = floor;
+            }
+            else if (timed)
+            {
+                excluded.Add(data.conditionID);
+            }
 
             if (data.duration == target) return false;
             if (target > original) raised++; else restored++;
             data.duration = target;
             return true;
-        }
-
-        private static bool Qualifies(ConditionID id, float originalDuration, in ConditionsTableCD table)
-        {
-            if (id == ConditionID.None) return false;
-            if (!(originalDuration > 0f) || float.IsInfinity(originalDuration)) return false;
-            var info = table.GetConditionInfo(id);
-            return !info.isPermanent && !info.isNegative;
         }
     }
 }

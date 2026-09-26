@@ -59,8 +59,9 @@ Merchant stock:
   with the k-th available list entry, so the list only matters up to the inventory size. The vanilla
   merchant inventory is 3x3.
 - `MerchantStock.Apply` appends the 13 potions (amount = stock setting, requirement None) and grows the
-  inventory to **5x5** (`InventoryBuffer[0].sizeX/sizeY/maxSize` + `ContainedObjectsBuffer` padded to
-  25 slots). It runs on the `CavelingMerchant` prefab entity in every world through
+  inventory to **8 columns x 3 rows** (`InventoryBuffer[0].sizeX/sizeY/maxSize` + `ContainedObjectsBuffer`
+  padded to 24 slots). Wide and short on purpose: the buy window sits at the top of the screen and extra
+  rows would grow down over the player inventory. It runs on the `CavelingMerchant` prefab entity in every world through
   `API.Authoring.OnObjectTypeAdded` (fired by `ModPostConverter` after conversion, so the buffers
   exist; `InventoryBuffer.sizeX/sizeY` are not replicated, which is why the client prefab must match),
   and `MerchantStockSystem` (server, every 2 s) does the same for merchants already saved in a world.
@@ -72,10 +73,17 @@ Merchant stock:
 
 Buy window:
 - `BuyInventoryUI` instantiates a fixed `MAX_ROWS x MAX_COLUMNS` (3x3) grid in `Init` and never
-  shows more slots than that. Harmony postfixes on the two getters raise them to 5x5, and a postfix on
-  `BuyUI.ShowContainerUI` grows the background sprite by the extra rows/columns and keeps the window's
-  top edge where vanilla puts it (the grid is centred on the container origin). The background patch
-  sizes from the live `InventoryHandler`, so vending machines, which share the window, look vanilla.
+  shows more slots than that. Harmony postfixes on the two getters raise them to 8x3.
+- Vanilla layout: `InventoryUI.UpdateContainerSize` centres the slots on the container origin,
+  `BuyUI.ShowContainerUI` only swaps the background *sprite* for the theme (the background is never
+  sized) and puts the window root at `(-2.5, 3.3125)` when the sell window is showing, else `(0, 3.3125)`;
+  the sell window position is prefab data. So a wider grid would just spill over the background and into
+  the sell window. A postfix on `BuyUI.LateUpdate` (re-applied every frame while the window is open, plus
+  once right after `ShowContainerUI`) grows the background (sliced `size`, or transform scale / a switch to
+  sliced for a simple sprite) and its click-blocking collider by the extra columns, and moves the whole
+  window left by half the extra width so its right edge stays where vanilla put it; the sell window is not
+  touched. Sized from the live `InventoryHandler`, so vending machines, which share the window, look
+  vanilla. One `[PotionSeller] buy window: ...` log line reports the measured sizes/positions.
 
 Prices:
 - `PotionPrices.Apply` writes `sellValue` / `buyValueMultiplier` in three idempotent places, same
@@ -86,12 +94,14 @@ Prices:
 
 ## Limits
 
-- The buy window grid is 5x5 = 25 slots (`MerchantStock.Columns/Rows`). The vanilla list plus 13
-  potions must fit; a warning is logged if it does not. The window is roughly 2.25 tiles wider and
-  taller than vanilla; if it overlaps the sell window or the player inventory on your resolution,
-  lower `Rows`/`Columns` (e.g. 6x4).
+- The buy window grid is 8 columns x 3 rows = 24 slots (`MerchantStock.Columns/Rows`). The vanilla
+  list (9 items) plus 13 potions = 22 fits; a warning is logged if it does not. The window is 5 slots
+  wider than vanilla and extends to the left (same height, same right edge); `Rows` is deliberately 3 so
+  it never grows down over the player inventory. Do not raise `Rows`.
 - Whether the background sprite grows cleanly depends on its draw mode (sliced/tiled: `size` is set;
-  simple: the transform is scaled).
+  simple: the transform is scaled, or the sprite is switched to sliced when it shares a transform that
+  vanilla rescales every frame). Check the `buy window:` log line.
+- A merchant saved by v1.0.0 keeps his 25-slot buffer; only 24 are shown and the 25th is never stocked.
 - Only `ObjectID.CavelingMerchant` is changed. Vending machines and other vendors are untouched.
 - Prices are per item type; the potions have no variations, so that is fine.
 - Not verified in-game yet: the merchant prefab's exact vanilla list/size and the buy window layout.

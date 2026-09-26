@@ -12,14 +12,20 @@ namespace PotionSeller
     /// MerchantItemInfoBuffer, so entries beyond the buffer length are silently dropped. The merchant's
     /// buffer is sized by its InventoryAuthoring (3x3 in vanilla), so besides appending the potions we
     /// grow ContainedObjectsBuffer and InventoryBuffer[0] (sizeX/sizeY/maxSize) to <see cref="Columns"/> x
-    /// <see cref="Rows"/>. InventoryBuffer.sizeX/sizeY are not replicated (GhostField SendData=false), so
+    /// <see cref="Rows"/>. A buffer that is already longer (e.g. 25 slots from the 5x5 layout of v1.0.0)
+    /// is left alone; the UI only shows sizeX*sizeY slots and the restock just skips the tail. InventoryBuffer.sizeX/sizeY are not replicated (GhostField SendData=false), so
     /// this must run on the prefab in every world (client + server); it is idempotent.
     /// </summary>
     public static class MerchantStock
     {
-        /// <summary>Merchant inventory grid (the buy window grid is patched to the same size).</summary>
-        public const int Columns = 5;
-        public const int Rows = 5;
+        /// <summary>
+        /// Merchant inventory grid (the buy window grid is patched to the same size). Wide and short on
+        /// purpose: the buy window sits at the top of the screen next to the sell window, and extra rows would
+        /// grow down over the player inventory, so keep the vanilla 3 rows and add columns (8x3 = 24 slots for
+        /// ~9 vanilla items + 13 potions).
+        /// </summary>
+        public const int Columns = 8;
+        public const int Rows = 3;
         public const int Slots = Columns * Rows;
 
         public static bool IsTarget(EntityManager em, Entity e)

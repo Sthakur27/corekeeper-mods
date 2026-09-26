@@ -5,16 +5,22 @@ potions). This mod sets a **minimum duration**: any buff you get from eating or 
 would last less than the floor lasts the floor instead. Buffs that are already longer are not
 changed, and debuffs are never extended.
 
-## Setting
+## Settings
 
-In **Mod Settings** (needs the Mod Settings Menu mod): **Minimum buff duration**, cycling
-30s, 1m, 1m 30s, 2m ... 10m in 30-second steps. Default **3m**. Changes apply immediately (the
-next thing you eat uses the new floor; buffs already running keep their timer). Persisted in
-CoreLib's config for this mod (`BuffDurationFloor/config.cfg`).
+Both are in **Mod Settings** (needs the Mod Settings Menu mod) and use the same ladder:
+**Off**, 30 s, 45 s, 1:00, 1:30, 2:00, 3:00, 5:00, 10:00. **Off** means that group is left
+exactly at vanilla.
 
-**Also extend healing** (toggle, default **off**): health/mana regeneration-over-time buffs
-(e.g. cooked food's "4.2 health every second") keep their vanilla duration unless this is on. A
-3-minute regen tick was far too strong, hence the default. Applies immediately like the floor.
+| Setting | Applies to | Default |
+|---|---|---|
+| **Minimum buff duration** | every other positive timed food/potion buff (speed, damage, armor, glow, ...) | **3:00** |
+| **Minimum healing duration** | heal-over-time and mana-regen conditions (e.g. cooked food's "4.2 health every second", potion heal-over-time) | **Off** (vanilla) |
+
+Healing defaults to Off because a 3-minute regen tick is far too strong; raise it deliberately.
+Changes apply immediately and independently: the next thing you eat uses the new floors, buffs
+already running keep their timer, and setting either back to Off restores that group's vanilla
+numbers without a restart. Persisted in CoreLib's config for this mod
+(`BuffDurationFloor/config.cfg`).
 
 In multiplayer the server (host) decides the actual duration; a client with a different setting
 mispredicts for a moment and is then corrected by the server.
@@ -31,18 +37,21 @@ entry for raw food and potions), scales the value for rarity, and adds the condi
 player's `ConditionsBuffer` with `removeTick = now + duration`.
 
 This mod raises `duration` on those prefab entries, in both the client and the server world, to
-`max(vanilla, floor)`. An entry is extended only if all of the following hold:
+`max(vanilla, floor)`, where the floor is the buff floor or the healing floor depending on the
+condition's group (Off = no change). An entry is extended only if all of the following hold:
 
 - its condition is not `None` and its vanilla duration is > 0 and finite (instant effects such as
   healing, mana, hunger, and the golden-plant permanent max-health increase have duration 0);
 - the game's `ConditionsTable` does not flag the condition `isPermanent`;
 - the game's `ConditionsTable` does not flag the condition `isNegative` (so no poison, slow,
   weakness or any other debuff a food or potion applies gets longer);
-- unless **Also extend healing** is on, the condition is not a regeneration effect. This is read
-  from the game's condition data, not a hand-written list: a condition is excluded when its
-  `ConditionEffect` in the `ConditionsTable` is `HealOverTime`, `HealOverTimePercentage` or
-  `ManaRegen`, or (fallback for ids without a table entry) when its `ConditionID` name contains
-  `HealOverTime`, `HealingOverTime`, `HealthRegen` or `ManaRegen`. In vanilla data that covers
+- the floor for its group is not Off.
+
+Which group a condition belongs to is read from the game's condition data, not a hand-written
+list: it is **healing** when its `ConditionEffect` in the `ConditionsTable` is `HealOverTime`,
+`HealOverTimePercentage` or `ManaRegen`, or (fallback for ids without a table entry) when its
+`ConditionID` name contains `HealOverTime`, `HealingOverTime`, `HealthRegen` or `ManaRegen`;
+otherwise it is an ordinary **buff**. In vanilla data the healing group covers
   `HealOverTime` (the food "X health every second" buff), `HealOverTimePercentage`,
   `HealOverTimeFromPotion`, `HealingPotionAddHealOverTime`, `AuraHealingOverTime`,
   `HealthRegenFromBeingBelowHalfHealth`, `IncreasedHealthRegenEffectiveness`,
@@ -86,11 +95,15 @@ The original values are remembered, so lowering the floor restores vanilla numbe
 restart.
 
 Files: `Scripts/BuffDurationFloorMod.cs` (settings), `Scripts/FloorSettings.cs` (ladder/parsing,
-healing toggle), `Scripts/ConditionFilter.cs` (which conditions qualify),
+both floors), `Scripts/ConditionFilter.cs` (skip / buff / healing classification),
 `Scripts/Systems/ConsumableDurationFloorSystem.cs` (the patch system).
 
 ## Changelog
 
+- **1.2.0**: the **Also extend healing** toggle is replaced by a second independent floor,
+  **Minimum healing duration** (same ladder, default Off). Ladder is now Off, 30 s, 45 s, 1:00,
+  1:30, 2:00, 3:00, 5:00, 10:00 (the old 30-second steps are gone); old "3m"-style config values
+  are still parsed. Off = vanilla for that group.
 - **1.1.0**: regeneration-over-time buffs (health and mana) are no longer extended by default;
   new **Also extend healing** toggle restores the 1.0.0 behaviour. The apply log line now lists
   the timed condition ids found on consumables and which were excluded.
@@ -102,6 +115,7 @@ Run `..\install.bat BuffDurationFloor` (copies into
 `CoreKeeper_Data\StreamingAssets\Mods\BuffDurationFloor`), then restart the game. Requires
 CoreLib and ModSettingsMenu. Check `%USERPROFILE%\AppData\LocalLow\Pugstorm\Core Keeper\Player.log`
 for `Successfully compiled BuffDurationFloor` and
-`[BuffDurationFloor] server: floor 180s applied to N consumable prefabs (...)`. That line ends with
-`Timed condition ids seen: ...` (every condition id with a positive finite duration on any
-consumable) and `Excluded (regen/permanent/negative): ...` (the subset the floor left alone).
+`[BuffDurationFloor] server: buff floor 3:00, healing floor Off applied to N consumable prefabs (...)`.
+That line ends with `Timed condition ids seen: ...` (every condition id with a positive finite
+duration on any consumable) and `Excluded (permanent/negative): ...` (the subset neither floor
+may ever touch).

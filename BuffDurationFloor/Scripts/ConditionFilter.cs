@@ -1,24 +1,33 @@
 namespace BuffDurationFloor
 {
+    /// <summary>Which floor (if any) applies to a condition entry.</summary>
+    public enum ConditionGroup
+    {
+        /// <summary>Never extended: None, zero/infinite duration, permanent or negative.</summary>
+        Skip,
+        /// <summary>Ordinary positive timed buff; governed by "Minimum buff duration".</summary>
+        Buff,
+        /// <summary>Heal-over-time / mana-regen; governed by "Minimum healing duration".</summary>
+        Healing
+    }
+
     /// <summary>
-    /// Decides which conditions the floor may extend. Shared by the prefab patch system and the
-    /// runtime system for talent-injected conditions so both agree exactly.
+    /// Decides which conditions the floors may extend and which of the two floors applies.
     /// </summary>
     public static class ConditionFilter
     {
         /// <summary>
-        /// True when a positive, timed buff with this id may be raised to the floor. Uses the game's
-        /// ConditionsTable (effect, isPermanent, isNegative); regeneration effects are excluded
-        /// unless <see cref="FloorSettings.ExtendHealing"/> is on.
+        /// Classifies a condition entry using the game's ConditionsTable (effect, isPermanent,
+        /// isNegative). Zero, infinite, permanent and negative entries are <see cref="ConditionGroup.Skip"/>;
+        /// regeneration effects are <see cref="ConditionGroup.Healing"/>; everything else is <see cref="ConditionGroup.Buff"/>.
         /// </summary>
-        public static bool Qualifies(ConditionID id, float originalDuration, in ConditionsTableCD table)
+        public static ConditionGroup Classify(ConditionID id, float originalDuration, in ConditionsTableCD table)
         {
-            if (id == ConditionID.None) return false;
-            if (!(originalDuration > 0f) || float.IsInfinity(originalDuration)) return false;
+            if (id == ConditionID.None) return ConditionGroup.Skip;
+            if (!(originalDuration > 0f) || float.IsInfinity(originalDuration)) return ConditionGroup.Skip;
             var info = table.GetConditionInfo(id);
-            if (info.isPermanent || info.isNegative) return false;
-            if (!FloorSettings.ExtendHealing && IsRegeneration(id, info.effect)) return false;
-            return true;
+            if (info.isPermanent || info.isNegative) return ConditionGroup.Skip;
+            return IsRegeneration(id, info.effect) ? ConditionGroup.Healing : ConditionGroup.Buff;
         }
 
         /// <summary>

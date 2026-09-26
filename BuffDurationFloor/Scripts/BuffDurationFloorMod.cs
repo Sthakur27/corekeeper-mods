@@ -7,9 +7,9 @@ namespace BuffDurationFloor
 {
     /// <summary>
     /// Raises every food/potion buff that would last less than the configured floor up to that
-    /// floor. Buffs already longer are untouched, and so are equipment, skill, aura and
-    /// environmental conditions, every negative effect and (unless "Also extend healing" is on)
-    /// health/mana regeneration over time.
+    /// floor. Two independent floors: one for ordinary buffs, one for health/mana regeneration
+    /// over time (each can be Off = vanilla). Buffs already longer are untouched, and so are
+    /// equipment, skill, aura and environmental conditions and every negative effect.
     ///
     /// Mechanism: when a player eats or drinks, the game's Burst job
     /// (EatableSlotConsumeResultEvaluationSystem → ConditionUIExtensions.GetConditionsOnConsume)
@@ -25,10 +25,10 @@ namespace BuffDurationFloor
     public sealed class BuffDurationFloorMod : IMod
     {
         public const string Name = "BuffDurationFloor";
-        public const string Version = "1.1.0";
+        public const string Version = "1.2.0";
 
-        private SettingHandle<string> _floor;
-        private SettingHandle<bool> _extendHealing;
+        private SettingHandle<string> _buffFloor;
+        private SettingHandle<string> _healingFloor;
 
         public void EarlyInit()
         {
@@ -38,17 +38,17 @@ namespace BuffDurationFloor
         public void Init()
         {
             ModSettings.Section(this)
-                .Hint("Food and potion buffs shorter than this last this long instead. Longer buffs and debuffs are unchanged.")
-                .Choice(out _floor, "Minimum buff duration", FloorSettings.Ladder, FloorSettings.DefaultToken)
-                .Toggle(out _extendHealing, "Also extend healing", false)
+                .Hint("Food and potion buffs shorter than the floor last the floor instead. Off = vanilla. Longer buffs and debuffs are unchanged.")
+                .Choice(out _buffFloor, "Minimum buff duration", FloorSettings.Ladder, FloorSettings.DefaultBuffToken)
+                .Choice(out _healingFloor, "Minimum healing duration", FloorSettings.Ladder, FloorSettings.DefaultHealingToken)
                 .Build();
 
-            FloorSettings.Set(FloorSettings.Parse(_floor.Value));
-            FloorSettings.SetExtendHealing(_extendHealing.Value);
-            _floor.OnChanged += token => FloorSettings.Set(FloorSettings.Parse(token));
-            _extendHealing.OnChanged += value => FloorSettings.SetExtendHealing(value);
+            FloorSettings.SetBuffFloor(FloorSettings.Parse(_buffFloor.Value, FloorSettings.DefaultBuffSeconds));
+            FloorSettings.SetHealingFloor(FloorSettings.Parse(_healingFloor.Value, FloorSettings.DefaultHealingSeconds));
+            _buffFloor.OnChanged += token => FloorSettings.SetBuffFloor(FloorSettings.Parse(token, FloorSettings.DefaultBuffSeconds));
+            _healingFloor.OnChanged += token => FloorSettings.SetHealingFloor(FloorSettings.Parse(token, FloorSettings.DefaultHealingSeconds));
 
-            Debug.Log($"[{Name}] Loaded. Minimum buff duration: {FloorSettings.Token((int)FloorSettings.FloorSeconds)}, extend healing: {FloorSettings.ExtendHealing}");
+            Debug.Log($"[{Name}] Loaded. Minimum buff duration: {FloorSettings.Token((int)FloorSettings.BuffFloorSeconds)}, minimum healing duration: {FloorSettings.Token((int)FloorSettings.HealingFloorSeconds)}");
         }
 
         public void Shutdown() { }

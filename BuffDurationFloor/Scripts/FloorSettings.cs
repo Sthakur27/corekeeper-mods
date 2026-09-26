@@ -3,65 +3,92 @@ using System.Globalization;
 namespace BuffDurationFloor
 {
     /// <summary>
-    /// The configured minimum buff duration. The settings menu stores a token like "3m" or
-    /// "1m 30s"; the ECS system reads <see cref="FloorSeconds"/> and re-applies whenever
-    /// <see cref="Version"/> changes, so keep both cheap to read.
+    /// The two configured minimum durations: one for ordinary buffs, one for healing/regen
+    /// conditions. The settings menu stores tokens like "3:00", "45 s" or "Off"; the ECS system
+    /// reads <see cref="BuffFloorSeconds"/> / <see cref="HealingFloorSeconds"/> and re-applies
+    /// whenever <see cref="Version"/> changes, so keep everything cheap to read.
+    /// A floor of 0 means "Off": that group is left at vanilla.
     /// </summary>
     public static class FloorSettings
     {
-        public const int StepSeconds = 30;
-        public const int MinSeconds = 30;
-        public const int MaxSeconds = 600;
-        public const int DefaultSeconds = 180;
+        public const string OffToken = "Off";
 
-        /// <summary>Choices offered in Mod Settings: 30s, 1m, 1m 30s ... 10m.</summary>
-        public static readonly string[] Ladder = BuildLadder();
-        public static readonly string DefaultToken = Token(DefaultSeconds);
+        /// <summary>Choices offered in Mod Settings, shared by both floors.</summary>
+        public static readonly string[] Ladder =
+        {
+            OffToken, "30 s", "45 s", "1:00", "1:30", "2:00", "3:00", "5:00", "10:00"
+        };
 
-        /// <summary>Current floor in seconds. Never below <see cref="MinSeconds"/>.</summary>
-        public static float FloorSeconds { get; private set; } = DefaultSeconds;
+        public const int DefaultBuffSeconds = 180;
+        public const int DefaultHealingSeconds = 0;
+
+        public static readonly string DefaultBuffToken = Token(DefaultBuffSeconds);
+        public static readonly string DefaultHealingToken = Token(DefaultHealingSeconds);
+
+        /// <summary>Floor for non-healing buffs in seconds; 0 = Off.</summary>
+        public static float BuffFloorSeconds { get; private set; } = DefaultBuffSeconds;
+
+        /// <summary>Floor for heal-over-time / mana-regen conditions in seconds; 0 = Off.</summary>
+        public static float HealingFloorSeconds { get; private set; } = DefaultHealingSeconds;
 
         /// <summary>Bumped on every effective change; systems compare it to their last-applied value.</summary>
         public static int Version { get; private set; }
 
-        /// <summary>
-        /// When false (default) health/mana regeneration-over-time conditions keep their vanilla
-        /// duration; the floor applies to every other positive timed buff.
-        /// </summary>
-        public static bool ExtendHealing { get; private set; }
-
-        public static void SetExtendHealing(bool value)
+        public static void SetBuffFloor(int seconds)
         {
-            if (ExtendHealing == value) return;
-            ExtendHealing = value;
+            seconds = Clamp(seconds);
+            if (BuffFloorSeconds == seconds) return;
+            BuffFloorSeconds = seconds;
             Version++;
         }
 
-        public static void Set(int seconds)
+        public static void SetHealingFloor(int seconds)
         {
-            if (seconds < MinSeconds) seconds = MinSeconds;
-            if (seconds > MaxSeconds) seconds = MaxSeconds;
-            if (FloorSeconds == seconds) return;
-            FloorSeconds = seconds;
+            seconds = Clamp(seconds);
+            if (HealingFloorSeconds == seconds) return;
+            HealingFloorSeconds = seconds;
             Version++;
         }
 
-        /// <summary>180 → "3m", 90 → "1m 30s", 30 → "30s".</summary>
+        private static int Clamp(int seconds)
+        {
+            if (seconds < 0) seconds = 0;
+            if (seconds > 600) seconds = 600;
+            return seconds;
+        }
+
+        /// <summary>0 → "Off", 30 → "30 s", 90 → "1:30", 600 → "10:00".</summary>
         public static string Token(int seconds)
         {
+            if (seconds <= 0) return OffToken;
+            if (seconds < 60) return seconds + " s";
             int m = seconds / 60, s = seconds % 60;
-            if (m == 0) return s + "s";
-            if (s == 0) return m + "m";
-            return m + "m " + s + "s";
+            return m + ":" + s.ToString("00", CultureInfo.InvariantCulture);
         }
 
-        /// <summary>Inverse of <see cref="Token"/>; anything unparseable yields the default.</summary>
-        public static int Parse(string token)
+        /// <summary>
+        /// Inverse of <see cref="Token"/>; anything unparseable yields <paramref name="fallback"/>.
+        /// Also accepts the pre-1.2 tokens ("3m", "1m 30s") so an old config still maps correctly.
+        /// </summary>
+        public static int Parse(string token, int fallback)
         {
-            if (string.IsNullOrEmpty(token)) return DefaultSeconds;
+            if (string.IsNullOrEmpty(token)) return fallback;
+            string t = token.Trim();
+            if (t.Equals(OffToken, System.StringComparison.OrdinalIgnoreCase)) return 0;
+
+            int colon = t.IndexOf(':');
+            if (colon > 0)
+            {
+                if (int.TryParse(t.Substring(0, colon), NumberStyles.Integer, CultureInfo.InvariantCulture, out int m)
+                    && int.TryParse(t.Substring(colon + 1), NumberStyles.Integer, CultureInfo.InvariantCulture, out int s))
+                    return m * 60 + s;
+                return fallback;
+            }
+
             int total = 0;
             bool any = false;
-            foreach (string part in token.Split(' '))
+            string compact = t.Replace(" s", "s").Replace(" m", "m");
+            foreach (string part in compact.Split(' '))
             {
                 string p = part.Trim().ToLowerInvariant();
                 if (p.Length < 2) continue;
@@ -70,15 +97,7 @@ namespace BuffDurationFloor
                 if (unit == 'm') { total += n * 60; any = true; }
                 else if (unit == 's') { total += n; any = true; }
             }
-            return any ? total : DefaultSeconds;
-        }
-
-        private static string[] BuildLadder()
-        {
-            int count = (MaxSeconds - MinSeconds) / StepSeconds + 1;
-            var ladder = new string[count];
-            for (int i = 0; i < count; i++) ladder[i] = Token(MinSeconds + i * StepSeconds);
-            return ladder;
+            return any ? total : fallback;
         }
     }
 }

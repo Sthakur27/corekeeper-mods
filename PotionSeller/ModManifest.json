@@ -1,0 +1,24 @@
+{
+    "guid": "a4f18c2e7d3b4a6f9e0c5b7d1f3a8e41",
+    "name": "PotionSeller",
+    "displayName": "Potion Seller",
+    "skipSafetyChecks": false,
+    "disableScripts": false,
+    "accessesExtraAssemblies": true,
+    "disableHarmonyPatching": false,
+    "requiredOn": 3,
+    "files": [
+        { "path": "Scripts/PotionSellerMod.cs", "guid": "a4f18c2e7d3b4a6f9e0c5b7d1f3a8e42" },
+        { "path": "Scripts/PotionSellerConfig.cs", "guid": "a4f18c2e7d3b4a6f9e0c5b7d1f3a8e43" },
+        { "path": "Scripts/PotionPrices.cs", "guid": "a4f18c2e7d3b4a6f9e0c5b7d1f3a8e44" },
+        { "path": "Scripts/MerchantStock.cs", "guid": "a4f18c2e7d3b4a6f9e0c5b7d1f3a8e45" },
+        { "path": "Scripts/Patches/ObjectAuthoringPatch.cs", "guid": "a4f18c2e7d3b4a6f9e0c5b7d1f3a8e46" },
+        { "path": "Scripts/Patches/BuyUIPatches.cs", "guid": "a4f18c2e7d3b4a6f9e0c5b7d1f3a8e47" },
+        { "path": "Scripts/Systems/PotionPriceSystem.cs", "guid": "a4f18c2e7d3b4a6f9e0c5b7d1f3a8e48" },
+        { "path": "Scripts/Systems/MerchantStockSystem.cs", "guid": "a4f18c2e7d3b4a6f9e0c5b7d1f3a8e49" }
+    ],
+    "dependencies": [
+        { "modName": "CoreLib", "required": true },
+        { "modName": "ModSettingsMenu", "required": true }
+    ]
+}

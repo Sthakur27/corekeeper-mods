@@ -1145,6 +1145,118 @@ def quickbuff():
     img.convert("RGB").save(r"C:\Users\Sid\CoreKeeperMods\release\quickbuff_logo.png")
     print("quickbuff_logo.png")
 
+# ---------- Potion Seller ----------
+PS = {
+    'k': (28, 20, 32),     # outline
+    'G': (150, 100, 60),   # cork
+    'B': (110, 70, 40),    # cork shade
+    'l': (240, 245, 255),  # glass highlight
+    'r': (230, 70, 80),    'R': (150, 40, 60),    # healing red
+    'b': (80, 140, 240),   'D': (40, 80, 170),    # mana blue
+    'n': (90, 210, 110),   'N': (40, 130, 70),    # poison aid green
+    'o': (250, 150, 60),   'O': (190, 90, 30),    # burn resist orange
+    'y': (250, 220, 90),   'Y': (190, 150, 40),   # keen yellow
+    'v': (170, 90, 240),   'V': (100, 50, 170),   # magic purple
+    'g': (170, 170, 180),  'S': (100, 100, 115),  # stoneskin grey
+    'p': (250, 110, 170),  'P': (180, 60, 120),   # enrage pink
+    'c': (90, 220, 230),   'C': (40, 150, 170),   # guardian cyan
+    'w': (240, 240, 235),  'W': (170, 170, 165),  # unusual white
+    # caveling
+    'q': (120, 150, 190),  'Q': (80, 105, 145),   # skin
+    'e': (255, 240, 150),                          # eyes
+    'h': (90, 60, 110),    'H': (60, 40, 80),     # hood / cloak
+    # stall
+    't': (150, 100, 60),   'T': (100, 65, 40),    # wood
+    'a': (200, 60, 70),    'A': (240, 230, 220),  # awning stripes
+    'm': (232, 196, 88),   'M': (170, 132, 50),   # coin
+}
+
+PS_CAVELING = [
+    "......kkkkkk......",
+    "....kkhhhhhhkk....",
+    "...khhhhhhhhhhk...",
+    "..khhhkkkkkkhhhk..",
+    "..khhkqqqqqqkhhk..",
+    "..khkqqqqqqqqkhk..",
+    "..khkqeeqqeeqkhk..",
+    "..khkqkeqqkeqkhk..",
+    "..khkqqqqqqqqkhk..",
+    "..khkQqqkkqqQkhk..",
+    "..khhkQQQQQQkhhk..",
+    "..khhhkkkkkkhhhk..",
+    ".khhhhhhhhhhhhhhk.",
+    ".khhHhhhhhhhhHhhk.",
+    "kqkhhHhhhhhhHhhkqk",
+    "kqkhhhHHHHHHhhhkqk",
+    ".kkhhhhhhhhhhhhkk.",
+    "..kHHHHHHHHHHHHk..",
+    "..kkkkkkkkkkkkkk..",
+]
+
+PS_COIN = [
+    "..kkkk..",
+    ".kmmmmk.",
+    "kmmMmmmk",
+    "kmMmmMmk",
+    "kmMmmMmk",
+    "kmmMMmmk",
+    ".kMMMMk.",
+    "..kkkk..",
+]
+
+def potionseller():
+    img = cave_bg(seed=13, top=(20, 14, 36), bottom=(48, 30, 66)).convert("RGBA")
+    d = ImageDraw.Draw(img)
+    text_shadow(d, (W // 2, 26), "POTION SELLER", font(84), (245, 235, 255))
+    text_shadow(d, (W // 2, 116), "The Caveling Merchant sells every potion.", font(30), (205, 190, 235))
+
+    # stall: awning, back wall, counter
+    sx0, sx1 = 90, 1190
+    awn_y = 170
+    for i, x in enumerate(range(sx0, sx1, 44)):
+        col = PS['a'] if i % 2 == 0 else PS['A']
+        d.rectangle([x, awn_y, min(x + 43, sx1), awn_y + 48], fill=col)
+        d.polygon([(x, awn_y + 48), (min(x + 43, sx1), awn_y + 48), (x + 22, awn_y + 66)], fill=col)
+    d.rectangle([sx0, awn_y - 8, sx1, awn_y], fill=PS['T'])
+    d.rectangle([sx0, awn_y + 66, sx0 + 18, 600], fill=PS['T'])            # posts
+    d.rectangle([sx1 - 18, awn_y + 66, sx1, 600], fill=PS['T'])
+    d.rectangle([sx0 + 18, awn_y + 66, sx1 - 18, 250], fill=(38, 26, 50))   # dark back wall strip
+    counter_y = 470
+    d.rectangle([sx0, counter_y, sx1, counter_y + 36], fill=PS['t'], outline=PS['k'], width=3)
+    d.rectangle([sx0, counter_y + 36, sx1, 600], fill=PS['T'], outline=PS['k'], width=3)
+    for x in range(sx0 + 40, sx1 - 40, 120):                                # plank lines
+        d.line([(x, counter_y + 40), (x, 596)], fill=(70, 45, 28), width=3)
+
+    # the merchant behind the counter, left
+    cav = sprite(PS_CAVELING, PS, 9)
+    img.paste(cav, (200, counter_y - cav.height + 40), cav)
+    d = ImageDraw.Draw(img)
+    d.rounded_rectangle([150, 250, 470, 296], radius=10, fill=(30, 22, 44), outline=(200, 170, 240), width=3)
+    text_shadow(d, (310, 258), "\"Potions! 20 of each!\"", font(24), (240, 225, 255))
+
+    # shelf of potions with coin prices
+    potions = [('r', 'R', 50), ('b', 'D', 50), ('n', 'N', 75), ('y', 'Y', 150),
+               ('v', 'V', 150), ('g', 'S', 200), ('c', 'C', 250), ('w', 'W', 500)]
+    x0, step = 540, 82
+    coin = sprite(PS_COIN, PS, 3)
+    f = font(22)
+    for i, (body, shade, price) in enumerate(potions):
+        x = x0 + i * step
+        spr = sprite(qb_potion(body, shade), PS, 6)
+        img.paste(spr, (x - spr.width // 2, counter_y - spr.height + 4), spr)
+        d = ImageDraw.Draw(img)
+        # price tag on the counter front
+        ty = counter_y + 44
+        d.rounded_rectangle([x - 38, ty, x + 38, ty + 40], radius=6, fill=(250, 240, 210), outline=PS['k'], width=2)
+        img.paste(coin, (x - 34, ty + 8), coin)
+        d = ImageDraw.Draw(img)
+        d.text((x - 6, ty + 20), str(price), font=f, fill=(40, 30, 20), anchor="lm")
+
+    d.rounded_rectangle([W // 2 - 560, 628, W // 2 + 560, 700], radius=16, fill=(14, 12, 30, 230), outline=(200, 170, 240), width=3)
+    text_shadow(d, (W // 2, 644), "13 potions  |  20 each per restock  |  50 - 500 coins  |  no unlock needed", font(26), (235, 225, 250))
+    img.convert("RGB").save(r"C:\Users\Sid\CoreKeeperMods\release\potionseller_logo.png")
+    print("potionseller_logo.png")
+
 if __name__ == "__main__":
     which = sys.argv[1] if len(sys.argv) > 1 else "all"
     if which in ("fiveloadouts", "all"): fiveloadouts()
@@ -1157,3 +1269,4 @@ if __name__ == "__main__":
     if which in ("durability", "all"): durability()
     if which in ("autoreplant", "all"): autoreplant()
     if which in ("quickbuff", "all"): quickbuff()
+    if which in ("potionseller", "all"): potionseller()

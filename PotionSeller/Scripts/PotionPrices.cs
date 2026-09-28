@@ -3,7 +3,7 @@ using Unity.Mathematics;
 namespace PotionSeller
 {
     /// <summary>
-    /// The potions the merchant sells and their base buy prices (Ancient Coins).
+    /// The potions (plus the Recall Idol) the merchant sells and their base buy prices (Ancient Coins).
     ///
     /// The game derives both prices from one database field, EntityObjectInfo.sellValue
     /// (InventoryUtility.GetCoinValue):
@@ -38,6 +38,8 @@ namespace PotionSeller
             new Entry(ObjectID.GreaterHealingPotion, 300),
             new Entry(ObjectID.GreaterManaPotion, 300),
             new Entry(ObjectID.UnusualPotion, 500),
+            // Not a potion, but sold by the same merchant on request: teleports you home.
+            new Entry(ObjectID.RecallIdol, 200),
         };
 
         public static bool TryGetBuyPrice(ObjectID id, out int price)

@@ -24,7 +24,7 @@ namespace PotionSeller
     public sealed class PotionSellerMod : IMod
     {
         public const string Name = "PotionSeller";
-        public const string Version = "1.0.1";
+        public const string Version = "1.0.2";
 
         private static bool _appliedViaDatabase;
 
@@ -34,7 +34,7 @@ namespace PotionSeller
         public void EarlyInit()
         {
             API.Authoring.OnObjectTypeAdded += OnObjectTypeAdded;
-            Debug.Log($"[{Name}] v{Version} loaded: {PotionPrices.Potions.Length} potions on the Caveling Merchant, grid {MerchantStock.Columns}x{MerchantStock.Rows}.");
+            Debug.Log($"[{Name}] v{Version} loaded: {PotionPrices.Potions.Length} items (potions + Recall Idol) on the Caveling Merchant, grid {MerchantStock.Columns}x{MerchantStock.Rows}.");
         }
 
         public const string SettingsHint = "The Caveling Merchant sells every potion. Price multiplier scales the buy prices (1x = 50..500 coins); stock is how many of each he carries per restock. Both apply live; stock changes show up at the next restock. In multiplayer the host's values count.";

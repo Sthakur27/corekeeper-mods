@@ -1,6 +1,6 @@
 # Potion Seller
 
-Core Keeper mod. The **Caveling Merchant** sells **every potion**, 20 of each per restock, at fixed
+Core Keeper mod. The **Caveling Merchant** sells **every potion** and the **Recall Idol** (200 coins), 20 of each per restock, at fixed
 Ancient Coin prices from 50 to 500. Nothing is gated: the potions are on his list from the first visit,
 next to his vanilla wares.
 
@@ -23,6 +23,7 @@ Required on client and server (`requiredOn: 3`). Depends on **CoreLib** and **Mo
 | Greater Healing Potion | 300 | 60 |
 | Greater Mana Potion | 300 | 60 |
 | Unusual Potion | 500 | 100 |
+| Recall Idol | 200 | 40 |
 
 Edit `Scripts/PotionPrices.cs` to change a price (keep multiples of 5, see below) or the list.
 
@@ -58,7 +59,7 @@ Merchant stock:
   restocks the merchant every 1500-2100 s by walking his `ContainedObjectsBuffer` and filling slot k
   with the k-th available list entry, so the list only matters up to the inventory size. The vanilla
   merchant inventory is 3x3.
-- `MerchantStock.Apply` appends the 13 potions (amount = stock setting, requirement None) and grows the
+- `MerchantStock.Apply` appends the 13 potions and the Recall Idol (amount = stock setting, requirement None) and grows the
   inventory to **8 columns x 3 rows** (`InventoryBuffer[0].sizeX/sizeY/maxSize` + `ContainedObjectsBuffer`
   padded to 24 slots). Wide and short on purpose: the buy window sits at the top of the screen and extra
   rows would grow down over the player inventory. It runs on the `CavelingMerchant` prefab entity in every world through

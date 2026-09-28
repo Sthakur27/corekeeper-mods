@@ -6,15 +6,15 @@ and have 1.5x their normal level-based health, while bosses keep full hard mode.
 ## What vanilla hard mode does
 
 - Every enemy attack (melee, ranged, charges, jumps, explosions, beams, mortars) deals **2x** damage.
-- Level-scaled enemies get **1.5x their prefab's raw base health** instead of the level-based
-  health they have in normal mode, which can differ a lot from a clean 1.5x.
+- Enemies get **1.5x** their normal (level-based) health.
 - Boss loot 1.5x.
 
 All of that applies to bosses and regular enemies alike.
 
 ## What this mod changes
 
-Only regular enemies in hard mode worlds (settings in the Mod Settings menu, section "Hard Mode Tuning"):
+Only regular enemies in hard mode worlds. By default only their damage changes (2x down to
+1.5x); their health already matches vanilla hard at 1.5x, and you can lower it. Settings are in the Mod Settings menu, section "Hard Mode Tuning":
 
 | Setting | Choices | Default |
 |---|---|---|
@@ -43,5 +43,6 @@ Hard mode is baked in when the server world converts its prefabs (`ConversionMan
   before the converter doubles them (all damage formulas are linear in the multiplier), then
   restored afterwards.
 - `HealthPatch`: prefix on `HealthAuthoring.ComputeMaxHealth` passes `useHardModeSettings = false`
-  for regular level-scaled enemies (giving the level-based value); the postfix multiplies it by
-  the health setting and logs `[HardModeTuning] <prefab>: health X (normal Y, vanilla hard Z)`.
+  for regular level-scaled enemies (giving the normal level-based value); the postfix multiplies it
+  by the health setting. At the default 1.5x this equals vanilla hard mode health (checked in game
+  for all 136 regular enemies), so by default only damage changes.

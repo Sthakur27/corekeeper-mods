@@ -20,9 +20,8 @@ namespace HardModeTuning.Patches
     }
 
     /// <summary>
-    /// Vanilla hard mode gives level-scaled enemies 1.5x their prefab's raw base health instead of the
-    /// level-based health. For regular enemies this computes the normal (level-based) value and
-    /// multiplies it by HealthMultiplier. Enemies whose health is not level based are left alone
+    /// Vanilla hard mode gives enemies 1.5x their normal (level-based) health. For regular enemies this
+    /// computes the normal value and multiplies it by HealthMultiplier (default 1.5x = vanilla hard). Enemies whose health is not level based are left alone
     /// (vanilla hard mode does not scale them either).
     /// </summary>
     [HarmonyPatch(typeof(HealthAuthoring), nameof(HealthAuthoring.ComputeMaxHealth))]
@@ -40,13 +39,10 @@ namespace HardModeTuning.Patches
         }
 
         [HarmonyPostfix]
-        public static void Postfix(HealthAuthoring __instance, ref int __result, bool __state)
+        public static void Postfix(ref int __result, bool __state)
         {
             if (!__state) return;
-            int levelBased = __result;
-            __result = Math.Max(1, (int)Math.Round(levelBased * Tuning.HealthMultiplier));
-            int vanillaHard = (int)Math.Round(__instance.maxHealth * 1.5f);
-            UnityEngine.Debug.Log($"[HardModeTuning] {__instance.gameObject.name}: health {__result} (normal {levelBased}, vanilla hard {vanillaHard})");
+            __result = Math.Max(1, (int)Math.Round(__result * Tuning.HealthMultiplier));
         }
     }
 }

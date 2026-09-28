@@ -10,8 +10,8 @@ namespace HardModeTuning
     /// Tones hard mode down for regular enemies while bosses keep full hard mode.
     ///
     /// Vanilla hard mode is applied when a world's prefabs are converted on the server: every
-    /// enemy attack converter doubles its damage, and HealthAuthoring.ComputeMaxHealth replaces the
-    /// level-based health of level-scaled enemies with 1.5x the prefab's raw base health. For regular
+    /// enemy attack converter doubles its damage, and HealthAuthoring.ComputeMaxHealth gives enemies
+    /// 1.5x their level-based health. For regular
     /// (non-boss) enemies this mod instead gives damage = normal-mode damage x
     /// <see cref="Tuning.DamageMultiplier"/> and health = level-based health x
     /// <see cref="Tuning.HealthMultiplier"/> (see Patches). Bosses, their parts and projectiles,

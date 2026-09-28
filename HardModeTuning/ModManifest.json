@@ -1,0 +1,38 @@
+{
+    "guid": "cae827ad76ed41ddae01bb40ea3d74fb",
+    "name": "HardModeTuning",
+    "displayName": "Hard Mode Tuning",
+    "skipSafetyChecks": false,
+    "disableScripts": false,
+    "accessesExtraAssemblies": true,
+    "disableHarmonyPatching": false,
+    "requiredOn": 3,
+    "files": [
+        {
+            "path": "Scripts/HardModeTuningMod.cs",
+            "guid": "e8214b64fabf492089b0ff614c8d3d9a"
+        },
+        {
+            "path": "Scripts/Tuning.cs",
+            "guid": "9f57eab2f71b4ee7882eb561d454d6a7"
+        },
+        {
+            "path": "Scripts/Patches/ConversionPatches.cs",
+            "guid": "7f29867aa52849c3b70b1a6587de62e0"
+        },
+        {
+            "path": "Scripts/Patches/DamagePatches.cs",
+            "guid": "711867577f874cdc99cda58aa63b9639"
+        }
+    ],
+    "dependencies": [
+        {
+            "modName": "CoreLib",
+            "required": true
+        },
+        {
+            "modName": "ModSettingsMenu",
+            "required": true
+        }
+    ]
+}

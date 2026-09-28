@@ -1,0 +1,21 @@
+{
+    "guid": "bedfcd789f3347d183198f0ec8fc713a",
+    "name": "KeepMinions",
+    "displayName": "Keep Minions On Teleport",
+    "skipSafetyChecks": false,
+    "disableScripts": false,
+    "accessesExtraAssemblies": true,
+    "disableHarmonyPatching": false,
+    "requiredOn": 3,
+    "files": [
+        {
+            "path": "Scripts/KeepMinionsMod.cs",
+            "guid": "f863de8a36b74fd7a75258a76c604090"
+        },
+        {
+            "path": "Scripts/Systems/KeepMinionsSystems.cs",
+            "guid": "8d164c464f314a1a9cbd96cf8f223ba7"
+        }
+    ],
+    "dependencies": []
+}

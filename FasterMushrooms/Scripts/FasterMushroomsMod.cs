@@ -1,3 +1,4 @@
+using System.Linq;
 using ModSettingsMenu.Settings;
 using PugMod;
 using UnityEngine;
@@ -23,22 +24,31 @@ namespace FasterMushrooms
         public const string Name = "FasterMushrooms";
         public const string Version = "1.1.0";
 
-        private SettingHandle<string> _speed;
-        private SettingHandle<string> _respawn;
+        private static SettingHandle<string> _speed;
+        private static SettingHandle<string> _respawn;
 
         public void EarlyInit()
         {
             Debug.Log($"[{Name}] v{Version}");
         }
 
+        public const string SettingsHint = "How many times faster mycelium roots spread and mushrooms grow. 1x = vanilla. How often picked wild mushrooms get a chance to respawn near you. Vanilla almost never respawns them near players.";
+
         public void Init()
         {
-            ModSettings.Section(this)
-                .Hint("How many times faster mycelium roots spread and mushrooms grow. 1x = vanilla.")
-                .Choice(out _speed, "Mushroom growth speed", MushroomSpeed.Ladder, MushroomSpeed.DefaultToken)
-                .Hint("How often picked wild mushrooms get a chance to respawn near you. Vanilla almost never respawns them near players.")
-                .Choice(out _respawn, "Wild mushroom respawn", MushroomRespawn.Ladder, MushroomRespawn.DefaultToken)
-                .Build();
+            if (InOverhaul(this)) return; // the overhaul registers every feature's settings in one section
+            var section = ModSettings.Section(this).Hint(SettingsHint);
+            RegisterSettings(section, "");
+            section.Build();
+        }
+
+        /// <summary>Adds this feature's options to <paramref name="section"/>, each label prefixed with <paramref name="prefix"/>.</summary>
+        public static void RegisterSettings(SectionBuilder section, string prefix)
+        {
+            section
+                .Choice(out _speed, prefix + "Mushroom growth speed", MushroomSpeed.Ladder, MushroomSpeed.DefaultToken)
+                .Choice(out _respawn, prefix + "Wild mushroom respawn", MushroomRespawn.Ladder, MushroomRespawn.DefaultToken);
+
 
             MushroomSpeed.Set(_speed.Value);
             _speed.OnChanged += token =>
@@ -56,6 +66,14 @@ namespace FasterMushrooms
 
             Debug.Log($"[{Name}] Loaded. Mushroom growth speed {MushroomSpeed.Multiplier:0.##}x, respawn every {MushroomRespawn.IntervalSeconds:0}s");
         }
+
+        /// <summary>True when this feature is running inside Sid's Overhaul (one combined mod).</summary>
+        internal static bool InOverhaul(IMod mod)
+        {
+            var info = API.ModLoader.LoadedMods.FirstOrDefault(m => m.Handlers.Contains(mod));
+            return info != null && info.Metadata.name == "SidsOverhaul";
+        }
+
 
         public void Shutdown() { }
         public void ModObjectLoaded(Object obj) { }

@@ -30,7 +30,9 @@ namespace MasterPet
             ModInfo = API.ModLoader.LoadedMods.FirstOrDefault(m => m.Handlers.Contains(this));
             if (ModInfo == null || ModInfo.AssetBundles == null || ModInfo.AssetBundles.Count == 0) return;
 
-            AssetBundle = ModInfo.AssetBundles[0];
+            // By content, not index: inside Sid's Overhaul this mod shares the list with other bundles.
+            AssetBundle = ModInfo.AssetBundles.FirstOrDefault(b => b != null && b.Contains($"Assets/{InternalName}/UI/MasterPetWindow.prefab"))
+                          ?? ModInfo.AssetBundles[0];
             if (AssetBundle == null) return;
 
             UIPrefab = AssetBundle.LoadAsset<GameObject>($"Assets/{InternalName}/UI/MasterPetWindow.prefab");

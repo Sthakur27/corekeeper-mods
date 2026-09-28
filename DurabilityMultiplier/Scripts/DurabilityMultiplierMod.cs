@@ -1,3 +1,4 @@
+using System.Linq;
 using ModSettingsMenu.Settings;
 using PugMod;
 using UnityEngine;
@@ -19,19 +20,29 @@ namespace DurabilityMultiplier
         public const string Name = "DurabilityMultiplier";
         public const string Version = "1.0.0";
 
-        private SettingHandle<string> _rate;
+        private static SettingHandle<string> _rate;
 
         public void EarlyInit()
         {
             Debug.Log($"[{Name}] v{Version}");
         }
 
+        public const string SettingsHint = "How fast tools, weapons and armor wear out. 1x = vanilla, 0x = never. Applies instantly. In multiplayer the host's setting is the one that counts.";
+
         public void Init()
         {
-            ModSettings.Section(this)
-                .Hint("How fast tools, weapons and armor wear out. 1x = vanilla, 0x = never. Applies instantly. In multiplayer the host's setting is the one that counts.")
-                .Choice(out _rate, "Durability loss rate", DurabilityRate.Ladder, DurabilityRate.DefaultToken)
-                .Build();
+            if (InOverhaul(this)) return; // the overhaul registers every feature's settings in one section
+            var section = ModSettings.Section(this).Hint(SettingsHint);
+            RegisterSettings(section, "");
+            section.Build();
+        }
+
+        /// <summary>Adds this feature's options to <paramref name="section"/>, each label prefixed with <paramref name="prefix"/>.</summary>
+        public static void RegisterSettings(SectionBuilder section, string prefix)
+        {
+            section
+                .Choice(out _rate, prefix + "Durability loss rate", DurabilityRate.Ladder, DurabilityRate.DefaultToken);
+
 
             DurabilityRate.Set(DurabilityRate.Parse(_rate.Value));
             _rate.OnChanged += token =>
@@ -42,6 +53,14 @@ namespace DurabilityMultiplier
 
             Debug.Log($"[{Name}] Loaded. Durability loss rate: {DurabilityRate.Value:0.##}x");
         }
+
+        /// <summary>True when this feature is running inside Sid's Overhaul (one combined mod).</summary>
+        internal static bool InOverhaul(IMod mod)
+        {
+            var info = API.ModLoader.LoadedMods.FirstOrDefault(m => m.Handlers.Contains(mod));
+            return info != null && info.Metadata.name == "SidsOverhaul";
+        }
+
 
         public void Shutdown() { }
         public void ModObjectLoaded(Object obj) { }

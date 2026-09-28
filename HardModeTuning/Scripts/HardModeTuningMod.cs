@@ -1,3 +1,4 @@
+using System.Linq;
 using ModSettingsMenu.Settings;
 using PugMod;
 using UnityEngine;
@@ -21,22 +22,31 @@ namespace HardModeTuning
         public const string Name = "HardModeTuning";
         public const string Version = "1.0.0";
 
-        private SettingHandle<string> _damage;
-        private SettingHandle<string> _health;
+        private static SettingHandle<string> _damage;
+        private static SettingHandle<string> _health;
 
         public void EarlyInit()
         {
             Debug.Log($"[{Name}] v{Version}");
         }
 
+        public const string SettingsHint = "Hard mode, regular enemies only (bosses keep full hard mode). Compared to normal mode; vanilla hard is 2x damage. Applies next time you load a world. Regular enemy health, as a multiple of the normal (level-based) health.";
+
         public void Init()
         {
-            ModSettings.Section(this)
-                .Hint("Hard mode, regular enemies only (bosses keep full hard mode). Compared to normal mode; vanilla hard is 2x damage. Applies next time you load a world.")
-                .Choice(out _damage, "Regular enemy damage", Tuning.Ladder, Tuning.DefaultToken)
-                .Hint("Regular enemy health, as a multiple of the normal (level-based) health.")
-                .Choice(out _health, "Regular enemy health", Tuning.Ladder, Tuning.DefaultToken)
-                .Build();
+            if (InOverhaul(this)) return; // the overhaul registers every feature's settings in one section
+            var section = ModSettings.Section(this).Hint(SettingsHint);
+            RegisterSettings(section, "");
+            section.Build();
+        }
+
+        /// <summary>Adds this feature's options to <paramref name="section"/>, each label prefixed with <paramref name="prefix"/>.</summary>
+        public static void RegisterSettings(SectionBuilder section, string prefix)
+        {
+            section
+                .Choice(out _damage, prefix + "Regular enemy damage", Tuning.Ladder, Tuning.DefaultToken)
+                .Choice(out _health, prefix + "Regular enemy health", Tuning.Ladder, Tuning.DefaultToken);
+
 
             Tuning.DamageMultiplier = Tuning.Parse(_damage.Value);
             Tuning.HealthMultiplier = Tuning.Parse(_health.Value);
@@ -44,6 +54,14 @@ namespace HardModeTuning
             _health.OnChanged += t => { Tuning.HealthMultiplier = Tuning.Parse(t); Log(); };
             Log();
         }
+
+        /// <summary>True when this feature is running inside Sid's Overhaul (one combined mod).</summary>
+        internal static bool InOverhaul(IMod mod)
+        {
+            var info = API.ModLoader.LoadedMods.FirstOrDefault(m => m.Handlers.Contains(mod));
+            return info != null && info.Metadata.name == "SidsOverhaul";
+        }
+
 
         private static void Log()
         {

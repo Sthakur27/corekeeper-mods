@@ -1,3 +1,4 @@
+using System.Linq;
 using ModSettingsMenu.Settings;
 using PugMod;
 using UnityEngine;
@@ -55,18 +56,36 @@ namespace AutoReplant
             Debug.Log($"[{Name}] v{Version}");
         }
 
+        public const string SettingsHint = "Harvesting a ripe crop replants it from a seed in your inventory. Golden roll is vanilla (3% + Gardening bonus) unless 'Override golden chance' is on; then the % below replaces the 3% base.";
+
         public void Init()
         {
-            ModSettings.Section(this)
-                .Hint("Harvesting a ripe crop replants it from a seed in your inventory. Golden roll is vanilla (3% + Gardening bonus) unless 'Override golden chance' is on; then the % below replaces the 3% base.")
-                .Toggle(out _enabled, "Auto replant", DefaultEnabled)
-                .Toggle(out _goldenOverride, "Override golden chance", false)
-                .Stepper(out _goldenChance, "Golden plant chance (%)", 0, 100, DefaultGoldenChancePercent)
-                .Toggle(out _useInventorySeeds, "Use seeds from inventory", DefaultUseInventorySeeds)
-                .Build();
+            if (InOverhaul(this)) return; // the overhaul registers every feature's settings in one section
+            var section = ModSettings.Section(this).Hint(SettingsHint);
+            RegisterSettings(section, "");
+            section.Build();
+        }
+
+        /// <summary>Adds this feature's options to <paramref name="section"/>, each label prefixed with <paramref name="prefix"/>.</summary>
+        public static void RegisterSettings(SectionBuilder section, string prefix)
+        {
+            section
+                .Toggle(out _enabled, prefix + "Auto replant", DefaultEnabled)
+                .Toggle(out _goldenOverride, prefix + "Override golden chance", false)
+                .Stepper(out _goldenChance, prefix + "Golden plant chance (%)", 0, 100, DefaultGoldenChancePercent)
+                .Toggle(out _useInventorySeeds, prefix + "Use seeds from inventory", DefaultUseInventorySeeds);
+
 
             Debug.Log($"[{Name}] Loaded. enabled={Enabled} goldenOverride={GoldenOverride} golden={GoldenChancePercent}% useInventorySeeds={UseInventorySeeds}");
         }
+
+        /// <summary>True when this feature is running inside Sid's Overhaul (one combined mod).</summary>
+        internal static bool InOverhaul(IMod mod)
+        {
+            var info = API.ModLoader.LoadedMods.FirstOrDefault(m => m.Handlers.Contains(mod));
+            return info != null && info.Metadata.name == "SidsOverhaul";
+        }
+
 
         public void Shutdown() { }
         public void ModObjectLoaded(Object obj) { }

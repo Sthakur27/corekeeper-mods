@@ -65,7 +65,7 @@ namespace QuickBuff
             {
                 // The command module is the client -> server channel; it depends on control mapping.
                 CoreLibMod.LoadSubmodule(typeof(ControlMappingModule), typeof(CommandModule));
-                CommandModule.AddCommands(_modInfo.ModId, Name);
+                if (!InOverhaul(this)) CommandModule.AddCommands(_modInfo.ModId, Name); // the overhaul registers all commands once
             }
             catch (Exception e)
             {
@@ -92,16 +92,34 @@ namespace QuickBuff
             _rewiredPlayer = ReInput.players.GetPlayer(0);
         }
 
+        public const string SettingsHint = "Press the Quick Buff key (default B, rebind under Controls) to eat one of every buff food and drink one of every buff potion in your inventory.";
+
         public void Init()
         {
-            ModSettings.Section(this)
-                .Hint("Press the Quick Buff key (default B, rebind under Controls) to eat one of every buff food and drink one of every buff potion in your inventory.")
-                .Toggle(out _skipActive, "Skip buffs that are still active", DefaultSkipActive)
-                .Slider(out _skipSeconds, "Still active means more than (seconds)", 0f, 300f, DefaultSkipSeconds, 5f, SliderDisplay.Number)
-                .Build();
+            if (InOverhaul(this)) return; // the overhaul registers every feature's settings in one section
+            var section = ModSettings.Section(this).Hint(SettingsHint);
+            RegisterSettings(section, "");
+            section.Build();
+        }
+
+        /// <summary>Adds this feature's options to <paramref name="section"/>, each label prefixed with <paramref name="prefix"/>.</summary>
+        public static void RegisterSettings(SectionBuilder section, string prefix)
+        {
+            section
+                .Toggle(out _skipActive, prefix + "Skip buffs that are still active", DefaultSkipActive)
+                .Slider(out _skipSeconds, prefix + "Still active means more than (seconds)", 0f, 300f, DefaultSkipSeconds, 5f, SliderDisplay.Number);
+
 
             Debug.Log($"[{Name}] Loaded. Skip active buffs: {SkipActive} (threshold {SkipSeconds:0}s). Key: {UseKeyBind}.");
         }
+
+        /// <summary>True when this feature is running inside Sid's Overhaul (one combined mod).</summary>
+        internal static bool InOverhaul(IMod mod)
+        {
+            var info = API.ModLoader.LoadedMods.FirstOrDefault(m => m.Handlers.Contains(mod));
+            return info != null && info.Metadata.name == "SidsOverhaul";
+        }
+
 
         public void Update()
         {

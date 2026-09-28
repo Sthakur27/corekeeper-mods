@@ -12,8 +12,10 @@ public class init : IMod {
 
 public void Init()
 {
-	var mikufish = ((ModAPIModLoader)API.ModLoader).GetMod("mikufish");
-	var assets = mikufish.AssetBundles[0];
+	// Found by handler and bundle content (not name / index) so this also works inside Sid's Overhaul.
+	var mikufish = System.Linq.Enumerable.FirstOrDefault(API.ModLoader.LoadedMods, m => m.Handlers.Contains(this));
+	var assets = System.Linq.Enumerable.FirstOrDefault(mikufish.AssetBundles, b => b != null && b.Contains("Assets/mikufish/switch.prefab"))
+		?? mikufish.AssetBundles[0];
 
 	var prefab = assets.LoadAsset<GameObject>("Assets/mikufish/switch.prefab");
 	var parent = ((InventoryUI)Manager.ui.playerInventoryUI).transform.GetChild(0);

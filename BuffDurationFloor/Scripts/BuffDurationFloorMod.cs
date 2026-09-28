@@ -1,3 +1,4 @@
+using System.Linq;
 using ModSettingsMenu.Settings;
 using PugMod;
 using UnityEngine;
@@ -27,21 +28,31 @@ namespace BuffDurationFloor
         public const string Name = "BuffDurationFloor";
         public const string Version = "1.2.0";
 
-        private SettingHandle<string> _buffFloor;
-        private SettingHandle<string> _healingFloor;
+        private static SettingHandle<string> _buffFloor;
+        private static SettingHandle<string> _healingFloor;
 
         public void EarlyInit()
         {
             Debug.Log($"[{Name}] v{Version}");
         }
 
+        public const string SettingsHint = "Food and potion buffs shorter than the floor last the floor instead. Off = vanilla. Longer buffs and debuffs are unchanged.";
+
         public void Init()
         {
-            ModSettings.Section(this)
-                .Hint("Food and potion buffs shorter than the floor last the floor instead. Off = vanilla. Longer buffs and debuffs are unchanged.")
-                .Choice(out _buffFloor, "Minimum buff duration", FloorSettings.Ladder, FloorSettings.DefaultBuffToken)
-                .Choice(out _healingFloor, "Minimum healing duration", FloorSettings.Ladder, FloorSettings.DefaultHealingToken)
-                .Build();
+            if (InOverhaul(this)) return; // the overhaul registers every feature's settings in one section
+            var section = ModSettings.Section(this).Hint(SettingsHint);
+            RegisterSettings(section, "");
+            section.Build();
+        }
+
+        /// <summary>Adds this feature's options to <paramref name="section"/>, each label prefixed with <paramref name="prefix"/>.</summary>
+        public static void RegisterSettings(SectionBuilder section, string prefix)
+        {
+            section
+                .Choice(out _buffFloor, prefix + "Minimum buff duration", FloorSettings.Ladder, FloorSettings.DefaultBuffToken)
+                .Choice(out _healingFloor, prefix + "Minimum healing duration", FloorSettings.Ladder, FloorSettings.DefaultHealingToken);
+
 
             FloorSettings.SetBuffFloor(FloorSettings.Parse(_buffFloor.Value, FloorSettings.DefaultBuffSeconds));
             FloorSettings.SetHealingFloor(FloorSettings.Parse(_healingFloor.Value, FloorSettings.DefaultHealingSeconds));
@@ -50,6 +61,14 @@ namespace BuffDurationFloor
 
             Debug.Log($"[{Name}] Loaded. Minimum buff duration: {FloorSettings.Token((int)FloorSettings.BuffFloorSeconds)}, minimum healing duration: {FloorSettings.Token((int)FloorSettings.HealingFloorSeconds)}");
         }
+
+        /// <summary>True when this feature is running inside Sid's Overhaul (one combined mod).</summary>
+        internal static bool InOverhaul(IMod mod)
+        {
+            var info = API.ModLoader.LoadedMods.FirstOrDefault(m => m.Handlers.Contains(mod));
+            return info != null && info.Metadata.name == "SidsOverhaul";
+        }
+
 
         public void Shutdown() { }
         public void ModObjectLoaded(Object obj) { }

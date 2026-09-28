@@ -40,25 +40,40 @@ namespace SkillXPMultiplier
             // Same pattern as the mod.io XP Multiplier: chat commands only make sense with a UI.
             if (Application.isBatchMode) return;
             CoreLibMod.LoadSubmodule(typeof(CommandModule));
-            CommandModule.AddCommands(_modInfo.ModId, Name);
+            if (!InOverhaul(this)) CommandModule.AddCommands(_modInfo.ModId, Name); // the overhaul registers all commands once
         }
+
+        public const string SettingsHint = "XP multiplier per skill. 1x = vanilla, 0x = skill frozen. Applies instantly.";
 
         public void Init()
         {
-            var section = ModSettings.Section(this)
-                .Hint("XP multiplier per skill. 1x = vanilla, 0x = skill frozen. Applies instantly.");
+            if (InOverhaul(this)) return; // the overhaul registers every feature's settings in one section
+            var section = ModSettings.Section(this).Hint(SettingsHint);
+            RegisterSettings(section, "");
+            section.Build();
+        }
 
+        /// <summary>Adds one option per skill to <paramref name="section"/>, each label prefixed with <paramref name="prefix"/>.</summary>
+        public static void RegisterSettings(SectionBuilder section, string prefix)
+        {
             for (int i = 0; i < SkillXPTable.SkillCount; i++)
             {
-                section.Choice(out _handles[i], SkillXPTable.SkillNames[i], SkillXPTable.Ladder, SkillXPTable.DefaultToken);
+                section.Choice(out _handles[i], prefix + SkillXPTable.SkillNames[i], SkillXPTable.Ladder, SkillXPTable.DefaultToken);
                 int index = i;
                 SkillXPTable.Set(index, SkillXPTable.Parse(_handles[index].Value));
                 _handles[index].OnChanged += token => SkillXPTable.Set(index, SkillXPTable.Parse(token));
             }
-            section.Build();
 
             Debug.Log($"[{Name}] Loaded. Multipliers: {Describe()}");
         }
+
+        /// <summary>True when this feature is running inside Sid's Overhaul (one combined mod).</summary>
+        internal static bool InOverhaul(IMod mod)
+        {
+            var info = API.ModLoader.LoadedMods.FirstOrDefault(m => m.Handlers.Contains(mod));
+            return info != null && info.Metadata.name == "SidsOverhaul";
+        }
+
 
         /// <summary>Set one skill's multiplier (snapped to the menu ladder) and persist it. Returns the token used.</summary>
         public static string SetSkill(int skillIndex, float wanted)

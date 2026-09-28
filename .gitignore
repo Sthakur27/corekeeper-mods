@@ -3,3 +3,4 @@ MasterPet_original_bundles/
 *.pugbackup
 .modio_token
 __pycache__/
+build/

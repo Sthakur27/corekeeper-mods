@@ -1,3 +1,4 @@
+using System.Linq;
 using ModSettingsMenu.Settings;
 using PugMod;
 using Unity.Entities;
@@ -27,8 +28,8 @@ namespace PotionSeller
 
         private static bool _appliedViaDatabase;
 
-        private SettingHandle<string> _price;
-        private SettingHandle<int> _stock;
+        private static SettingHandle<string> _price;
+        private static SettingHandle<int> _stock;
 
         public void EarlyInit()
         {
@@ -36,13 +37,23 @@ namespace PotionSeller
             Debug.Log($"[{Name}] v{Version} loaded: {PotionPrices.Potions.Length} potions on the Caveling Merchant, grid {MerchantStock.Columns}x{MerchantStock.Rows}.");
         }
 
+        public const string SettingsHint = "The Caveling Merchant sells every potion. Price multiplier scales the buy prices (1x = 50..500 coins); stock is how many of each he carries per restock. Both apply live; stock changes show up at the next restock. In multiplayer the host's values count.";
+
         public void Init()
         {
-            ModSettings.Section(this)
-                .Hint("The Caveling Merchant sells every potion. Price multiplier scales the buy prices (1x = 50..500 coins); stock is how many of each he carries per restock. Both apply live; stock changes show up at the next restock. In multiplayer the host's values count.")
-                .Choice(out _price, "Potion price multiplier", PotionSellerConfig.PriceLadder, PotionSellerConfig.DefaultPriceToken)
-                .Stepper(out _stock, "Potions per restock", PotionSellerConfig.MinStock, PotionSellerConfig.MaxStock, PotionSellerConfig.DefaultStock)
-                .Build();
+            if (InOverhaul(this)) return; // the overhaul registers every feature's settings in one section
+            var section = ModSettings.Section(this).Hint(SettingsHint);
+            RegisterSettings(section, "");
+            section.Build();
+        }
+
+        /// <summary>Adds this feature's options to <paramref name="section"/>, each label prefixed with <paramref name="prefix"/>.</summary>
+        public static void RegisterSettings(SectionBuilder section, string prefix)
+        {
+            section
+                .Choice(out _price, prefix + "Potion price multiplier", PotionSellerConfig.PriceLadder, PotionSellerConfig.DefaultPriceToken)
+                .Stepper(out _stock, prefix + "Potions per restock", PotionSellerConfig.MinStock, PotionSellerConfig.MaxStock, PotionSellerConfig.DefaultStock);
+
 
             PotionSellerConfig.SetPriceMultiplier(PotionSellerConfig.ParseMultiplier(_price.Value));
             PotionSellerConfig.SetStock(_stock.Value);
@@ -60,6 +71,14 @@ namespace PotionSeller
 
             Debug.Log($"[{Name}] price multiplier {PotionSellerConfig.PriceMultiplier:0.##}x, stock {PotionSellerConfig.Stock}.");
         }
+
+        /// <summary>True when this feature is running inside Sid's Overhaul (one combined mod).</summary>
+        internal static bool InOverhaul(IMod mod)
+        {
+            var info = API.ModLoader.LoadedMods.FirstOrDefault(m => m.Handlers.Contains(mod));
+            return info != null && info.Metadata.name == "SidsOverhaul";
+        }
+
 
         public void Shutdown()
         {

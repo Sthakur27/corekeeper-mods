@@ -309,3 +309,10 @@ SkipIntro 6363825. Refresh the list from Player.log (`loaded mod X from mod.io`)
 
 - Wild plants (mushrooms etc.) do NOT regrow via RootPlantCD: that is the bigRoot/mycelium spread. They come back through `SpawnEnvironmentObjectsPeriodicallySystem` (one 16x16 area per tick, ~4 h per area, skips areas within 200 tiles of any player). To respawn something near players, queue `SpawnEnvironmentObjectsCD { respawn = true }` and temporarily zero other entries in the `EnvironmentSpawnObjectBuffer` table (see FasterMushrooms `MushroomRespawnSystem`).
 - Never hardcode a vanilla formula the UI also shows (pet talent points, skill points): call the game method (`PetExtensions.GetTotalTalentPoints`) so Harmony patches from other mods (AllSkills makes pet points level-1) stay consistent.
+
+## 12. Sids Overhaul + new mods (2026-09-28)
+
+- **Sids Overhaul** https://mod.io/g/corekeeper/m/sids-overhaul (id 6412463): all mods combined, built by `release/build_overhaul.py` into `build/SidsOverhaul` (upload with `publish.py file 6412463 build\SidsOverhaul <ver> "<log>"`). Features use `InOverhaul(this)` + static `RegisterSettings(section, prefix)`; the central `Overhaul/Scripts/SidsOverhaulMod.cs` builds the single settings section and registers CoreLib commands once. Mod Settings Menu keys sections by manifest name (one section, one hint per mod). Not in the collection (it would duplicate every feature). GPL-3.0 because of the mikufish fork.
+- **Hard Mode Tuning** id 6412464, **Keep Minions On Teleport** id 6412469 (both in the collection, now 25 mods). Faster Mushrooms 1.1.0 and Master Pet Plus 1.1.1 uploaded the same day.
+- Every new feature must be added to `MODS` in build_overhaul.py and, if it has settings, to SidsOverhaulMod.Init. `release/switch_mods.py overhaul|separate` swaps the local install.
+- Reddit/old.reddit are blocked for agent browsers; post drafts live in `release/reddit_post.md` + `release/reddit_showcase.png` for Sid to post.

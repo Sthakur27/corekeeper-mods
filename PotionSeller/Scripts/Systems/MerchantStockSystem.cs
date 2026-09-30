@@ -22,6 +22,20 @@ namespace PotionSeller.Systems
 
         private EntityQuery _merchants;
         private float _timer;
+        private readonly System.Collections.Generic.HashSet<Entity> _checked = new System.Collections.Generic.HashSet<Entity>();
+
+        private bool HasAnyStocked(Entity e, PotionPrices.Entry[] list)
+        {
+            var contained = EntityManager.GetBuffer<ContainedObjectsBuffer>(e);
+            for (int i = 0; i < contained.Length; i++)
+            {
+                var id = contained[i].objectID;
+                if (id == ObjectID.None) continue;
+                for (int j = 0; j < list.Length; j++)
+                    if (list[j].id == id) return true;
+            }
+            return false;
+        }
 
         protected override void OnCreate()
         {
@@ -52,10 +66,21 @@ namespace PotionSeller.Systems
             for (int i = 0; i < entities.Length; i++)
             {
                 var e = entities[i];
-                if (PotionPrices.ForMerchant(EntityManager.GetComponentData<ObjectDataCD>(e).objectID) == null) continue;
-                if (!MerchantStock.Apply(EntityManager, e, stock, out bool addedItems)) continue;
-
+                var list = PotionPrices.ForMerchant(EntityManager.GetComponentData<ObjectDataCD>(e).objectID);
+                if (list == null) continue;
                 bool isPrefab = EntityManager.HasComponent<Prefab>(e);
+                bool changed = MerchantStock.Apply(EntityManager, e, stock, out bool addedItems);
+
+                // A merchant loaded from a save can already carry our items in his list (the prefab was
+                // fixed first) while his shelves still hold the old stock until the next 25-35 min
+                // restock. Once per session, if none of our items is on his shelves, restock now.
+                if (!isPrefab && _checked.Add(e) && !HasAnyStocked(e, list))
+                {
+                    addedItems = true;
+                    changed = true;
+                }
+                if (!changed) continue;
+
                 if (addedItems && !isPrefab)
                 {
                     var od = EntityManager.GetComponentData<ObjectDataCD>(e);

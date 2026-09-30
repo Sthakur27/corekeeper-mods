@@ -24,7 +24,7 @@ namespace PotionSeller
     public sealed class PotionSellerMod : IMod
     {
         public const string Name = "PotionSeller";
-        public const string Version = "1.1.0";
+        public const string Version = "1.1.1";
 
         private static bool _appliedViaDatabase;
 

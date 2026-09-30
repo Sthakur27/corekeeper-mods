@@ -1,12 +1,15 @@
 # Potion Seller
 
-Core Keeper mod. The **Caveling Merchant** sells **every potion** and the **Recall Idol** (200 coins), 20 of each per restock, at fixed
-Ancient Coin prices from 50 to 500. Nothing is gated: the potions are on his list from the first visit,
-next to his vanilla wares.
+Core Keeper mod. The **Caveling Merchant** sells **every potion** and the **Recall Idol**, and the
+**Slime Merchant** sells **every grenade and bomb**, 20 of each per restock, at fixed Ancient Coin
+prices (potions 50 to 500, explosives 10 to 100). Nothing is gated: the items are on their lists from
+the first visit, next to the vanilla wares.
 
 Required on client and server (`requiredOn: 3`). Depends on **CoreLib** and **Mod Settings Menu**.
 
 ## Prices
+
+Caveling Merchant:
 
 | Potion | Buy (1x) | You get when selling one |
 |---|---|---|
@@ -24,6 +27,26 @@ Required on client and server (`requiredOn: 3`). Depends on **CoreLib** and **Mo
 | Greater Mana Potion | 300 | 60 |
 | Unusual Potion | 500 | 100 |
 | Recall Idol | 200 | 40 |
+
+Slime Merchant:
+
+| Explosive | Buy (1x) | You get when selling one |
+|---|---|---|
+| Grenade | 10 | 2 |
+| Small Bomb | 10 | 2 |
+| Bomb | 15 | 3 |
+| Fire Grenade | 20 | 4 |
+| Poison Grenade | 20 | 4 |
+| Oil Grenade | 25 | 5 |
+| Stun Grenade | 25 | 5 |
+| Large Bomb | 30 | 6 |
+| Charm Grenade | 35 | 7 |
+| Sulfur Bomb | 40 | 8 |
+| Proximity Bomb | 50 | 10 |
+| Seeker Bomb | 60 | 12 |
+| Blunder Bomb | 70 | 14 |
+| Big Grenade | 80 | 16 |
+| Void Bomb | 100 | 20 |
 
 Edit `Scripts/PotionPrices.cs` to change a price (keep multiples of 5, see below) or the list.
 

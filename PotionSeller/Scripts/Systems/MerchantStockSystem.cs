@@ -7,7 +7,7 @@ namespace PotionSeller.Systems
 {
     /// <summary>
     /// Server-side fix-up for merchants that already exist in a save (and belt-and-braces for the prefab):
-    /// every couple of seconds, for each CavelingMerchant entity, append the potions to its
+    /// every couple of seconds, for each Caveling / Slime Merchant entity, append its items to its
     /// MerchantItemInfoBuffer, sync their amounts to the stock setting and grow its inventory
     /// (see <see cref="MerchantStock"/>). The first time potions get added to a live merchant its restock
     /// timer (ObjectDataCD.amount, counted down by MerchantBuyInventorySystem) is zeroed so the new stock
@@ -52,7 +52,7 @@ namespace PotionSeller.Systems
             for (int i = 0; i < entities.Length; i++)
             {
                 var e = entities[i];
-                if (EntityManager.GetComponentData<ObjectDataCD>(e).objectID != ObjectID.CavelingMerchant) continue;
+                if (PotionPrices.ForMerchant(EntityManager.GetComponentData<ObjectDataCD>(e).objectID) == null) continue;
                 if (!MerchantStock.Apply(EntityManager, e, stock, out bool addedItems)) continue;
 
                 bool isPrefab = EntityManager.HasComponent<Prefab>(e);
@@ -62,7 +62,7 @@ namespace PotionSeller.Systems
                     od.amount = 0; // restock on the next MerchantBuyInventorySystem tick
                     EntityManager.SetComponentData(e, od);
                 }
-                Debug.Log($"[{PotionSellerMod.Name}] merchant {(isPrefab ? "prefab" : e.ToString())}: {EntityManager.GetBuffer<MerchantItemInfoBuffer>(e).Length} items, {EntityManager.GetBuffer<ContainedObjectsBuffer>(e).Length} slots, stock {stock}{(addedItems && !isPrefab ? ", restock forced" : "")} (server).");
+                Debug.Log($"[{PotionSellerMod.Name}] {EntityManager.GetComponentData<ObjectDataCD>(e).objectID} {(isPrefab ? "prefab" : e.ToString())}: {EntityManager.GetBuffer<MerchantItemInfoBuffer>(e).Length} items, {EntityManager.GetBuffer<ContainedObjectsBuffer>(e).Length} slots, stock {stock}{(addedItems && !isPrefab ? ", restock forced" : "")} (server).");
             }
             entities.Dispose();
         }

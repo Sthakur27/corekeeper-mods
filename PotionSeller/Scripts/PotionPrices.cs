@@ -3,7 +3,7 @@ using Unity.Mathematics;
 namespace PotionSeller
 {
     /// <summary>
-    /// The potions (plus the Recall Idol) the merchant sells and their base buy prices (Ancient Coins).
+    /// What the merchants sell: potions + Recall Idol (Caveling Merchant), grenades and bombs (Slime Merchant) and their base buy prices (Ancient Coins).
     ///
     /// The game derives both prices from one database field, EntityObjectInfo.sellValue
     /// (InventoryUtility.GetCoinValue):
@@ -42,11 +42,56 @@ namespace PotionSeller
             new Entry(ObjectID.RecallIdol, 200),
         };
 
+        /// <summary>
+        /// The Slime Merchant sells every grenade and bomb, cheap to end game. Prices must be multiples of 5
+        /// (see the class summary). Edit here.
+        /// </summary>
+        public static readonly Entry[] Explosives =
+        {
+            new Entry(ObjectID.Grenade, 10),
+            new Entry(ObjectID.SmallBomb, 10),
+            new Entry(ObjectID.Bomb, 15),
+            new Entry(ObjectID.FireGrenade, 20),
+            new Entry(ObjectID.PoisonGrenade, 20),
+            new Entry(ObjectID.OilGrenade, 25),
+            new Entry(ObjectID.StunGrenade, 25),
+            new Entry(ObjectID.LargeBomb, 30),
+            new Entry(ObjectID.CharmGrenade, 35),
+            new Entry(ObjectID.SulfurBomb, 40),
+            new Entry(ObjectID.ProximityBomb, 50),
+            new Entry(ObjectID.SeekerBomb, 60),
+            new Entry(ObjectID.BlunderBomb, 70),
+            new Entry(ObjectID.BigGrenade, 80),
+            new Entry(ObjectID.VoidBomb, 100),
+        };
+
+        /// <summary>Every item whose price this mod sets (both merchants).</summary>
+        public static readonly Entry[] All = Concat(Potions, Explosives);
+
+        /// <summary>The list a merchant sells, or null for merchants this mod leaves alone.</summary>
+        public static Entry[] ForMerchant(ObjectID merchant)
+        {
+            switch (merchant)
+            {
+                case ObjectID.CavelingMerchant: return Potions;
+                case ObjectID.SlimeMerchant: return Explosives;
+                default: return null;
+            }
+        }
+
+        private static Entry[] Concat(Entry[] a, Entry[] b)
+        {
+            var r = new Entry[a.Length + b.Length];
+            a.CopyTo(r, 0);
+            b.CopyTo(r, a.Length);
+            return r;
+        }
+
         public static bool TryGetBuyPrice(ObjectID id, out int price)
         {
-            for (int i = 0; i < Potions.Length; i++)
+            for (int i = 0; i < All.Length; i++)
             {
-                if (Potions[i].id == id) { price = Potions[i].buyPrice; return true; }
+                if (All[i].id == id) { price = All[i].buyPrice; return true; }
             }
             price = 0;
             return false;

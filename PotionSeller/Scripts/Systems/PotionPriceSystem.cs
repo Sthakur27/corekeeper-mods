@@ -35,14 +35,14 @@ namespace PotionSeller.Systems
 
             string side = World.IsServer() ? "server" : "client";
             int changed = 0, seen = 0;
-            foreach (var potion in PotionPrices.Potions)
+            foreach (var potion in PotionPrices.All)
             {
                 ref var info = ref PugDatabase.GetEntityObjectInfo(potion.id, bank.databaseBankBlob);
                 if (info.objectID != potion.id) continue;
                 seen++;
                 if (PotionPrices.Apply(ref info, potion.id)) changed++;
             }
-            Debug.Log($"[{PotionSellerMod.Name}] blob prices at {mult:0.##}x: {seen}/{PotionPrices.Potions.Length} potions found, {changed} patched ({side}).");
+            Debug.Log($"[{PotionSellerMod.Name}] blob prices at {mult:0.##}x: {seen}/{PotionPrices.All.Length} items found, {changed} patched ({side}).");
         }
     }
 }

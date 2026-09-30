@@ -5,7 +5,8 @@ using UnityEngine;
 namespace PotionSeller
 {
     /// <summary>
-    /// Puts every potion on the Caveling Merchant's list and makes room for it.
+    /// Puts every potion on the Caveling Merchant's list, and every grenade and bomb on the Slime
+    /// Merchant's (<see cref="PotionPrices.ForMerchant"/>), and makes room for them.
     ///
     /// MerchantBuyInventorySystem (Burst, server) restocks the merchant every 1500-2100 s: it walks the
     /// merchant's whole ContainedObjectsBuffer and fills slot k with the k-th *available* entry of
@@ -31,7 +32,7 @@ namespace PotionSeller
         public static bool IsTarget(EntityManager em, Entity e)
         {
             return em.HasComponent<ObjectDataCD>(e)
-                && em.GetComponentData<ObjectDataCD>(e).objectID == ObjectID.CavelingMerchant
+                && PotionPrices.ForMerchant(em.GetComponentData<ObjectDataCD>(e).objectID) != null
                 && em.HasBuffer<MerchantItemInfoBuffer>(e)
                 && em.HasBuffer<ContainedObjectsBuffer>(e)
                 && em.HasBuffer<InventoryBuffer>(e);
@@ -47,8 +48,10 @@ namespace PotionSeller
             addedItems = false;
             bool changed = false;
 
+            var list = PotionPrices.ForMerchant(em.GetComponentData<ObjectDataCD>(e).objectID);
+            if (list == null) return false;
             var items = em.GetBuffer<MerchantItemInfoBuffer>(e);
-            foreach (var potion in PotionPrices.Potions)
+            foreach (var potion in list)
             {
                 int idx = -1;
                 for (int i = 0; i < items.Length; i++)

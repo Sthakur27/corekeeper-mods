@@ -24,7 +24,7 @@ namespace PotionSeller
     public sealed class PotionSellerMod : IMod
     {
         public const string Name = "PotionSeller";
-        public const string Version = "1.0.2";
+        public const string Version = "1.1.0";
 
         private static bool _appliedViaDatabase;
 
@@ -34,10 +34,10 @@ namespace PotionSeller
         public void EarlyInit()
         {
             API.Authoring.OnObjectTypeAdded += OnObjectTypeAdded;
-            Debug.Log($"[{Name}] v{Version} loaded: {PotionPrices.Potions.Length} items (potions + Recall Idol) on the Caveling Merchant, grid {MerchantStock.Columns}x{MerchantStock.Rows}.");
+            Debug.Log($"[{Name}] v{Version} loaded: {PotionPrices.Potions.Length} potions + Recall Idol on the Caveling Merchant, {PotionPrices.Explosives.Length} explosives on the Slime Merchant, grid {MerchantStock.Columns}x{MerchantStock.Rows}.");
         }
 
-        public const string SettingsHint = "The Caveling Merchant sells every potion. Price multiplier scales the buy prices (1x = 50..500 coins); stock is how many of each he carries per restock. Both apply live; stock changes show up at the next restock. In multiplayer the host's values count.";
+        public const string SettingsHint = "The Caveling Merchant sells every potion and the Recall Idol; the Slime Merchant sells every grenade and bomb. Price multiplier scales the buy prices (1x: potions 50..500, explosives 10..100 coins); stock is how many of each they carry per restock. Both apply live; stock changes show up at the next restock. In multiplayer the host's values count.";
 
         public void Init()
         {
@@ -112,7 +112,7 @@ namespace PotionSeller
             {
                 if (MerchantStock.Apply(em, entity, PotionSellerConfig.Stock, out _))
                 {
-                    Debug.Log($"[{Name}] CavelingMerchant prefab: {em.GetBuffer<MerchantItemInfoBuffer>(entity).Length} items, {em.GetBuffer<ContainedObjectsBuffer>(entity).Length} slots ({em.World.Name}).");
+                    Debug.Log($"[{Name}] {em.GetComponentData<ObjectDataCD>(entity).objectID} prefab: {em.GetBuffer<MerchantItemInfoBuffer>(entity).Length} items, {em.GetBuffer<ContainedObjectsBuffer>(entity).Length} slots ({em.World.Name}).");
                 }
             }
         }
@@ -120,7 +120,7 @@ namespace PotionSeller
         private static void ApplyViaDatabase()
         {
             if (PugDatabase.objectsByType == null) return;
-            foreach (var potion in PotionPrices.Potions)
+            foreach (var potion in PotionPrices.All)
             {
                 if (PugDatabase.TryGetObjectInfo(potion.id, out var info)) PotionPrices.Apply(info);
             }

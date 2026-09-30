@@ -6,7 +6,7 @@ namespace LoadoutSharing.Systems
 {
     /// <summary>
     /// Every frame, points each loadout's preset table at the effective slots (own item if the
-    /// loadout has one, else loadout 1's). The game copies the active preset into EquipmentCD,
+    /// loadout has one, else the nearest lower loadout's). The game copies the active preset into EquipmentCD,
     /// so stats, armor visuals, bag size and pet all follow the fallback rule automatically.
     /// Runs in both worlds so the client and server agree. The server additionally grows the
     /// contained-objects buffer for characters loaded from older saves.

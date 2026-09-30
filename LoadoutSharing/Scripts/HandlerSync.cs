@@ -11,7 +11,7 @@ namespace LoadoutSharing
     /// the EFFECTIVE slot every frame (so the UI, tooltips, player sprite and achievements all see
     /// the inherited item), but while a click or shift-equip is being processed we point them at
     /// the loadout's OWN slot, so placing an item creates an override instead of overwriting
-    /// loadout 1's item, and clicking an inherited item does nothing.
+    /// the lower loadout's item, and clicking an inherited item does nothing.
     /// </summary>
     public static class HandlerSync
     {

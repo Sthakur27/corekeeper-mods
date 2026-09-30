@@ -27,8 +27,8 @@ namespace LoadoutSharing
     /// order Loadout Plus uses, so saves migrated by that mod carry straight over. Now every loadout
     /// has a private slot for every kind.
     ///
-    /// Fallback: loadout 1 is the base. For loadouts 2 and 3, a slot uses its own item if it holds
-    /// one, otherwise it falls through to loadout 1's item. The indices are deterministic, so the
+    /// Fallback (waterfall): a slot uses its own item if it holds one, otherwise the nearest lower
+    /// loadout's item (loadout 3 -> 2 -> 1; with Five Loadouts 5 -> 4 -> 3 -> 2 -> 1). The indices are deterministic, so the
     /// client and server agree without any network sync.
     /// </summary>
     public static class SlotLayout
@@ -80,22 +80,28 @@ namespace LoadoutSharing
             return slot >= 0 && slot < contained.Length && contained[slot].objectID != ObjectID.None;
         }
 
-        /// <summary>True when the preset's own slot is empty and loadout 1's slot has an item to fall through to.</summary>
+        /// <summary>
+        /// Waterfall: walk from this preset down to loadout 1 and return the first slot of the kind that
+        /// holds an item (loadout 3 empty -> loadout 2 -> loadout 1). Returns the preset's own slot when
+        /// nothing below it has an item either, so an empty slot stays that loadout's own.
+        /// </summary>
+        public static int EffectiveSlot(int preset, SlotKind kind, DynamicBuffer<ContainedObjectsBuffer> contained)
+        {
+            int own = _private[preset, (int)kind];
+            if (own < 0 || HasItem(contained, own)) return own;
+            for (int p = preset - 1; p >= 0; p--)
+            {
+                int slot = _private[p, (int)kind];
+                if (slot >= 0 && HasItem(contained, slot)) return slot;
+            }
+            return own;
+        }
+
+        /// <summary>True when the preset's own slot is empty and a lower loadout's item shows through.</summary>
         public static bool IsInherited(int preset, SlotKind kind, DynamicBuffer<ContainedObjectsBuffer> contained)
         {
             if (preset <= 0) return false;
-            int own = _private[preset, (int)kind];
-            int baseSlot = _private[0, (int)kind];
-            if (own < 0 || baseSlot < 0 || own == baseSlot) return false;
-            return !HasItem(contained, own) && HasItem(contained, baseSlot);
-        }
-
-        /// <summary>The slot this preset actually uses for the kind, honouring fallback.</summary>
-        public static int EffectiveSlot(int preset, SlotKind kind, DynamicBuffer<ContainedObjectsBuffer> contained)
-        {
-            return IsInherited(preset, kind, contained)
-                ? _private[0, (int)kind]
-                : _private[preset, (int)kind];
+            return EffectiveSlot(preset, kind, contained) != _private[preset, (int)kind];
         }
 
         /// <summary>Rewrites the index fields of an EquipmentCD for the given preset (pouches untouched).</summary>

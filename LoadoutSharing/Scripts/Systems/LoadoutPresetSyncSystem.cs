@@ -10,7 +10,7 @@ namespace LoadoutSharing.Systems
     /// Two things vanilla never has to do because its bag and pet slots are fixed:
     ///  1. point the main inventory's "extra size comes from this slot" at the active loadout's bag slot;
     ///  2. point PetOwnerCD at the active loadout's pet slot.
-    /// Both honour the fallback rule: an empty own slot means loadout 1's bag or pet is used.
+    /// Both honour the fallback rule: an empty own slot means the nearest lower loadout's bag or pet is used.
     /// </summary>
     [UpdateInGroup(typeof(SimulationSystemGroup))]
     [UpdateAfter(typeof(LoadoutLayoutSystem))]

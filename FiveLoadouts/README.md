@@ -9,7 +9,7 @@ No settings.
 
 Optional companion: **Loadout Fallback** (`LoadoutSharing`). With it installed **and updated
 per `LoadoutSharing.patch.md`**, loadouts 4 and 5 also get a private bag, lantern and pet slot
-and fall back to loadout 1 the same way loadouts 2 and 3 do. Without it, loadouts 4 and 5 share
+and waterfall down (5 -> 4 -> 3 -> 2 -> 1) the same way loadouts 2 and 3 do. Without it, loadouts 4 and 5 share
 the bag, lantern and pet with the other loadouts (vanilla behaviour for 2 and 3).
 
 Install: copy this folder to `CoreKeeper_Data\StreamingAssets\Mods\FiveLoadouts` and restart

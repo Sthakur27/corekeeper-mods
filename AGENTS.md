@@ -316,3 +316,5 @@ SkipIntro 6363825. Refresh the list from Player.log (`loaded mod X from mod.io`)
 - **Hard Mode Tuning** id 6412464, **Keep Minions On Teleport** id 6412469 (both in the collection, now 25 mods). Faster Mushrooms 1.1.0 and Master Pet Plus 1.1.1 uploaded the same day.
 - Every new feature must be added to `MODS` in build_overhaul.py and, if it has settings, to SidsOverhaulMod.Init. `release/switch_mods.py overhaul|separate` swaps the local install.
 - Reddit/old.reddit are blocked for agent browsers; post drafts live in `release/reddit_post.md` + `release/reddit_showcase.png` for Sid to post.
+
+- 2026-10-02: mod.io took down **Master Pet Plus** (fork of Parcew's Master Pet) and locked **Sid's Overhaul** (status 0, file uploads return 403) because it bundled that code. Master Pet Plus is now excluded from the overhaul build and installed as a separate side-loaded mod. `release/SidsFriendPack.zip` = build/SidsOverhaul + MasterPetPlus folders + install README for friends. Do not re-publish forks of other people's mods without their permission.

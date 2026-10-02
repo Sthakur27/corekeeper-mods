@@ -247,9 +247,9 @@ namespace PetEditor
             float decX = incX - ButtonWidth - 0.125f;
 
             row.label = UnityEngine.Object.Instantiate(w.pointsText.gameObject, row.root.transform).GetComponent<PugText>();
-            row.label.localize = false;
-            row.label.formatFields = new string[0];
-            row.label.transform.localPosition = new Vector3((-half + 0.375f + decX - ButtonWidth / 2f) / 2f, 0f, 0f);
+            PrepareText(row.label);
+            row.label.style.horizontalAlignment = PugTextStyle.HorizontalAlignment.left;
+            row.label.transform.localPosition = new Vector3(-half + 0.375f, 0f, 0f);
             SetOpaque(row.label.gameObject);
 
             row.dec = CloneButton(w, row.root.transform, decLabel, dec, new Vector3(decX, 0f, 0f));
@@ -284,12 +284,22 @@ namespace PetEditor
             SetOpaque(go);
             if (text != null)
             {
-                text.localize = false;
-                text.formatFields = new string[0];
+                PrepareText(text);
                 text.transform.localPosition = new Vector3(0f, text.transform.localPosition.y, text.transform.localPosition.z);
                 text.Render(label, false, true);
             }
             return button;
+        }
+
+        /// <summary>
+        /// A cloned PugText still holds the source's letter sprites (as cloned children); free them so our
+        /// text does not render on top of the old one, and turn off translation lookup for our plain text.
+        /// </summary>
+        private static void PrepareText(PugText text)
+        {
+            text.Clear(false, true);
+            text.localize = false;
+            text.formatFields = new string[0];
         }
 
         /// <summary>The reset button may be greyed out when it is cloned; make the clone fully visible.</summary>

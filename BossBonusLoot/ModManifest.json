@@ -1,0 +1,21 @@
+{
+    "guid": "3c7e1b9a5d2f4a68b0e4c91f7a26d58e",
+    "name": "BossBonusLoot",
+    "displayName": "Boss Bonus Loot",
+    "skipSafetyChecks": false,
+    "disableScripts": false,
+    "accessesExtraAssemblies": true,
+    "disableHarmonyPatching": false,
+    "requiredOn": 3,
+    "files": [
+        {
+            "path": "Scripts/BossBonusLootMod.cs",
+            "guid": "8a41f2c06e9b4d37a5c1e0b9f4d27a63"
+        },
+        {
+            "path": "Scripts/Systems/BossBonusLootSystem.cs",
+            "guid": "e29b7d1c4f8a4e05b6d3a71c0f95e2b4"
+        }
+    ],
+    "dependencies": []
+}

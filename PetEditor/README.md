@@ -3,6 +3,8 @@
 Core Keeper mod: edit your equipped pet right in the vanilla pet talent window.
 
 - **Level**: a "Level X/10" row with - and + buttons under the reset button.
+- **Color**: a "Color X/N" row with < and > buttons cycles through the pet's color variants (the game's
+  own skin change, same as when you pick a color in vanilla).
 - **Any talent in any slot**: right-click a talent slot and the talent tree turns into a grid of every
   pet talent in the game (hover for the usual description). Left-click one to put it in that slot;
   right-click to close the grid.

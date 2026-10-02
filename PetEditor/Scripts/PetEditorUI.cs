@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using CoreLib.Submodule.Command;
 using CoreLib.Submodule.Command.Data;
+using Inventory;
 using Unity.Entities;
 using UnityEngine;
 using UnityEngine.Events;
@@ -27,12 +28,17 @@ namespace PetEditor
         private static bool _built;
         private static bool _failed;
 
-        private static GameObject _levelRow;
-        private static PugText _levelText;
-        private static ButtonUIElement _minus;
-        private static ButtonUIElement _plus;
+        private sealed class Row
+        {
+            public GameObject root;
+            public PugText label;
+            public ButtonUIElement dec, inc;
+            public string shown;
+        }
+
+        private const float ButtonWidth = 0.875f;
+        private static Row _levelRow, _colorRow;
         private static float _rowHeight = 1f;
-        private static string _shownLevel;
 
         private static readonly List<PetTalentUIElement> _pickItems = new List<PetTalentUIElement>();
         private static readonly List<PetInfosTable.PetTalentInfo> _pickInfos = new List<PetInfosTable.PetTalentInfo>();
@@ -49,7 +55,7 @@ namespace PetEditor
         {
             if (_window == null || !_built) return;
             if (!_window.isShowing) { EditingSlot = -1; return; }
-            UpdateLevelRow();
+            UpdateRows();
         }
 
         // ---------- layout (replaces PetTalentsWindow.PositionUIElements) ----------
@@ -72,7 +78,9 @@ namespace PetEditor
                 y = UIManager.PositionElementBeneath(w.resetButtonText.transform, y, w.resetButtonText.dimensions.size.y, 0.0625f);
                 y = UIManager.PositionElementBeneath(w.resetButton.transform, y, w.resetButtonBackground.size.y, 0.0625f);
                 if (_levelRow != null)
-                    y = UIManager.PositionElementBeneath(_levelRow.transform, y, _rowHeight, 0.125f);
+                    y = UIManager.PositionElementBeneath(_levelRow.root.transform, y, _rowHeight, 0.1875f);
+                if (_colorRow != null)
+                    y = UIManager.PositionElementBeneath(_colorRow.root.transform, y, _rowHeight, 0.0625f);
 
                 float height = w.topEdge.localPosition.y - y + 0.25f;
                 float width = EditingSlot >= 0 ? Mathf.Max(_baseWidth, PickerColumns * _pickStep + 0.5f) : _baseWidth;
@@ -138,21 +146,33 @@ namespace PetEditor
 
         public static void RemovePoint(int slot) => Send($"/pet unpoint {slot + 1}");
 
-        // ---------- level row ----------
+        // ---------- level + color rows ----------
 
-        private static void UpdateLevelRow()
+        private static void UpdateRows()
         {
-            if (_levelText == null) return;
             var pet = PetData(out _);
-            int level = PetExtensions.GetLevelFromXP(pet.objectData.amount);
-            string text = $"Level {level}/{PetExtensions.maxLevel}";
-            if (text != _shownLevel)
+            if (_levelRow != null)
             {
-                _shownLevel = text;
-                _levelText.Render(text, false, true);
+                int level = PetExtensions.GetLevelFromXP(pet.objectData.amount);
+                SetLabel(_levelRow, $"Level {level}/{PetExtensions.maxLevel}");
+                _levelRow.dec.canBeClicked = level > 1;
+                _levelRow.inc.canBeClicked = level < PetExtensions.maxLevel;
             }
-            _minus.canBeClicked = level > 1;
-            _plus.canBeClicked = level < PetExtensions.maxLevel;
+            if (_colorRow != null)
+            {
+                int count = SkinCount(pet);
+                bool any = count > 1;
+                SetLabel(_colorRow, any ? $"Color {CurrentSkin(pet) + 1}/{count}" : "Color -");
+                _colorRow.dec.canBeClicked = any;
+                _colorRow.inc.canBeClicked = any;
+            }
+        }
+
+        private static void SetLabel(Row row, string text)
+        {
+            if (row.shown == text) return;
+            row.shown = text;
+            row.label.Render(text, false, true);
         }
 
         private static void ChangeLevel(int delta)
@@ -164,54 +184,124 @@ namespace PetEditor
             Send($"/pet level {level}");
         }
 
+        private static int SkinCount(ContainedObjectsBuffer pet)
+        {
+            if (pet.objectID == ObjectID.None || Manager.ui == null || Manager.ui.petInfosTable == null) return 0;
+            var info = Manager.ui.petInfosTable.GetPetSkinInfo(pet.objectID);
+            return info != null && info.skins != null ? info.skins.Count : 0;
+        }
+
+        private static int CurrentSkin(ContainedObjectsBuffer pet)
+        {
+            return InventoryHandler.TryGetExtraInventoryData(pet, out PetSkinCD skin) ? skin.skinIndex : 0;
+        }
+
+        /// <summary>Uses the game's own SetPetSkin inventory action (the server allocates the skin data if needed).</summary>
+        private static void ChangeColor(int delta)
+        {
+            var player = Manager.main != null ? Manager.main.player : null;
+            if (player == null) return;
+            var pet = PetData(out _);
+            int count = SkinCount(pet);
+            if (count <= 1) return;
+            int skin = ((CurrentSkin(pet) + delta) % count + count) % count;
+            player.QueueInputAction(new UIInputActionData
+            {
+                action = UIInputAction.InventoryChange,
+                inventoryChangeData = new InventoryChangeData
+                {
+                    inventoryAction = InventoryAction.SetPetSkin,
+                    inventory1 = player.entity,
+                    index1 = player.equipmentHandler.petInventoryHandler.startPosInBuffer,
+                    objectID = pet.objectID,
+                    index2 = skin
+                }
+            });
+        }
+
         // ---------- build ----------
 
         private static void Build(PetTalentsWindow w)
         {
             _built = true;
-            BuildLevelRow(w);
-            BuildPicker(w);
-            Debug.Log($"[{PetEditorMod.Name}] Pet window extended: level row + {_pickItems.Count} talents in the picker.");
-        }
-
-        private static void BuildLevelRow(PetTalentsWindow w)
-        {
-            Transform parent = w.resetButton.transform.parent;
-            _levelRow = new GameObject("PetEditorLevelRow");
-            _levelRow.transform.SetParent(parent, false);
-            _levelRow.layer = w.resetButton.gameObject.layer;
             _rowHeight = w.resetButtonBackground.size.y;
-
-            _levelText = UnityEngine.Object.Instantiate(w.pointsText.gameObject, _levelRow.transform).GetComponent<PugText>();
-            _levelText.transform.localPosition = Vector3.zero;
-
-            float side = Mathf.Max(1.6f, w.resetButtonBackground.size.x * 0.5f + 1.1f);
-            _minus = CloneButton(w, "-", () => ChangeLevel(-1), new Vector3(-side, 0f, 0f));
-            _plus = CloneButton(w, "+", () => ChangeLevel(+1), new Vector3(side, 0f, 0f));
+            _levelRow = BuildRow(w, "PetEditorLevelRow", "-", "+", () => ChangeLevel(-1), () => ChangeLevel(+1));
+            _colorRow = BuildRow(w, "PetEditorColorRow", "<", ">", () => ChangeColor(-1), () => ChangeColor(+1));
+            BuildPicker(w);
+            Debug.Log($"[{PetEditorMod.Name}] Pet window extended: level + color rows, {_pickItems.Count} talents in the picker.");
         }
 
-        private static ButtonUIElement CloneButton(PetTalentsWindow w, string label, UnityAction onClick, Vector3 pos)
+        /// <summary>
+        /// A row "label   [dec] [inc]". The label is a clone of the points text with localization off (so
+        /// our text is not looked up as a translation term) and the buttons are narrow clones of the reset button.
+        /// </summary>
+        private static Row BuildRow(PetTalentsWindow w, string name, string decLabel, string incLabel, UnityAction dec, UnityAction inc)
+        {
+            var row = new Row();
+            row.root = new GameObject(name);
+            row.root.transform.SetParent(w.resetButton.transform.parent, false);
+            row.root.layer = w.resetButton.gameObject.layer;
+
+            float half = w.background.size.x / 2f;
+            float incX = half - 0.375f - ButtonWidth / 2f;
+            float decX = incX - ButtonWidth - 0.125f;
+
+            row.label = UnityEngine.Object.Instantiate(w.pointsText.gameObject, row.root.transform).GetComponent<PugText>();
+            row.label.localize = false;
+            row.label.formatFields = new string[0];
+            row.label.transform.localPosition = new Vector3((-half + 0.375f + decX - ButtonWidth / 2f) / 2f, 0f, 0f);
+            SetOpaque(row.label.gameObject);
+
+            row.dec = CloneButton(w, row.root.transform, decLabel, dec, new Vector3(decX, 0f, 0f));
+            row.inc = CloneButton(w, row.root.transform, incLabel, inc, new Vector3(incX, 0f, 0f));
+            return row;
+        }
+
+        private static ButtonUIElement CloneButton(PetTalentsWindow w, Transform parent, string label, UnityAction onClick, Vector3 pos)
         {
             Transform src = w.resetButton.transform;
-            var go = UnityEngine.Object.Instantiate(src.gameObject, _levelRow.transform);
-            go.name = "PetEditorLevel" + (label == "+" ? "Up" : "Down");
+            var go = UnityEngine.Object.Instantiate(src.gameObject, parent);
+            go.name = "PetEditorButton" + label;
             go.transform.localPosition = pos;
             var button = go.GetComponent<ButtonUIElement>();
             button.onLeftClick = new UnityEvent();
             button.onLeftClick.AddListener(onClick);
             button.onRightClick = new UnityEvent();
+            button.canBeClicked = true;
 
-            // The reset button shows a coin and its price; reuse the price text as the +/- label.
+            // Narrow the background and the click area.
+            var bg = FindByPath(src, w.resetButtonBackground != null ? w.resetButtonBackground.transform : null, go.transform);
+            var bgSR = bg != null ? bg.GetComponent<SpriteRenderer>() : null;
+            if (bgSR != null) bgSR.size = new Vector2(ButtonWidth, bgSR.size.y);
+            var col = go.GetComponent<BoxCollider>();
+            if (col != null) col.size = new Vector3(ButtonWidth, col.size.y, col.size.z);
+
+            // The reset button shows a coin and its price; hide the coin and reuse the price text as the label.
             var coin = FindByPath(src, w.resetButtonCoinSR != null ? w.resetButtonCoinSR.transform : null, go.transform);
             if (coin != null) coin.gameObject.SetActive(false);
             var price = FindByPath(src, w.resetButtonCoinText != null ? w.resetButtonCoinText.transform : null, go.transform);
             var text = price != null ? price.GetComponent<PugText>() : null;
+            SetOpaque(go);
             if (text != null)
             {
+                text.localize = false;
+                text.formatFields = new string[0];
                 text.transform.localPosition = new Vector3(0f, text.transform.localPosition.y, text.transform.localPosition.z);
                 text.Render(label, false, true);
             }
             return button;
+        }
+
+        /// <summary>The reset button may be greyed out when it is cloned; make the clone fully visible.</summary>
+        private static void SetOpaque(GameObject go)
+        {
+            foreach (var sr in go.GetComponentsInChildren<SpriteRenderer>(true))
+            {
+                var c = sr.color;
+                if (c.a < 1f) sr.color = new Color(c.r, c.g, c.b, 1f);
+            }
+            foreach (var t in go.GetComponentsInChildren<PugText>(true))
+                t.SetTempColor(Color.white);
         }
 
         /// <summary>Finds in <paramref name="cloneRoot"/> the object at the same path <paramref name="target"/> has under <paramref name="srcRoot"/>.</summary>

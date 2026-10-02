@@ -48,6 +48,12 @@ namespace LoadoutSharing
         /// <summary>Highest slot index we rely on; the contained-objects buffer must be longer than this.</summary>
         public static int MaxIndex { get; private set; } = -1;
 
+        /// <summary>Makes sure the server grows saved characters' buffers to include <paramref name="index"/>.</summary>
+        public static void ReserveIndex(int index)
+        {
+            if (index > MaxIndex) MaxIndex = index;
+        }
+
         /// <summary>The slot this preset owns for the kind.</summary>
         public static int PrivateSlot(int preset, SlotKind kind) => _private[preset, (int)kind];
 

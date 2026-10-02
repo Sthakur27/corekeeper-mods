@@ -13,7 +13,7 @@ namespace LoadoutSharing
     public class LoadoutSharingMod : IMod
     {
         public const string Name = "LoadoutSharing";
-        public const string Version = "2.2.0";
+        public const string Version = "2.3.0";
 
         public void EarlyInit()
         {
@@ -21,11 +21,17 @@ namespace LoadoutSharing
             Debug.Log($"[{Name}] v{Version} loaded (fallback mode).");
         }
 
-        public void Init() { }
+        public void Init()
+        {
+            // Subscribed here, after every mod's EarlyInit subscription (Five Loadouts), so the vanity
+            // slots are appended after all other extra slots and existing saves keep their indices.
+            API.Authoring.OnObjectTypeAdded += VanityLayout.OnObjectTypeAdded;
+        }
 
         public void Shutdown()
         {
             API.Authoring.OnObjectTypeAdded -= SlotLayout.OnObjectTypeAdded;
+            API.Authoring.OnObjectTypeAdded -= VanityLayout.OnObjectTypeAdded;
         }
 
         public void ModObjectLoaded(Object obj) { }
@@ -34,6 +40,8 @@ namespace LoadoutSharing
         public void Update()
         {
             HandlerSync.SyncToEffective();
+            VanitySync.SyncAll();
+            VanitySlotsUI.Update();
         }
     }
 }

@@ -15,6 +15,10 @@
         {
             "path": "Scripts/Systems/BossBonusLootSystem.cs",
             "guid": "e29b7d1c4f8a4e05b6d3a71c0f95e2b4"
+        },
+        {
+            "path": "Scripts/Systems/HydraGemSystem.cs",
+            "guid": "5b0e8c3f71a94d2e9c6a2f48d1e7b305"
         }
     ],
     "dependencies": []

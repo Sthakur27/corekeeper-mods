@@ -11,11 +11,11 @@ namespace BossBonusLoot
     public sealed class BossBonusLootMod : IMod
     {
         public const string Name = "BossBonusLoot";
-        public const string Version = "1.1.0";
+        public const string Version = "1.2.0";
 
         public void EarlyInit()
         {
-            Debug.Log($"[{Name}] v{Version} loaded: Ghorm 40+40 larva meat, Azeos 25% Chipped Blade / 25% Clear Gemstone.");
+            Debug.Log($"[{Name}] v{Version} loaded: bonus boss drops + Hydra gems x2.");
         }
 
         public void Init() { }

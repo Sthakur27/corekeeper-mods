@@ -24,8 +24,25 @@ namespace BossBonusLoot.Systems
             {
                 // Ghorm the Devourer
                 [ObjectID.BossLarva] = new[] { (ObjectID.LarvaMeat, 40, 1f), (ObjectID.GoldenLarvaMeat, 40, 1f) },
-                // Azeos the Sky Titan: Chipped Blade, Clear Gemstone
-                [ObjectID.BirdBoss] = new[] { (ObjectID.LegendarySwordBlade, 1, 0.25f), (ObjectID.LegendarySwordGemstone, 1, 0.25f) },
+                // Azeos the Sky Titan (Wilderness): Chipped Blade, Clear Gemstone, Jungle Emerald, pouches
+                [ObjectID.BirdBoss] = new[]
+                {
+                    (ObjectID.LegendarySwordBlade, 1, 0.25f), (ObjectID.LegendarySwordGemstone, 1, 0.25f),
+                    (ObjectID.NatureGemstone, 1, 1f),
+                    (ObjectID.LargeSeedAndCropsPouch, 1, 0.4f), (ObjectID.LargeCritterPouch, 1, 0.4f),
+                },
+                // Omoroth the Sea Titan (Sunken Sea): Ocean Sapphire, pouches
+                [ObjectID.OctopusBoss] = new[]
+                {
+                    (ObjectID.SeaGemstone, 1, 1f),
+                    (ObjectID.LargeFishPouch, 1, 0.4f), (ObjectID.LargePotionPouch, 1, 0.4f),
+                },
+                // Ra-Akar the Sand Titan (Desert of Beginnings): Desert Ruby, pouches
+                [ObjectID.ScarabBoss] = new[]
+                {
+                    (ObjectID.DesertGemstone, 1, 1f),
+                    (ObjectID.LargeValuablePouch, 1, 0.4f), (ObjectID.LargeOreAndBlockPouch, 1, 0.4f),
+                },
             };
 
         private static readonly System.Random Rng = new System.Random();

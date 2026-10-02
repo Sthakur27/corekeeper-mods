@@ -17,12 +17,14 @@ NAME = "SidsOverhaul"
 GUID = "5d1a0c3e9b7f4e21a8c6d4b2f0e19a73"  # fixed forever, identifies the mod
 
 MODS = [
-    "LoadoutSharing", "FiveLoadouts", "SkillXPMultiplier", "MasterPetPlus", "FastAutoFishing",
+    "LoadoutSharing", "FiveLoadouts", "SkillXPMultiplier", "FastAutoFishing",
     "DurabilityMultiplier", "BuffDurationFloor", "FasterMushrooms", "BiggerWateringCans",
     "BetterFishingLoot", "AutoReplant", "QuickBuff", "PotionSeller", "HardModeTuning", "KeepMinions",
 ]
 # Bundles whose MonoScripts bind to the old assembly name.
-BUNDLE_MODS = {"MasterPetPlus": "MasterPetPlus", "FastAutoFishing": "mikufish"}
+# MasterPetPlus is NOT included: it is a fork of Parcew's Master Pet and mod.io took it down;
+# it stays a separate, side-loaded mod.
+BUNDLE_MODS = {"FastAutoFishing": "mikufish"}
 
 
 def patch_bundle(src, dst, old_assembly):

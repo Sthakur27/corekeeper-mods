@@ -20,6 +20,9 @@ namespace LoadoutSharing
         private const float SidePanelsOffsetX = -0.68f;
 
         private static bool _injected;
+        private static Transform _windowRoot;
+        private static Vector3 _appliedRootPos;
+        private static bool _shiftActive;
         private static bool _failed;
         private static Transform[] _slots;
         private static SpriteRenderer[] _eyes;
@@ -31,7 +34,11 @@ namespace LoadoutSharing
             try
             {
                 if (!_injected) TryInject();
-                else UpdateEyes();
+                else
+                {
+                    UpdateEyes();
+                    KeepShifted();
+                }
             }
             catch (Exception ex)
             {
@@ -100,8 +107,27 @@ namespace LoadoutSharing
                 if (sr != null && name == "SoulsWindow" && (sr.drawMode == SpriteDrawMode.Sliced || sr.drawMode == SpriteDrawMode.Tiled))
                     sr.size = new Vector2(sr.size.x + WidenBy, sr.size.y);
             }
+            // The extra column widens the window to the left, over panels the game places left of it
+            // (repair / salvage, crafting). Shift the whole window right by the same amount so its left
+            // edge stays where vanilla puts it.
+            _windowRoot = windowRoot;
+            _shiftActive = true;
+            KeepShifted();
             _injected = true;
             Debug.Log($"[{LoadoutSharingMod.Name}] Per-loadout vanity slots added to the character window.");
+        }
+
+        /// <summary>
+        /// Keeps the window root offset by WidenBy to the right. If the game moves the root itself (its own
+        /// layout), the new position is taken as the vanilla one and the offset is applied again.
+        /// </summary>
+        private static void KeepShifted()
+        {
+            if (!_shiftActive || _windowRoot == null) return;
+            Vector3 p = _windowRoot.localPosition;
+            if (p == _appliedRootPos) return;
+            _appliedRootPos = p + new Vector3(WidenBy, 0f, 0f);
+            _windowRoot.localPosition = _appliedRootPos;
         }
 
         /// <summary>A small eye on each vanity slot, shown while the slot is empty, so they read as vanity.</summary>

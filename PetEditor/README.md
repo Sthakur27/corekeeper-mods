@@ -15,7 +15,7 @@ Placing points still works the vanilla way, and the number of points follows the
 pet would have more placed than it owns.
 
 Chat commands (what the buttons send; work in multiplayer for each player's own pet):
-`/pet level <1-10>`, `/pet talent <slot 1-9> <talent name or id>`, `/pet unpoint <slot 1-9>`.
+`/pet level <1-10>`, `/pet talent <slot 1-9> <talent name or id>`, `/pet color <n>`, `/pet unpoint <slot 1-9>`.
 
 Requires **CoreLib**. Client + server (`requiredOn: 3`).
 

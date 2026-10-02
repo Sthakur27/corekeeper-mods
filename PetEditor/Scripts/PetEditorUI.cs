@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using CoreLib.Submodule.Command;
 using CoreLib.Submodule.Command.Data;
-using Inventory;
 using Unity.Entities;
 using UnityEngine;
 using UnityEngine.Events;
@@ -163,7 +162,7 @@ namespace PetEditor
             {
                 int count = SkinCount(pet);
                 bool any = count > 1;
-                SetLabel(_colorRow, any ? $"Color {CurrentSkin(pet) + 1}/{count}" : "Color -");
+                SetLabel(_colorRow, any ? $"Color {ShownSkin(pet) + 1}/{count}" : "Color -");
                 _colorRow.dec.canBeClicked = any;
                 _colorRow.inc.canBeClicked = any;
             }
@@ -197,27 +196,28 @@ namespace PetEditor
             return InventoryHandler.TryGetExtraInventoryData(pet, out PetSkinCD skin) ? skin.skinIndex : 0;
         }
 
-        /// <summary>Uses the game's own SetPetSkin inventory action (the server allocates the skin data if needed).</summary>
+        private static int _pendingSkin = -1;
+        private static float _pendingUntil;
+
+        /// <summary>Asks the server to change the color (see PetServer.SetColor) and shows the new value right away.</summary>
         private static void ChangeColor(int delta)
         {
-            var player = Manager.main != null ? Manager.main.player : null;
-            if (player == null) return;
             var pet = PetData(out _);
             int count = SkinCount(pet);
             if (count <= 1) return;
-            int skin = ((CurrentSkin(pet) + delta) % count + count) % count;
-            player.QueueInputAction(new UIInputActionData
-            {
-                action = UIInputAction.InventoryChange,
-                inventoryChangeData = new InventoryChangeData
-                {
-                    inventoryAction = InventoryAction.SetPetSkin,
-                    inventory1 = player.entity,
-                    index1 = player.equipmentHandler.petInventoryHandler.startPosInBuffer,
-                    objectID = pet.objectID,
-                    index2 = skin
-                }
-            });
+            int from = _pendingSkin >= 0 ? _pendingSkin : CurrentSkin(pet);
+            int skin = ((from + delta) % count + count) % count;
+            _pendingSkin = skin;
+            _pendingUntil = Time.unscaledTime + 2f;
+            Send($"/pet color {skin + 1}");
+        }
+
+        /// <summary>The requested color while it is on its way to the server, otherwise the pet's real color.</summary>
+        private static int ShownSkin(ContainedObjectsBuffer pet)
+        {
+            int real = CurrentSkin(pet);
+            if (_pendingSkin >= 0 && (real == _pendingSkin || Time.unscaledTime > _pendingUntil)) _pendingSkin = -1;
+            return _pendingSkin >= 0 ? _pendingSkin : real;
         }
 
         // ---------- build ----------

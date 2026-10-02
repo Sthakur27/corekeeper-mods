@@ -31,6 +31,8 @@ namespace PetEditor
                 result = PetServer.SetLevel(em, player, level);
             else if (sub == "talent" && parameters.Length >= 3 && int.TryParse(parameters[1], out int slot) && TryParseTalent(parameters[2], out PetTalent talent))
                 result = PetServer.SetTalent(em, player, slot - 1, talent);
+            else if (sub == "color" && parameters.Length >= 2 && int.TryParse(parameters[1], out int color))
+                result = PetServer.SetColor(em, player, color - 1);
             else if (sub == "unpoint" && parameters.Length >= 2 && int.TryParse(parameters[1], out int slot2))
                 result = PetServer.RemovePoint(em, player, slot2 - 1);
             else
@@ -50,7 +52,7 @@ namespace PetEditor
 
         public string GetDescription()
         {
-            return "Edit your equipped pet. /pet level <1-10> | /pet talent <slot 1-9> <talent name or id> | /pet unpoint <slot 1-9>";
+            return "Edit your equipped pet. /pet level <1-10> | /pet talent <slot 1-9> <talent name or id> | /pet color <n> | /pet unpoint <slot 1-9>";
         }
 
         public string[] GetTriggerNames()

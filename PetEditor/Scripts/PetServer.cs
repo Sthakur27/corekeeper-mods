@@ -1,3 +1,4 @@
+using Inventory;
 using Unity.Collections;
 using Unity.Entities;
 
@@ -41,6 +42,33 @@ namespace PetEditor
                 }
             }
             return $"Pet level {level} ({total} talent points).";
+        }
+
+        /// <summary>
+        /// Queues the game's own SetPetSkin inventory action on the server. Done server-side (instead of the
+        /// client's predicted input action) so the change arrives once, without the predicted value being
+        /// rolled back and re-applied (a visible flicker).
+        /// </summary>
+        public static string SetColor(EntityManager em, Entity player, int skin)
+        {
+            if (!TryGetPetSlot(em, player, out int slot, out string err)) return err;
+            var pet = em.GetBuffer<ContainedObjectsBuffer>(player)[slot];
+            using var query = em.CreateEntityQuery(ComponentType.ReadWrite<InventoryChangeBuffer>());
+            if (query.IsEmptyIgnoreFilter) return "Inventory system not ready.";
+            var changes = em.GetBuffer<InventoryChangeBuffer>(query.GetSingletonEntity());
+            changes.Add(new InventoryChangeBuffer
+            {
+                playerEntity = player,
+                inventoryChangeData = new InventoryChangeData
+                {
+                    inventoryAction = InventoryAction.SetPetSkin,
+                    inventory1 = player,
+                    index1 = slot,
+                    objectID = pet.objectID,
+                    index2 = skin < 0 ? 0 : skin
+                }
+            });
+            return $"Pet color {skin + 1}.";
         }
 
         public static string SetTalent(EntityManager em, Entity player, int index, PetTalent talent)

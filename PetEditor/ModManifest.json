@@ -1,0 +1,38 @@
+{
+    "guid": "a59a809254b14af18d1eb3874a222f38",
+    "name": "PetEditor",
+    "displayName": "Pet Editor",
+    "skipSafetyChecks": false,
+    "disableScripts": false,
+    "accessesExtraAssemblies": true,
+    "disableHarmonyPatching": false,
+    "requiredOn": 3,
+    "files": [
+        {
+            "path": "Scripts/PetEditorMod.cs",
+            "guid": "06029a4a62934576bab7e77e974910d3"
+        },
+        {
+            "path": "Scripts/PetServer.cs",
+            "guid": "051bedae1b6943d687f6a5530914520a"
+        },
+        {
+            "path": "Scripts/PetCommand.cs",
+            "guid": "59a81bc57de748f69dac988c19b3b440"
+        },
+        {
+            "path": "Scripts/PetEditorUI.cs",
+            "guid": "587ae09e3da24f799b136fc5b2c10f7b"
+        },
+        {
+            "path": "Scripts/PetEditorPatches.cs",
+            "guid": "703972831a59430391ece67800ed452d"
+        }
+    ],
+    "dependencies": [
+        {
+            "modName": "CoreLib",
+            "required": true
+        }
+    ]
+}

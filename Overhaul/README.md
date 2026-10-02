@@ -17,6 +17,7 @@ Included features (each is also available as its own mod on mod.io):
 - **Potion Seller**: the Caveling Merchant sells every potion and Recall Idols; the Slime Merchant sells every grenade and bomb.
 - **Hard Mode Tuning**: in hard mode, regular enemies hit for 1.5x normal damage instead of 2x; bosses keep full hard mode.
 - **Keep Minions On Teleport**: summoned minions survive teleports and arrive with you.
+- **Pet Editor**: set your pet's level and put any talent in any slot from the pet talent window.
 
 All options are in the Mod Settings menu under "Sid's Overhaul", each prefixed with its feature
 (for example "Mushrooms: Wild mushroom respawn"). In multiplayer the host's values count.

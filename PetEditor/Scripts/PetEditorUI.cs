@@ -37,7 +37,7 @@ namespace PetEditor
         }
 
         private const float ButtonWidth = 0.875f;
-        private const float LabelScale = 0.8f;
+        private const float LabelScale = 1f; // the pixel font only renders cleanly at integer scale
         private static Row _levelRow, _colorRow;
         private static float _rowHeight = 1f;
 
@@ -155,7 +155,7 @@ namespace PetEditor
             if (_levelRow != null)
             {
                 int level = PetExtensions.GetLevelFromXP(pet.objectData.amount);
-                SetLabel(_levelRow, $"Level {level}/{PetExtensions.maxLevel}");
+                SetLabel(_levelRow, $"Lv {level}/{PetExtensions.maxLevel}");
                 _levelRow.dec.canBeClicked = level > 1;
                 _levelRow.inc.canBeClicked = level < PetExtensions.maxLevel;
             }

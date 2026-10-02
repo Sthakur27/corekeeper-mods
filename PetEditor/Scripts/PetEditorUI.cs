@@ -37,6 +37,7 @@ namespace PetEditor
         }
 
         private const float ButtonWidth = 0.875f;
+        private const float LabelScale = 0.8f;
         private static Row _levelRow, _colorRow;
         private static float _rowHeight = 1f;
 
@@ -244,12 +245,12 @@ namespace PetEditor
 
             float half = w.background.size.x / 2f;
             float incX = half - 0.375f - ButtonWidth / 2f;
-            float decX = incX - ButtonWidth - 0.125f;
+            float decX = -incX;
 
             row.label = UnityEngine.Object.Instantiate(w.pointsText.gameObject, row.root.transform).GetComponent<PugText>();
             PrepareText(row.label);
-            row.label.style.horizontalAlignment = PugTextStyle.HorizontalAlignment.left;
-            row.label.transform.localPosition = new Vector3(-half + 0.375f, 0f, 0f);
+            row.label.transform.localPosition = Vector3.zero;
+            row.label.transform.localScale = row.label.transform.localScale * LabelScale;
             SetOpaque(row.label.gameObject);
 
             row.dec = CloneButton(w, row.root.transform, decLabel, dec, new Vector3(decX, 0f, 0f));
@@ -298,6 +299,9 @@ namespace PetEditor
         private static void PrepareText(PugText text)
         {
             text.Clear(false, true);
+            // Anything still under the clone is a leftover copy of the source's letters; drop it.
+            for (int i = text.transform.childCount - 1; i >= 0; i--)
+                UnityEngine.Object.Destroy(text.transform.GetChild(i).gameObject);
             text.localize = false;
             text.formatFields = new string[0];
         }

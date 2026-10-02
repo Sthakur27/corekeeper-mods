@@ -1,0 +1,21 @@
+{
+    "guid": "4785894146db4076ae0dfe399000cbf6",
+    "name": "InfiniteOreBoulders",
+    "displayName": "Infinite Ore Boulders",
+    "skipSafetyChecks": false,
+    "disableScripts": false,
+    "accessesExtraAssemblies": true,
+    "disableHarmonyPatching": false,
+    "requiredOn": 3,
+    "files": [
+        {
+            "path": "Scripts/InfiniteOreBouldersMod.cs",
+            "guid": "5de1f206db6445b3a613f252095430e3"
+        },
+        {
+            "path": "Scripts/Systems/InfiniteOreBouldersSystem.cs",
+            "guid": "c30dfaa0a56a43aa8ac5c95b7d8c8f72"
+        }
+    ],
+    "dependencies": []
+}

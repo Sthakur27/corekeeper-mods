@@ -19,7 +19,14 @@ namespace PotionSeller
         {
             public ObjectID id;
             public int buyPrice;
-            public Entry(ObjectID id, int buyPrice) { this.id = id; this.buyPrice = buyPrice; }
+            /// <summary>Boss that must be beaten before the item is sold (None = always).</summary>
+            public ObjectID unlockedBy;
+            /// <summary>Stock per restock; 0 = the Stock setting.</summary>
+            public int stock;
+            public Entry(ObjectID id, int buyPrice, ObjectID unlockedBy = ObjectID.None, int stock = 0)
+            {
+                this.id = id; this.buyPrice = buyPrice; this.unlockedBy = unlockedBy; this.stock = stock;
+            }
         }
 
         /// <summary>Merchant order: cheap first. Edit prices here.</summary>
@@ -65,8 +72,32 @@ namespace PotionSeller
             new Entry(ObjectID.VoidBomb, 100),
         };
 
-        /// <summary>Every item whose price this mod sets (both merchants).</summary>
-        public static readonly Entry[] All = Concat(Potions, Explosives);
+        /// <summary>
+        /// The Fishing Merchant sells each Titan's summoning item once that Titan is beaten (see
+        /// MerchantStockSystem: killed in this world, or a connected player holds its soul):
+        /// Azeos = Large Shiny Glimmering Object, Omoroth = Expert Lure, Ra-Akar = Thumper.
+        /// </summary>
+        public static readonly Entry[] TitanSummons =
+        {
+            new Entry(ObjectID.LargeShinyGlimmeringObject, 2000, ObjectID.BirdBoss, 3),
+            new Entry(ObjectID.BaitOctopusBoss, 2000, ObjectID.OctopusBoss, 3),
+            new Entry(ObjectID.Thumper, 2000, ObjectID.ScarabBoss, 3),
+        };
+
+        /// <summary>The soul a player gets for beating each Titan.</summary>
+        public static SoulID SoulFor(ObjectID boss)
+        {
+            switch (boss)
+            {
+                case ObjectID.BirdBoss: return SoulID.SoulOfAzeos;
+                case ObjectID.OctopusBoss: return SoulID.SoulOfOmoroth;
+                case ObjectID.ScarabBoss: return SoulID.SoulOfScarab;
+                default: return SoulID.None;
+            }
+        }
+
+        /// <summary>Every item whose price this mod sets (all merchants).</summary>
+        public static readonly Entry[] All = Concat(Concat(Potions, Explosives), TitanSummons);
 
         /// <summary>The list a merchant sells, or null for merchants this mod leaves alone.</summary>
         public static Entry[] ForMerchant(ObjectID merchant)
@@ -75,6 +106,7 @@ namespace PotionSeller
             {
                 case ObjectID.CavelingMerchant: return Potions;
                 case ObjectID.SlimeMerchant: return Explosives;
+                case ObjectID.FishingMerchant: return TitanSummons;
                 default: return null;
             }
         }

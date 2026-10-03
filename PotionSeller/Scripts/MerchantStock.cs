@@ -44,6 +44,13 @@ namespace PotionSeller
         /// changed; <paramref name="addedItems"/> is true only when a potion entry was newly added.
         /// </summary>
         public static bool Apply(EntityManager em, Entity e, int stock, out bool addedItems)
+            => Apply(em, e, stock, null, out addedItems);
+
+        /// <summary>
+        /// As above; entries with an unlockedBy boss are listed only while <paramref name="isBeaten"/>
+        /// says that boss is beaten (null = locked, used at prefab time) and removed from the list otherwise.
+        /// </summary>
+        public static bool Apply(EntityManager em, Entity e, int stock, System.Func<ObjectID, bool> isBeaten, out bool addedItems)
         {
             addedItems = false;
             bool changed = false;
@@ -58,20 +65,31 @@ namespace PotionSeller
                 {
                     if (items[i].objectID == potion.id) { idx = i; break; }
                 }
+                bool locked = potion.unlockedBy != ObjectID.None && (isBeaten == null || !isBeaten(potion.unlockedBy));
+                if (locked)
+                {
+                    if (idx >= 0)
+                    {
+                        items.RemoveAt(idx);
+                        changed = true;
+                    }
+                    continue;
+                }
+                int amount = potion.stock > 0 ? potion.stock : stock;
                 if (idx < 0)
                 {
                     items.Add(new MerchantItemInfoBuffer
                     {
                         objectID = potion.id,
-                        amount = stock,
+                        amount = amount,
                         requirementToBeAvailable = MerchantItemRequirement.None
                     });
                     addedItems = changed = true;
                 }
-                else if (items[idx].amount != stock || items[idx].requirementToBeAvailable != MerchantItemRequirement.None)
+                else if (items[idx].amount != amount || items[idx].requirementToBeAvailable != MerchantItemRequirement.None)
                 {
                     var entry = items[idx];
-                    entry.amount = stock;
+                    entry.amount = amount;
                     entry.requirementToBeAvailable = MerchantItemRequirement.None;
                     items[idx] = entry;
                     changed = true;

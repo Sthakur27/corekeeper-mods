@@ -5,6 +5,9 @@ Core Keeper mod. The **Caveling Merchant** sells **every potion** and the **Reca
 prices (potions 50 to 500, explosives 10 to 100). Nothing is gated: the items are on their lists from
 the first visit, next to the vanilla wares.
 
+The **Fishing Merchant** also sells each Titan's summoning item once that Titan is beaten (killed in
+this world, or any connected player holds its soul), 3 per restock.
+
 Required on client and server (`requiredOn: 3`). Depends on **CoreLib** and **Mod Settings Menu**.
 
 ## Prices
@@ -47,6 +50,14 @@ Slime Merchant:
 | Blunder Bomb | 70 | 14 |
 | Big Grenade | 80 | 16 |
 | Void Bomb | 100 | 20 |
+
+Fishing Merchant (unlocked per Titan):
+
+| Item | Summons | Buy (1x) | You get when selling one |
+|---|---|---|---|
+| Large Shiny Glimmering Object | Azeos the Sky Titan | 2000 | 400 |
+| Expert Lure | Omoroth the Sea Titan | 2000 | 400 |
+| Thumper | Ra-Akar the Sand Titan | 2000 | 400 |
 
 Edit `Scripts/PotionPrices.cs` to change a price (keep multiples of 5, see below) or the list.
 

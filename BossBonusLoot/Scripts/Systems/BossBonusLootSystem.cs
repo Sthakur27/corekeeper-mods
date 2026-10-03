@@ -23,7 +23,7 @@ namespace BossBonusLoot.Systems
             new Dictionary<ObjectID, (ObjectID, int, float)[]>
             {
                 // Ghorm the Devourer
-                [ObjectID.BossLarva] = new[] { (ObjectID.LarvaMeat, 40, 1f), (ObjectID.GoldenLarvaMeat, 40, 1f) },
+                [ObjectID.BossLarva] = new[] { (ObjectID.LarvaMeat, 80, 1f), (ObjectID.GoldenLarvaMeat, 80, 1f) },
                 // Azeos the Sky Titan (Wilderness): Chipped Blade, Clear Gemstone, Jungle Emerald, pouches
                 [ObjectID.BirdBoss] = new[]
                 {

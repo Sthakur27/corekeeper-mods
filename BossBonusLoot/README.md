@@ -4,7 +4,7 @@ Core Keeper mod: bosses drop extra items on top of their normal loot chest, and 
 
 | Boss | Bonus (each row rolled separately) |
 |---|---|
-| Ghorm the Devourer | 40 Larva Meat + 40 Golden Larva Meat (always) |
+| Ghorm the Devourer | 80 Larva Meat + 80 Golden Larva Meat (always) |
 | Azeos the Sky Titan | Jungle Emerald (always), Chipped Blade 25%, Clear Gemstone 25%, Large Seed and Crop Pouch 40%, Large Critter Pouch 40% |
 | Omoroth the Sea Titan | Ocean Sapphire (always), Large Fish Pouch 40%, Large Potion Pouch 40% |
 | Ra-Akar the Sand Titan | Desert Ruby (always), Large Valuable Pouch 40%, Large Ore and Block Pouch 40% |

@@ -10,6 +10,7 @@
     "files": [
         { "path": "Scripts/QuickBuffMod.cs", "guid": "4b7e2d19c6a04f3b8e5d1c2a9f7b6e41" },
         { "path": "Scripts/QuickBuffCommand.cs", "guid": "4b7e2d19c6a04f3b8e5d1c2a9f7b6e42" },
+        { "path": "Scripts/QuickHealCommand.cs", "guid": "4b7e2d19c6a04f3b8e5d1c2a9f7b6e44" },
         { "path": "Scripts/Systems/QuickBuffServerSystem.cs", "guid": "4b7e2d19c6a04f3b8e5d1c2a9f7b6e43" }
     ],
     "dependencies": [

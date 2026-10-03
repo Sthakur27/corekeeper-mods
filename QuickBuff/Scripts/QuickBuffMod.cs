@@ -29,10 +29,12 @@ namespace QuickBuff
     public sealed class QuickBuffMod : IMod
     {
         public const string Name = "QuickBuff";
-        public const string Version = "1.0.0";
+        public const string Version = "1.1.0";
 
         /// <summary>Rewired action name registered with CoreLib's control mapping module.</summary>
         public const string UseKeyBind = "QuickBuff_Use";
+        /// <summary>Quick heal: drink the first healing potion (default H).</summary>
+        public const string HealKeyBind = "QuickBuff_Heal";
 
         /// <summary>Client-side guard between presses (matches the game's default eat cooldown).</summary>
         private const float PressCooldownSeconds = 0.4f;
@@ -45,6 +47,7 @@ namespace QuickBuff
 
         private static Player _rewiredPlayer;
         private float _nextPressAllowed;
+        private float _nextHealAllowed;
         private LoadedMod _modInfo;
 
         public static bool SkipActive => _skipActive?.Value ?? DefaultSkipActive;
@@ -79,6 +82,7 @@ namespace QuickBuff
             {
                 int category = ControlMappingModule.AddNewCategory("Quick Buff");
                 ControlMappingModule.AddKeyboardBind(UseKeyBind, KeyboardKeyCode.B, categoryId: category);
+                ControlMappingModule.AddKeyboardBind(HealKeyBind, KeyboardKeyCode.H, categoryId: category);
                 ControlMappingModule.rewiredStart += OnRewiredStart;
             }
             catch (Exception e)
@@ -133,9 +137,18 @@ namespace QuickBuff
             var inputModule = Manager.input.singleplayerInputModule;
             if (inputModule == null || !inputModule.InputEnabled) return;
 
-            if (!_rewiredPlayer.GetButtonDown(UseKeyBind)) return;
-            if (Time.unscaledTime < _nextPressAllowed) return;
-            _nextPressAllowed = Time.unscaledTime + PressCooldownSeconds;
+            bool heal = _rewiredPlayer.GetButtonDown(HealKeyBind);
+            if (!heal && !_rewiredPlayer.GetButtonDown(UseKeyBind)) return;
+            if (heal)
+            {
+                if (Time.unscaledTime < _nextHealAllowed) return;
+                _nextHealAllowed = Time.unscaledTime + PressCooldownSeconds;
+            }
+            else
+            {
+                if (Time.unscaledTime < _nextPressAllowed) return;
+                _nextPressAllowed = Time.unscaledTime + PressCooldownSeconds;
+            }
 
             var comm = CommandModule.ClientCommSystem;
             if (comm == null)
@@ -144,7 +157,9 @@ namespace QuickBuff
                 return;
             }
 
-            string command = string.Format(CultureInfo.InvariantCulture, "/quickbuff {0} {1:0.#}", SkipActive ? 1 : 0, SkipSeconds);
+            string command = heal
+                ? "/quickheal"
+                : string.Format(CultureInfo.InvariantCulture, "/quickbuff {0} {1:0.#}", SkipActive ? 1 : 0, SkipSeconds);
             comm.SendCommand(command, CommandFlags.None);
         }
 

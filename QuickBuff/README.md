@@ -17,6 +17,9 @@ never wastes anything.
   to run out, the item is consumed and its buffs refresh exactly as if you ate it by hand.
 - Health, mana, hunger, potion heal-over-time, condition stacking/refresh rules and the eat / drink
   particles all come from the game's own code paths, so the result matches manual eating.
+- **Quick Heal** (default **H**): drinks the *first* healing potion in your main inventory, hotbar
+  first (any potion whose effect includes an instant heal: Healing Potion, Greater Healing Potion...).
+  Does nothing at full health. Also `/quickheal` (or `/qh`) in chat.
 - A one-line summary appears in chat ("Quick Buff: consumed 3 item(s), 1 skipped (buff active)").
 - You can also type `/quickbuff` (or `/qb`) in chat: `/quickbuff [skipActive 0|1] [skipSeconds]`.
 
@@ -27,7 +30,7 @@ never wastes anything.
 | Skip buffs that are still active | on | Do not consume an item whose buffs are all still running |
 | Still active means more than (seconds) | 30 | Remaining time that counts as "still active" (0-300, step 5) |
 
-Key binding: **Controls > Quick Buff > QuickBuff_Use** (CoreLib control mapping, saved with your controls).
+Key bindings: **Controls > Quick Buff > QuickBuff_Use** and **QuickBuff_Heal** (CoreLib control mapping, saved with your controls).
 
 ## How it works (technical)
 

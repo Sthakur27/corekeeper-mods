@@ -22,6 +22,10 @@ namespace QuickBuff.Systems
         public bool onCooldown;
         /// <summary>Non-null when nothing could be done at all (missing components, dead player...).</summary>
         public string error;
+        /// <summary>Quick heal only: the player was already at full health, nothing consumed.</summary>
+        public bool fullHealth;
+        /// <summary>Quick heal only: the potion that was drunk.</summary>
+        public ObjectID healItem;
     }
 
     /// <summary>
@@ -58,6 +62,7 @@ namespace QuickBuff.Systems
         private EntityQuery _healthChangeQuery;
 
         private readonly Dictionary<Entity, NetworkTick> _lastRequestTick = new Dictionary<Entity, NetworkTick>();
+        private readonly Dictionary<Entity, NetworkTick> _lastHealTick = new Dictionary<Entity, NetworkTick>();
 
         protected override void OnCreate()
         {
@@ -76,7 +81,11 @@ namespace QuickBuff.Systems
             Enabled = false;
         }
 
-        public QuickBuffResult Consume(Entity player, bool skipActive, float skipSeconds)
+        /// <summary>
+        /// <paramref name="healOnly"/> = quick heal: drink the first healing potion (a PotionCD item whose
+        /// consume effects include an instant health gain) in slot order, hotbar first; nothing at full health.
+        /// </summary>
+        public QuickBuffResult Consume(Entity player, bool skipActive, float skipSeconds, bool healOnly = false)
         {
             var result = new QuickBuffResult();
             var em = EntityManager;
@@ -113,13 +122,24 @@ namespace QuickBuff.Systems
             if (tickRate == 0) tickRate = 60;
             NetworkTick currentTick = GetServerTick();
 
-            if (_lastRequestTick.TryGetValue(player, out NetworkTick lastTick) && lastTick.IsValid && currentTick.IsValid
+            var lastTicks = healOnly ? _lastHealTick : _lastRequestTick;
+            if (lastTicks.TryGetValue(player, out NetworkTick lastTick) && lastTick.IsValid && currentTick.IsValid
                 && currentTick.TicksSince(lastTick) < (int)(RequestCooldownSeconds * tickRate))
             {
                 result.onCooldown = true;
                 return result;
             }
-            _lastRequestTick[player] = currentTick;
+            lastTicks[player] = currentTick;
+
+            if (healOnly)
+            {
+                HealthCD hp = em.GetComponentData<HealthCD>(player);
+                if (hp.health >= hp.GetMaxHealthWithConditions(em.GetBuffer<SummarizedConditionEffectsBuffer>(player, true)))
+                {
+                    result.fullHealth = true;
+                    return result;
+                }
+            }
 
             _flowerLookup.Update(this);
             _fishLookup.Update(this);
@@ -188,10 +208,14 @@ namespace QuickBuff.Systems
 
                 try
                 {
-                    if (!GivesBuff(conditions, conditionsTable)) continue; // hunger-only food, no-effect items, bombs, seeds...
+                    if (healOnly)
+                    {
+                        if (!isPotion || !GivesInstantHeal(conditions)) continue;
+                    }
+                    else if (!GivesBuff(conditions, conditionsTable)) continue; // hunger-only food, no-effect items, bombs, seeds...
                     result.candidates++;
 
-                    if (skipActive && AllBuffsActive(conditions, conditionsTable, em.GetBuffer<ConditionsBuffer>(player, true), currentTick, tickRate, skipSeconds))
+                    if (!healOnly && skipActive && AllBuffsActive(conditions, conditionsTable, em.GetBuffer<ConditionsBuffer>(player, true), currentTick, tickRate, skipSeconds))
                     {
                         result.skippedActive++;
                         continue;
@@ -212,6 +236,11 @@ namespace QuickBuff.Systems
                     PlayEffect(player, item.objectID, isPotion, position, currentTick);
 
                     result.consumed++;
+                    if (healOnly)
+                    {
+                        result.healItem = item.objectID;
+                        break;
+                    }
                 }
                 finally
                 {
@@ -238,6 +267,16 @@ namespace QuickBuff.Systems
             if (data.duration <= 0f) return false;
             ConditionInfoBlob info = table.GetConditionInfo(data.conditionID);
             return !info.isPermanent;
+        }
+
+        private static bool GivesInstantHeal(NativeArray<ConditionData> conditions)
+        {
+            for (int i = 0; i < conditions.Length; i++)
+            {
+                var id = conditions[i].conditionID;
+                if ((id == ConditionID.HealthAddition || id == ConditionID.HealthAdditionPercentage) && conditions[i].value > 0) return true;
+            }
+            return false;
         }
 
         private static bool GivesBuff(NativeArray<ConditionData> conditions, ConditionsTableCD table)

@@ -29,6 +29,7 @@ Each folder is one mod (also published separately on [mod.io](https://mod.io/g/c
 | KeepMinions | Minions survive teleports |
 | PetEditor | Pet level, any talent in any slot, color |
 | BossBonusLoot | Bosses drop guaranteed extras |
+| EnderStash | Personal 40-slot stash from any chest, same in every world, kept on death |
 | InfiniteOreBoulders | Ore boulders never break |
 
 `Overhaul/` + `release/build_overhaul.py` combine them into Sid's Overhaul. Notes for modders are in

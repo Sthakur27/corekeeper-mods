@@ -8,7 +8,8 @@ never wastes anything.
 ## What it does
 
 - One key press consumes **one** of every distinct food / potion (distinct = item + cooked-food
-  variation) in your main inventory (hotbar + bag). Equipment and other slots are never touched.
+  variation) in your main inventory (hotbar + bag) and your equipped pouches (e.g. a Potion Pouch). Equipment
+  and other slots are never touched.
 - Only consumables that grant a **timed buff** count. Hunger-only or heal-only items (raw mushrooms,
   healing potions), items with no effect, bombs, seeds, pet candy and cattle are never consumed.
   Items that give a permanent effect (max-health foods) are also left alone.
@@ -18,7 +19,7 @@ never wastes anything.
 - Health, mana, hunger, potion heal-over-time, condition stacking/refresh rules and the eat / drink
   particles all come from the game's own code paths, so the result matches manual eating.
 - **Quick Heal** (default **H**): drinks the *first* healing potion in your main inventory, hotbar
-  first (any potion whose effect includes an instant heal: Healing Potion, Greater Healing Potion...).
+  first, then your pouches (any potion whose effect includes an instant heal: Healing Potion, Greater Healing Potion...).
   Does nothing at full health. Also `/quickheal` (or `/qh`) in chat.
 - A one-line summary appears in chat ("Quick Buff: consumed 3 item(s), 1 skipped (buff active)").
 - You can also type `/quickbuff` (or `/qb`) in chat: `/quickbuff [skipActive 0|1] [skipSeconds]`.

@@ -153,30 +153,35 @@ namespace QuickBuff.Systems
             bool godMode = em.HasComponent<GodModeCD>(player) && em.IsComponentEnabled<GodModeCD>(player);
             float3 position = em.HasComponent<LocalTransform>(player) ? em.GetComponentData<LocalTransform>(player).Position : float3.zero;
 
-            // Main inventory range (hotbar + bag); equipment and other slots are excluded.
+            // Main inventory (hotbar + bag, InventoryBuffer[0]) then the equipped pouches' contents
+            // (InventoryBuffer[1..4], size 0 when the pouch slot is empty); equipment slots are excluded.
             DynamicBuffer<ContainedObjectsBuffer> contained = em.GetBuffer<ContainedObjectsBuffer>(player, true);
-            int start = 0;
-            int end = contained.Length;
+            var ranges = new List<int2>();
             if (em.HasBuffer<InventoryBuffer>(player))
             {
                 DynamicBuffer<InventoryBuffer> inventories = em.GetBuffer<InventoryBuffer>(player, true);
-                if (inventories.Length > 0)
+                for (int n = 0; n < inventories.Length && n <= 4; n++)
                 {
-                    start = math.clamp(inventories[0].startIndex, 0, contained.Length);
-                    end = math.clamp(start + inventories[0].size, start, contained.Length);
+                    int s = math.clamp(inventories[n].startIndex, 0, contained.Length);
+                    int e = math.clamp(s + inventories[n].size, s, contained.Length);
+                    if (e > s) ranges.Add(new int2(s, e));
                 }
             }
+            if (ranges.Count == 0) ranges.Add(new int2(0, contained.Length));
 
             // Snapshot the slots first: applying effects touches other buffers on the same entity.
             var slots = new List<KeyValuePair<int, ObjectDataCD>>();
             var seen = new HashSet<long>();
-            for (int i = start; i < end; i++)
+            foreach (int2 range in ranges)
             {
-                ObjectDataCD item = contained[i].objectData;
-                if (item.objectID == ObjectID.None || item.amount < 1) continue;
-                long key = ((long)item.objectID << 32) | (uint)item.variation;
-                if (!seen.Add(key)) continue;
-                slots.Add(new KeyValuePair<int, ObjectDataCD>(i, item));
+                for (int i = range.x; i < range.y; i++)
+                {
+                    ObjectDataCD item = contained[i].objectData;
+                    if (item.objectID == ObjectID.None || item.amount < 1) continue;
+                    long key = ((long)item.objectID << 32) | (uint)item.variation;
+                    if (!seen.Add(key)) continue;
+                    slots.Add(new KeyValuePair<int, ObjectDataCD>(i, item));
+                }
             }
 
             foreach (var slot in slots)

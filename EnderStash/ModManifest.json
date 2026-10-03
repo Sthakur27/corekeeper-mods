@@ -1,0 +1,18 @@
+{
+    "guid": "9e4c2a7b1f3d48c6a05e8b7d2c91f4a6",
+    "name": "EnderStash",
+    "displayName": "Ender Stash",
+    "skipSafetyChecks": false,
+    "disableScripts": false,
+    "accessesExtraAssemblies": true,
+    "disableHarmonyPatching": false,
+    "requiredOn": 3,
+    "files": [
+        { "path": "Scripts/EnderStashMod.cs", "guid": "" },
+        { "path": "Scripts/StashLayout.cs", "guid": "" },
+        { "path": "Scripts/EnderStashUI.cs", "guid": "" },
+        { "path": "Scripts/Systems/StashGrowSystem.cs", "guid": "" },
+        { "path": "Scripts/Patches/StashPatches.cs", "guid": "" }
+    ],
+    "dependencies": []
+}

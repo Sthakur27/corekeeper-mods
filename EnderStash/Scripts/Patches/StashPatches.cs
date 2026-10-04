@@ -4,17 +4,25 @@ using Unity.Entities;
 
 namespace EnderStash.Patches
 {
-    /// <summary>Walking away from (or breaking) the chest closes the window even while the stash is showing.</summary>
+    /// <summary>Using an Ender Chest opens the stash instead of the (empty) chest inventory.</summary>
+    [HarmonyPatch(typeof(Chest), nameof(Chest.Use))]
+    public static class EnderChestUsePatch
+    {
+        public static bool Prefix(Chest __instance)
+        {
+            if (!EnderChest.Is(__instance)) return true;
+            EnderStashUI.Open(__instance);
+            return false;
+        }
+    }
+
+    /// <summary>Walking away from (or breaking) the Ender Chest closes the stash window.</summary>
     [HarmonyPatch(typeof(Chest), nameof(Chest.OnPlayerLeftChest))]
     public static class ChestLeftPatch
     {
         public static void Postfix(Chest __instance)
         {
-            if (!EnderStashUI.Active || EnderStashUI.ChestHandler != __instance.inventoryHandler) return;
-            var player = Manager.main?.player;
-            Manager.ui.TryHideAllInventoryAndCraftingUI();
-            if (player != null) player.SetActiveWorldLabel(null);
-            EnderStashUI.Reset();
+            EnderStashUI.CloseIfFrom(__instance);
         }
     }
 
@@ -48,7 +56,7 @@ namespace EnderStash.Patches
         }
     }
 
-    /// <summary>After a toggle, make the chest window recompute size and buttons even if the slot count is unchanged.</summary>
+    /// <summary>After opening the stash, make the chest window recompute size and buttons even if the slot count is unchanged.</summary>
     [HarmonyPatch(typeof(InventoryUI), "UpdateContainerSize")]
     public static class ForceRefreshPatch
     {

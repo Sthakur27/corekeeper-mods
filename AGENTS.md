@@ -376,3 +376,30 @@ every Sfx*/SfxTable call funnels into. Custom audio without System.IO: mod-folde
 Reflection/InteropServices). Local folder: `API.ConfigFilesystem` "StimHits/Sounds" (= ...\Steam\<id>\mods\StimHits\Sounds; listed via ConfigFilesystem.GetFiles since System.IO is blocked; every file becomes a Choice entry, hit/kill/hurt[N] = Auto; mp3/ogg abs path = persistentDataPath/Steam/<SteamClient.SteamId.AccountId>/mods/; never ship copyrighted audio in the mod, Sid keeps his personal files there only). Sandbox block
 list lives in `resources.assets` (RoslynCSharpSettings). Stim sounds come from `release/make_stim_sounds.py`.
 - Workshop: **Stim Hits** 3813586935 (category Other, logo `release/stimhits_logo.png` from `release/make_stimhits_logo.py`), published 2026-10-04 at 1.4.1 together with an overhaul update. Not on mod.io yet.
+
+## 14. New objects/items via the official Mod SDK (Ender Chest, 2026-10-04)
+
+Loose scripts cannot add objects; a new item needs a prefab in an asset bundle. Pipeline that works,
+fully headless (see `EnderStash/Unity/`, run `python EnderStash/Unity/build_bundle.py`):
+- Unity **6000.0.59f2** (= game's engine; Hub CLI: `"Unity Hub.exe" -- --headless install --version 6000.0.59f2
+  --changeset ef281c76c3c1 --module linux-mono --module windows-mono`) + `Pugstorm/CoreKeeperModSDK` cloned
+  to `C:\Users\Sid\CoreKeeperModSDK`.
+- Batch step 1 `EnderStashSetup.ImportGame`: `PugMod.ImporterWindow.UpdateFromGamePath` copies the game DLLs
+  into Assets/Plugins/CoreKeeper and adds the `USE_PUG_OTHER` define. Step 2 (asmdef with defineConstraints
+  USE_PUG_OTHER) builds prefabs with `AddComponent(type found by name)` + `SerializedObject`, then calls
+  `PugMod.ModBuilder.BuildMod(settings, outDir, cb)` (init `settings.assets` or it NREs).
+- Modded object = logic prefab with `ObjectAuthoring` (objectName = save key; ID assigned >32767 at load,
+  `API.Authoring.GetObjectID(name)`), `InventoryItemAuthoring` (icon, sellValue), the vanilla authoring
+  components (copy values from the vanilla prefab, dumped with UnityPy from
+  `StreamingAssets/aa/StandaloneWindows64/defaultlocalgroup_assets_all.bundle` + the `_monoscripts.bundle`),
+  `LocalizationAuthoring.termKey` = name of a `TextDataBlock` with header `Items`. Graphics prefab referenced
+  by `graphicalPrefab` + `GraphicalObjectDataBlock` address. Data-block addresses can point at vanilla blocks
+  (e.g. the chest shadow SpriteAsset, pool params).
+- Use only VANILLA MonoBehaviours in prefabs (e.g. `Chest`) and redirect behaviour with Harmony: bundle
+  MonoScripts bind by assembly name, which breaks inside the overhaul otherwise.
+- Gotchas: SDK example prefabs have stale DLL guids (don't copy their YAML); guid-only texture metas import as
+  Cubemap unless `textureShape = Texture2D` is set; **one data-block loader per mod guid**: in a mod with two
+  bundles only the first bundle's data blocks load ("Data block loader already added"), so the overhaul lists
+  EnderStash's bundle first (build_overhaul.py BUNDLE_MODS order).
+- Verify in Player.log: `staged mod bundle: EnderStash_Windows.assetbundle`, `Got N data blocks from <guid>`,
+  `[EnderStash] Ender Chest registered as ObjectID ...`.

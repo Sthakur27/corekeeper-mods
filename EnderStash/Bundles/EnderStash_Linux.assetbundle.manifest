@@ -1,0 +1,56 @@
+{
+    "assets": [
+        {
+            "path": "Assets/EnderStash/Textures/EnderChest_up_emissive.png",
+            "guid": "6e1d0a3b9c7f4e21a5b8c3d2e1f00a06"
+        },
+        {
+            "path": "Assets/EnderStash/Textures/EnderChest_up.png",
+            "guid": "6e1d0a3b9c7f4e21a5b8c3d2e1f00a03"
+        },
+        {
+            "path": "Assets/EnderStash/Textures/EnderChest_side_emissive.png",
+            "guid": "6e1d0a3b9c7f4e21a5b8c3d2e1f00a05"
+        },
+        {
+            "path": "Assets/EnderStash/Textures/EnderChest_side.png",
+            "guid": "6e1d0a3b9c7f4e21a5b8c3d2e1f00a02"
+        },
+        {
+            "path": "Assets/EnderStash/Textures/EnderChest_icon.png",
+            "guid": "6e1d0a3b9c7f4e21a5b8c3d2e1f00a07"
+        },
+        {
+            "path": "Assets/EnderStash/Textures/EnderChest_emissive.png",
+            "guid": "6e1d0a3b9c7f4e21a5b8c3d2e1f00a04"
+        },
+        {
+            "path": "Assets/EnderStash/Textures/EnderChest.png",
+            "guid": "6e1d0a3b9c7f4e21a5b8c3d2e1f00a01"
+        },
+        {
+            "path": "Assets/EnderStash/Prefabs/EnderChestGraphics.prefab",
+            "guid": "a9df7d4ed306c1b4aaf1a7125ad8d973"
+        },
+        {
+            "path": "Assets/EnderStash/Prefabs/EnderChestEntity.prefab",
+            "guid": "ae1ebfec250ade042b06f753c5df4983"
+        },
+        {
+            "path": "Assets/EnderStash/Data/TextDataBlock/Items/EnderStash_EnderChest.asset",
+            "guid": "6e1d0a3b9c7f4e21a5b8c3d2e1f00b02"
+        },
+        {
+            "path": "Assets/EnderStash/Data/SpriteAsset/EnderChest.asset",
+            "guid": "6e1d0a3b9c7f4e21a5b8c3d2e1f00b01"
+        },
+        {
+            "path": "Assets/EnderStash/Data/GraphicalObjectDataBlock/EnderChestGraphics.asset",
+            "guid": "a24c5a0031f4f0746bf376d6839165f5"
+        },
+        {
+            "path": "Assets/EnderStash/Data/EntityAuthoringDataBlock/EnderChestEntity.asset",
+            "guid": "8d2779a34fe245f4dad4d84e444b74f2"
+        }
+    ]
+}

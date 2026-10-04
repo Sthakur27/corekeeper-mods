@@ -5,20 +5,22 @@ using Object = UnityEngine.Object;
 namespace EnderStash
 {
     /// <summary>
-    /// A personal stash per character, like Minecraft's ender chest: every chest window gets an
-    /// extra button that switches it to your stash and back. The stash is stored in extra slots on
-    /// the character, so it is the same in every world and is never dropped on death. No settings.
+    /// A personal stash per character, like Minecraft's ender chest: the Ender Chest (sold by the Fishing
+    /// Merchant for 9999 coins, asset bundle in Bundles/) opens your stash instead of an inventory of its
+    /// own. The stash is stored in extra slots on the character, so it is the same in every world and
+    /// every Ender Chest, and is never dropped on death. Regular chests are vanilla. No settings.
     /// </summary>
     public sealed class EnderStashMod : IMod
     {
         public const string Name = "EnderStash";
-        public const string Version = "1.0.0";
+        public const string Version = "2.0.0";
 
         private bool _subscribed;
+        private bool _loggedId;
 
         public void EarlyInit()
         {
-            Debug.Log($"[{Name}] v{Version} loaded: {StashLayout.Size}-slot personal stash on every chest.");
+            Debug.Log($"[{Name}] v{Version} loaded: {StashLayout.Size}-slot personal stash behind the Ender Chest.");
         }
 
         public void Init() { }
@@ -39,6 +41,11 @@ namespace EnderStash
             {
                 API.Authoring.OnObjectTypeAdded += StashLayout.OnObjectTypeAdded;
                 _subscribed = true;
+            }
+            if (!_loggedId && EnderChest.Id != ObjectID.None)
+            {
+                _loggedId = true;
+                Debug.Log($"[{Name}] Ender Chest registered as ObjectID {(int)EnderChest.Id}.");
             }
             EnderStashUI.Update();
         }

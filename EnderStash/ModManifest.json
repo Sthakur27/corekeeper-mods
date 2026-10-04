@@ -8,11 +8,50 @@
     "disableHarmonyPatching": false,
     "requiredOn": 3,
     "files": [
-        { "path": "Scripts/EnderStashMod.cs", "guid": "" },
-        { "path": "Scripts/StashLayout.cs", "guid": "" },
-        { "path": "Scripts/EnderStashUI.cs", "guid": "" },
-        { "path": "Scripts/Systems/StashGrowSystem.cs", "guid": "" },
-        { "path": "Scripts/Patches/StashPatches.cs", "guid": "" }
+        {
+            "path": "Scripts/EnderStashMod.cs",
+            "guid": ""
+        },
+        {
+            "path": "Scripts/StashLayout.cs",
+            "guid": ""
+        },
+        {
+            "path": "Scripts/EnderChest.cs",
+            "guid": ""
+        },
+        {
+            "path": "Scripts/EnderStashUI.cs",
+            "guid": ""
+        },
+        {
+            "path": "Scripts/Systems/StashGrowSystem.cs",
+            "guid": ""
+        },
+        {
+            "path": "Scripts/Systems/EnderChestMerchantSystem.cs",
+            "guid": ""
+        },
+        {
+            "path": "Scripts/Patches/StashPatches.cs",
+            "guid": ""
+        },
+        {
+            "path": "Bundles/EnderStash_Windows.assetbundle",
+            "guid": ""
+        },
+        {
+            "path": "Bundles/EnderStash_Windows.assetbundle.manifest",
+            "guid": ""
+        },
+        {
+            "path": "Bundles/EnderStash_Linux.assetbundle",
+            "guid": ""
+        },
+        {
+            "path": "Bundles/EnderStash_Linux.assetbundle.manifest",
+            "guid": ""
+        }
     ],
     "dependencies": []
 }

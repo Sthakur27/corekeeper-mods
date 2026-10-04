@@ -1,0 +1,7 @@
+{
+    "name": "EnderStashBuilder.Editor",
+    "references": [ "ModSDK.Editor", "PugMod.SDK" ],
+    "includePlatforms": [ "Editor" ],
+    "defineConstraints": [ "USE_PUG_OTHER" ],
+    "autoReferenced": false
+}

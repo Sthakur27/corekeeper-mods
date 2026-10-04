@@ -24,7 +24,13 @@ MODS = [
 # Bundles whose MonoScripts bind to the old assembly name.
 # MasterPetPlus is NOT included: it is a fork of Parcew's Master Pet and mod.io took it down;
 # it stays a separate, side-loaded mod.
-BUNDLE_MODS = {"FastAutoFishing": "mikufish"}
+# EnderStash's bundle (Ender Chest prefab) has no MonoScripts of its own (vanilla Chest only), so
+# patching is a no-op copy; it is listed so the bundle ships with the overhaul.
+# ORDER MATTERS: the loader registers ONE data-block loader per mod guid (ScriptableData.AddDataBlocksLoader
+# rejects the second bundle: "Data block loader already added"), so only the first bundle's data blocks
+# (SpriteAsset, TextDataBlock, Entity/GraphicalObjectDataBlock) are seen. EnderStash's bundle has them,
+# FastAutoFishing's has none, so EnderStash goes first. A third bundle with data blocks would need merging.
+BUNDLE_MODS = {"EnderStash": "EnderStash", "FastAutoFishing": "mikufish"}
 
 
 def patch_bundle(src, dst, old_assembly):

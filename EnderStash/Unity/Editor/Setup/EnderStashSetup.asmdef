@@ -1,0 +1,6 @@
+{
+    "name": "EnderStashSetup.Editor",
+    "references": [ "PugMod.Importer" ],
+    "includePlatforms": [ "Editor" ],
+    "autoReferenced": false
+}

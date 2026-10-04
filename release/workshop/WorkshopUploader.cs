@@ -32,6 +32,7 @@ public static class WorkshopUploader
         public string[] tags { get; set; }
         public string changelog { get; set; }
         public string[] dependencies { get; set; }
+        public string[] removeDependencies { get; set; }
     }
 
     public static int Main(string[] args)
@@ -95,6 +96,12 @@ public static class WorkshopUploader
                 ids[item.key] = result.FileId.Value;
                 File.WriteAllText(idsPath, JsonSerializer.Serialize(ids, new JsonSerializerOptions { WriteIndented = true }));
                 Console.WriteLine($"  OK https://steamcommunity.com/sharedfiles/filedetails/?id={result.FileId.Value}");
+                foreach (string old in item.removeDependencies ?? Array.Empty<string>())
+                {
+                    if (!ulong.TryParse(old, out ulong oldId)) continue;
+                    bool removed = await new Item(result.FileId).RemoveDependency(new PublishedFileId { Value = oldId });
+                    if (removed) Console.WriteLine($"  removed old required item {oldId}");
+                }
                 foreach (string depRef in item.dependencies ?? Array.Empty<string>())
                 {
                     // Steam's "Required items" list; re-adding an existing one is harmless.

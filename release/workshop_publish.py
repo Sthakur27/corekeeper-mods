@@ -21,10 +21,13 @@ GAME = r"C:\Program Files (x86)\Steam\steamapps\common\Core Keeper"
 GITHUB = "https://github.com/Sthakur27/corekeeper-mods/tree/main/"
 
 GAME_VERSION = "1.3.0"  # Version tag; bump (or add) after a game update
-CORE_DEPS = {"CoreLib": 3673516180, "ModSettingsMenu": 3791299348}  # Workshop ids of the library mods
+CORE_DEPS = {"CoreLib": 3673516180}  # Workshop ids of third-party library mods
+# Required items to drop from every item (Mod Settings Menu, replaced by our own Mod Options in overhaul 1.1.0)
+STALE_DEPS = ["3791299348"]
 
 # key (= mod folder), title, logo in release/, category tag
 MODS = [
+    ("ModOptions", "Mod Options", "modoptions_logo.png", "Library"),  # first: other mods require it
     ("LoadoutSharing", "Loadout Fallback", "loadout_logo.png", "Quality of Life"),
     ("FiveLoadouts", "Five Loadouts", "fiveloadouts_logo.png", "Quality of Life"),
     ("SkillXPMultiplier", "Skill XP Multiplier", "skillxp-logo.png", "Quality of Life"),
@@ -44,6 +47,7 @@ MODS = [
     ("EnderStash", "Ender Stash", "enderstash_logo.png", "Quality of Life"),
     ("VehicleSpeed", "Vehicle Speed", "vehiclespeed_logo.png", "Quality of Life"),
     ("InfiniteOreBoulders", "Infinite Ore Boulders", "infiniteore_logo.png", "Quality of Life"),
+    ("GoldenChance", "Golden Chance", "goldenchance_logo.png", "Quality of Life"),
 ]
 OVERHAUL = ("SidsOverhaul", "Sid's Overhaul", "overhaul_logo.png", "Overhaul")
 
@@ -114,7 +118,10 @@ def description(key, folder, readme_path):
     md = re.sub(r"^#\s+.*\n", "", md, count=1)  # Steam shows the title already
     if key == OVERHAUL[0]:
         note = ("[b]All of Sid's mods in one.[/b] Do not also subscribe to the individual mods (each feature "
-                "would run twice). Requires CoreLib and Mod Settings Menu.")
+                "would run twice). Requires CoreLib. Settings: Settings > Mod Options (built in).")
+    elif key == "ModOptions":
+        note = ("[b]Library.[/b] Mods that use it list it as a required item, so Steam installs it for you. "
+                "Works alongside Mod Settings Menu.")
     else:
         note = ("Also included in [url=https://steamcommunity.com/workshop/filedetails/?id={overhaul}]Sid's Overhaul[/url]; "
                 "use one or the other, not both.")
@@ -241,7 +248,7 @@ def main():
         items.append({
             "key": key, "title": title, "description": desc, "content": dst, "preview": preview,
             "tags": [category, GAME_VERSION, "Client", "Server", "Script"],
-            "changelog": a.changelog, "dependencies": deps,
+            "changelog": a.changelog, "dependencies": deps, "removeDependencies": STALE_DEPS,
         })
         print(f"staged {key}: {sum(len(fs) for _, _, fs in os.walk(dst))} files, {len(desc)} chars, deps {deps}")
 

@@ -51,9 +51,9 @@ namespace HardModeTuning
             section
                 .Choice(out _damage, prefix + "Regular enemy damage", Tuning.Ladder, Tuning.DefaultToken)
                 .Choice(out _health, prefix + "Regular enemy health", Tuning.Ladder, Tuning.DefaultToken)
-                .Choice(out _moveSpeed, prefix + "Regular enemy move speed", Tuning.FineLadder, Tuning.FineDefault)
-                .Choice(out _projectileSpeed, prefix + "Regular enemy projectile speed", Tuning.FineLadder, Tuning.FineDefault)
-                .Choice(out _rechargeSpeed, prefix + "Regular enemy recharge speed", Tuning.FineLadder, Tuning.FineDefault)
+                .Choice(out _moveSpeed, prefix + "Regular enemy move speed", Tuning.SpeedLadder, Tuning.FineDefault)
+                .Choice(out _projectileSpeed, prefix + "Regular enemy projectile speed", Tuning.SpeedLadder, Tuning.FineDefault)
+                .Choice(out _rechargeSpeed, prefix + "Regular enemy recharge speed", Tuning.SpeedLadder, Tuning.FineDefault)
                 .Choice(out _bossDamage, prefix + "Boss damage (vs vanilla hard)", Tuning.FineLadder, Tuning.FineDefault)
                 .Choice(out _bossHealth, prefix + "Boss health (vs vanilla hard)", Tuning.FineLadder, Tuning.FineDefault);
 

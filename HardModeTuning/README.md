@@ -21,9 +21,9 @@ Only regular enemies in hard mode worlds. By default only their damage changes (
 |---|---|---|
 | Regular enemy damage (vs normal mode) | 1x, 1.25x, 1.5x, 1.75x, 2x | **1.5x** |
 | Regular enemy health (vs normal level-based health) | 1x, 1.25x, 1.5x, 1.75x, 2x | **1.5x** |
-| Regular enemy move speed | 0.9x to 1.5x in 0.05 steps | **1x** |
-| Regular enemy projectile speed (ranged attacks) | 0.9x to 1.5x | **1x** |
-| Regular enemy recharge speed (how fast attacks come back; 1.25x = 0.8x cooldown) | 0.9x to 1.5x | **1x** |
+| Regular enemy move speed | 0.9x to 1.5x in 0.05 steps, then 1.75x, 2x, 2.5x, 3x | **1x** |
+| Regular enemy projectile speed (ranged attacks) | same as move speed | **1x** |
+| Regular enemy recharge speed (how fast attacks come back; 1.25x = 0.8x cooldown) | same as move speed | **1x** |
 | Boss damage (vs vanilla hard) | 0.9x to 1.5x | **1x** |
 | Boss health (vs vanilla hard) | 0.9x to 1.5x | **1x** |
 

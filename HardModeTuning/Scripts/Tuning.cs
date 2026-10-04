@@ -23,6 +23,9 @@ namespace HardModeTuning
         public static readonly string[] FineLadder = BuildFineLadder();
         public const string FineDefault = "1x";
 
+        /// <summary>The fine ladder plus 1.75x, 2x, 2.5x, 3x, for the speed settings (big values make them easy to see).</summary>
+        public static readonly string[] SpeedLadder = BuildSpeedLadder();
+
         /// <summary>Regular enemy movement speed.</summary>
         public static float MoveSpeedMultiplier = 1f;
 
@@ -43,6 +46,18 @@ namespace HardModeTuning
             var list = new string[13];
             for (int i = 0; i < list.Length; i++)
                 list[i] = (0.9f + 0.05f * i).ToString("0.##", CultureInfo.InvariantCulture) + "x";
+            return list;
+        }
+
+        private static string[] BuildSpeedLadder()
+        {
+            var fine = BuildFineLadder();
+            var list = new string[fine.Length + 4];
+            fine.CopyTo(list, 0);
+            list[fine.Length] = "1.75x";
+            list[fine.Length + 1] = "2x";
+            list[fine.Length + 2] = "2.5x";
+            list[fine.Length + 3] = "3x";
             return list;
         }
 

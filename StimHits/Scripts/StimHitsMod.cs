@@ -7,21 +7,14 @@ using Object = UnityEngine.Object;
 namespace StimHits
 {
     /// <summary>
-    /// Replaces the take-damage sound with a metallic "ding" in two cases: a creature near you
-    /// takes damage (your hits) and you take damage. Each case has its own sound, volume and pitch,
-    /// and "Off" leaves the vanilla sound untouched.
-    ///
-    /// Mechanism: every damage reaction on the client goes through the managed
-    /// EntityMonoBehaviour.OnTakeDamage (flash, take-damage sfx, particles). A Harmony prefix
-    /// decides whether this hit is ours to replace and, if so, mutes AudioManager's
-    /// SfxFollowTransform calls for the duration of the method (see <see cref="Patches"/>); the
-    /// finalizer then plays the replacement. Flash and particles stay vanilla. The game does not
-    /// record who dealt the damage, so "your hits" means creatures within the configured range.
+    /// Replaces vanilla hit sounds with a metallic "ding" in two cases: you damage something
+    /// (melee, bows, guns, staffs) and you take damage. Each case has its own sound, volume and
+    /// pitch, and "Off" leaves the vanilla sounds untouched. Mechanism in <see cref="Hits"/>.
     /// </summary>
     public sealed class StimHitsMod : IMod
     {
         public const string Name = "StimHits";
-        public const string Version = "1.0.0";
+        public const string Version = "1.1.0";
 
         public const string SettingsHint = "Metallic dings replace the take-damage sound when you hit something and when you get hit. Off = vanilla. Custom = your own hit/hurt .mp3/.ogg/.wav in the StimHits sound folder (see README).";
 
@@ -59,7 +52,7 @@ namespace StimHits
                 .Choice(out HitSound, "Hit sound", Sounds, "Stim")
                 .Slider(out HitVolume, "Hit volume", 0.1f, 1f, 0.8f, 0.1f)
                 .Slider(out HitPitch, "Hit pitch", 0.5f, 2f, 1f, 0.05f)
-                .Stepper(out HitRange, "Hit range (tiles)", 2, 30, 10)
+                .Stepper(out HitRange, "Hit range (tiles)", 2, 30, 16)
                 .Toggle(out HitObjects, "Ding on objects too", false)
                 .Choice(out HurtSound, "Hurt sound", Sounds, "Stim")
                 .Slider(out HurtVolume, "Hurt volume", 0.1f, 1f, 0.9f, 0.1f)

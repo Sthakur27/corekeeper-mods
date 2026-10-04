@@ -1,32 +1,153 @@
 using System;
+using System.Collections.Generic;
 using HarmonyLib;
+using Unity.Entities;
 using UnityEngine;
 
 namespace StimHits
 {
     /// <summary>
-    /// OnTakeDamage prefix decides whether this damage reaction gets a ding; if so, every vanilla
-    /// sound started inside the method (take-damage sfx, OnTakeDamage sound triggers, shield block)
-    /// is muted at AudioManager.PlayAudioClip, the single private funnel all Sfx* calls end in.
-    /// The finalizer always clears the flag (even if the method throws) and then plays the ding.
+    /// Where the dings come from and which vanilla sounds they replace.
+    ///
+    /// Hit (you damaged something): the damage-number effect events (WhiteDamageNumber/CritNumber)
+    /// carry the attacker in entity2: the player for melee, the projectile for bows/guns/staffs.
+    /// A hit is ours when that attacker is the local player or a projectile it owns. Vanilla hit
+    /// sounds muted while the Hit sound is on: the creature's take-damage sound, the melee impact
+    /// sound (EffectID.HitDamageSound) and the death/impact sound of our projectiles that hit.
+    ///
+    /// Hurt (you got damaged): EntityMonoBehaviour.OnTakeDamage on the local player.
+    ///
+    /// Muting works by a flag checked in a prefix on AudioManager.PlayAudioClip, the private funnel
+    /// every Sfx*/SfxTable call ends in; finalizers always clear the flag.
     /// </summary>
-    [HarmonyPatch(typeof(EntityMonoBehaviour), "OnTakeDamage")]
-    public static class OnTakeDamagePatch
+    internal static class Hits
     {
         internal static bool Muting;
 
+        // Recently hit by us: targets (to mute their take-damage sound even beyond the range) and
+        // projectiles (to mute their impact sound when they die on the hit).
+        private static readonly Dictionary<Entity, float> RecentTargets = new Dictionary<Entity, float>();
+        private static readonly Dictionary<Entity, float> HitProjectiles = new Dictionary<Entity, float>();
+        private const float Memory = 1.5f;
+        private static int _logged;
+
+        internal static PlayerController LocalPlayer
+        {
+            get { var m = Manager.main; return m != null ? m.player : null; }
+        }
+
+        internal static bool Enabled(SoundBank.Kind kind)
+        {
+            var s = kind == SoundBank.Kind.Hit ? StimHitsMod.HitSound : StimHitsMod.HurtSound;
+            return s != null && s.Value != "Off";
+        }
+
+        internal static bool InRange(Vector3 pos, PlayerController player)
+        {
+            var range = StimHitsMod.HitRange != null ? StimHitsMod.HitRange.Value : 16;
+            var d = pos - player.WorldPosition;
+            d.y = 0f;
+            return d.sqrMagnitude <= range * range;
+        }
+
+        internal static bool Recent(Dictionary<Entity, float> map, Entity e)
+            => map.TryGetValue(e, out var t) && Time.unscaledTime - t < Memory;
+
+        internal static bool RecentTarget(Entity e) => Recent(RecentTargets, e);
+        internal static bool HitProjectile(Entity e) => Recent(HitProjectiles, e);
+
+        /// <summary>A damage number appeared on <paramref name="target"/>; ding if we dealt it.</summary>
+        internal static void OnDamageNumber(Entity target, Entity attacker)
+        {
+            var player = LocalPlayer;
+            if (player == null || !Enabled(SoundBank.Kind.Hit)) return;
+            var world = Manager.ecs.ClientWorld;
+            var targetMono = Manager.memory.GetEntityMono(target);
+            if (targetMono == null || targetMono == player) return;
+
+            string why = null;
+            if (attacker == player.entity) why = "melee";
+            else if (attacker != Entity.Null && EntityUtility.EntityExists(attacker, world))
+            {
+                if (EntityUtility.HasComponentData<ProjectileCD>(attacker, world)
+                    && EntityUtility.TryGetComponentData<OwnerReferenceCD>(attacker, world, out var owner)
+                    && owner.owner == player.entity)
+                {
+                    why = "projectile";
+                    HitProjectiles[attacker] = Time.unscaledTime;
+                }
+            }
+            else if (InRange(targetMono.WorldPosition, player)) why = "nearby (attacker gone)";
+            if (why == null) return;
+
+            RecentTargets[target] = Time.unscaledTime;
+            if (RecentTargets.Count > 256) Prune();
+            if (_logged < 5)
+            {
+                _logged++;
+                Debug.Log($"[{StimHitsMod.Name}] hit ding ({why}) on {targetMono.name}");
+            }
+            SoundBank.Play(SoundBank.Kind.Hit, targetMono.transform);
+        }
+
+        private static void Prune()
+        {
+            var now = Time.unscaledTime;
+            foreach (var map in new[] { RecentTargets, HitProjectiles })
+            {
+                var old = new List<Entity>();
+                foreach (var kv in map) if (now - kv.Value >= Memory) old.Add(kv.Key);
+                foreach (var e in old) map.Remove(e);
+            }
+        }
+    }
+
+    [HarmonyPatch(typeof(EffectEventExtensions), "PlayEffect")]
+    public static class PlayEffectPatch
+    {
+        public static bool Prefix(EffectEventCD effectEvent)
+        {
+            try
+            {
+                switch (effectEvent.effectID)
+                {
+                    case EffectID.WhiteDamageNumber:
+                    case EffectID.CritNumber:
+                        Hits.OnDamageNumber(effectEvent.entity, effectEvent.entity2);
+                        break;
+                    case EffectID.HitDamageSound:
+                        // Melee impact sound at the hit position. Skip it near us when Hit dings are on.
+                        var player = Hits.LocalPlayer;
+                        if (player != null && Hits.Enabled(SoundBank.Kind.Hit))
+                        {
+                            Vector3 p = effectEvent.position1;
+                            var d = p - player.WorldPosition;
+                            d.y = 0f;
+                            if (d.sqrMagnitude <= 16f) return false;
+                        }
+                        break;
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.LogWarning($"[{StimHitsMod.Name}] {e}");
+            }
+            return true;
+        }
+    }
+
+    [HarmonyPatch(typeof(EntityMonoBehaviour), "OnTakeDamage")]
+    public static class OnTakeDamagePatch
+    {
+        /// <summary>__state: -1 vanilla, 0 mute only, 1 mute + hurt ding, 2 mute + hit ding (objects).</summary>
         public static void Prefix(EntityMonoBehaviour __instance, out int __state)
         {
             __state = -1;
-            Muting = false;
+            Hits.Muting = false;
             try
             {
-                var kind = Classify(__instance);
-                if (kind == null) return;
-                var setting = kind == SoundBank.Kind.Hit ? StimHitsMod.HitSound : StimHitsMod.HurtSound;
-                if (setting == null || setting.Value == "Off") return;
-                __state = (int)kind.Value;
-                Muting = true;
+                __state = Decide(__instance);
+                Hits.Muting = __state >= 0;
             }
             catch (Exception e)
             {
@@ -36,40 +157,60 @@ namespace StimHits
 
         public static Exception Finalizer(EntityMonoBehaviour __instance, int __state, Exception __exception)
         {
-            Muting = false;
-            if (__state >= 0)
+            Hits.Muting = false;
+            try
             {
-                try { SoundBank.Play((SoundBank.Kind)__state, __instance.transform); }
-                catch (Exception e) { Debug.LogWarning($"[{StimHitsMod.Name}] {e}"); }
+                if (__state == 1) SoundBank.Play(SoundBank.Kind.Hurt, __instance.transform);
+                else if (__state == 2) SoundBank.Play(SoundBank.Kind.Hit, __instance.transform);
             }
+            catch (Exception e) { Debug.LogWarning($"[{StimHitsMod.Name}] {e}"); }
             return __exception;
         }
 
-        /// <summary>Hurt = the local player; Hit = a creature (or object, if enabled) near the local player.</summary>
-        private static SoundBank.Kind? Classify(EntityMonoBehaviour entity)
+        private static int Decide(EntityMonoBehaviour entity)
         {
-            var main = Manager.main;
-            var player = main != null ? main.player : null;
-            if (player == null || entity == null) return null;
-            if (entity == player) return SoundBank.Kind.Hurt;
-            if (entity is PlayerController) return null; // other players getting hit: leave vanilla
+            var player = Hits.LocalPlayer;
+            if (player == null || entity == null) return -1;
+            if (entity == player) return Hits.Enabled(SoundBank.Kind.Hurt) ? 1 : -1;
+            if (entity is PlayerController || !Hits.Enabled(SoundBank.Kind.Hit)) return -1;
 
             var info = entity.objectInfo;
-            if (info == null) return null;
+            if (info == null) return -1;
             var type = info.objectType;
             var creature = type == ObjectType.Creature || type == ObjectType.TrainingDummy || type == ObjectType.Critter;
-            if (!creature && !(StimHitsMod.HitObjects != null && StimHitsMod.HitObjects.Value)) return null;
+            var near = Hits.InRange(entity.WorldPosition, player);
+            if (creature)
+                // The ding itself comes from the damage number; here we only silence the vanilla sound.
+                return near || Hits.RecentTarget(entity.entity) ? 0 : -1;
+            // Objects show no damage numbers, so they ding here (proximity) when enabled.
+            return StimHitsMod.HitObjects != null && StimHitsMod.HitObjects.Value && near ? 2 : -1;
+        }
+    }
 
-            var range = StimHitsMod.HitRange != null ? StimHitsMod.HitRange.Value : 10;
-            var d = entity.WorldPosition - player.WorldPosition;
-            d.y = 0f;
-            return d.sqrMagnitude <= range * range ? SoundBank.Kind.Hit : (SoundBank.Kind?)null;
+    /// <summary>Silences the impact/death sound of our projectiles that just hit something.</summary>
+    [HarmonyPatch(typeof(EntityMonoBehaviour), "OnDeath")]
+    public static class OnDeathPatch
+    {
+        public static void Prefix(EntityMonoBehaviour __instance)
+        {
+            Hits.Muting = false;
+            try
+            {
+                Hits.Muting = __instance != null && Hits.Enabled(SoundBank.Kind.Hit) && Hits.HitProjectile(__instance.entity);
+            }
+            catch (Exception e) { Debug.LogWarning($"[{StimHitsMod.Name}] {e}"); }
+        }
+
+        public static Exception Finalizer(Exception __exception)
+        {
+            Hits.Muting = false;
+            return __exception;
         }
     }
 
     [HarmonyPatch(typeof(AudioManager), "PlayAudioClip")]
     public static class PlayAudioClipPatch
     {
-        public static bool Prefix() => !OnTakeDamagePatch.Muting;
+        public static bool Prefix() => !Hits.Muting;
     }
 }

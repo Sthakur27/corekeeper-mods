@@ -6,9 +6,9 @@ vanilla sound back.
 
 | Option | Default | |
 |---|---|---|
-| Hit sound | Stim | Played when a creature near you takes damage. Off = vanilla. |
+| Hit sound | Stim | Played when you damage a creature (melee, bow, gun, staff). Off = vanilla. |
 | Hit volume / pitch | 0.8 / 1.0 | Pitch above 1 = higher, snappier ding. |
-| Hit range (tiles) | 10 | Only creatures this close to you ding. |
+| Hit range (tiles) | 16 | Vanilla take-damage sounds of creatures this close are muted (and objects ding within it). |
 | Ding on objects too | Off | Also ding on ore boulders, destructibles etc. |
 | Hurt sound | Stim | Played when you take damage. Off = vanilla. |
 | Hurt volume / pitch | 0.9 / 1.0 | |
@@ -28,9 +28,10 @@ instead. Keep them short (under half a second sounds best).
 
 ## Limits
 
-- The game does not record who dealt damage, so "your hits" means "a creature within range took
-  damage": pet, minion and nearby friends' hits ding too. Lower the range to tighten it.
-- Only the take-damage sound is replaced; flash, particles and death sounds stay vanilla.
+- Hits are attributed through the damage numbers: your melee and your own projectiles ding; pets,
+  minions and other players do not. Their creature-hurt sounds are still muted within the range.
+- Replaced: the creature's hurt sound, the melee impact sound and the impact sound of your
+  projectiles that hit. Flash, particles and enemy death sounds stay vanilla.
 - Client-side only: other players hear their own settings.
 
 Requires CoreLib and Mod Options. Built into Sid's Overhaul.

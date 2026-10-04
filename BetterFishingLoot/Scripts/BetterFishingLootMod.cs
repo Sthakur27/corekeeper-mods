@@ -20,7 +20,7 @@ namespace BetterFishingLoot
     public sealed class BetterFishingLootMod : IMod
     {
         public const string Name = "BetterFishingLoot";
-        public const string Version = "1.0.0";
+        public const string Version = "1.1.0";
 
         private static Setting<string> _handle;
 

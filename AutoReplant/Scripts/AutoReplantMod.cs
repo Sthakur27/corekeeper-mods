@@ -18,7 +18,7 @@ namespace AutoReplant
     public sealed class AutoReplantMod : IMod
     {
         public const string Name = "AutoReplant";
-        public const string Version = "1.1.0";
+        public const string Version = "1.2.0";
 
         public const bool DefaultEnabled = true;
         public const int DefaultGoldenChancePercent = 5;

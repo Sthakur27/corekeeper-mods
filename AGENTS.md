@@ -109,10 +109,11 @@ Ignore warnings; only `error CS` matters. Then install, launch via
 
 ## 5. Config/settings for mods
 
-- `ModSettingsMenu` (mod.io) gives an in-game settings section:
-  `ModSettings.Section(this).Hint("...").Toggle(out SettingHandle<bool> h, "Label", false).Build()`
-  in `Init`; read `h.Value` live; `h.OnChanged` event. Depends on `CoreLib`. Labels are the keys
-  unless you register localization terms. Declare both as `dependencies` in the manifest.
+- Use our own **Mod Options** library (`ModOptions/`, see the Mod Options section at the end):
+  `SettingsPages.Create(this, "Title").Hint("...").Toggle(out Setting<bool> h, "Label", false).Build()`
+  in `Init`; read `h.Value` live; `h.OnChanged` event. Declare `CoreLib` and `ModOptions` as manifest
+  dependencies, and register the page in `SidsOverhaulMod.Init` too. (Mod Settings Menu was used until
+  2026-10-04; none of our mods use it any more.)
 - CoreLib `ConfigFile` is the sandbox-safe way to persist anything.
 
 ## 6. Workflow that worked
@@ -256,7 +257,7 @@ swapped. Each mod gets its own `release/<mod>_logo.png`.
    manager launches once for all mods and reads Player.log.
 4. Write `README.md` (what it does, settings, limits) and `release/<mod>_logo.png` via make_art.py.
 5. Report back: mechanism, files, compile result, defaults, anything you could not do and why.
-Prefer ModSettingsMenu toggles/sliders for tunables (deps CoreLib + ModSettingsMenu), 1x/vanilla defaults
+Prefer Mod Options toggles/choices for tunables (deps CoreLib + ModOptions), 1x/vanilla defaults
 unless the spec says otherwise, and `PugSimulationSystemBase` systems + Harmony only where needed.
 
 ## 10. Mod pack = a mod.io Collection
@@ -327,7 +328,7 @@ SkipIntro 6363825. Refresh the list from Player.log (`loaded mod X from mod.io`)
 
 - Core Keeper loads Workshop items since 1.3 (`PugMod.Loader/SteamWorkshopLoader`): item folder = mod folder with `ModManifest.json` at root; a Version tag must match the game (`1.3.0`); Access Type tag `Script` (`Script (Elevated Access)` skips the safety check, `Asset` disables scripts). Tag groups: Category (Quality of Life, Overhaul, Item, Library, Other...), Version, Application Type (Client, Server), Access Type.
 - Publish/update everything: `python release/workshop_publish.py [--only Key1,Key2] [--changelog "..."]` (Core Keeper closed, Steam running + logged in; `--dry-run` to stage only). It runs build_overhaul, stages `build/workshop/<key>`, converts README -> BBCode, compiles `release/workshop/WorkshopUploader.cs` (game's Facepunch.Steamworks, no password) and uploads. Ids in `release/workshop_ids.json` (existing ids are updated in place).
-- Required items: CoreLib 3673516180, Mod Settings Menu 3791299348 (both on Workshop). Five Loadouts requires our Loadout Fallback item.
+- Required items: CoreLib 3673516180 and our Mod Options 3813531202 (Mod Settings Menu 3791299348 was dropped on 2026-10-04; the uploader removes it from items). Five Loadouts requires our Loadout Fallback item.
 - Published 2026-10-03, all public: Sid's Overhaul https://steamcommunity.com/sharedfiles/filedetails/?id=3813043354 + 19 individual mods (ids in workshop_ids.json). Not MasterPetPlus.
 - New mod: add a row to `MODS` in workshop_publish.py (folder, title, logo, category) and a logo in release/.
 - After a game update: bump `GAME_VERSION` and rerun the script for every item.
@@ -345,5 +346,18 @@ Gotchas: right-click is Back in menus (so `<`/`>` halves of the value text decid
 clicks within 0.4 s of opening a page are ignored (the opening click otherwise lands on the new row);
 scroll viewport is ~20 units wide (label maxWidth 11.5, rows shifted +2.75). Compile check needs
 `config_stubs.cs` (CoreLib.Data.Configuration signatures). The standalone mods now depend on
-`ModOptions` (publish it on mod.io/Workshop before republishing them); the overhaul no longer depends
-on ModSettingsMenu.
+`ModOptions`; the overhaul no longer depends on ModSettingsMenu.
+
+Published 2026-10-04:
+- **Mod Options** on mod.io https://mod.io/g/corekeeper/m/mod-options (id 6427509, 1.0.0, tags 1.3.0/Library/
+  Client/Server/Script, no dependency records, added to the collection) and Workshop 3813531202
+  (category Library). Logo `release/modoptions_logo.png` from `release/make_art4.py`.
+- mod.io updates (now require Mod Options): Auto Replant 1.2.0, Better Fishing Loot 1.1.0, Buff Duration
+  Floor 1.3.0, Durability Multiplier 1.1.0, Faster Mushrooms 1.2.0, Hard Mode Tuning 1.1.0 (boss
+  damage/health, enemy move/projectile/recharge speed), Potion Seller 1.3.0 (Titan summon items), Quick
+  Buff 1.3.0 (Quick Heal, pouches), Skill XP Multiplier 1.1.0. Same mods + Vehicle Speed + Sid's Overhaul
+  updated on Workshop; Golden Chance created on Workshop 3813532410 (parallel session).
+- Not on mod.io yet: Vehicle Speed, Golden Chance, Ender Stash, Infinite Ore Boulders (Workshop / overhaul only).
+  Sid's Overhaul on mod.io (6412463) is still locked at 1.0.1; GitHub friend pack is overhaul-1.1.0.
+- New standalone mod with settings: depend on ModOptions in the manifest; on mod.io do NOT add a
+  dependency record (collection rule, 10b) but say "Requires CoreLib and Mod Options" in the README.

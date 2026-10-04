@@ -26,7 +26,7 @@ namespace BuffDurationFloor
     public sealed class BuffDurationFloorMod : IMod
     {
         public const string Name = "BuffDurationFloor";
-        public const string Version = "1.2.0";
+        public const string Version = "1.3.0";
 
         private static Setting<string> _buffFloor;
         private static Setting<string> _healingFloor;

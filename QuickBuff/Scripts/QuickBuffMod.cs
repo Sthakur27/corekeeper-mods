@@ -29,7 +29,7 @@ namespace QuickBuff
     public sealed class QuickBuffMod : IMod
     {
         public const string Name = "QuickBuff";
-        public const string Version = "1.2.0";
+        public const string Version = "1.3.0";
 
         /// <summary>Rewired action name registered with CoreLib's control mapping module.</summary>
         public const string UseKeyBind = "QuickBuff_Use";

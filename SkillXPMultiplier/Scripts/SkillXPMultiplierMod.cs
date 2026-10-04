@@ -21,7 +21,7 @@ namespace SkillXPMultiplier
     public sealed class SkillXPMultiplierMod : IMod
     {
         public const string Name = "SkillXPMultiplier";
-        public const string Version = "1.0.0";
+        public const string Version = "1.1.0";
 
         private static readonly Setting<string>[] _handles = new Setting<string>[SkillXPTable.SkillCount];
         private LoadedMod _modInfo;

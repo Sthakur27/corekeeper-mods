@@ -373,5 +373,5 @@ every Sfx*/SfxTable call funnels into. Custom audio without System.IO: mod-folde
 `LoadedMod.GetFile(path)` (sandbox-safe bytes; we parse WAV ourselves), and user files via
 `UnityWebRequestMultimedia.GetAudioClip("file:///" + path)` polled in `IMod.Update` (mp3/ogg/wav;
 `UnityEngine.Networking` is not on the sandbox block list, which is System.IO/Net/Diagnostics/
-Reflection/InteropServices). Local folder: `Application.persistentDataPath/StimHits` (hit/hurt/kill.mp3, auto-loaded; never ship copyrighted audio in the mod, Sid keeps his personal files there only). Sandbox block
+Reflection/InteropServices). Local folder: `API.ConfigFilesystem` "StimHits/Sounds" (= ...\Steam\<id>\mods\StimHits\Sounds; listed via ConfigFilesystem.GetFiles since System.IO is blocked; every file becomes a Choice entry, hit/kill/hurt[N] = Auto; mp3/ogg abs path = persistentDataPath/Steam/<SteamClient.SteamId.AccountId>/mods/; never ship copyrighted audio in the mod, Sid keeps his personal files there only). Sandbox block
 list lives in `resources.assets` (RoslynCSharpSettings). Stim sounds come from `release/make_stim_sounds.py`.

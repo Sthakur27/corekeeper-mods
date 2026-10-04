@@ -12,20 +12,21 @@ Everything is on the **Mod Options → Stim Hits** page; set a slot to **Off** f
 | Hit range (tiles) | 16 | Creatures' vanilla hurt sounds are muted within this range (objects ding within it). |
 | Ding on objects too | Off | Also ding on ore boulders, destructibles etc. |
 
-Sounds: **Auto** (your own file if present, else the built-in sound for that slot), **Ting**,
-**Clang**, **Coin** (the mod's own synthesized sounds), **Game Clang / Small Clang / Ding / Anvil /
-Bell / Shield** (Core Keeper's sounds).
+Sounds: **Auto** (your own hit/kill/hurt file if present, else the built-in sound for that slot),
+**Ting**, **Clang**, **Coin** (the mod's own synthesized sounds), **Game Clang / Small Clang / Ding /
+Anvil / Bell / Shield** (Core Keeper's sounds), then **every sound file in your sounds folder**, listed
+by file name, so you can cycle through them in the menu.
 
 ## Your own sounds
 
-Put any of `hit`, `kill`, `hurt` as `.mp3`, `.ogg` or `.wav` in
+Put `.mp3`, `.ogg` or `.wav` files (subfolders are fine) in
 
-    %USERPROFILE%\AppData\LocalLow\Pugstorm\Core Keeper\StimHits\
-
-and they play automatically in every slot set to **Auto**. Add numbered variants (`kill2.wav` ...
-`kill8.wav`, same for hit/hurt) and a random one plays each time. The folder lives outside the mod, so
-updates never touch it and your files are never shared with anyone. Files are read at startup and
-again whenever you switch a slot to Auto. Keep them short (under a second).
+    %USERPROFILE%\AppData\LocalLow\Pugstorm\Core Keeper\Steam\<your id>\mods\StimHits\Sounds
+The folder is created on first launch. Every file shows up by name in all three sound choices after
+a restart. Files named `hit`, `kill` or `hurt` in the folder itself are what **Auto** plays; add
+numbered variants (`kill2`, `kill3`, ...) and a random one plays each time. The folder lives outside
+the mod, so updates never touch it and your files are never shared with anyone. Keep sounds short
+(under a second).
 
 ## Limits
 

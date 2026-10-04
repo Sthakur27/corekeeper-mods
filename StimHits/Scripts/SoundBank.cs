@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using PugMod;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -7,119 +8,210 @@ namespace StimHits
 {
     /// <summary>
     /// Loads the replacement sounds and plays them.
+    ///
     /// Built-in sounds are WAVs shipped in the mod's Sounds/ folder, read through the loader's
-    /// sandbox-safe <see cref="LoadedMod.GetFile"/> and decoded here. Local sounds (hit/hurt/kill
-    /// .mp3, .ogg or .wav, plus numbered variants kill2..kill8 picked at random) live in a folder outside the mod so updates never delete them and they
-    /// are never distributed: <c>%USERPROFILE%\AppData\LocalLow\Pugstorm\Core Keeper\StimHits\</c>.
-    /// Unity decodes those via a file:// UnityWebRequest. "Auto" plays the local file when there is
-    /// one, otherwise the slot's built-in sound. Named game sounds play through AudioManager.
+    /// sandbox-safe <see cref="LoadedMod.GetFile"/> and decoded here.
+    ///
+    /// Local sounds are every .mp3/.ogg/.wav under <see cref="LocalRoot"/> in the game's mod config
+    /// folder (<c>%USERPROFILE%\AppData\LocalLow\Pugstorm\Core Keeper\Steam\&lt;id&gt;\mods\StimHits\Sounds\</c>,
+    /// subfolders included). They are listed through <see cref="API.ConfigFilesystem"/> (the sandbox
+    /// blocks System.IO) and each one becomes a choice in every slot, named after the file. Files named
+    /// hit/hurt/kill (+ numbered variants kill2..) in the folder root are what "Auto" plays, picked at
+    /// random. WAVs are read as bytes; mp3/ogg are decoded by Unity via a file:// UnityWebRequest.
+    /// They live outside the mod, so updates never delete them and they are never distributed.
     /// Everything goes through the Effects mixer, so the game's SFX volume applies.
     /// </summary>
     public static class SoundBank
     {
         public enum Kind { Hit, Hurt, Kill }
 
+        public const string LocalRoot = "StimHits/Sounds";
         private static readonly string[] FileNames = { "hit", "hurt", "kill" };
-        private static readonly string[] Extensions = { "mp3", "ogg", "wav" };
-        private const int MaxVariants = 8; // kill, kill2 .. kill8
-        private const int Kinds = 3;
         private const int Voices = 8;
         private const float MinGap = 0.045f; // seconds between two sounds of the same kind
 
+        public static readonly string[] BuiltInChoices =
+        {
+            "Off", "Auto", "Ting", "Clang", "Coin",
+            "Game Clang", "Game Small Clang", "Game Ding", "Game Anvil", "Game Bell", "Game Shield",
+        };
+
         private static LoadedMod _mod;
         private static AudioClip _ting, _clang, _coin;
-        private static readonly System.Collections.Generic.List<AudioClip>[] _local =
-            { new System.Collections.Generic.List<AudioClip>(), new System.Collections.Generic.List<AudioClip>(), new System.Collections.Generic.List<AudioClip>() };
         private static AudioSource[] _sources;
         private static int _next;
         private static readonly float[] _lastPlayed = { -1f, -1f, -1f };
 
-        // Local file loading: one request at a time, walking (kind, variant, extension) candidates.
+        // Local files: choice name -> config-relative path; Auto files per kind; loaded clips by path.
+        private static Dictionary<string, string> _localByName;
+        private static List<string> _localNames;
+        private static readonly List<string>[] _autoPaths = { new List<string>(), new List<string>(), new List<string>() };
+        private static readonly Dictionary<string, AudioClip> _clips = new Dictionary<string, AudioClip>();
+        private static readonly Queue<string> _pending = new Queue<string>();
         private static UnityWebRequest _request;
-        private static int _candidate = -1;
-        private static bool _variantFound; // the current (kind, variant) already loaded with an earlier extension
-
-        private static int CandidatesPerKind => MaxVariants * Extensions.Length;
-        private static string CandidateName(int c)
-        {
-            var kind = c / CandidatesPerKind;
-            var variant = c % CandidatesPerKind / Extensions.Length;
-            return FileNames[kind] + (variant == 0 ? "" : (variant + 1).ToString()) + "." + Extensions[c % Extensions.Length];
-        }
-
-        public static string LocalFolder => Application.persistentDataPath + "/StimHits";
+        private static string _requestPath;
 
         public static void Init(LoadedMod mod)
         {
             _mod = mod;
-            _ting = LoadWav("Sounds/stim_hit.wav");
-            _clang = LoadWav("Sounds/stim_hurt.wav");
-            _coin = LoadWav("Sounds/stim_coin.wav");
-            ReloadLocal();
+            _ting = ParseWav(ReadModFile("Sounds/stim_hit.wav"), "Sounds/stim_hit.wav");
+            _clang = ParseWav(ReadModFile("Sounds/stim_hurt.wav"), "Sounds/stim_hurt.wav");
+            _coin = ParseWav(ReadModFile("Sounds/stim_coin.wav"), "Sounds/stim_coin.wav");
+            if (_localNames == null) Discover();
+            Prepare("Auto");
         }
 
-        /// <summary>Rescans the local folder (startup, and whenever a slot is switched to Auto).</summary>
-        public static void ReloadLocal()
+        /// <summary>Every option a sound slot offers: built-ins, then one entry per local file.</summary>
+        public static string[] Choices()
         {
-            _request?.Dispose();
-            _request = null;
-            for (var i = 0; i < Kinds; i++) _local[i].Clear();
-            _variantFound = false;
-            _candidate = 0;
-            StartCandidate();
+            if (_localNames == null) Discover();
+            var all = new List<string>(BuiltInChoices);
+            all.AddRange(_localNames);
+            return all.ToArray();
         }
 
-        /// <summary>Called every frame from <see cref="StimHitsMod.Update"/> to finish local loads.</summary>
-        public static void Update()
+        /// <summary>Preloads the file(s) behind <paramref name="choice"/> (called when a slot changes).</summary>
+        public static void Prepare(string choice)
         {
-            if (_request == null || !_request.isDone) return;
-            var kind = _candidate / CandidatesPerKind;
-            if (_request.result == UnityWebRequest.Result.Success)
+            if (_localNames == null) Discover();
+            if (choice == "Auto")
             {
-                var clip = DownloadHandlerAudioClip.GetContent(_request);
-                if (clip != null && clip.length > 0f)
-                {
-                    clip.name = "StimHits local " + CandidateName(_candidate);
-                    _local[kind].Add(clip);
-                    _variantFound = true;
-                    Debug.Log($"[{StimHitsMod.Name}] Local sound loaded: {CandidateName(_candidate)} ({clip.length:0.00}s)");
-                }
+                foreach (var list in _autoPaths)
+                    foreach (var path in list) EnsureLoaded(path);
             }
-            _request.Dispose();
-            _request = null;
-            Advance();
-            StartCandidate();
+            else if (_localByName.TryGetValue(choice, out var path)) EnsureLoaded(path);
         }
 
-        private static void Advance()
+        /// <summary>Lists the local sound files. Runs once, before the settings pages are built.</summary>
+        private static void Discover()
         {
-            _candidate++;
-            if (_candidate % Extensions.Length == 0) _variantFound = false; // next variant
-        }
-
-        private static void StartCandidate()
-        {
-            while (_candidate >= 0 && _candidate < Kinds * CandidatesPerKind)
+            _localByName = new Dictionary<string, string>();
+            _localNames = new List<string>();
+            foreach (var list in _autoPaths) list.Clear();
+            var fs = API.ConfigFilesystem;
+            if (fs == null) return;
+            var files = new List<string>();
+            try
             {
-                if (_variantFound) { Advance(); continue; } // e.g. kill.mp3 loaded: skip kill.ogg/kill.wav
-                var ext = Extensions[_candidate % Extensions.Length];
-                var type = ext == "mp3" ? AudioType.MPEG : ext == "ogg" ? AudioType.OGGVORBIS : AudioType.WAV;
-                var url = "file:///" + LocalFolder.Replace('\\', '/') + "/" + CandidateName(_candidate);
+                if (!fs.DirectoryExists(LocalRoot)) fs.CreateDirectory(LocalRoot);
+                foreach (var f in fs.GetFiles(LocalRoot)) files.Add(f.Replace('\\', '/'));
+            }
+            catch (Exception e)
+            {
+                Debug.LogWarning($"[{StimHitsMod.Name}] Could not list {LocalRoot}: {e.Message}");
+                return;
+            }
+            files.Sort(StringComparer.OrdinalIgnoreCase);
+            foreach (var path in files)
+            {
+                var dot = path.LastIndexOf('.');
+                if (dot < 0) continue;
+                var ext = path.Substring(dot + 1).ToLowerInvariant();
+                if (ext != "mp3" && ext != "ogg" && ext != "wav") continue;
+                var rel = path.StartsWith(LocalRoot + "/") ? path.Substring(LocalRoot.Length + 1) : path;
+                var stem = rel.Substring(0, rel.LastIndexOf('.'));
+                var slash = stem.LastIndexOf('/');
+                var name = slash >= 0 ? stem.Substring(slash + 1) : stem;
+                if (_localByName.ContainsKey(name) || Array.IndexOf(BuiltInChoices, name) >= 0) name = stem;
+                if (_localByName.ContainsKey(name)) continue;
+                _localByName[name] = path;
+                _localNames.Add(name);
+                if (slash < 0)
+                    for (var k = 0; k < FileNames.Length; k++)
+                        if (IsAutoName(stem, FileNames[k])) _autoPaths[k].Add(path);
+            }
+            Debug.Log($"[{StimHitsMod.Name}] {_localNames.Count} local sound(s) in {LocalRoot}");
+        }
+
+        /// <summary>"kill", "kill2" .. "kill99" count as Auto files for the kill slot.</summary>
+        private static bool IsAutoName(string stem, string kind)
+        {
+            if (!stem.StartsWith(kind, StringComparison.OrdinalIgnoreCase)) return false;
+            for (var i = kind.Length; i < stem.Length; i++)
+                if (!char.IsDigit(stem[i])) return false;
+            return true;
+        }
+
+        private static void EnsureLoaded(string path)
+        {
+            if (_clips.ContainsKey(path) || _pending.Contains(path) || path == _requestPath) return;
+            if (path.EndsWith(".wav", StringComparison.OrdinalIgnoreCase))
+            {
+                byte[] data = null;
+                try { data = API.ConfigFilesystem.Read(path); }
+                catch (Exception e) { Debug.LogWarning($"[{StimHitsMod.Name}] Could not read {path}: {e.Message}"); }
+                _clips[path] = ParseWav(data, path);
+                return;
+            }
+            _pending.Enqueue(path);
+            StartNext();
+        }
+
+        /// <summary>Absolute folder of API.ConfigFilesystem on Steam builds, for file:// requests.</summary>
+        private static string AbsoluteConfigRoot()
+        {
+            if (!Steamworks.SteamClient.IsValid) return null;
+            return Application.persistentDataPath.Replace('\\', '/') + "/Steam/" + Steamworks.SteamClient.SteamId.AccountId + "/mods/";
+        }
+
+        private static void StartNext()
+        {
+            while (_request == null && _pending.Count > 0)
+            {
+                var path = _pending.Dequeue();
+                var root = AbsoluteConfigRoot();
+                if (root == null)
+                {
+                    Debug.LogWarning($"[{StimHitsMod.Name}] Cannot locate {path} outside Steam; use .wav instead.");
+                    _clips[path] = null;
+                    continue;
+                }
+                var type = path.EndsWith(".mp3", StringComparison.OrdinalIgnoreCase) ? AudioType.MPEG : AudioType.OGGVORBIS;
                 try
                 {
-                    _request = UnityWebRequestMultimedia.GetAudioClip(url, type);
+                    _request = UnityWebRequestMultimedia.GetAudioClip("file:///" + root + path, type);
                     ((DownloadHandlerAudioClip)_request.downloadHandler).streamAudio = false;
                     _request.SendWebRequest();
-                    return;
+                    _requestPath = path;
                 }
                 catch (Exception e)
                 {
-                    Debug.LogWarning($"[{StimHitsMod.Name}] Could not request {url}: {e.Message}");
+                    Debug.LogWarning($"[{StimHitsMod.Name}] Could not request {path}: {e.Message}");
                     _request = null;
-                    Advance();
+                    _clips[path] = null;
                 }
             }
-            _candidate = -1;
+        }
+
+        /// <summary>Called every frame from <see cref="StimHitsMod.Update"/> to finish mp3/ogg loads.</summary>
+        public static void Update()
+        {
+            if (_request == null || !_request.isDone) return;
+            AudioClip clip = null;
+            if (_request.result == UnityWebRequest.Result.Success)
+            {
+                clip = DownloadHandlerAudioClip.GetContent(_request);
+                if (clip != null) clip.name = _requestPath;
+            }
+            if (clip == null || clip.length <= 0f)
+            {
+                Debug.LogWarning($"[{StimHitsMod.Name}] Could not decode {_requestPath}: {_request.error}");
+                clip = null;
+            }
+            else Debug.Log($"[{StimHitsMod.Name}] Loaded {_requestPath} ({clip.length:0.00}s)");
+            _clips[_requestPath] = clip;
+            _request.Dispose();
+            _request = null;
+            _requestPath = null;
+            StartNext();
+        }
+
+        /// <summary>The clip for a local file; starts loading it on first use (the built-in plays meanwhile).</summary>
+        private static AudioClip Loaded(string path)
+        {
+            if (_clips.TryGetValue(path, out var clip)) return clip;
+            EnsureLoaded(path);
+            return _clips.TryGetValue(path, out clip) ? clip : null;
         }
 
         /// <summary>Plays the configured sound for <paramref name="kind"/> (nothing when the slot is Off).</summary>
@@ -142,19 +234,27 @@ namespace StimHits
                 return;
             }
 
-            AudioClip clip;
+            var builtIn = kind == Kind.Hit ? _ting : kind == Kind.Hurt ? _clang : _coin;
+            AudioClip clip = null;
             switch (choice)
             {
                 case "Ting": clip = _ting; break;
                 case "Clang": clip = _clang; break;
                 case "Coin": clip = _coin; break;
-                default: // Auto: the local file if there is one, else this slot's built-in sound
-                    var local = _local[(int)kind];
-                    clip = local.Count > 0
-                        ? local[UnityEngine.Random.Range(0, local.Count)]
-                        : kind == Kind.Hit ? _ting : kind == Kind.Hurt ? _clang : _coin;
+                case "Auto": // a random hit/hurt/kill file from the local folder, else the built-in sound
+                    var loaded = new List<AudioClip>();
+                    foreach (var path in _autoPaths[(int)kind])
+                    {
+                        var c = Loaded(path);
+                        if (c != null) loaded.Add(c);
+                    }
+                    if (loaded.Count > 0) clip = loaded[UnityEngine.Random.Range(0, loaded.Count)];
+                    break;
+                default: // a local file picked by name
+                    if (_localByName != null && _localByName.TryGetValue(choice, out var file)) clip = Loaded(file);
                     break;
             }
+            clip = clip ?? builtIn;
             if (clip != null) PlayClip(clip, volume, pitch);
         }
 
@@ -205,12 +305,21 @@ namespace StimHits
             src.Play();
         }
 
-        /// <summary>Decodes a PCM WAV (8/16/24/32-bit int or 32-bit float) from the mod folder.</summary>
-        private static AudioClip LoadWav(string path)
+        private static byte[] ReadModFile(string path)
+        {
+            try { return _mod?.GetFile(path); }
+            catch (Exception e)
+            {
+                Debug.LogWarning($"[{StimHitsMod.Name}] Could not read {path}: {e.Message}");
+                return null;
+            }
+        }
+
+        /// <summary>Decodes a PCM WAV (8/16/24/32-bit int or 32-bit float).</summary>
+        private static AudioClip ParseWav(byte[] data, string path)
         {
             try
             {
-                var data = _mod?.GetFile(path);
                 if (data == null) throw new Exception("file not found");
                 if (data.Length < 12 || data[0] != 'R' || data[1] != 'I' || data[8] != 'W') throw new Exception("not a RIFF/WAVE file");
                 int channels = 0, rate = 0, bits = 0, format = 0, pos = 12;

@@ -364,12 +364,12 @@ Published 2026-10-04:
 
 ## Stim Hits (2026-10-04)
 
-`StimHits/` replaces take-damage sounds (hit = creature within range of the local player, hurt =
+`StimHits/` replaces hit sounds. Hit = damage-number events (EffectEventExtensions.PlayEffect, entity2 = attacker: player or its ProjectileCD w/ OwnerReferenceCD), kill = OnDeath of a recently hit creature, hurt =
 local player). Hooks managed `EntityMonoBehaviour.OnTakeDamage` (prefix sets a mute flag, finalizer
 clears it and plays the ding); the mute is a prefix on private `AudioManager.PlayAudioClip`, which
 every Sfx*/SfxTable call funnels into. Custom audio without System.IO: mod-folder files via
 `LoadedMod.GetFile(path)` (sandbox-safe bytes; we parse WAV ourselves), and user files via
 `UnityWebRequestMultimedia.GetAudioClip("file:///" + path)` polled in `IMod.Update` (mp3/ogg/wav;
 `UnityEngine.Networking` is not on the sandbox block list, which is System.IO/Net/Diagnostics/
-Reflection/InteropServices). Custom folder: `Application.persistentDataPath/StimHits`. Sandbox block
+Reflection/InteropServices). Local folder: `Application.persistentDataPath/StimHits` (hit/hurt/kill.mp3, auto-loaded; never ship copyrighted audio in the mod, Sid keeps his personal files there only). Sandbox block
 list lives in `resources.assets` (RoslynCSharpSettings). Stim sounds come from `release/make_stim_sounds.py`.

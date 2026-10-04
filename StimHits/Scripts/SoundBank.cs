@@ -7,67 +7,69 @@ namespace StimHits
 {
     /// <summary>
     /// Loads the replacement sounds and plays them.
-    /// Built-in "Stim" sounds are WAVs shipped in the mod's Sounds/ folder, read through the
-    /// loader's sandbox-safe <see cref="LoadedMod.GetFile"/> and decoded here. Custom sounds
-    /// (hit/hurt .mp3, .ogg or .wav) live in a folder outside the mod so updates never delete them:
-    /// <c>%USERPROFILE%\AppData\LocalLow\Pugstorm\Core Keeper\StimHits\</c>; Unity decodes those via
-    /// a file:// UnityWebRequest. The named game sounds play through the game's AudioManager.
+    /// Built-in sounds are WAVs shipped in the mod's Sounds/ folder, read through the loader's
+    /// sandbox-safe <see cref="LoadedMod.GetFile"/> and decoded here. Local sounds (hit/hurt/kill
+    /// .mp3, .ogg or .wav) live in a folder outside the mod so updates never delete them and they
+    /// are never distributed: <c>%USERPROFILE%\AppData\LocalLow\Pugstorm\Core Keeper\StimHits\</c>.
+    /// Unity decodes those via a file:// UnityWebRequest. "Auto" plays the local file when there is
+    /// one, otherwise the slot's built-in sound. Named game sounds play through AudioManager.
     /// Everything goes through the Effects mixer, so the game's SFX volume applies.
     /// </summary>
     public static class SoundBank
     {
-        public enum Kind { Hit, Hurt }
+        public enum Kind { Hit, Hurt, Kill }
 
-        private const int Voices = 8;
-        private const float MinGap = 0.045f; // seconds between two dings of the same kind
+        private static readonly string[] FileNames = { "hit", "hurt", "kill" };
         private static readonly string[] Extensions = { "mp3", "ogg", "wav" };
+        private const int Kinds = 3;
+        private const int Voices = 8;
+        private const float MinGap = 0.045f; // seconds between two sounds of the same kind
 
         private static LoadedMod _mod;
-        private static AudioClip _stimHit, _stimHurt, _customHit, _customHurt;
+        private static AudioClip _ting, _clang, _coin;
+        private static readonly AudioClip[] _local = new AudioClip[Kinds];
         private static AudioSource[] _sources;
         private static int _next;
-        private static readonly float[] _lastPlayed = { -1f, -1f };
+        private static readonly float[] _lastPlayed = { -1f, -1f, -1f };
 
-        // Custom loading: one request at a time, walking (kind, extension) candidates.
+        // Local file loading: one request at a time, walking (kind, extension) candidates.
         private static UnityWebRequest _request;
         private static int _candidate = -1;
-        private static bool _customHitFound, _customHurtFound, _warnedMissing;
 
-        public static string CustomFolder => Application.persistentDataPath + "/StimHits";
+        public static string LocalFolder => Application.persistentDataPath + "/StimHits";
 
         public static void Init(LoadedMod mod)
         {
             _mod = mod;
-            _stimHit = LoadWav("Sounds/stim_hit.wav");
-            _stimHurt = LoadWav("Sounds/stim_hurt.wav");
-            ReloadCustom();
+            _ting = LoadWav("Sounds/stim_hit.wav");
+            _clang = LoadWav("Sounds/stim_hurt.wav");
+            _coin = LoadWav("Sounds/stim_coin.wav");
+            ReloadLocal();
         }
 
-        public static void ReloadCustom()
+        /// <summary>Rescans the local folder (startup, and whenever a slot is switched to Auto).</summary>
+        public static void ReloadLocal()
         {
             _request?.Dispose();
             _request = null;
-            _customHitFound = _customHurtFound = false;
-            _warnedMissing = false;
+            for (var i = 0; i < Kinds; i++) _local[i] = null;
             _candidate = 0;
             StartCandidate();
         }
 
-        /// <summary>Called every frame from <see cref="StimHitsMod.Update"/> to finish custom loads.</summary>
+        /// <summary>Called every frame from <see cref="StimHitsMod.Update"/> to finish local loads.</summary>
         public static void Update()
         {
             if (_request == null || !_request.isDone) return;
-            var kind = (Kind)(_candidate / Extensions.Length);
-            var alreadyFound = kind == Kind.Hit ? _customHitFound : _customHurtFound;
-            if (!alreadyFound && _request.result == UnityWebRequest.Result.Success)
+            var kind = _candidate / Extensions.Length;
+            if (_local[kind] == null && _request.result == UnityWebRequest.Result.Success)
             {
                 var clip = DownloadHandlerAudioClip.GetContent(_request);
                 if (clip != null && clip.length > 0f)
                 {
-                    clip.name = "StimHits custom " + kind;
-                    if (kind == Kind.Hit) { _customHit = clip; _customHitFound = true; }
-                    else { _customHurt = clip; _customHurtFound = true; }
-                    Debug.Log($"[{StimHitsMod.Name}] Custom {kind} sound loaded: {_request.url} ({clip.length:0.00}s)");
+                    clip.name = "StimHits local " + FileNames[kind];
+                    _local[kind] = clip;
+                    Debug.Log($"[{StimHitsMod.Name}] Local {FileNames[kind]} sound loaded: {_request.url} ({clip.length:0.00}s)");
                 }
             }
             _request.Dispose();
@@ -78,18 +80,13 @@ namespace StimHits
 
         private static void StartCandidate()
         {
-            var total = Extensions.Length * 2;
-            while (_candidate >= 0 && _candidate < total)
+            while (_candidate >= 0 && _candidate < Kinds * Extensions.Length)
             {
-                var kind = (Kind)(_candidate / Extensions.Length);
-                if ((kind == Kind.Hit && _customHitFound) || (kind == Kind.Hurt && _customHurtFound))
-                {
-                    _candidate++;
-                    continue;
-                }
+                var kind = _candidate / Extensions.Length;
+                if (_local[kind] != null) { _candidate++; continue; }
                 var ext = Extensions[_candidate % Extensions.Length];
                 var type = ext == "mp3" ? AudioType.MPEG : ext == "ogg" ? AudioType.OGGVORBIS : AudioType.WAV;
-                var url = "file:///" + CustomFolder.Replace('\\', '/') + "/" + (kind == Kind.Hit ? "hit." : "hurt.") + ext;
+                var url = "file:///" + LocalFolder.Replace('\\', '/') + "/" + FileNames[kind] + "." + ext;
                 try
                 {
                     _request = UnityWebRequestMultimedia.GetAudioClip(url, type);
@@ -107,38 +104,36 @@ namespace StimHits
             _candidate = -1;
         }
 
-        /// <summary>Plays the configured replacement for <paramref name="kind"/> (nothing when the setting is Off).</summary>
+        /// <summary>Plays the configured sound for <paramref name="kind"/> (nothing when the slot is Off).</summary>
         public static void Play(Kind kind, Transform at)
         {
-            var hit = kind == Kind.Hit;
-            var choice = (hit ? StimHitsMod.HitSound : StimHitsMod.HurtSound)?.Value ?? "Off";
+            var slot = StimHitsMod.Slot(kind);
+            var choice = slot.Sound?.Value ?? "Off";
             if (choice == "Off") return;
             var now = Time.unscaledTime;
             if (now - _lastPlayed[(int)kind] < MinGap) return;
             _lastPlayed[(int)kind] = now;
 
-            var volume = Mathf.Clamp01((hit ? StimHitsMod.HitVolume : StimHitsMod.HurtVolume)?.Value ?? 0.8f);
-            var pitch = (hit ? StimHitsMod.HitPitch : StimHitsMod.HurtPitch)?.Value ?? 1f;
-            pitch *= UnityEngine.Random.Range(0.97f, 1.03f); // a little variation so repeats don't drone
+            var volume = Mathf.Clamp01(slot.Volume?.Value ?? 0.8f);
+            var pitch = (slot.Pitch?.Value ?? 1f) * UnityEngine.Random.Range(0.97f, 1.03f); // repeats don't drone
 
             if (TryGameSound(choice, out var sfx))
             {
                 AudioManager.SfxFollowTransform(sfx, at, volume, pitch, 0f, reuse: false, AudioManager.MixerGroupEnum.EFFECTS,
-                    ignoreAudioIfOutsideOfViewport: false, useSpatialSound: false, playOnGamepad: !hit);
+                    ignoreAudioIfOutsideOfViewport: false, useSpatialSound: false, playOnGamepad: kind == Kind.Hurt);
                 return;
             }
 
-            AudioClip clip = null;
-            if (choice == "Custom")
+            AudioClip clip;
+            switch (choice)
             {
-                clip = hit ? _customHit : _customHurt;
-                if (clip == null && !_warnedMissing && _candidate < 0)
-                {
-                    _warnedMissing = true;
-                    Debug.LogWarning($"[{StimHitsMod.Name}] No custom {kind} sound in {CustomFolder} (hit/hurt .mp3/.ogg/.wav); using Stim.");
-                }
+                case "Ting": clip = _ting; break;
+                case "Clang": clip = _clang; break;
+                case "Coin": clip = _coin; break;
+                default: // Auto: the local file if there is one, else this slot's built-in sound
+                    clip = _local[(int)kind] ?? (kind == Kind.Hit ? _ting : kind == Kind.Hurt ? _clang : _coin);
+                    break;
             }
-            if (clip == null) clip = hit ? _stimHit : _stimHurt;
             if (clip != null) PlayClip(clip, volume, pitch);
         }
 
@@ -146,12 +141,12 @@ namespace StimHits
         {
             switch (choice)
             {
-                case "Clang": sfx = SfxID.metalImpact; return true;
-                case "Small Clang": sfx = SfxID.metalImpactSmall; return true;
-                case "Ding": sfx = SfxID.inventory_ding; return true;
-                case "Anvil": sfx = SfxID.anvil; return true;
-                case "Bell": sfx = SfxID.Bell; return true;
-                case "Shield": sfx = SfxID.shieldBlock; return true;
+                case "Game Clang": sfx = SfxID.metalImpact; return true;
+                case "Game Small Clang": sfx = SfxID.metalImpactSmall; return true;
+                case "Game Ding": sfx = SfxID.inventory_ding; return true;
+                case "Game Anvil": sfx = SfxID.anvil; return true;
+                case "Game Bell": sfx = SfxID.Bell; return true;
+                case "Game Shield": sfx = SfxID.shieldBlock; return true;
                 default: sfx = default; return false;
             }
         }

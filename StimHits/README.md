@@ -1,34 +1,34 @@
 # Stim Hits
 
-Replaces the take-damage sound with a crisp metallic ding when you hit something and when you get
-hit. Every option is on the **Mod Options → Stim Hits** page; set a sound to **Off** to get the
-vanilla sound back.
+Crisp metallic hit feedback for Core Keeper: a ting when you hit something, a coin "cha-ching" when
+something you hit dies, and a clang when you get hit. The vanilla sounds they replace are muted.
+Everything is on the **Mod Options → Stim Hits** page; set a slot to **Off** for the vanilla sound.
 
 | Option | Default | |
 |---|---|---|
-| Hit sound | Stim | Played when you damage a creature (melee, bow, gun, staff). Off = vanilla. |
-| Hit volume / pitch | 0.8 / 1.0 | Pitch above 1 = higher, snappier ding. |
-| Hit range (tiles) | 16 | Vanilla take-damage sounds of creatures this close are muted (and objects ding within it). |
+| Hit sound / volume / pitch | Auto / 0.8 / 1.0 | You damage a creature (melee, bow, gun, staff). |
+| Kill sound / volume / pitch | Auto / 0.9 / 1.0 | A creature you hit in the last 1.5 s dies. |
+| Hurt sound / volume / pitch | Auto / 0.9 / 1.0 | You take damage. |
+| Hit range (tiles) | 16 | Creatures' vanilla hurt sounds are muted within this range (objects ding within it). |
 | Ding on objects too | Off | Also ding on ore boulders, destructibles etc. |
-| Hurt sound | Stim | Played when you take damage. Off = vanilla. |
-| Hurt volume / pitch | 0.9 / 1.0 | |
 
-Sounds: **Stim** (the mod's own synthesized ting/clang), **Clang**, **Small Clang**, **Ding**,
-**Anvil**, **Bell**, **Shield** (game sounds), **Custom** (your own file).
+Sounds: **Auto** (your own file if present, else the built-in sound for that slot), **Ting**,
+**Clang**, **Coin** (the mod's own synthesized sounds), **Game Clang / Small Clang / Ding / Anvil /
+Bell / Shield** (Core Keeper's sounds).
 
-## Custom sounds
+## Your own sounds
 
-Put `hit.mp3` and/or `hurt.mp3` (`.ogg` and `.wav` work too) in
+Put any of `hit`, `kill`, `hurt` as `.mp3`, `.ogg` or `.wav` in
 
     %USERPROFILE%\AppData\LocalLow\Pugstorm\Core Keeper\StimHits\
 
-and pick **Custom**. The folder lives outside the mod, so updates never delete your sounds. Files are
-read at startup and again whenever you switch a sound to Custom. If a file is missing, Stim plays
-instead. Keep them short (under half a second sounds best).
+and they play automatically in every slot set to **Auto**. The folder lives outside the mod, so
+updates never touch it and your files are never shared with anyone. Files are read at startup and
+again whenever you switch a slot to Auto. Keep them short (under a second).
 
 ## Limits
 
-- Hits are attributed through the damage numbers: your melee and your own projectiles ding; pets,
+- Hits are attributed through the damage numbers: your melee and your own projectiles count; pets,
   minions and other players do not. Their creature-hurt sounds are still muted within the range.
 - Replaced: the creature's hurt sound, the melee impact sound and the impact sound of your
   projectiles that hit. Flash, particles and enemy death sounds stay vanilla.

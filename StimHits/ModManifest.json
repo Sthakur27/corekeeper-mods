@@ -27,6 +27,10 @@
         {
             "path": "Sounds/stim_hurt.wav",
             "guid": ""
+        },
+        {
+            "path": "Sounds/stim_coin.wav",
+            "guid": ""
         }
     ],
     "dependencies": [

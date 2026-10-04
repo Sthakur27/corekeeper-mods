@@ -7,28 +7,43 @@ using Object = UnityEngine.Object;
 namespace StimHits
 {
     /// <summary>
-    /// Replaces vanilla hit sounds with a metallic "ding" in two cases: you damage something
-    /// (melee, bows, guns, staffs) and you take damage. Each case has its own sound, volume and
-    /// pitch, and "Off" leaves the vanilla sounds untouched. Mechanism in <see cref="Hits"/>.
+    /// Replaces vanilla hit sounds with metallic dings when you damage something (melee, bows,
+    /// guns, staffs) and when you take damage, and plays a coin sound when a creature you hit dies.
+    /// Each slot has its own sound, volume and pitch; "Off" leaves the vanilla sounds untouched. Mechanism in <see cref="Hits"/>.
     /// </summary>
     public sealed class StimHitsMod : IMod
     {
         public const string Name = "StimHits";
-        public const string Version = "1.1.0";
+        public const string Version = "1.2.0";
 
-        public const string SettingsHint = "Metallic dings replace the take-damage sound when you hit something and when you get hit. Off = vanilla. Custom = your own hit/hurt .mp3/.ogg/.wav in the StimHits sound folder (see README).";
+        public const string SettingsHint = "Metallic dings replace the hit sounds when you hit something and when you get hit, plus a coin sound when something you hit dies. Off = vanilla. Auto = your own hit/hurt/kill .mp3 from the StimHits folder if present (see README), else the built-in sound.";
 
         public static readonly string[] Sounds =
-            { "Off", "Stim", "Clang", "Small Clang", "Ding", "Anvil", "Bell", "Shield", "Custom" };
+        {
+            "Off", "Auto", "Ting", "Clang", "Coin",
+            "Game Clang", "Game Small Clang", "Game Ding", "Game Anvil", "Game Bell", "Game Shield",
+        };
 
-        internal static Setting<string> HitSound;
-        internal static Setting<float> HitVolume;
-        internal static Setting<float> HitPitch;
+        /// <summary>The three settings of one sound slot.</summary>
+        public sealed class SoundSlot
+        {
+            public Setting<string> Sound;
+            public Setting<float> Volume;
+            public Setting<float> Pitch;
+        }
+
+        private static readonly SoundSlot HitSlot = new SoundSlot();
+        private static readonly SoundSlot HurtSlot = new SoundSlot();
+        private static readonly SoundSlot KillSlot = new SoundSlot();
         internal static Setting<int> HitRange;
         internal static Setting<bool> HitObjects;
-        internal static Setting<string> HurtSound;
-        internal static Setting<float> HurtVolume;
-        internal static Setting<float> HurtPitch;
+
+        internal static Setting<string> HitSound => HitSlot.Sound;
+        internal static Setting<string> HurtSound => HurtSlot.Sound;
+        internal static Setting<string> KillSound => KillSlot.Sound;
+
+        public static SoundSlot Slot(SoundBank.Kind kind)
+            => kind == SoundBank.Kind.Hit ? HitSlot : kind == SoundBank.Kind.Hurt ? HurtSlot : KillSlot;
 
         public void EarlyInit()
         {
@@ -49,19 +64,22 @@ namespace StimHits
         public static void RegisterSettings(SettingsPage page)
         {
             page
-                .Choice(out HitSound, "Hit sound", Sounds, "Stim")
-                .Slider(out HitVolume, "Hit volume", 0.1f, 1f, 0.8f, 0.1f)
-                .Slider(out HitPitch, "Hit pitch", 0.5f, 2f, 1f, 0.05f)
+                .Choice(out HitSlot.Sound, "Hit sound", Sounds, "Auto")
+                .Slider(out HitSlot.Volume, "Hit volume", 0.1f, 1f, 0.8f, 0.1f)
+                .Slider(out HitSlot.Pitch, "Hit pitch", 0.5f, 2f, 1f, 0.05f)
+                .Choice(out KillSlot.Sound, "Kill sound", Sounds, "Auto")
+                .Slider(out KillSlot.Volume, "Kill volume", 0.1f, 1f, 0.9f, 0.1f)
+                .Slider(out KillSlot.Pitch, "Kill pitch", 0.5f, 2f, 1f, 0.05f)
+                .Choice(out HurtSlot.Sound, "Hurt sound", Sounds, "Auto")
+                .Slider(out HurtSlot.Volume, "Hurt volume", 0.1f, 1f, 0.9f, 0.1f)
+                .Slider(out HurtSlot.Pitch, "Hurt pitch", 0.5f, 2f, 1f, 0.05f)
                 .Stepper(out HitRange, "Hit range (tiles)", 2, 30, 16)
-                .Toggle(out HitObjects, "Ding on objects too", false)
-                .Choice(out HurtSound, "Hurt sound", Sounds, "Stim")
-                .Slider(out HurtVolume, "Hurt volume", 0.1f, 1f, 0.9f, 0.1f)
-                .Slider(out HurtPitch, "Hurt pitch", 0.5f, 2f, 1f, 0.05f);
+                .Toggle(out HitObjects, "Ding on objects too", false);
 
-            // Pick up a newly dropped custom file without restarting.
-            HitSound.OnChanged += v => { if (v == "Custom") SoundBank.ReloadCustom(); };
-            HurtSound.OnChanged += v => { if (v == "Custom") SoundBank.ReloadCustom(); };
-            Debug.Log($"[{Name}] Loaded. Hit: {HitSound.Value}, hurt: {HurtSound.Value}");
+            // Pick up a newly dropped local file without restarting.
+            foreach (var slot in new[] { HitSlot, HurtSlot, KillSlot })
+                slot.Sound.OnChanged += v => { if (v == "Auto") SoundBank.ReloadLocal(); };
+            Debug.Log($"[{Name}] Loaded. Hit: {HitSound.Value}, kill: {KillSound.Value}, hurt: {HurtSound.Value}");
         }
 
         public void Shutdown() { }

@@ -15,6 +15,9 @@ namespace StimHits
     /// sounds muted while the Hit sound is on: the creature's take-damage sound, the melee impact
     /// sound (EffectID.HitDamageSound) and the death/impact sound of our projectiles that hit.
     ///
+    /// Kill: EntityMonoBehaviour.OnDeath of a creature we hit in the last <see cref="Memory"/> seconds.
+    /// The creature's own death sound stays vanilla.
+    ///
     /// Hurt (you got damaged): EntityMonoBehaviour.OnTakeDamage on the local player.
     ///
     /// Muting works by a flag checked in a prefix on AudioManager.PlayAudioClip, the private funnel
@@ -38,7 +41,7 @@ namespace StimHits
 
         internal static bool Enabled(SoundBank.Kind kind)
         {
-            var s = kind == SoundBank.Kind.Hit ? StimHitsMod.HitSound : StimHitsMod.HurtSound;
+            var s = StimHitsMod.Slot(kind).Sound;
             return s != null && s.Value != "Off";
         }
 
@@ -187,23 +190,35 @@ namespace StimHits
         }
     }
 
-    /// <summary>Silences the impact/death sound of our projectiles that just hit something.</summary>
+    /// <summary>
+    /// Silences the impact/death sound of our projectiles that just hit something, and plays the
+    /// kill sound when a creature we recently hit dies.
+    /// </summary>
     [HarmonyPatch(typeof(EntityMonoBehaviour), "OnDeath")]
     public static class OnDeathPatch
     {
-        public static void Prefix(EntityMonoBehaviour __instance)
+        public static void Prefix(EntityMonoBehaviour __instance, out bool __state)
         {
+            __state = false;
             Hits.Muting = false;
             try
             {
-                Hits.Muting = __instance != null && Hits.Enabled(SoundBank.Kind.Hit) && Hits.HitProjectile(__instance.entity);
+                if (__instance == null) return;
+                var e = __instance.entity;
+                Hits.Muting = Hits.Enabled(SoundBank.Kind.Hit) && Hits.HitProjectile(e);
+                __state = Hits.Enabled(SoundBank.Kind.Kill) && Hits.RecentTarget(e) && !(__instance is PlayerController);
             }
-            catch (Exception e) { Debug.LogWarning($"[{StimHitsMod.Name}] {e}"); }
+            catch (Exception ex) { Debug.LogWarning($"[{StimHitsMod.Name}] {ex}"); }
         }
 
-        public static Exception Finalizer(Exception __exception)
+        public static Exception Finalizer(EntityMonoBehaviour __instance, bool __state, Exception __exception)
         {
             Hits.Muting = false;
+            if (__state)
+            {
+                try { SoundBank.Play(SoundBank.Kind.Kill, __instance.transform); }
+                catch (Exception ex) { Debug.LogWarning($"[{StimHitsMod.Name}] {ex}"); }
+            }
             return __exception;
         }
     }

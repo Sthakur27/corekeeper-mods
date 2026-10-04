@@ -140,7 +140,7 @@ namespace StimHits
                 byte[] data = null;
                 try { data = API.ConfigFilesystem.Read(path); }
                 catch (Exception e) { Debug.LogWarning($"[{StimHitsMod.Name}] Could not read {path}: {e.Message}"); }
-                _clips[path] = ParseWav(data, path);
+                _clips[path] = TrimLeadingSilence(ParseWav(data, path));
                 return;
             }
             _pending.Enqueue(path);
@@ -170,7 +170,9 @@ namespace StimHits
                 try
                 {
                     _request = UnityWebRequestMultimedia.GetAudioClip("file:///" + root + path, type);
-                    ((DownloadHandlerAudioClip)_request.downloadHandler).streamAudio = false;
+                    var handler = (DownloadHandlerAudioClip)_request.downloadHandler;
+                    handler.streamAudio = false;
+                    handler.compressed = false; // decoded PCM, so the silence trim can read the samples
                     _request.SendWebRequest();
                     _requestPath = path;
                 }
@@ -198,7 +200,11 @@ namespace StimHits
                 Debug.LogWarning($"[{StimHitsMod.Name}] Could not decode {_requestPath}: {_request.error}");
                 clip = null;
             }
-            else Debug.Log($"[{StimHitsMod.Name}] Loaded {_requestPath} ({clip.length:0.00}s)");
+            else
+            {
+                clip = TrimLeadingSilence(clip);
+                Debug.Log($"[{StimHitsMod.Name}] Loaded {_requestPath} ({clip.length:0.00}s)");
+            }
             _clips[_requestPath] = clip;
             _request.Dispose();
             _request = null;
@@ -303,6 +309,41 @@ namespace StimHits
             src.volume = volume;
             src.pitch = pitch;
             src.Play();
+        }
+
+        /// <summary>
+        /// Drops the quiet lead-in many downloaded clips have (up to ~0.4 s, plus mp3 encoder delay),
+        /// so the sound lands on the hit instead of lagging behind it. Keeps 2 ms before the onset.
+        /// </summary>
+        private static AudioClip TrimLeadingSilence(AudioClip clip)
+        {
+            if (clip == null) return null;
+            try
+            {
+                var ch = clip.channels;
+                var data = new float[clip.samples * ch];
+                if (!clip.GetData(data, 0)) return clip;
+                var peak = 0f;
+                foreach (var v in data) peak = Mathf.Max(peak, Mathf.Abs(v));
+                if (peak <= 0f) return clip;
+                var threshold = peak * 0.02f;
+                var first = 0;
+                while (first < data.Length && Mathf.Abs(data[first]) < threshold) first++;
+                var startFrame = Mathf.Max(0, first / ch - clip.frequency / 500); // 2 ms pre-roll
+                if (startFrame < clip.frequency / 100) return clip; // under 10 ms: leave it alone
+                var frames = clip.samples - startFrame;
+                var trimmed = new float[frames * ch];
+                Array.Copy(data, startFrame * ch, trimmed, 0, trimmed.Length);
+                var result = AudioClip.Create(clip.name, frames, ch, clip.frequency, false);
+                result.SetData(trimmed, 0);
+                Debug.Log($"[{StimHitsMod.Name}] Trimmed {startFrame * 1000 / clip.frequency} ms of silence from {clip.name}");
+                return result;
+            }
+            catch (Exception e)
+            {
+                Debug.LogWarning($"[{StimHitsMod.Name}] Could not trim {clip.name}: {e.Message}");
+                return clip;
+            }
         }
 
         private static byte[] ReadModFile(string path)

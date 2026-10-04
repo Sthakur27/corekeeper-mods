@@ -26,7 +26,7 @@ The folder is created on first launch. Every file shows up by name in all three 
 a restart. Files named `hit`, `kill` or `hurt` in the folder itself are what **Auto** plays; add
 numbered variants (`kill2`, `kill3`, ...) and a random one plays each time. The folder lives outside
 the mod, so updates never touch it and your files are never shared with anyone. Keep sounds short
-(under a second).
+(under a second). Silence at the start of a file is cut automatically so sounds land on the hit.
 
 ## Limits
 

@@ -23,6 +23,10 @@
         {
             "path": "Scripts/Patches/DamagePatches.cs",
             "guid": "711867577f874cdc99cda58aa63b9639"
+        },
+        {
+            "path": "Scripts/Patches/SpeedPatches.cs",
+            "guid": "4b0e7d2c9a1f4f3e8c6d5a2b1e0f9c87"
         }
     ],
     "dependencies": [

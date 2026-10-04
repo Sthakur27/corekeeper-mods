@@ -20,17 +20,22 @@ namespace HardModeTuning
     public sealed class HardModeTuningMod : IMod
     {
         public const string Name = "HardModeTuning";
-        public const string Version = "1.0.0";
+        public const string Version = "1.1.0";
 
         private static SettingHandle<string> _damage;
         private static SettingHandle<string> _health;
+        private static SettingHandle<string> _moveSpeed;
+        private static SettingHandle<string> _projectileSpeed;
+        private static SettingHandle<string> _rechargeSpeed;
+        private static SettingHandle<string> _bossDamage;
+        private static SettingHandle<string> _bossHealth;
 
         public void EarlyInit()
         {
             Debug.Log($"[{Name}] v{Version}");
         }
 
-        public const string SettingsHint = "Hard mode, regular enemies only (bosses keep full hard mode). Compared to normal mode; vanilla hard is 2x damage. Applies next time you load a world. Regular enemy health, as a multiple of the normal (level-based) health.";
+        public const string SettingsHint = "Hard mode worlds only; applies next time you load a world. Regular enemy damage/health are vs normal mode (vanilla hard: 2x damage, 1.5x health). Speeds apply to regular enemies; recharge speed 1.25x = attacks come back 1.25x as fast. Boss damage/health are vs vanilla hard (1x = vanilla).";
 
         public void Init()
         {
@@ -45,13 +50,16 @@ namespace HardModeTuning
         {
             section
                 .Choice(out _damage, prefix + "Regular enemy damage", Tuning.Ladder, Tuning.DefaultToken)
-                .Choice(out _health, prefix + "Regular enemy health", Tuning.Ladder, Tuning.DefaultToken);
+                .Choice(out _health, prefix + "Regular enemy health", Tuning.Ladder, Tuning.DefaultToken)
+                .Choice(out _moveSpeed, prefix + "Regular enemy move speed", Tuning.FineLadder, Tuning.FineDefault)
+                .Choice(out _projectileSpeed, prefix + "Regular enemy projectile speed", Tuning.FineLadder, Tuning.FineDefault)
+                .Choice(out _rechargeSpeed, prefix + "Regular enemy recharge speed", Tuning.FineLadder, Tuning.FineDefault)
+                .Choice(out _bossDamage, prefix + "Boss damage (vs vanilla hard)", Tuning.FineLadder, Tuning.FineDefault)
+                .Choice(out _bossHealth, prefix + "Boss health (vs vanilla hard)", Tuning.FineLadder, Tuning.FineDefault);
 
-
-            Tuning.DamageMultiplier = Tuning.Parse(_damage.Value);
-            Tuning.HealthMultiplier = Tuning.Parse(_health.Value);
-            _damage.OnChanged += t => { Tuning.DamageMultiplier = Tuning.Parse(t); Log(); };
-            _health.OnChanged += t => { Tuning.HealthMultiplier = Tuning.Parse(t); Log(); };
+            Apply();
+            foreach (var handle in new[] { _damage, _health, _moveSpeed, _projectileSpeed, _rechargeSpeed, _bossDamage, _bossHealth })
+                handle.OnChanged += _ => { Apply(); Log(); };
             Log();
         }
 
@@ -63,9 +71,22 @@ namespace HardModeTuning
         }
 
 
+        private static void Apply()
+        {
+            Tuning.DamageMultiplier = Tuning.Parse(_damage.Value);
+            Tuning.HealthMultiplier = Tuning.Parse(_health.Value);
+            Tuning.MoveSpeedMultiplier = Tuning.Parse(_moveSpeed.Value, 1f);
+            Tuning.ProjectileSpeedMultiplier = Tuning.Parse(_projectileSpeed.Value, 1f);
+            Tuning.RechargeSpeedMultiplier = Tuning.Parse(_rechargeSpeed.Value, 1f);
+            Tuning.BossDamageMultiplier = Tuning.Parse(_bossDamage.Value, 1f);
+            Tuning.BossHealthMultiplier = Tuning.Parse(_bossHealth.Value, 1f);
+        }
+
         private static void Log()
         {
-            Debug.Log($"[{Name}] Regular enemies in hard mode: damage {Tuning.DamageMultiplier:0.##}x, health {Tuning.HealthMultiplier:0.##}x (applies on next world load)");
+            Debug.Log($"[{Name}] Hard mode: regular enemies damage {Tuning.DamageMultiplier:0.##}x, health {Tuning.HealthMultiplier:0.##}x, " +
+                      $"move {Tuning.MoveSpeedMultiplier:0.##}x, projectiles {Tuning.ProjectileSpeedMultiplier:0.##}x, recharge {Tuning.RechargeSpeedMultiplier:0.##}x; " +
+                      $"bosses damage {Tuning.BossDamageMultiplier:0.##}x, health {Tuning.BossHealthMultiplier:0.##}x (applies on next world load)");
         }
 
         public void Shutdown() { }

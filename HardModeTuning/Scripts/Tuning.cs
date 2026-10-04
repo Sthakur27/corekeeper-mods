@@ -19,14 +19,43 @@ namespace HardModeTuning
         /// <summary>Regular enemy health relative to the level-based (normal mode) health.</summary>
         public static float HealthMultiplier = 1.5f;
 
+        /// <summary>0.9x to 1.5x in 0.05 steps, for speeds and boss stats.</summary>
+        public static readonly string[] FineLadder = BuildFineLadder();
+        public const string FineDefault = "1x";
+
+        /// <summary>Regular enemy movement speed.</summary>
+        public static float MoveSpeedMultiplier = 1f;
+
+        /// <summary>Regular enemy projectile speed (ranged attacks).</summary>
+        public static float ProjectileSpeedMultiplier = 1f;
+
+        /// <summary>Regular enemy attack recharge speed: attack cooldowns are divided by this (1.25x = 0.8x cooldown).</summary>
+        public static float RechargeSpeedMultiplier = 1f;
+
+        /// <summary>Boss damage relative to vanilla hard mode.</summary>
+        public static float BossDamageMultiplier = 1f;
+
+        /// <summary>Boss health relative to vanilla hard mode.</summary>
+        public static float BossHealthMultiplier = 1f;
+
+        private static string[] BuildFineLadder()
+        {
+            var list = new string[13];
+            for (int i = 0; i < list.Length; i++)
+                list[i] = (0.9f + 0.05f * i).ToString("0.##", CultureInfo.InvariantCulture) + "x";
+            return list;
+        }
+
+        public static bool IsOne(float v) => Math.Abs(v - 1f) < 0.0001f;
+
         /// <summary>Vanilla hard mode enemy damage multiplier (Constants.hardModeEnemyDamageMultiplier).</summary>
         private const float VanillaHardDamage = 2f;
 
-        public static float Parse(string token)
+        public static float Parse(string token, float fallback = 1.5f)
         {
-            if (string.IsNullOrEmpty(token)) return 1.5f;
+            if (string.IsNullOrEmpty(token)) return fallback;
             string s = token.Trim().TrimEnd('x', 'X');
-            return float.TryParse(s, NumberStyles.Float, CultureInfo.InvariantCulture, out float v) && v > 0f ? v : 1.5f;
+            return float.TryParse(s, NumberStyles.Float, CultureInfo.InvariantCulture, out float v) && v > 0f ? v : fallback;
         }
 
         /// <summary>
@@ -45,13 +74,25 @@ namespace HardModeTuning
             if (hard) HardConverters.Add(converter, Marker);
         }
 
-        /// <summary>True when this converter is running for a hard mode world and the prefab is a regular enemy.</summary>
-        public static bool ShouldTuneDamage(Converter converter, MonoBehaviour authoring)
+        public static bool IsHard(Converter converter) => converter != null && HardConverters.TryGetValue(converter, out _);
+
+        /// <summary>
+        /// Factor for an attack's authoring damage in a hard world, applied before the converter doubles it:
+        /// regular enemies end at normal x DamageMultiplier, bosses at vanilla hard x BossDamageMultiplier.
+        /// 1 means leave it alone.
+        /// </summary>
+        public static float DamageFactorFor(Converter converter, MonoBehaviour authoring)
         {
-            if (converter == null || authoring == null) return false;
-            if (!HardConverters.TryGetValue(converter, out _)) return false;
-            if (Math.Abs(DamageFactor - 1f) < 0.0001f) return false;
-            return IsRegularEnemy(authoring.gameObject);
+            if (authoring == null || !IsHard(converter)) return 1f;
+            GameObject go = authoring.gameObject;
+            if (!go.TryGetComponent(out EnemyAuthoring enemy) || !enemy.enabled) return 1f;
+            return IsBoss(go) ? BossDamageMultiplier : DamageFactor;
+        }
+
+        /// <summary>True when this converter is running for a hard mode world and the prefab is a regular enemy.</summary>
+        public static bool IsRegularInHardWorld(Converter converter, MonoBehaviour authoring)
+        {
+            return authoring != null && IsHard(converter) && IsRegularEnemy(authoring.gameObject);
         }
 
         /// <summary>Has an active EnemyAuthoring and is not a boss, boss part or boss projectile.</summary>

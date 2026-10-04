@@ -9,7 +9,7 @@ namespace StimHits
     /// Loads the replacement sounds and plays them.
     /// Built-in sounds are WAVs shipped in the mod's Sounds/ folder, read through the loader's
     /// sandbox-safe <see cref="LoadedMod.GetFile"/> and decoded here. Local sounds (hit/hurt/kill
-    /// .mp3, .ogg or .wav) live in a folder outside the mod so updates never delete them and they
+    /// .mp3, .ogg or .wav, plus numbered variants kill2..kill8 picked at random) live in a folder outside the mod so updates never delete them and they
     /// are never distributed: <c>%USERPROFILE%\AppData\LocalLow\Pugstorm\Core Keeper\StimHits\</c>.
     /// Unity decodes those via a file:// UnityWebRequest. "Auto" plays the local file when there is
     /// one, otherwise the slot's built-in sound. Named game sounds play through AudioManager.
@@ -21,20 +21,31 @@ namespace StimHits
 
         private static readonly string[] FileNames = { "hit", "hurt", "kill" };
         private static readonly string[] Extensions = { "mp3", "ogg", "wav" };
+        private const int MaxVariants = 8; // kill, kill2 .. kill8
         private const int Kinds = 3;
         private const int Voices = 8;
         private const float MinGap = 0.045f; // seconds between two sounds of the same kind
 
         private static LoadedMod _mod;
         private static AudioClip _ting, _clang, _coin;
-        private static readonly AudioClip[] _local = new AudioClip[Kinds];
+        private static readonly System.Collections.Generic.List<AudioClip>[] _local =
+            { new System.Collections.Generic.List<AudioClip>(), new System.Collections.Generic.List<AudioClip>(), new System.Collections.Generic.List<AudioClip>() };
         private static AudioSource[] _sources;
         private static int _next;
         private static readonly float[] _lastPlayed = { -1f, -1f, -1f };
 
-        // Local file loading: one request at a time, walking (kind, extension) candidates.
+        // Local file loading: one request at a time, walking (kind, variant, extension) candidates.
         private static UnityWebRequest _request;
         private static int _candidate = -1;
+        private static bool _variantFound; // the current (kind, variant) already loaded with an earlier extension
+
+        private static int CandidatesPerKind => MaxVariants * Extensions.Length;
+        private static string CandidateName(int c)
+        {
+            var kind = c / CandidatesPerKind;
+            var variant = c % CandidatesPerKind / Extensions.Length;
+            return FileNames[kind] + (variant == 0 ? "" : (variant + 1).ToString()) + "." + Extensions[c % Extensions.Length];
+        }
 
         public static string LocalFolder => Application.persistentDataPath + "/StimHits";
 
@@ -52,7 +63,8 @@ namespace StimHits
         {
             _request?.Dispose();
             _request = null;
-            for (var i = 0; i < Kinds; i++) _local[i] = null;
+            for (var i = 0; i < Kinds; i++) _local[i].Clear();
+            _variantFound = false;
             _candidate = 0;
             StartCandidate();
         }
@@ -61,32 +73,38 @@ namespace StimHits
         public static void Update()
         {
             if (_request == null || !_request.isDone) return;
-            var kind = _candidate / Extensions.Length;
-            if (_local[kind] == null && _request.result == UnityWebRequest.Result.Success)
+            var kind = _candidate / CandidatesPerKind;
+            if (_request.result == UnityWebRequest.Result.Success)
             {
                 var clip = DownloadHandlerAudioClip.GetContent(_request);
                 if (clip != null && clip.length > 0f)
                 {
-                    clip.name = "StimHits local " + FileNames[kind];
-                    _local[kind] = clip;
-                    Debug.Log($"[{StimHitsMod.Name}] Local {FileNames[kind]} sound loaded: {_request.url} ({clip.length:0.00}s)");
+                    clip.name = "StimHits local " + CandidateName(_candidate);
+                    _local[kind].Add(clip);
+                    _variantFound = true;
+                    Debug.Log($"[{StimHitsMod.Name}] Local sound loaded: {CandidateName(_candidate)} ({clip.length:0.00}s)");
                 }
             }
             _request.Dispose();
             _request = null;
-            _candidate++;
+            Advance();
             StartCandidate();
+        }
+
+        private static void Advance()
+        {
+            _candidate++;
+            if (_candidate % Extensions.Length == 0) _variantFound = false; // next variant
         }
 
         private static void StartCandidate()
         {
-            while (_candidate >= 0 && _candidate < Kinds * Extensions.Length)
+            while (_candidate >= 0 && _candidate < Kinds * CandidatesPerKind)
             {
-                var kind = _candidate / Extensions.Length;
-                if (_local[kind] != null) { _candidate++; continue; }
+                if (_variantFound) { Advance(); continue; } // e.g. kill.mp3 loaded: skip kill.ogg/kill.wav
                 var ext = Extensions[_candidate % Extensions.Length];
                 var type = ext == "mp3" ? AudioType.MPEG : ext == "ogg" ? AudioType.OGGVORBIS : AudioType.WAV;
-                var url = "file:///" + LocalFolder.Replace('\\', '/') + "/" + FileNames[kind] + "." + ext;
+                var url = "file:///" + LocalFolder.Replace('\\', '/') + "/" + CandidateName(_candidate);
                 try
                 {
                     _request = UnityWebRequestMultimedia.GetAudioClip(url, type);
@@ -98,7 +116,7 @@ namespace StimHits
                 {
                     Debug.LogWarning($"[{StimHitsMod.Name}] Could not request {url}: {e.Message}");
                     _request = null;
-                    _candidate++;
+                    Advance();
                 }
             }
             _candidate = -1;
@@ -131,7 +149,10 @@ namespace StimHits
                 case "Clang": clip = _clang; break;
                 case "Coin": clip = _coin; break;
                 default: // Auto: the local file if there is one, else this slot's built-in sound
-                    clip = _local[(int)kind] ?? (kind == Kind.Hit ? _ting : kind == Kind.Hurt ? _clang : _coin);
+                    var local = _local[(int)kind];
+                    clip = local.Count > 0
+                        ? local[UnityEngine.Random.Range(0, local.Count)]
+                        : kind == Kind.Hit ? _ting : kind == Kind.Hurt ? _clang : _coin;
                     break;
             }
             if (clip != null) PlayClip(clip, volume, pitch);

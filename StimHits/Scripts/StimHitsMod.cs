@@ -14,7 +14,7 @@ namespace StimHits
     public sealed class StimHitsMod : IMod
     {
         public const string Name = "StimHits";
-        public const string Version = "1.2.0";
+        public const string Version = "1.3.0";
 
         public const string SettingsHint = "Metallic dings replace the hit sounds when you hit something and when you get hit, plus a coin sound when something you hit dies. Off = vanilla. Auto = your own hit/hurt/kill .mp3 from the StimHits folder if present (see README), else the built-in sound.";
 

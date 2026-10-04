@@ -22,7 +22,8 @@ Put any of `hit`, `kill`, `hurt` as `.mp3`, `.ogg` or `.wav` in
 
     %USERPROFILE%\AppData\LocalLow\Pugstorm\Core Keeper\StimHits\
 
-and they play automatically in every slot set to **Auto**. The folder lives outside the mod, so
+and they play automatically in every slot set to **Auto**. Add numbered variants (`kill2.wav` ...
+`kill8.wav`, same for hit/hurt) and a random one plays each time. The folder lives outside the mod, so
 updates never touch it and your files are never shared with anyone. Files are read at startup and
 again whenever you switch a slot to Auto. Keep them short (under a second).
 

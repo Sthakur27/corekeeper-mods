@@ -8,7 +8,7 @@ the first visit, next to the vanilla wares.
 The **Fishing Merchant** also sells each Titan's summoning item once that Titan is beaten (killed in
 this world, or any connected player holds its soul), 3 per restock.
 
-Required on client and server (`requiredOn: 3`). Depends on **CoreLib** and **Sid's Settings**.
+Required on client and server (`requiredOn: 3`). Depends on **CoreLib** and **Mod Options**.
 
 ## Prices
 
@@ -61,7 +61,7 @@ Fishing Merchant (unlocked per Titan):
 
 Edit `Scripts/PotionPrices.cs` to change a price (keep multiples of 5, see below) or the list.
 
-## Settings (Settings > Sid's Mods)
+## Settings (Settings > Mod Options)
 
 - **Potion price multiplier**: 0.25x, 0.5x, 0.75x, 1x (default), 1.5x, 2x, 3x, 4x. Scales the *buy*
   price only (e.g. Healing Potion at 2x costs 100). Applies instantly.

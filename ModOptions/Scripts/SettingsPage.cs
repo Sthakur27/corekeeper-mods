@@ -5,7 +5,7 @@ using CoreLib.Data.Configuration;
 using PugMod;
 using UnityEngine;
 
-namespace SidSettings
+namespace ModOptions
 {
     /// <summary>
     /// Entry point for mods: <c>SettingsPages.Create(this, "My Mod")</c>, chain options, then <c>Build()</c>.
@@ -29,7 +29,7 @@ namespace SidSettings
         public static SettingsPage Create(IMod mod, string title, string keyPrefix = "")
         {
             var info = API.ModLoader.LoadedMods.FirstOrDefault(m => m.Handlers.Contains(mod));
-            if (info == null) throw new InvalidOperationException("SidSettings: mod metadata not found for " + title);
+            if (info == null) throw new InvalidOperationException("ModOptions: mod metadata not found for " + title);
             string modName = info.Metadata.name;
             if (!_files.TryGetValue(modName, out var file))
             {
@@ -52,7 +52,7 @@ namespace SidSettings
         }
     }
 
-    /// <summary>One page in the Sid's Mods menu: a title, an optional description and its options.</summary>
+    /// <summary>One page in the Mod Options menu: a title, an optional description and its options.</summary>
     public sealed class SettingsPage
     {
         private readonly ConfigFile _file;
@@ -116,14 +116,14 @@ namespace SidSettings
         public void ResetAll()
         {
             foreach (var item in _items) item.ResetToDefault();
-            Debug.Log($"[SidSettings] \"{Title}\" reset to defaults.");
+            Debug.Log($"[ModOptions] \"{Title}\" reset to defaults.");
         }
 
         /// <summary>Adds the page to the menu.</summary>
         public void Build()
         {
             SettingsPages.Add(this);
-            Debug.Log($"[SidSettings] Page \"{Title}\" with {_items.Count} options.");
+            Debug.Log($"[ModOptions] Page \"{Title}\" with {_items.Count} options.");
         }
     }
 }

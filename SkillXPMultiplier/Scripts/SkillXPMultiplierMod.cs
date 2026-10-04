@@ -1,7 +1,7 @@
 using System.Linq;
 using CoreLib;
 using CoreLib.Submodule.Command;
-using SidSettings;
+using ModOptions;
 using PugMod;
 using UnityEngine;
 using Object = UnityEngine.Object;

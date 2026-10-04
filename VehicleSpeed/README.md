@@ -1,6 +1,6 @@
 # Vehicle Speed
 
-Core Keeper mod: boat and go-kart speed multipliers in Settings > Sid's Mods.
+Core Keeper mod: boat and go-kart speed multipliers in Settings > Mod Options.
 
 | Setting | Options | Default |
 |---|---|---|

@@ -5,7 +5,7 @@ using CoreLib;
 using CoreLib.Submodule.Command;
 using CoreLib.Submodule.Command.Data;
 using CoreLib.Submodule.ControlMapping;
-using SidSettings;
+using ModOptions;
 using PugMod;
 using Rewired;
 using UnityEngine;

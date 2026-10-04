@@ -2,7 +2,7 @@ using System;
 using System.Globalization;
 using CoreLib.Data.Configuration;
 
-namespace SidSettings
+namespace ModOptions
 {
     /// <summary>One option on a settings page, as the menu sees it (label, value text, step left/right).</summary>
     public abstract class SettingBase

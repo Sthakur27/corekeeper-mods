@@ -47,7 +47,7 @@
             "required": true
         },
         {
-            "modName": "SidSettings",
+            "modName": "ModOptions",
             "required": true
         }
     ]

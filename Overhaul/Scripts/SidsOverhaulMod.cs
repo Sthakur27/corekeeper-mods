@@ -2,7 +2,7 @@ using System.Linq;
 using CoreLib;
 using CoreLib.Submodule.Command;
 using CoreLib.Submodule.ControlMapping;
-using SidSettings;
+using ModOptions;
 using PugMod;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -38,7 +38,7 @@ namespace SidsOverhaul
 
         public void Init()
         {
-            // One page per feature in the Sid's Mods menu. Key prefixes keep the values saved by
+            // One page per feature in the Mod Options menu. Key prefixes keep the values saved by
             // earlier versions (one long section with prefixed labels) in SidsOverhaul/config.cfg.
             Page("Auto Replant", "Auto Replant: ", AutoReplant.AutoReplantMod.SettingsHint, AutoReplant.AutoReplantMod.RegisterSettings);
             Page("Quick Buff", "Quick Buff: ", QuickBuff.QuickBuffMod.SettingsHint, QuickBuff.QuickBuffMod.RegisterSettings);

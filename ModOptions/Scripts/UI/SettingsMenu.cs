@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace SidSettings.UI
+namespace ModOptions.UI
 {
     /// <summary>
-    /// The Sid's Mods menu, built at runtime from the game's own Gameplay settings screen so it looks and
+    /// The Mod Options menu, built at runtime from the game's own Gameplay settings screen so it looks and
     /// navigates like vanilla (scrolling, mouse, keyboard, controller, Back):
-    ///  - Options gets a "Sid's Mods" button;
+    ///  - Options gets a "Mod Options" button;
     ///  - that opens a list with one row per settings page;
     ///  - a row opens the page menu with that page's options (left/right or click to change).
     /// Both menus are clones of the Gameplay settings menu with its rows replaced by our own
@@ -16,8 +16,8 @@ namespace SidSettings.UI
     /// </summary>
     public static class SettingsMenu
     {
-        public const string ButtonLabel = "Sid's Mods";
-        private const string ListTitle = "Sid's Mods";
+        public const string ButtonLabel = "Mod Options";
+        private const string ListTitle = "Mod Options";
         // The scroll viewport is about 20 units wide (x -10..10); text outside it is clipped.
         private const float DescriptionWidth = 18.5f;
         private const float LabelWidth = 11.5f;
@@ -48,7 +48,7 @@ namespace SidSettings.UI
             catch (Exception ex)
             {
                 _failed = true;
-                Debug.LogError("[SidSettings] Menu disabled: " + ex);
+                Debug.LogError("[ModOptions] Menu disabled: " + ex);
             }
         }
 
@@ -124,15 +124,15 @@ namespace SidSettings.UI
             Transform sourceScroll = source.transform.Find("Options/Scroll");
             if (sourceScroll == null) throw new Exception("Gameplay settings layout changed (Options/Scroll missing)");
 
-            var holder = new GameObject("SidSettingsTemplates");
+            var holder = new GameObject("ModOptionsTemplates");
             holder.SetActive(false);
             holder.transform.SetParent(source.transform.parent, false);
             _valueTemplate = MakeTemplate(FindRow(sourceScroll, "Season Option", 2), holder.transform);
             _buttonTemplate = MakeTemplate(FindRow(sourceScroll, "GetOutOfStuckPosition", 1), holder.transform);
 
-            _list = CloneMenu(source, "SidSettingsList");
-            _page = CloneMenu(source, "SidSettingsPage");
-            Debug.Log($"[SidSettings] Menu ready ({SettingsPages.All.Count} pages).");
+            _list = CloneMenu(source, "ModOptionsList");
+            _page = CloneMenu(source, "ModOptionsPage");
+            Debug.Log($"[ModOptions] Menu ready ({SettingsPages.All.Count} pages).");
         }
 
         /// <summary>The named row, or else the first row with exactly <paramref name="texts"/> PugTexts.</summary>
@@ -239,7 +239,7 @@ namespace SidSettings.UI
             Transform after = scroll.Find("Go to UI settings") ?? source;
 
             GameObject go = Object.Instantiate(source.gameObject, scroll);
-            go.name = "GoToSidsMods";
+            go.name = "GoToModOptions";
             foreach (var option in go.GetComponents<RadicalMenuOption>()) Object.DestroyImmediate(option);
             foreach (var col in go.GetComponents<BoxCollider>()) Object.DestroyImmediate(col);
             var label = go.GetComponentInChildren<PugText>(true);
@@ -264,7 +264,7 @@ namespace SidSettings.UI
             int index = afterOption != null ? options.menuOptions.IndexOf(afterOption) : -1;
             if (index >= 0) options.menuOptions.Insert(index + 1, _button);
             else if (options.menuOptions.Count > 0) options.menuOptions.Add(_button);
-            Debug.Log("[SidSettings] Added \"" + ButtonLabel + "\" to Options.");
+            Debug.Log("[ModOptions] Added \"" + ButtonLabel + "\" to Options.");
         }
     }
 }

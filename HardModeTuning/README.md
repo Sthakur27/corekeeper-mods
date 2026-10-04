@@ -39,7 +39,7 @@ time a world is loaded (enemy stats are fixed when the world starts).
 ## Requirements
 
 - [CoreLib](https://mod.io/g/corekeeper/m/corelib)
-- [Sid's Settings](https://github.com/Sthakur27/corekeeper-mods/tree/main/SidSettings)
+- [Mod Options](https://github.com/Sthakur27/corekeeper-mods/tree/main/ModOptions)
 
 Client + server (`requiredOn: 3`); the host's settings count in multiplayer.
 

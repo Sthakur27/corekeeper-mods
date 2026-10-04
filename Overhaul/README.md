@@ -24,15 +24,15 @@ Included features (each is also available as its own mod on mod.io):
 - **Golden Chance**: multiplies what your golden plant (Gardening) and golden cooking (Cooking) talents give (1x, 1.5x, 2x, 3x; default 2x). No talent points = vanilla odds.
 - **Infinite Ore Boulders**: ore boulders never break; keep mining for ore forever.
 
-Settings: Settings > **Sid's Mods** (main menu or pause menu). Pick a feature to see just its options;
+Settings: Settings > **Mod Options** (main menu or pause menu). Pick a feature to see just its options;
 left/right or click the arrows to change a value, and each page has a "Reset to defaults" button
-(click twice to confirm). In multiplayer the host's values count. The menu is built in (Sid's Settings);
+(click twice to confirm). In multiplayer the host's values count. The menu is built in (Mod Options);
 Mod Settings Menu is not needed, and it is fine to keep it installed for other mods.
 
 ## Requirements
 
 - [CoreLib](https://mod.io/g/corekeeper/m/corelib)
-- [Sid's Settings](https://github.com/Sthakur27/corekeeper-mods/tree/main/SidSettings)
+- [Mod Options](https://github.com/Sthakur27/corekeeper-mods/tree/main/ModOptions)
 
 Do not install the separate versions of these mods at the same time; every feature would run twice.
 

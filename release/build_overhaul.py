@@ -17,7 +17,7 @@ NAME = "SidsOverhaul"
 GUID = "5d1a0c3e9b7f4e21a8c6d4b2f0e19a73"  # fixed forever, identifies the mod
 
 MODS = [
-    "SidSettings", "LoadoutSharing", "FiveLoadouts", "SkillXPMultiplier", "FastAutoFishing",
+    "ModOptions", "LoadoutSharing", "FiveLoadouts", "SkillXPMultiplier", "FastAutoFishing",
     "DurabilityMultiplier", "BuffDurationFloor", "FasterMushrooms", "BiggerWateringCans",
     "BetterFishingLoot", "AutoReplant", "QuickBuff", "PotionSeller", "HardModeTuning", "KeepMinions", "PetEditor", "BossBonusLoot", "EnderStash", "VehicleSpeed", "GoldenChance", "InfiniteOreBoulders",
 ]

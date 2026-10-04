@@ -1,5 +1,5 @@
 using System.Linq;
-using SidSettings;
+using ModOptions;
 using PugMod;
 using Unity.Entities;
 using UnityEngine;

@@ -3,7 +3,7 @@
 Choose an XP multiplier **per skill**: Mining, Running, Melee, Vitality, Crafting, Range,
 Gardening, Fishing, Cooking, Magic, Summoning, Explosives.
 
-- Set them in **Settings > Sid's Mods** (needs Sid's Settings). Each skill cycles through
+- Set them in **Settings > Mod Options** (needs Mod Options). Each skill cycles through
   0x, 0.25x, 0.5x, 0.75x, 1x, 1.5x, 2x, 3x, 4x, 5x, 6x, 8x, 10x, 12x, 15x, 20x, 25x, 30x, 40x, 50x, 75x, 100x.
   0x freezes a skill; 1x is vanilla. Default is 1x for every skill.
 - Or in chat: `/xp` shows all, `/xp mining 20` sets one, `/xp all 1` sets every skill.
@@ -16,7 +16,7 @@ the XP actually being earned is multiplied, fractional multipliers work, and not
 
 Install: run `..\install.bat SkillXPMultiplier` (copies into
 `CoreKeeper_Data\StreamingAssets\Mods\SkillXPMultiplier`), then restart the game.
-Requires CoreLib and Sid's Settings. **Disable the mod.io "XP Multiplier" mod**: it multiplies
+Requires CoreLib and Mod Options. **Disable the mod.io "XP Multiplier" mod**: it multiplies
 any XP it sees land, including this mod's, so both together would stack (x10 on top).
 Check `%USERPROFILE%\AppData\LocalLow\Pugstorm\Core Keeper\Player.log` for
 `Successfully compiled SkillXPMultiplier` and `[SkillXPMultiplier] Loaded. Multipliers: ...`.

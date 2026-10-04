@@ -332,9 +332,9 @@ SkipIntro 6363825. Refresh the list from Player.log (`loaded mod X from mod.io`)
 - New mod: add a row to `MODS` in workshop_publish.py (folder, title, logo, category) and a logo in release/.
 - After a game update: bump `GAME_VERSION` and rerun the script for every item.
 
-## Sid's Settings (own settings menu, 2026-10-04)
+## Mod Options (own settings menu, 2026-10-04)
 
-`SidSettings/` replaces Mod Settings Menu for all our mods (clean-room; do not copy MSM code). API:
+`ModOptions/` replaces Mod Settings Menu for all our mods (clean-room; do not copy MSM code). API:
 `SettingsPages.Create(this, title[, keyPrefix]).Hint(..).Toggle/Choice/Stepper/Slider(out Setting<T>, label, ..).Build()`;
 `Setting<T>.Value` / `.OnChanged`. Storage: CoreLib `ConfigFile("<manifest name>/config.cfg")`, section
 "Settings", key = keyPrefix + label (same files/keys MSM used, so values carried over). Features keep
@@ -345,5 +345,5 @@ Gotchas: right-click is Back in menus (so `<`/`>` halves of the value text decid
 clicks within 0.4 s of opening a page are ignored (the opening click otherwise lands on the new row);
 scroll viewport is ~20 units wide (label maxWidth 11.5, rows shifted +2.75). Compile check needs
 `config_stubs.cs` (CoreLib.Data.Configuration signatures). The standalone mods now depend on
-`SidSettings` (publish it on mod.io/Workshop before republishing them); the overhaul no longer depends
+`ModOptions` (publish it on mod.io/Workshop before republishing them); the overhaul no longer depends
 on ModSettingsMenu.

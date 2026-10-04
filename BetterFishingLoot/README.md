@@ -4,7 +4,7 @@ Rare fishing loot (Miner / Ninja / Diver / Rambo / Swamp Mage / Desert Guardian 
 necklaces, pouches, lanterns, tools and every Rare-or-better item) bites more often. Fish, ore, kelp
 and the rest of the junk are exactly as in vanilla.
 
-## Setting (Settings > Sid's Mods)
+## Setting (Settings > Mod Options)
 
 | Setting | Values | Default |
 |---|---|---|
@@ -13,7 +13,7 @@ and the rest of the junk are exactly as in vanilla.
 1x is vanilla. Changes apply instantly, also while you are in a world (both the client and server
 world re-apply on the next tick). The value is stored in this mod's CoreLib config file.
 
-Dependencies: CoreLib, Sid's Settings. `requiredOn: 3` (client + server). In multiplayer the
+Dependencies: CoreLib, Mod Options. `requiredOn: 3` (client + server). In multiplayer the
 host's/server's setting decides the actual catch; a client with a different value only mispredicts
 for a tick before the server result arrives.
 

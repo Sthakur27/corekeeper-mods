@@ -1,6 +1,6 @@
-# Sid's Settings
+# Mod Options
 
-The settings menu used by Sid's Core Keeper mods. Adds **Sid's Mods** to the game's Settings menu
+A general settings menu for Core Keeper mods. Adds **Mod Options** to the game's Settings menu
 (main menu and pause menu): a list of mods, and one page per mod with its options.
 
 - Left/right (keyboard, controller) or click the `<` / `>` side of a value to change it.
@@ -13,7 +13,7 @@ Built into Sid's Overhaul; the standalone mods depend on this one.
 ## For modders
 
 ```csharp
-using SidSettings;
+using ModOptions;
 
 private static Setting<string> _speed;
 

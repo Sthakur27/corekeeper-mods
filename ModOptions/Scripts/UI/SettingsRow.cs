@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace SidSettings.UI
+namespace ModOptions.UI
 {
     /// <summary>
     /// A row in our menus. Either a value row (label + value, left/right or click changes it) or a
@@ -131,7 +131,7 @@ namespace SidSettings.UI
         }
     }
 
-    /// <summary>The "Sid's Mods" entry in the game's Options menu.</summary>
+    /// <summary>The "Mod Options" entry in the game's Options menu.</summary>
     public class OpenSettingsButton : RadicalMenuOption
     {
         public override void OnParentMenuActivation()

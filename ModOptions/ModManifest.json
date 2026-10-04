@@ -1,0 +1,20 @@
+{
+    "guid": "b3f1d27e6a9c4e0f8d5a1c7e2f4b9a60",
+    "name": "ModOptions",
+    "displayName": "Mod Options",
+    "skipSafetyChecks": false,
+    "disableScripts": false,
+    "accessesExtraAssemblies": true,
+    "disableHarmonyPatching": false,
+    "requiredOn": 3,
+    "files": [
+        { "path": "Scripts/ModOptionsMod.cs", "guid": "" },
+        { "path": "Scripts/Setting.cs", "guid": "" },
+        { "path": "Scripts/SettingsPage.cs", "guid": "" },
+        { "path": "Scripts/UI/SettingsMenu.cs", "guid": "" },
+        { "path": "Scripts/UI/SettingsRow.cs", "guid": "" }
+    ],
+    "dependencies": [
+        { "modName": "CoreLib", "required": true }
+    ]
+}

@@ -13,7 +13,7 @@ Included features (each is also available as its own mod on mod.io):
 - **Bigger Watering Cans**: watering cans water 2x2 or 4x4.
 - **Better Fishing Loot**: rare fishing loot drops more often.
 - **Auto Replant**: harvesting a crop replants it from a seed in your inventory.
-- **Quick Buff**: one key (default B) eats or drinks one of every buff food and potion; H drinks the first healing potion. Pouches included.
+- **Quick Buff**: one key (default B) eats or drinks one of every buff food and potion; F does the same for buff food only; H drinks the first healing potion. Pouches included.
 - **Potion Seller**: the Caveling Merchant sells every potion and Recall Idols; the Slime Merchant sells every grenade and bomb.
 - **Difficulty Tuning** (was Hard Mode Tuning): separate enemy damage, health, speed and boss settings for hard mode worlds and normal worlds. Defaults: hard mode regular enemies hit for 1.5x normal damage instead of 2x; normal worlds vanilla.
 - **Keep Minions On Teleport**: summoned minions survive teleports and arrive with you.
@@ -23,6 +23,7 @@ Included features (each is also available as its own mod on mod.io):
 - **Vehicle Speed**: boat and go-kart speed multipliers (1x, 2x, 3x, 5x, 10x). Replaces the Boat Turbo mod; disable that one.
 - **Golden Chance**: multiplies what your golden plant (Gardening) and golden cooking (Cooking) talents give (1x, 1.5x, 2x, 3x; default 2x). No talent points = vanilla odds.
 - **Infinite Ore Boulders**: ore boulders never break; keep mining for ore forever.
+- **Stim Hits**: crisp metallic hit feedback: a ting when you hit, a coin chime when something you hit dies, a clang when you get hit (custom sounds supported; Off = vanilla).
 
 Settings: Settings > **Mod Options** (main menu or pause menu). Pick a feature to see just its options;
 left/right or click the arrows to change a value, and each page has a "Reset to defaults" button

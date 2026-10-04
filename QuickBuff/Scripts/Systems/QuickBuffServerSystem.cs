@@ -10,6 +10,14 @@ using UnityEngine;
 
 namespace QuickBuff.Systems
 {
+    /// <summary>What a request consumes: buff foods and potions (B), the first healing potion (H) or buff foods only (F).</summary>
+    public enum ConsumeMode
+    {
+        Buff,
+        Heal,
+        Food
+    }
+
     public struct QuickBuffResult
     {
         /// <summary>Distinct buff items found in the inventory.</summary>
@@ -63,6 +71,10 @@ namespace QuickBuff.Systems
 
         private readonly Dictionary<Entity, NetworkTick> _lastRequestTick = new Dictionary<Entity, NetworkTick>();
         private readonly Dictionary<Entity, NetworkTick> _lastHealTick = new Dictionary<Entity, NetworkTick>();
+        private readonly Dictionary<Entity, NetworkTick> _lastFoodTick = new Dictionary<Entity, NetworkTick>();
+
+        /// <summary>Buff drinks that are not meals; quick food leaves them alone.</summary>
+        private static readonly HashSet<ObjectID> NotFood = new HashSet<ObjectID> { ObjectID.CavelingCoffee };
 
         protected override void OnCreate()
         {
@@ -82,11 +94,14 @@ namespace QuickBuff.Systems
         }
 
         /// <summary>
-        /// <paramref name="healOnly"/> = quick heal: drink the first healing potion (a PotionCD item whose
-        /// consume effects include an instant health gain) in slot order, hotbar first; nothing at full health.
+        /// Buff: one of every distinct buff food / potion. Heal: the first healing potion (a PotionCD item whose
+        /// consume effects include an instant health gain); nothing at full health. Food: like Buff but only
+        /// food (no potions, no Caveling Coffee); hunger is ignored. Slot order is hotbar, bag, then pouches.
         /// </summary>
-        public QuickBuffResult Consume(Entity player, bool skipActive, float skipSeconds, bool healOnly = false)
+        public QuickBuffResult Consume(Entity player, bool skipActive, float skipSeconds, ConsumeMode mode = ConsumeMode.Buff)
         {
+            bool healOnly = mode == ConsumeMode.Heal;
+            bool foodOnly = mode == ConsumeMode.Food;
             var result = new QuickBuffResult();
             var em = EntityManager;
 
@@ -122,7 +137,7 @@ namespace QuickBuff.Systems
             if (tickRate == 0) tickRate = 60;
             NetworkTick currentTick = GetServerTick();
 
-            var lastTicks = healOnly ? _lastHealTick : _lastRequestTick;
+            var lastTicks = healOnly ? _lastHealTick : foodOnly ? _lastFoodTick : _lastRequestTick;
             if (lastTicks.TryGetValue(player, out NetworkTick lastTick) && lastTick.IsValid && currentTick.IsValid
                 && currentTick.TicksSince(lastTick) < (int)(RequestCooldownSeconds * tickRate))
             {
@@ -216,6 +231,10 @@ namespace QuickBuff.Systems
                     if (healOnly)
                     {
                         if (!isPotion || !GivesInstantHeal(conditions)) continue;
+                    }
+                    else if (foodOnly)
+                    {
+                        if (isPotion || NotFood.Contains(item.objectID) || !GivesBuff(conditions, conditionsTable)) continue;
                     }
                     else if (!GivesBuff(conditions, conditionsTable)) continue; // hunger-only food, no-effect items, bombs, seeds...
                     result.candidates++;

@@ -21,6 +21,9 @@ never wastes anything.
 - **Quick Heal** (default **H**): drinks the *first* healing potion in your main inventory, hotbar
   first, then your pouches (any potion whose effect includes an instant heal: Healing Potion, Greater Healing Potion...).
   Does nothing at full health. Also `/quickheal` (or `/qh`) in chat.
+- **Quick Food** (default **F**): Quick Buff for food only. Eats one of every buff food (no
+  potions, no Caveling Coffee) regardless of hunger, skipping foods whose buffs are all still
+  active (same skip setting as Quick Buff). Also `/quickfood` (or `/qf`).
 - A one-line summary appears in chat ("Quick Buff: consumed 3 item(s), 1 skipped (buff active)").
 - You can also type `/quickbuff` (or `/qb`) in chat: `/quickbuff [skipActive 0|1] [skipSeconds]`.
 

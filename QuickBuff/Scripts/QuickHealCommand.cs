@@ -24,7 +24,7 @@ namespace QuickBuff
                 return new CommandOutput("Quick Heal: no player entity for this connection.", CommandStatus.Error);
 
             var system = world.GetExistingSystemManaged<QuickBuffServerSystem>() ?? world.GetOrCreateSystemManaged<QuickBuffServerSystem>();
-            QuickBuffResult result = system.Consume(player, false, 0f, healOnly: true);
+            QuickBuffResult result = system.Consume(player, false, 0f, ConsumeMode.Heal);
 
             if (result.error != null)
                 return new CommandOutput($"Quick Heal: {result.error}", CommandStatus.Warning);

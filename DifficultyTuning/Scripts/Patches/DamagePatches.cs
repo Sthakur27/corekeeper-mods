@@ -1,6 +1,6 @@
 using HarmonyLib;
 
-namespace HardModeTuning.Patches
+namespace DifficultyTuning.Patches
 {
     /// <summary>Original authoring values, restored after the converter ran.</summary>
     public sealed class SavedDamage

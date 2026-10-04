@@ -1,6 +1,6 @@
 using HarmonyLib;
 
-namespace HardModeTuning.Patches
+namespace DifficultyTuning.Patches
 {
     /// <summary>Original authoring floats, restored after the converter ran.</summary>
     public sealed class SavedFloats
@@ -8,7 +8,7 @@ namespace HardModeTuning.Patches
         public float A, B, C;
     }
 
-    // Speed settings, regular enemies in hard worlds only. Same pattern as the damage patches: scale the
+    // Speed settings, regular enemies only (each world uses its own profile, hard or normal). Same pattern as the damage patches: scale the
     // authoring fields the converter copies, then restore them. Vanilla never changes these per mode.
 
     /// <summary>Movement speed (MovementSpeedCD.originalSpeed; slows, enrage etc. multiply on top).</summary>
@@ -19,9 +19,10 @@ namespace HardModeTuning.Patches
         public static void Prefix(MovementSpeedConverter __instance, MovementSpeedAuthoring authoring, out SavedFloats __state)
         {
             __state = null;
-            if (Tuning.IsOne(Tuning.MoveSpeedMultiplier) || !Tuning.IsRegularInHardWorld(__instance, authoring)) return;
+            var p = Tuning.RegularProfile(__instance, authoring);
+            if (p == null || Tuning.IsOne(p.MoveSpeed)) return;
             __state = new SavedFloats { A = authoring.speed };
-            authoring.speed *= Tuning.MoveSpeedMultiplier;
+            authoring.speed *= p.MoveSpeed;
         }
 
         [HarmonyPostfix]
@@ -40,12 +41,12 @@ namespace HardModeTuning.Patches
         public static void Prefix(RangeAttackStateConverter __instance, RangeAttackStateAuthoring authoring, out SavedFloats __state)
         {
             __state = null;
-            if (Tuning.IsOne(Tuning.ProjectileSpeedMultiplier) && Tuning.IsOne(Tuning.RechargeSpeedMultiplier)) return;
-            if (!Tuning.IsRegularInHardWorld(__instance, authoring)) return;
+            var p = Tuning.RegularProfile(__instance, authoring);
+            if (p == null || (Tuning.IsOne(p.ProjectileSpeed) && Tuning.IsOne(p.RechargeSpeed))) return;
             __state = new SavedFloats { A = authoring.speedMultiplier, B = authoring.minCooldown, C = authoring.maxCooldown };
-            authoring.speedMultiplier *= Tuning.ProjectileSpeedMultiplier;
-            authoring.minCooldown /= Tuning.RechargeSpeedMultiplier;
-            authoring.maxCooldown /= Tuning.RechargeSpeedMultiplier;
+            authoring.speedMultiplier *= p.ProjectileSpeed;
+            authoring.minCooldown /= p.RechargeSpeed;
+            authoring.maxCooldown /= p.RechargeSpeed;
         }
 
         [HarmonyPostfix]
@@ -63,10 +64,11 @@ namespace HardModeTuning.Patches
     {
         public static SavedFloats Scale(Pug.Conversion.Converter converter, UnityEngine.MonoBehaviour authoring, ref float min, ref float max)
         {
-            if (Tuning.IsOne(Tuning.RechargeSpeedMultiplier) || !Tuning.IsRegularInHardWorld(converter, authoring)) return null;
+            var p = Tuning.RegularProfile(converter, authoring);
+            if (p == null || Tuning.IsOne(p.RechargeSpeed)) return null;
             var saved = new SavedFloats { B = min, C = max };
-            min /= Tuning.RechargeSpeedMultiplier;
-            max /= Tuning.RechargeSpeedMultiplier;
+            min /= p.RechargeSpeed;
+            max /= p.RechargeSpeed;
             return saved;
         }
     }

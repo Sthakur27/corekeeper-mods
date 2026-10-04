@@ -1,7 +1,7 @@
 {
     "guid": "cae827ad76ed41ddae01bb40ea3d74fb",
-    "name": "HardModeTuning",
-    "displayName": "Hard Mode Tuning",
+    "name": "DifficultyTuning",
+    "displayName": "Difficulty Tuning",
     "skipSafetyChecks": false,
     "disableScripts": false,
     "accessesExtraAssemblies": true,
@@ -9,7 +9,7 @@
     "requiredOn": 3,
     "files": [
         {
-            "path": "Scripts/HardModeTuningMod.cs",
+            "path": "Scripts/DifficultyTuningMod.cs",
             "guid": "e8214b64fabf492089b0ff614c8d3d9a"
         },
         {

@@ -25,7 +25,7 @@ Each folder is one mod (also published separately on [mod.io](https://mod.io/g/c
 | AutoReplant | Harvesting replants from your seeds |
 | QuickBuff | One key eats/drinks every buff item |
 | PotionSeller | Caveling Merchant sells potions + Recall Idols, Slime Merchant sells explosives |
-| HardModeTuning | Hard mode: regular enemies 1.5x damage instead of 2x, bosses untouched |
+| DifficultyTuning | Enemy damage, health, speed and boss settings, separately for hard mode and normal worlds (was HardModeTuning) |
 | KeepMinions | Minions survive teleports |
 | PetEditor | Pet level, any talent in any slot, color |
 | BossBonusLoot | Bosses drop guaranteed extras |

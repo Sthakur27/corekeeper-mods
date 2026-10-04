@@ -15,7 +15,7 @@ Included features (each is also available as its own mod on mod.io):
 - **Auto Replant**: harvesting a crop replants it from a seed in your inventory.
 - **Quick Buff**: one key (default B) eats or drinks one of every buff food and potion; H drinks the first healing potion. Pouches included.
 - **Potion Seller**: the Caveling Merchant sells every potion and Recall Idols; the Slime Merchant sells every grenade and bomb.
-- **Hard Mode Tuning**: in hard mode, regular enemies hit for 1.5x normal damage instead of 2x; bosses keep full hard mode.
+- **Difficulty Tuning** (was Hard Mode Tuning): separate enemy damage, health, speed and boss settings for hard mode worlds and normal worlds. Defaults: hard mode regular enemies hit for 1.5x normal damage instead of 2x; normal worlds vanilla.
 - **Keep Minions On Teleport**: summoned minions survive teleports and arrive with you.
 - **Pet Editor**: set your pet's level and put any talent in any slot from the pet talent window.
 - **Boss Bonus Loot**: bosses drop guaranteed extras (Ghorm: larva meat; Titans: their biome gem and large pouches; Azeos: chance of Chipped Blade and Clear Gemstone; Hydras: double gems).

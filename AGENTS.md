@@ -324,6 +324,8 @@ SkipIntro 6363825. Refresh the list from Player.log (`loaded mod X from mod.io`)
 
 - Friend downloads: GitHub releases (`gh release create overhaul-<ver> release/SidsOverhaul-<ver>.zip ...`), linked from README.md via /releases/latest. Zip = release/SidsFriendPack.zip contents (SidsOverhaul folder + README.txt).
 
+- 2026-10-04: **Hard Mode Tuning renamed to Difficulty Tuning** (folder/namespace/manifest `DifficultyTuning`, v2.0.0, same Workshop item 3813043715 and mod.io id 6412464). Two profiles in `Tuning` (Hard, Normal) chosen per converter from `ConversionManager.IsServer`/`UseHardModeSettings`; overhaul pages "Difficulty Tuning (Hard)" (key prefix "Hard Mode: ", old keys kept) and "Difficulty Tuning (Normal)" ("Normal Mode: ").
+
 ## 13. Steam Workshop (2026-10-03)
 
 - Core Keeper loads Workshop items since 1.3 (`PugMod.Loader/SteamWorkshopLoader`): item folder = mod folder with `ModManifest.json` at root; a Version tag must match the game (`1.3.0`); Access Type tag `Script` (`Script (Elevated Access)` skips the safety check, `Asset` disables scripts). Tag groups: Category (Quality of Life, Overhaul, Item, Library, Other...), Version, Application Type (Client, Server), Access Type.

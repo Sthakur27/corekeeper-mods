@@ -40,7 +40,7 @@ MODS = [
     ("AutoReplant", "Auto Replant", "autoreplant_logo.png", "Quality of Life"),
     ("QuickBuff", "Quick Buff", "quickbuff_logo.png", "Quality of Life"),
     ("PotionSeller", "Potion Seller", "potionseller_logo.png", "Quality of Life"),
-    ("HardModeTuning", "Hard Mode Tuning", "hardmode_logo.png", "Other"),
+    ("DifficultyTuning", "Difficulty Tuning", "hardmode_logo.png", "Other"),
     ("KeepMinions", "Keep Minions On Teleport", "keepminions_logo.png", "Quality of Life"),
     ("PetEditor", "Pet Editor", "peteditor_logo.png", "Quality of Life"),
     ("BossBonusLoot", "Boss Bonus Loot", "bossloot_logo.png", "Item"),

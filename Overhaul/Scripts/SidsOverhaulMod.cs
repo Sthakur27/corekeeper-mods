@@ -49,7 +49,8 @@ namespace SidsOverhaul
             Page("Durability", "Durability: ", DurabilityMultiplier.DurabilityMultiplierMod.SettingsHint, DurabilityMultiplier.DurabilityMultiplierMod.RegisterSettings);
             Page("Vehicle Speed", "Vehicles: ", VehicleSpeed.VehicleSpeedMod.SettingsHint, VehicleSpeed.VehicleSpeedMod.RegisterSettings);
             Page("Golden Chance", "Golden: ", GoldenChance.GoldenChanceMod.SettingsHint, GoldenChance.GoldenChanceMod.RegisterSettings);
-            Page("Hard Mode Tuning", "Hard Mode: ", HardModeTuning.HardModeTuningMod.SettingsHint, HardModeTuning.HardModeTuningMod.RegisterSettings);
+            Page("Difficulty Tuning (Hard)", "Hard Mode: ", DifficultyTuning.DifficultyTuningMod.SettingsHint, DifficultyTuning.DifficultyTuningMod.RegisterSettings);
+            Page("Difficulty Tuning (Normal)", "Normal Mode: ", DifficultyTuning.DifficultyTuningMod.NormalSettingsHint, DifficultyTuning.DifficultyTuningMod.RegisterNormalSettings);
             Page("Skill XP Multiplier", "Skill XP: ", SkillXPMultiplier.SkillXPMultiplierMod.SettingsHint, SkillXPMultiplier.SkillXPMultiplierMod.RegisterSettings);
             Page("Stim Hits", "Stim Hits: ", StimHits.StimHitsMod.SettingsHint, StimHits.StimHitsMod.RegisterSettings);
             Debug.Log($"[{Name}] Loaded all features.");

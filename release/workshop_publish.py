@@ -48,6 +48,7 @@ MODS = [
     ("VehicleSpeed", "Vehicle Speed", "vehiclespeed_logo.png", "Quality of Life"),
     ("InfiniteOreBoulders", "Infinite Ore Boulders", "infiniteore_logo.png", "Quality of Life"),
     ("GoldenChance", "Golden Chance", "goldenchance_logo.png", "Quality of Life"),
+    ("StimHits", "Stim Hits", "stimhits_logo.png", "Other"),
 ]
 OVERHAUL = ("SidsOverhaul", "Sid's Overhaul", "overhaul_logo.png", "Overhaul")
 

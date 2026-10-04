@@ -322,3 +322,12 @@ SkipIntro 6363825. Refresh the list from Player.log (`loaded mod X from mod.io`)
 - 2026-10-02 (later): **Pet Editor** id 6421532 (clean-room replacement for Master Pet, in the overhaul), **Boss Bonus Loot** id 6421535 (1.2.0). **Infinite Ore Boulders** (own replacement for Parcew's Eternal Ore Boulders, which is hidden on mod.io) is overhaul-only so far. Overhaul 1.0.4 = 17 mods; still locked on mod.io, support request sent from sidbthakur@gmail.com. Collection still lists the hidden Eternal Ore Boulders, which blocks saving; Sid removes it.
 
 - Friend downloads: GitHub releases (`gh release create overhaul-<ver> release/SidsOverhaul-<ver>.zip ...`), linked from README.md via /releases/latest. Zip = release/SidsFriendPack.zip contents (SidsOverhaul folder + README.txt).
+
+## 13. Steam Workshop (2026-10-03)
+
+- Core Keeper loads Workshop items since 1.3 (`PugMod.Loader/SteamWorkshopLoader`): item folder = mod folder with `ModManifest.json` at root; a Version tag must match the game (`1.3.0`); Access Type tag `Script` (`Script (Elevated Access)` skips the safety check, `Asset` disables scripts). Tag groups: Category (Quality of Life, Overhaul, Item, Library, Other...), Version, Application Type (Client, Server), Access Type.
+- Publish/update everything: `python release/workshop_publish.py [--only Key1,Key2] [--changelog "..."]` (Core Keeper closed, Steam running + logged in; `--dry-run` to stage only). It runs build_overhaul, stages `build/workshop/<key>`, converts README -> BBCode, compiles `release/workshop/WorkshopUploader.cs` (game's Facepunch.Steamworks, no password) and uploads. Ids in `release/workshop_ids.json` (existing ids are updated in place).
+- Required items: CoreLib 3673516180, Mod Settings Menu 3791299348 (both on Workshop). Five Loadouts requires our Loadout Fallback item.
+- Published 2026-10-03, all public: Sid's Overhaul https://steamcommunity.com/sharedfiles/filedetails/?id=3813043354 + 19 individual mods (ids in workshop_ids.json). Not MasterPetPlus.
+- New mod: add a row to `MODS` in workshop_publish.py (folder, title, logo, category) and a logo in release/.
+- After a game update: bump `GAME_VERSION` and rerun the script for every item.

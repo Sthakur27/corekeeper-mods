@@ -8,13 +8,31 @@
     "disableHarmonyPatching": false,
     "requiredOn": 0,
     "files": [
-        { "path": "Scripts/SkillXPMultiplierMod.cs", "guid": "9e4c2f7b1d3a4c8e9f5b6a7d8c1e2f31" },
-        { "path": "Scripts/SkillXPTable.cs", "guid": "9e4c2f7b1d3a4c8e9f5b6a7d8c1e2f32" },
-        { "path": "Scripts/SkillXPCommand.cs", "guid": "9e4c2f7b1d3a4c8e9f5b6a7d8c1e2f33" },
-        { "path": "Scripts/Systems/ScaleSkillXPSystem.cs", "guid": "9e4c2f7b1d3a4c8e9f5b6a7d8c1e2f34" }
+        {
+            "path": "Scripts/SkillXPMultiplierMod.cs",
+            "guid": "9e4c2f7b1d3a4c8e9f5b6a7d8c1e2f31"
+        },
+        {
+            "path": "Scripts/SkillXPTable.cs",
+            "guid": "9e4c2f7b1d3a4c8e9f5b6a7d8c1e2f32"
+        },
+        {
+            "path": "Scripts/SkillXPCommand.cs",
+            "guid": "9e4c2f7b1d3a4c8e9f5b6a7d8c1e2f33"
+        },
+        {
+            "path": "Scripts/Systems/ScaleSkillXPSystem.cs",
+            "guid": "9e4c2f7b1d3a4c8e9f5b6a7d8c1e2f34"
+        }
     ],
     "dependencies": [
-        { "modName": "CoreLib", "required": true },
-        { "modName": "ModSettingsMenu", "required": true }
+        {
+            "modName": "CoreLib",
+            "required": true
+        },
+        {
+            "modName": "SidSettings",
+            "required": true
+        }
     ]
 }

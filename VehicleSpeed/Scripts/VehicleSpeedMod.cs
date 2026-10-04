@@ -1,5 +1,5 @@
 using System.Linq;
-using ModSettingsMenu.Settings;
+using SidSettings;
 using PugMod;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -16,8 +16,8 @@ namespace VehicleSpeed
         public const string Name = "VehicleSpeed";
         public const string Version = "1.0.0";
 
-        private static SettingHandle<string> _boat;
-        private static SettingHandle<string> _goKart;
+        private static Setting<string> _boat;
+        private static Setting<string> _goKart;
 
         public const string SettingsHint = "Boat and go-kart speed. 1x = vanilla. Applies instantly. In multiplayer everyone should use the host's values.";
 
@@ -28,18 +28,18 @@ namespace VehicleSpeed
 
         public void Init()
         {
-            if (InOverhaul(this)) return; // the overhaul registers every feature's settings in one section
-            var section = ModSettings.Section(this).Hint(SettingsHint);
-            RegisterSettings(section, "");
+            if (InOverhaul(this)) return; // the overhaul builds one page per feature
+            var section = SettingsPages.Create(this, "Vehicle Speed").Hint(SettingsHint);
+            RegisterSettings(section);
             section.Build();
         }
 
-        /// <summary>Adds this feature's options to <paramref name="section"/>, each label prefixed with <paramref name="prefix"/>.</summary>
-        public static void RegisterSettings(SectionBuilder section, string prefix)
+        /// <summary>Adds this feature's options to <paramref name="section"/>.</summary>
+        public static void RegisterSettings(SettingsPage section)
         {
             section
-                .Choice(out _boat, prefix + "Boat speed", SpeedSettings.Ladder, SpeedSettings.DefaultToken)
-                .Choice(out _goKart, prefix + "Go-kart speed", SpeedSettings.Ladder, SpeedSettings.DefaultToken);
+                .Choice(out _boat, "Boat speed", SpeedSettings.Ladder, SpeedSettings.DefaultToken)
+                .Choice(out _goKart, "Go-kart speed", SpeedSettings.Ladder, SpeedSettings.DefaultToken);
 
             Apply();
             _boat.OnChanged += _ => Apply();

@@ -1,5 +1,5 @@
 using System.Linq;
-using ModSettingsMenu.Settings;
+using SidSettings;
 using PugMod;
 using Unity.Entities;
 using UnityEngine;
@@ -28,8 +28,8 @@ namespace PotionSeller
 
         private static bool _appliedViaDatabase;
 
-        private static SettingHandle<string> _price;
-        private static SettingHandle<int> _stock;
+        private static Setting<string> _price;
+        private static Setting<int> _stock;
 
         public void EarlyInit()
         {
@@ -41,18 +41,18 @@ namespace PotionSeller
 
         public void Init()
         {
-            if (InOverhaul(this)) return; // the overhaul registers every feature's settings in one section
-            var section = ModSettings.Section(this).Hint(SettingsHint);
-            RegisterSettings(section, "");
+            if (InOverhaul(this)) return; // the overhaul builds one page per feature
+            var section = SettingsPages.Create(this, "Potion Seller").Hint(SettingsHint);
+            RegisterSettings(section);
             section.Build();
         }
 
-        /// <summary>Adds this feature's options to <paramref name="section"/>, each label prefixed with <paramref name="prefix"/>.</summary>
-        public static void RegisterSettings(SectionBuilder section, string prefix)
+        /// <summary>Adds this feature's options to <paramref name="section"/>.</summary>
+        public static void RegisterSettings(SettingsPage section)
         {
             section
-                .Choice(out _price, prefix + "Potion price multiplier", PotionSellerConfig.PriceLadder, PotionSellerConfig.DefaultPriceToken)
-                .Stepper(out _stock, prefix + "Potions per restock", PotionSellerConfig.MinStock, PotionSellerConfig.MaxStock, PotionSellerConfig.DefaultStock);
+                .Choice(out _price, "Potion price multiplier", PotionSellerConfig.PriceLadder, PotionSellerConfig.DefaultPriceToken)
+                .Stepper(out _stock, "Potions per restock", PotionSellerConfig.MinStock, PotionSellerConfig.MaxStock, PotionSellerConfig.DefaultStock);
 
 
             PotionSellerConfig.SetPriceMultiplier(PotionSellerConfig.ParseMultiplier(_price.Value));

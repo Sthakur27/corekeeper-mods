@@ -2,7 +2,7 @@ using System.Linq;
 using CoreLib;
 using CoreLib.Submodule.Command;
 using CoreLib.Submodule.ControlMapping;
-using ModSettingsMenu.Settings;
+using SidSettings;
 using PugMod;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -21,7 +21,7 @@ namespace SidsOverhaul
     public sealed class SidsOverhaulMod : IMod
     {
         public const string Name = "SidsOverhaul";
-        public const string Version = "1.0.5";
+        public const string Version = "1.1.0";
 
         public void EarlyInit()
         {
@@ -38,22 +38,27 @@ namespace SidsOverhaul
 
         public void Init()
         {
-            var section = ModSettings.Section(this)
-                .Hint("All of Sid's mods in one. Each option is prefixed with its feature. 1x / Off = vanilla. In multiplayer the host's values count.");
-
-            AutoReplant.AutoReplantMod.RegisterSettings(section, "Auto Replant: ");
-            QuickBuff.QuickBuffMod.RegisterSettings(section, "Quick Buff: ");
-            BuffDurationFloor.BuffDurationFloorMod.RegisterSettings(section, "Buff Floor: ");
-            PotionSeller.PotionSellerMod.RegisterSettings(section, "Potion Seller: ");
-            FasterMushrooms.FasterMushroomsMod.RegisterSettings(section, "Mushrooms: ");
-            BetterFishingLoot.BetterFishingLootMod.RegisterSettings(section, "Fishing Loot: ");
-            DurabilityMultiplier.DurabilityMultiplierMod.RegisterSettings(section, "Durability: ");
-            VehicleSpeed.VehicleSpeedMod.RegisterSettings(section, "Vehicles: ");
-            HardModeTuning.HardModeTuningMod.RegisterSettings(section, "Hard Mode: ");
-            SkillXPMultiplier.SkillXPMultiplierMod.RegisterSettings(section, "Skill XP: ");
-
-            section.Build();
+            // One page per feature in the Sid's Mods menu. Key prefixes keep the values saved by
+            // earlier versions (one long section with prefixed labels) in SidsOverhaul/config.cfg.
+            Page("Auto Replant", "Auto Replant: ", AutoReplant.AutoReplantMod.SettingsHint, AutoReplant.AutoReplantMod.RegisterSettings);
+            Page("Quick Buff", "Quick Buff: ", QuickBuff.QuickBuffMod.SettingsHint, QuickBuff.QuickBuffMod.RegisterSettings);
+            Page("Buff Duration Floor", "Buff Floor: ", BuffDurationFloor.BuffDurationFloorMod.SettingsHint, BuffDurationFloor.BuffDurationFloorMod.RegisterSettings);
+            Page("Potion Seller", "Potion Seller: ", PotionSeller.PotionSellerMod.SettingsHint, PotionSeller.PotionSellerMod.RegisterSettings);
+            Page("Faster Mushrooms", "Mushrooms: ", FasterMushrooms.FasterMushroomsMod.SettingsHint, FasterMushrooms.FasterMushroomsMod.RegisterSettings);
+            Page("Better Fishing Loot", "Fishing Loot: ", BetterFishingLoot.BetterFishingLootMod.SettingsHint, BetterFishingLoot.BetterFishingLootMod.RegisterSettings);
+            Page("Durability", "Durability: ", DurabilityMultiplier.DurabilityMultiplierMod.SettingsHint, DurabilityMultiplier.DurabilityMultiplierMod.RegisterSettings);
+            Page("Vehicle Speed", "Vehicles: ", VehicleSpeed.VehicleSpeedMod.SettingsHint, VehicleSpeed.VehicleSpeedMod.RegisterSettings);
+            Page("Golden Chance", "Golden: ", GoldenChance.GoldenChanceMod.SettingsHint, GoldenChance.GoldenChanceMod.RegisterSettings);
+            Page("Hard Mode Tuning", "Hard Mode: ", HardModeTuning.HardModeTuningMod.SettingsHint, HardModeTuning.HardModeTuningMod.RegisterSettings);
+            Page("Skill XP Multiplier", "Skill XP: ", SkillXPMultiplier.SkillXPMultiplierMod.SettingsHint, SkillXPMultiplier.SkillXPMultiplierMod.RegisterSettings);
             Debug.Log($"[{Name}] Loaded all features.");
+        }
+
+        private void Page(string title, string keyPrefix, string hint, System.Action<SettingsPage> register)
+        {
+            var page = SettingsPages.Create(this, title, keyPrefix).Hint(hint);
+            register(page);
+            page.Build();
         }
 
         public void Shutdown() { }

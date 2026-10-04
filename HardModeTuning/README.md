@@ -15,7 +15,7 @@ All of that applies to bosses and regular enemies alike.
 ## What this mod changes
 
 Only regular enemies in hard mode worlds. By default only their damage changes (2x down to
-1.5x); their health already matches vanilla hard at 1.5x, and you can lower it. Settings are in the Mod Settings menu, section "Hard Mode Tuning":
+1.5x); their health already matches vanilla hard at 1.5x, and you can lower it. Settings are in Settings > Sid\'s Mods > "Hard Mode Tuning":
 
 | Setting | Choices | Default |
 |---|---|---|
@@ -39,7 +39,7 @@ time a world is loaded (enemy stats are fixed when the world starts).
 ## Requirements
 
 - [CoreLib](https://mod.io/g/corekeeper/m/corelib)
-- [Mod Settings Menu](https://mod.io/g/corekeeper/m/mod-settings-menu)
+- [Sid's Settings](https://github.com/Sthakur27/corekeeper-mods/tree/main/SidSettings)
 
 Client + server (`requiredOn: 3`); the host's settings count in multiplayer.
 

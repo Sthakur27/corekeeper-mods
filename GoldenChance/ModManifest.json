@@ -1,20 +1,20 @@
 {
-    "guid": "4773d2d852474d7583b130c407bfc9fa",
-    "name": "AutoReplant",
-    "displayName": "Auto Replant",
+    "guid": "7f2b9d4e1c6a48b3a5e0d9c8b7a61f25",
+    "name": "GoldenChance",
+    "displayName": "Golden Chance",
     "skipSafetyChecks": false,
     "disableScripts": false,
     "accessesExtraAssemblies": true,
-    "disableHarmonyPatching": true,
+    "disableHarmonyPatching": false,
     "requiredOn": 3,
     "files": [
         {
-            "path": "Scripts/AutoReplantMod.cs",
-            "guid": ""
+            "path": "Scripts/GoldenChanceMod.cs",
+            "guid": "7f2b9d4e1c6a48b3a5e0d9c8b7a61f26"
         },
         {
-            "path": "Scripts/Systems/AutoReplantSystem.cs",
-            "guid": ""
+            "path": "Scripts/Patches/TalentValuePatch.cs",
+            "guid": "7f2b9d4e1c6a48b3a5e0d9c8b7a61f27"
         }
     ],
     "dependencies": [

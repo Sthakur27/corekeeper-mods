@@ -5,7 +5,7 @@ using CoreLib;
 using CoreLib.Submodule.Command;
 using CoreLib.Submodule.Command.Data;
 using CoreLib.Submodule.ControlMapping;
-using ModSettingsMenu.Settings;
+using SidSettings;
 using PugMod;
 using Rewired;
 using UnityEngine;
@@ -44,8 +44,8 @@ namespace QuickBuff
         public const bool DefaultSkipActive = true;
         public const float DefaultSkipSeconds = 30f;
 
-        private static SettingHandle<bool> _skipActive;
-        private static SettingHandle<float> _skipSeconds;
+        private static Setting<bool> _skipActive;
+        private static Setting<float> _skipSeconds;
 
         private static Player _rewiredPlayer;
         private float _nextPressAllowed;
@@ -104,18 +104,18 @@ namespace QuickBuff
 
         public void Init()
         {
-            if (InOverhaul(this)) return; // the overhaul registers every feature's settings in one section
-            var section = ModSettings.Section(this).Hint(SettingsHint);
-            RegisterSettings(section, "");
+            if (InOverhaul(this)) return; // the overhaul builds one page per feature
+            var section = SettingsPages.Create(this, "Quick Buff").Hint(SettingsHint);
+            RegisterSettings(section);
             section.Build();
         }
 
-        /// <summary>Adds this feature's options to <paramref name="section"/>, each label prefixed with <paramref name="prefix"/>.</summary>
-        public static void RegisterSettings(SectionBuilder section, string prefix)
+        /// <summary>Adds this feature's options to <paramref name="section"/>.</summary>
+        public static void RegisterSettings(SettingsPage section)
         {
             section
-                .Toggle(out _skipActive, prefix + "Skip buffs that are still active", DefaultSkipActive)
-                .Slider(out _skipSeconds, prefix + "Still active means more than (seconds)", 0f, 300f, DefaultSkipSeconds, 5f, SliderDisplay.Number);
+                .Toggle(out _skipActive, "Skip buffs that are still active", DefaultSkipActive)
+                .Slider(out _skipSeconds, "Still active means more than (seconds)", 0f, 300f, DefaultSkipSeconds, 5f);
 
 
             Debug.Log($"[{Name}] Loaded. Skip active buffs: {SkipActive} (threshold {SkipSeconds:0}s). Key: {UseKeyBind}.");

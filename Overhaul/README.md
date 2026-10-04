@@ -21,15 +21,18 @@ Included features (each is also available as its own mod on mod.io):
 - **Boss Bonus Loot**: bosses drop guaranteed extras (Ghorm: larva meat; Titans: their biome gem and large pouches; Azeos: chance of Chipped Blade and Clear Gemstone; Hydras: double gems).
 - **Ender Stash**: a personal 40-slot stash per character, opened from any chest (purple button under Sort); same stash in every chest and world, never dropped on death.
 - **Vehicle Speed**: boat and go-kart speed multipliers (1x, 2x, 3x, 5x, 10x). Replaces the Boat Turbo mod; disable that one.
+- **Golden Chance**: multiplies what your golden plant (Gardening) and golden cooking (Cooking) talents give (1x, 1.5x, 2x, 3x; default 2x). No talent points = vanilla odds.
 - **Infinite Ore Boulders**: ore boulders never break; keep mining for ore forever.
 
-All options are in the Mod Settings menu under "Sid's Overhaul", each prefixed with its feature
-(for example "Mushrooms: Wild mushroom respawn"). In multiplayer the host's values count.
+Settings: Settings > **Sid's Mods** (main menu or pause menu). Pick a feature to see just its options;
+left/right or click the arrows to change a value, and each page has a "Reset to defaults" button
+(click twice to confirm). In multiplayer the host's values count. The menu is built in (Sid's Settings);
+Mod Settings Menu is not needed, and it is fine to keep it installed for other mods.
 
 ## Requirements
 
 - [CoreLib](https://mod.io/g/corekeeper/m/corelib)
-- [Mod Settings Menu](https://mod.io/g/corekeeper/m/mod-settings-menu)
+- [Sid's Settings](https://github.com/Sthakur27/corekeeper-mods/tree/main/SidSettings)
 
 Do not install the separate versions of these mods at the same time; every feature would run twice.
 

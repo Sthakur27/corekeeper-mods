@@ -8,12 +8,27 @@
     "disableHarmonyPatching": false,
     "requiredOn": 3,
     "files": [
-        { "path": "Scripts/VehicleSpeedMod.cs", "guid": "c3e81f4a6b2d4975a0d7e5f19b8c2a65" },
-        { "path": "Scripts/SpeedSettings.cs", "guid": "c3e81f4a6b2d4975a0d7e5f19b8c2a66" },
-        { "path": "Scripts/Systems/VehicleSpeedSystem.cs", "guid": "c3e81f4a6b2d4975a0d7e5f19b8c2a67" }
+        {
+            "path": "Scripts/VehicleSpeedMod.cs",
+            "guid": "c3e81f4a6b2d4975a0d7e5f19b8c2a65"
+        },
+        {
+            "path": "Scripts/SpeedSettings.cs",
+            "guid": "c3e81f4a6b2d4975a0d7e5f19b8c2a66"
+        },
+        {
+            "path": "Scripts/Systems/VehicleSpeedSystem.cs",
+            "guid": "c3e81f4a6b2d4975a0d7e5f19b8c2a67"
+        }
     ],
     "dependencies": [
-        { "modName": "CoreLib", "required": true },
-        { "modName": "ModSettingsMenu", "required": true }
+        {
+            "modName": "CoreLib",
+            "required": true
+        },
+        {
+            "modName": "SidSettings",
+            "required": true
+        }
     ]
 }

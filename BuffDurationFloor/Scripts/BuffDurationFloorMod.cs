@@ -1,5 +1,5 @@
 using System.Linq;
-using ModSettingsMenu.Settings;
+using SidSettings;
 using PugMod;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -28,8 +28,8 @@ namespace BuffDurationFloor
         public const string Name = "BuffDurationFloor";
         public const string Version = "1.2.0";
 
-        private static SettingHandle<string> _buffFloor;
-        private static SettingHandle<string> _healingFloor;
+        private static Setting<string> _buffFloor;
+        private static Setting<string> _healingFloor;
 
         public void EarlyInit()
         {
@@ -40,18 +40,18 @@ namespace BuffDurationFloor
 
         public void Init()
         {
-            if (InOverhaul(this)) return; // the overhaul registers every feature's settings in one section
-            var section = ModSettings.Section(this).Hint(SettingsHint);
-            RegisterSettings(section, "");
+            if (InOverhaul(this)) return; // the overhaul builds one page per feature
+            var section = SettingsPages.Create(this, "Buff Duration Floor").Hint(SettingsHint);
+            RegisterSettings(section);
             section.Build();
         }
 
-        /// <summary>Adds this feature's options to <paramref name="section"/>, each label prefixed with <paramref name="prefix"/>.</summary>
-        public static void RegisterSettings(SectionBuilder section, string prefix)
+        /// <summary>Adds this feature's options to <paramref name="section"/>.</summary>
+        public static void RegisterSettings(SettingsPage section)
         {
             section
-                .Choice(out _buffFloor, prefix + "Minimum buff duration", FloorSettings.Ladder, FloorSettings.DefaultBuffToken)
-                .Choice(out _healingFloor, prefix + "Minimum healing duration", FloorSettings.Ladder, FloorSettings.DefaultHealingToken);
+                .Choice(out _buffFloor, "Minimum buff duration", FloorSettings.Ladder, FloorSettings.DefaultBuffToken)
+                .Choice(out _healingFloor, "Minimum healing duration", FloorSettings.Ladder, FloorSettings.DefaultHealingToken);
 
 
             FloorSettings.SetBuffFloor(FloorSettings.Parse(_buffFloor.Value, FloorSettings.DefaultBuffSeconds));

@@ -5,7 +5,7 @@
 **[Download the latest Sid's Overhaul](https://github.com/Sthakur27/corekeeper-mods/releases/latest)**: one zip with all of
 Sid's mods. Install steps are on the release page and in the zip's `README.txt`. In short, copy the
 `SidsOverhaul` folder into `Core Keeper/CoreKeeper_Data/StreamingAssets/Mods/`, then subscribe to
-**CoreLib** and **Mod Settings Menu** in the in-game mod browser.
+**CoreLib** in the in-game mod browser. Settings are under Settings > Sid's Mods.
 
 ## The mods
 
@@ -30,6 +30,7 @@ Each folder is one mod (also published separately on [mod.io](https://mod.io/g/c
 | PetEditor | Pet level, any talent in any slot, color |
 | BossBonusLoot | Bosses drop guaranteed extras |
 | EnderStash | Personal 40-slot stash from any chest, same in every world, kept on death |
+| SidSettings | The Sid's Mods settings menu (library used by the other mods; built into the overhaul) |
 | InfiniteOreBoulders | Ore boulders never break |
 
 `Overhaul/` + `release/build_overhaul.py` combine them into Sid's Overhaul. Notes for modders are in

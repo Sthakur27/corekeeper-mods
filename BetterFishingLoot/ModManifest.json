@@ -8,13 +8,31 @@
     "disableHarmonyPatching": false,
     "requiredOn": 3,
     "files": [
-        { "path": "Scripts/BetterFishingLootMod.cs", "guid": "b7f1c3e9a2d54f6081c9e2a7d4b5f611" },
-        { "path": "Scripts/FishingLootConfig.cs", "guid": "b7f1c3e9a2d54f6081c9e2a7d4b5f612" },
-        { "path": "Scripts/FishingLootPatcher.cs", "guid": "b7f1c3e9a2d54f6081c9e2a7d4b5f613" },
-        { "path": "Scripts/Systems/FishingLootWeightSystem.cs", "guid": "b7f1c3e9a2d54f6081c9e2a7d4b5f614" }
+        {
+            "path": "Scripts/BetterFishingLootMod.cs",
+            "guid": "b7f1c3e9a2d54f6081c9e2a7d4b5f611"
+        },
+        {
+            "path": "Scripts/FishingLootConfig.cs",
+            "guid": "b7f1c3e9a2d54f6081c9e2a7d4b5f612"
+        },
+        {
+            "path": "Scripts/FishingLootPatcher.cs",
+            "guid": "b7f1c3e9a2d54f6081c9e2a7d4b5f613"
+        },
+        {
+            "path": "Scripts/Systems/FishingLootWeightSystem.cs",
+            "guid": "b7f1c3e9a2d54f6081c9e2a7d4b5f614"
+        }
     ],
     "dependencies": [
-        { "modName": "CoreLib", "required": true },
-        { "modName": "ModSettingsMenu", "required": true }
+        {
+            "modName": "CoreLib",
+            "required": true
+        },
+        {
+            "modName": "SidSettings",
+            "required": true
+        }
     ]
 }

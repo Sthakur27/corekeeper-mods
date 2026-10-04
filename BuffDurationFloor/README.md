@@ -7,7 +7,7 @@ changed, and debuffs are never extended.
 
 ## Settings
 
-Both are in **Mod Settings** (needs the Mod Settings Menu mod) and use the same ladder:
+Both are in **Settings > Sid's Mods** (needs Sid's Settings) and use the same ladder:
 **Off**, 30 s, 45 s, 1:00, 1:30, 2:00, 3:00, 5:00, 10:00. **Off** means that group is left
 exactly at vanilla.
 

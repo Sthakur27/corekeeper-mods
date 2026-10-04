@@ -1,5 +1,5 @@
 using System.Linq;
-using ModSettingsMenu.Settings;
+using SidSettings;
 using PugMod;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -24,8 +24,8 @@ namespace FasterMushrooms
         public const string Name = "FasterMushrooms";
         public const string Version = "1.1.0";
 
-        private static SettingHandle<string> _speed;
-        private static SettingHandle<string> _respawn;
+        private static Setting<string> _speed;
+        private static Setting<string> _respawn;
 
         public void EarlyInit()
         {
@@ -36,18 +36,18 @@ namespace FasterMushrooms
 
         public void Init()
         {
-            if (InOverhaul(this)) return; // the overhaul registers every feature's settings in one section
-            var section = ModSettings.Section(this).Hint(SettingsHint);
-            RegisterSettings(section, "");
+            if (InOverhaul(this)) return; // the overhaul builds one page per feature
+            var section = SettingsPages.Create(this, "Faster Mushrooms").Hint(SettingsHint);
+            RegisterSettings(section);
             section.Build();
         }
 
-        /// <summary>Adds this feature's options to <paramref name="section"/>, each label prefixed with <paramref name="prefix"/>.</summary>
-        public static void RegisterSettings(SectionBuilder section, string prefix)
+        /// <summary>Adds this feature's options to <paramref name="section"/>.</summary>
+        public static void RegisterSettings(SettingsPage section)
         {
             section
-                .Choice(out _speed, prefix + "Mushroom growth speed", MushroomSpeed.Ladder, MushroomSpeed.DefaultToken)
-                .Choice(out _respawn, prefix + "Wild mushroom respawn", MushroomRespawn.Ladder, MushroomRespawn.DefaultToken);
+                .Choice(out _speed, "Mushroom growth speed", MushroomSpeed.Ladder, MushroomSpeed.DefaultToken)
+                .Choice(out _respawn, "Wild mushroom respawn", MushroomRespawn.Ladder, MushroomRespawn.DefaultToken);
 
 
             MushroomSpeed.Set(_speed.Value);

@@ -17,9 +17,9 @@ NAME = "SidsOverhaul"
 GUID = "5d1a0c3e9b7f4e21a8c6d4b2f0e19a73"  # fixed forever, identifies the mod
 
 MODS = [
-    "LoadoutSharing", "FiveLoadouts", "SkillXPMultiplier", "FastAutoFishing",
+    "SidSettings", "LoadoutSharing", "FiveLoadouts", "SkillXPMultiplier", "FastAutoFishing",
     "DurabilityMultiplier", "BuffDurationFloor", "FasterMushrooms", "BiggerWateringCans",
-    "BetterFishingLoot", "AutoReplant", "QuickBuff", "PotionSeller", "HardModeTuning", "KeepMinions", "PetEditor", "BossBonusLoot", "EnderStash", "VehicleSpeed", "InfiniteOreBoulders",
+    "BetterFishingLoot", "AutoReplant", "QuickBuff", "PotionSeller", "HardModeTuning", "KeepMinions", "PetEditor", "BossBonusLoot", "EnderStash", "VehicleSpeed", "GoldenChance", "InfiniteOreBoulders",
 ]
 # Bundles whose MonoScripts bind to the old assembly name.
 # MasterPetPlus is NOT included: it is a fork of Parcew's Master Pet and mod.io took it down;
@@ -96,7 +96,7 @@ def main():
         "skipSafetyChecks": False, "disableScripts": False, "accessesExtraAssemblies": True,
         "disableHarmonyPatching": False, "requiredOn": 3,
         "files": files,
-        "dependencies": [{"modName": "CoreLib", "required": True}, {"modName": "ModSettingsMenu", "required": True}],
+        "dependencies": [{"modName": "CoreLib", "required": True}],
     }
     json.dump(manifest, open(os.path.join(OUT, "ModManifest.json"), "w", encoding="utf-8"), indent=4)
     print(f"built {OUT}: {len(files)} files from {len(MODS)} mods")

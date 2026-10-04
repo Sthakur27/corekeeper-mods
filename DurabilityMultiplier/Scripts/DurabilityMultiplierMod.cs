@@ -1,5 +1,5 @@
 using System.Linq;
-using ModSettingsMenu.Settings;
+using SidSettings;
 using PugMod;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -20,7 +20,7 @@ namespace DurabilityMultiplier
         public const string Name = "DurabilityMultiplier";
         public const string Version = "1.0.0";
 
-        private static SettingHandle<string> _rate;
+        private static Setting<string> _rate;
 
         public void EarlyInit()
         {
@@ -31,17 +31,17 @@ namespace DurabilityMultiplier
 
         public void Init()
         {
-            if (InOverhaul(this)) return; // the overhaul registers every feature's settings in one section
-            var section = ModSettings.Section(this).Hint(SettingsHint);
-            RegisterSettings(section, "");
+            if (InOverhaul(this)) return; // the overhaul builds one page per feature
+            var section = SettingsPages.Create(this, "Durability Multiplier").Hint(SettingsHint);
+            RegisterSettings(section);
             section.Build();
         }
 
-        /// <summary>Adds this feature's options to <paramref name="section"/>, each label prefixed with <paramref name="prefix"/>.</summary>
-        public static void RegisterSettings(SectionBuilder section, string prefix)
+        /// <summary>Adds this feature's options to <paramref name="section"/>.</summary>
+        public static void RegisterSettings(SettingsPage section)
         {
             section
-                .Choice(out _rate, prefix + "Durability loss rate", DurabilityRate.Ladder, DurabilityRate.DefaultToken);
+                .Choice(out _rate, "Durability loss rate", DurabilityRate.Ladder, DurabilityRate.DefaultToken);
 
 
             DurabilityRate.Set(DurabilityRate.Parse(_rate.Value));

@@ -15,7 +15,7 @@ configurable chance to come up **golden**.
   plant is finally destroyed, since they are harvested by damage.
 - Multiplayer safe: runs in the server world; the harvesting player's own inventory is used.
 
-## Settings (Mod Settings Menu)
+## Settings (Settings > Sid's Mods)
 
 | Setting | Default | Meaning |
 |---|---|---|
@@ -55,7 +55,7 @@ Server system `AutoReplantSystem` (managed `PugSimulationSystemBase`, no Harmony
 - Chained harvests are handled per tile; each replant uses exactly one seed.
 
 Install: run `..\install.bat AutoReplant` (copies into `CoreKeeper_Data\StreamingAssets\Mods\AutoReplant`),
-restart the game. Requires CoreLib and ModSettingsMenu. Check
+restart the game. Requires CoreLib and Sid's Settings. Check
 `%USERPROFILE%\AppData\LocalLow\Pugstorm\Core Keeper\Player.log` for `Successfully compiled AutoReplant`,
 `[AutoReplant] Loaded.` and `[AutoReplant] seed map built: N plants.`
 

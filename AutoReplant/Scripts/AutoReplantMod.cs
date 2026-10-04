@@ -1,5 +1,5 @@
 using System.Linq;
-using ModSettingsMenu.Settings;
+using SidSettings;
 using PugMod;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -24,10 +24,10 @@ namespace AutoReplant
         public const int DefaultGoldenChancePercent = 5;
         public const bool DefaultUseInventorySeeds = true;
 
-        private static SettingHandle<bool> _enabled;
-        private static SettingHandle<bool> _goldenOverride;
-        private static SettingHandle<int> _goldenChance;
-        private static SettingHandle<bool> _useInventorySeeds;
+        private static Setting<bool> _enabled;
+        private static Setting<bool> _goldenOverride;
+        private static Setting<int> _goldenChance;
+        private static Setting<bool> _useInventorySeeds;
 
         /// <summary>Master switch. Off = vanilla behaviour.</summary>
         public static bool Enabled => _enabled != null ? _enabled.Value : DefaultEnabled;
@@ -60,20 +60,20 @@ namespace AutoReplant
 
         public void Init()
         {
-            if (InOverhaul(this)) return; // the overhaul registers every feature's settings in one section
-            var section = ModSettings.Section(this).Hint(SettingsHint);
-            RegisterSettings(section, "");
+            if (InOverhaul(this)) return; // the overhaul builds one page per feature
+            var section = SettingsPages.Create(this, "Auto Replant").Hint(SettingsHint);
+            RegisterSettings(section);
             section.Build();
         }
 
-        /// <summary>Adds this feature's options to <paramref name="section"/>, each label prefixed with <paramref name="prefix"/>.</summary>
-        public static void RegisterSettings(SectionBuilder section, string prefix)
+        /// <summary>Adds this feature's options to <paramref name="section"/>.</summary>
+        public static void RegisterSettings(SettingsPage section)
         {
             section
-                .Toggle(out _enabled, prefix + "Auto replant", DefaultEnabled)
-                .Toggle(out _goldenOverride, prefix + "Override golden chance", false)
-                .Stepper(out _goldenChance, prefix + "Golden plant chance (%)", 0, 100, DefaultGoldenChancePercent)
-                .Toggle(out _useInventorySeeds, prefix + "Use seeds from inventory", DefaultUseInventorySeeds);
+                .Toggle(out _enabled, "Auto replant", DefaultEnabled)
+                .Toggle(out _goldenOverride, "Override golden chance", false)
+                .Stepper(out _goldenChance, "Golden plant chance (%)", 0, 100, DefaultGoldenChancePercent)
+                .Toggle(out _useInventorySeeds, "Use seeds from inventory", DefaultUseInventorySeeds);
 
 
             Debug.Log($"[{Name}] Loaded. enabled={Enabled} goldenOverride={GoldenOverride} golden={GoldenChancePercent}% useInventorySeeds={UseInventorySeeds}");

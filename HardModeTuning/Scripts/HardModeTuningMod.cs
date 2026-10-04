@@ -1,5 +1,5 @@
 using System.Linq;
-using ModSettingsMenu.Settings;
+using SidSettings;
 using PugMod;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -22,13 +22,13 @@ namespace HardModeTuning
         public const string Name = "HardModeTuning";
         public const string Version = "1.1.0";
 
-        private static SettingHandle<string> _damage;
-        private static SettingHandle<string> _health;
-        private static SettingHandle<string> _moveSpeed;
-        private static SettingHandle<string> _projectileSpeed;
-        private static SettingHandle<string> _rechargeSpeed;
-        private static SettingHandle<string> _bossDamage;
-        private static SettingHandle<string> _bossHealth;
+        private static Setting<string> _damage;
+        private static Setting<string> _health;
+        private static Setting<string> _moveSpeed;
+        private static Setting<string> _projectileSpeed;
+        private static Setting<string> _rechargeSpeed;
+        private static Setting<string> _bossDamage;
+        private static Setting<string> _bossHealth;
 
         public void EarlyInit()
         {
@@ -39,23 +39,23 @@ namespace HardModeTuning
 
         public void Init()
         {
-            if (InOverhaul(this)) return; // the overhaul registers every feature's settings in one section
-            var section = ModSettings.Section(this).Hint(SettingsHint);
-            RegisterSettings(section, "");
+            if (InOverhaul(this)) return; // the overhaul builds one page per feature
+            var section = SettingsPages.Create(this, "Hard Mode Tuning").Hint(SettingsHint);
+            RegisterSettings(section);
             section.Build();
         }
 
-        /// <summary>Adds this feature's options to <paramref name="section"/>, each label prefixed with <paramref name="prefix"/>.</summary>
-        public static void RegisterSettings(SectionBuilder section, string prefix)
+        /// <summary>Adds this feature's options to <paramref name="section"/>.</summary>
+        public static void RegisterSettings(SettingsPage section)
         {
             section
-                .Choice(out _damage, prefix + "Regular enemy damage", Tuning.Ladder, Tuning.DefaultToken)
-                .Choice(out _health, prefix + "Regular enemy health", Tuning.Ladder, Tuning.DefaultToken)
-                .Choice(out _moveSpeed, prefix + "Regular enemy move speed", Tuning.SpeedLadder, Tuning.FineDefault)
-                .Choice(out _projectileSpeed, prefix + "Regular enemy projectile speed", Tuning.SpeedLadder, Tuning.FineDefault)
-                .Choice(out _rechargeSpeed, prefix + "Regular enemy recharge speed", Tuning.SpeedLadder, Tuning.FineDefault)
-                .Choice(out _bossDamage, prefix + "Boss damage (vs vanilla hard)", Tuning.FineLadder, Tuning.FineDefault)
-                .Choice(out _bossHealth, prefix + "Boss health (vs vanilla hard)", Tuning.FineLadder, Tuning.FineDefault);
+                .Choice(out _damage, "Regular enemy damage", Tuning.Ladder, Tuning.DefaultToken)
+                .Choice(out _health, "Regular enemy health", Tuning.Ladder, Tuning.DefaultToken)
+                .Choice(out _moveSpeed, "Regular enemy move speed", Tuning.SpeedLadder, Tuning.FineDefault)
+                .Choice(out _projectileSpeed, "Regular enemy projectile speed", Tuning.SpeedLadder, Tuning.FineDefault)
+                .Choice(out _rechargeSpeed, "Regular enemy recharge speed", Tuning.SpeedLadder, Tuning.FineDefault)
+                .Choice(out _bossDamage, "Boss damage (vs vanilla hard)", Tuning.FineLadder, Tuning.FineDefault)
+                .Choice(out _bossHealth, "Boss health (vs vanilla hard)", Tuning.FineLadder, Tuning.FineDefault);
 
             Apply();
             foreach (var handle in new[] { _damage, _health, _moveSpeed, _projectileSpeed, _rechargeSpeed, _bossDamage, _bossHealth })

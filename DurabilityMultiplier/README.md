@@ -2,7 +2,7 @@
 
 Tools, weapons and armor lose durability at a fraction of the vanilla rate.
 
-- Set the rate in **Mod Settings** (needs the Mod Settings Menu mod): **Durability loss rate**
+- Set the rate in **Settings > Sid's Mods** (needs Sid's Settings): **Durability loss rate**
   cycles through 0x, 0.1x, 0.25x, 0.5x, 0.75x, 1x. 0x = equipment never wears out, 1x = vanilla.
   **Default is 0.5x** (gear lasts twice as long).
 - Changes apply instantly and are saved by CoreLib (`DurabilityMultiplier/config.cfg`).
@@ -43,6 +43,6 @@ nothing at all (byte-for-byte vanilla, no random numbers consumed).
 
 Run `..\install.bat DurabilityMultiplier` (copies into
 `CoreKeeper_Data\StreamingAssets\Mods\DurabilityMultiplier`), then restart the game.
-Requires CoreLib and ModSettingsMenu. Check
+Requires CoreLib and Sid's Settings. Check
 `%USERPROFILE%\AppData\LocalLow\Pugstorm\Core Keeper\Player.log` for
 `Successfully compiled DurabilityMultiplier` and `[DurabilityMultiplier] Loaded. Durability loss rate: ...`.

@@ -1,7 +1,7 @@
 using System.Linq;
 using CoreLib;
 using CoreLib.Submodule.Command;
-using ModSettingsMenu.Settings;
+using SidSettings;
 using PugMod;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -23,7 +23,7 @@ namespace SkillXPMultiplier
         public const string Name = "SkillXPMultiplier";
         public const string Version = "1.0.0";
 
-        private static readonly SettingHandle<string>[] _handles = new SettingHandle<string>[SkillXPTable.SkillCount];
+        private static readonly Setting<string>[] _handles = new Setting<string>[SkillXPTable.SkillCount];
         private LoadedMod _modInfo;
 
         public void EarlyInit()
@@ -47,18 +47,18 @@ namespace SkillXPMultiplier
 
         public void Init()
         {
-            if (InOverhaul(this)) return; // the overhaul registers every feature's settings in one section
-            var section = ModSettings.Section(this).Hint(SettingsHint);
-            RegisterSettings(section, "");
+            if (InOverhaul(this)) return; // the overhaul builds one page per feature
+            var section = SettingsPages.Create(this, "Skill XP Multiplier").Hint(SettingsHint);
+            RegisterSettings(section);
             section.Build();
         }
 
-        /// <summary>Adds one option per skill to <paramref name="section"/>, each label prefixed with <paramref name="prefix"/>.</summary>
-        public static void RegisterSettings(SectionBuilder section, string prefix)
+        /// <summary>Adds one option per skill to <paramref name="section"/>.</summary>
+        public static void RegisterSettings(SettingsPage section)
         {
             for (int i = 0; i < SkillXPTable.SkillCount; i++)
             {
-                section.Choice(out _handles[i], prefix + SkillXPTable.SkillNames[i], SkillXPTable.Ladder, SkillXPTable.DefaultToken);
+                section.Choice(out _handles[i], SkillXPTable.SkillNames[i], SkillXPTable.Ladder, SkillXPTable.DefaultToken);
                 int index = i;
                 SkillXPTable.Set(index, SkillXPTable.Parse(_handles[index].Value));
                 _handles[index].OnChanged += token => SkillXPTable.Set(index, SkillXPTable.Parse(token));

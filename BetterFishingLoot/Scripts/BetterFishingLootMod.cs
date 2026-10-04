@@ -1,5 +1,5 @@
 using System.Linq;
-using ModSettingsMenu.Settings;
+using SidSettings;
 using PugMod;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -22,7 +22,7 @@ namespace BetterFishingLoot
         public const string Name = "BetterFishingLoot";
         public const string Version = "1.0.0";
 
-        private static SettingHandle<string> _handle;
+        private static Setting<string> _handle;
 
         public void EarlyInit()
         {
@@ -33,17 +33,17 @@ namespace BetterFishingLoot
 
         public void Init()
         {
-            if (InOverhaul(this)) return; // the overhaul registers every feature's settings in one section
-            var section = ModSettings.Section(this).Hint(SettingsHint);
-            RegisterSettings(section, "");
+            if (InOverhaul(this)) return; // the overhaul builds one page per feature
+            var section = SettingsPages.Create(this, "Better Fishing Loot").Hint(SettingsHint);
+            RegisterSettings(section);
             section.Build();
         }
 
-        /// <summary>Adds this feature's options to <paramref name="section"/>, each label prefixed with <paramref name="prefix"/>.</summary>
-        public static void RegisterSettings(SectionBuilder section, string prefix)
+        /// <summary>Adds this feature's options to <paramref name="section"/>.</summary>
+        public static void RegisterSettings(SettingsPage section)
         {
             section
-                .Choice(out _handle, prefix + "Rare loot multiplier", FishingLootConfig.Ladder, FishingLootConfig.DefaultToken);
+                .Choice(out _handle, "Rare loot multiplier", FishingLootConfig.Ladder, FishingLootConfig.DefaultToken);
 
 
             FishingLootConfig.Set(FishingLootConfig.Parse(_handle.Value));

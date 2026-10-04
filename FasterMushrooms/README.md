@@ -13,7 +13,7 @@ This mod divides that spread window by a multiplier you pick, so the whole patch
 regrows after harvesting that many times faster. Mushrooms that grow in stages get their
 per-stage time divided the same way.
 
-Settings (Mod Settings menu, section "Faster Mushrooms"):
+Settings (Settings > Sid's Mods > "Faster Mushrooms"):
 
 | Setting | Choices | Default |
 |---|---|---|
@@ -38,7 +38,7 @@ countdowns that are already running are shortened to the new maximum immediately
 ## Requirements
 
 - [CoreLib](https://mod.io/g/corekeeper/m/corelib)
-- [Mod Settings Menu](https://mod.io/g/corekeeper/m/mod-settings-menu)
+- [Sid's Settings](https://github.com/Sthakur27/corekeeper-mods/tree/main/SidSettings)
 
 Client + server (`requiredOn: 3`). The speed is applied by the server (host), so in multiplayer
 the host's setting is the one that counts.

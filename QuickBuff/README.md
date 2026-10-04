@@ -27,7 +27,7 @@ never wastes anything.
 - A one-line summary appears in chat ("Quick Buff: consumed 3 item(s), 1 skipped (buff active)").
 - You can also type `/quickbuff` (or `/qb`) in chat: `/quickbuff [skipActive 0|1] [skipSeconds]`.
 
-## Settings (Mod Settings menu)
+## Settings (Settings > Sid's Mods)
 
 | Setting | Default | Meaning |
 |---|---|---|
@@ -75,4 +75,4 @@ client and server.
 
 ## Dependencies
 
-CoreLib and Mod Settings Menu (mod.io). Client + server (`requiredOn: 3`).
+CoreLib and Sid's Settings. Client + server (`requiredOn: 3`).

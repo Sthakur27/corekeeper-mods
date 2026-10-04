@@ -48,6 +48,7 @@ namespace SidsOverhaul
             FasterMushrooms.FasterMushroomsMod.RegisterSettings(section, "Mushrooms: ");
             BetterFishingLoot.BetterFishingLootMod.RegisterSettings(section, "Fishing Loot: ");
             DurabilityMultiplier.DurabilityMultiplierMod.RegisterSettings(section, "Durability: ");
+            VehicleSpeed.VehicleSpeedMod.RegisterSettings(section, "Vehicles: ");
             HardModeTuning.HardModeTuningMod.RegisterSettings(section, "Hard Mode: ");
             SkillXPMultiplier.SkillXPMultiplierMod.RegisterSettings(section, "Skill XP: ");
 

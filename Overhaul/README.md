@@ -13,13 +13,14 @@ Included features (each is also available as its own mod on mod.io):
 - **Bigger Watering Cans**: watering cans water 2x2 or 4x4.
 - **Better Fishing Loot**: rare fishing loot drops more often.
 - **Auto Replant**: harvesting a crop replants it from a seed in your inventory.
-- **Quick Buff**: one key (default B) eats or drinks one of every buff food and potion.
+- **Quick Buff**: one key (default B) eats or drinks one of every buff food and potion; H drinks the first healing potion. Pouches included.
 - **Potion Seller**: the Caveling Merchant sells every potion and Recall Idols; the Slime Merchant sells every grenade and bomb.
 - **Hard Mode Tuning**: in hard mode, regular enemies hit for 1.5x normal damage instead of 2x; bosses keep full hard mode.
 - **Keep Minions On Teleport**: summoned minions survive teleports and arrive with you.
 - **Pet Editor**: set your pet's level and put any talent in any slot from the pet talent window.
-- **Boss Bonus Loot**: bosses drop guaranteed extras (Ghorm: larva meat; Azeos: chance of Chipped Blade and Clear Gemstone).
+- **Boss Bonus Loot**: bosses drop guaranteed extras (Ghorm: larva meat; Titans: their biome gem and large pouches; Azeos: chance of Chipped Blade and Clear Gemstone; Hydras: double gems).
 - **Ender Stash**: a personal 40-slot stash per character, opened from any chest (purple button under Sort); same stash in every chest and world, never dropped on death.
+- **Vehicle Speed**: boat and go-kart speed multipliers (1x, 2x, 3x, 5x, 10x). Replaces the Boat Turbo mod; disable that one.
 - **Infinite Ore Boulders**: ore boulders never break; keep mining for ore forever.
 
 All options are in the Mod Settings menu under "Sid's Overhaul", each prefixed with its feature

@@ -361,3 +361,15 @@ Published 2026-10-04:
   Sid's Overhaul on mod.io (6412463) is still locked at 1.0.1; GitHub friend pack is overhaul-1.1.0.
 - New standalone mod with settings: depend on ModOptions in the manifest; on mod.io do NOT add a
   dependency record (collection rule, 10b) but say "Requires CoreLib and Mod Options" in the README.
+
+## Stim Hits (2026-10-04)
+
+`StimHits/` replaces take-damage sounds (hit = creature within range of the local player, hurt =
+local player). Hooks managed `EntityMonoBehaviour.OnTakeDamage` (prefix sets a mute flag, finalizer
+clears it and plays the ding); the mute is a prefix on private `AudioManager.PlayAudioClip`, which
+every Sfx*/SfxTable call funnels into. Custom audio without System.IO: mod-folder files via
+`LoadedMod.GetFile(path)` (sandbox-safe bytes; we parse WAV ourselves), and user files via
+`UnityWebRequestMultimedia.GetAudioClip("file:///" + path)` polled in `IMod.Update` (mp3/ogg/wav;
+`UnityEngine.Networking` is not on the sandbox block list, which is System.IO/Net/Diagnostics/
+Reflection/InteropServices). Custom folder: `Application.persistentDataPath/StimHits`. Sandbox block
+list lives in `resources.assets` (RoslynCSharpSettings). Stim sounds come from `release/make_stim_sounds.py`.

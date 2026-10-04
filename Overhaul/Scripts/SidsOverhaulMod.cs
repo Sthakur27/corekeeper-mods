@@ -51,6 +51,7 @@ namespace SidsOverhaul
             Page("Golden Chance", "Golden: ", GoldenChance.GoldenChanceMod.SettingsHint, GoldenChance.GoldenChanceMod.RegisterSettings);
             Page("Hard Mode Tuning", "Hard Mode: ", HardModeTuning.HardModeTuningMod.SettingsHint, HardModeTuning.HardModeTuningMod.RegisterSettings);
             Page("Skill XP Multiplier", "Skill XP: ", SkillXPMultiplier.SkillXPMultiplierMod.SettingsHint, SkillXPMultiplier.SkillXPMultiplierMod.RegisterSettings);
+            Page("Stim Hits", "Stim Hits: ", StimHits.StimHitsMod.SettingsHint, StimHits.StimHitsMod.RegisterSettings);
             Debug.Log($"[{Name}] Loaded all features.");
         }
 

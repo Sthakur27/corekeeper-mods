@@ -1,0 +1,42 @@
+{
+    "guid": "7c3e9a51d2b84f06a1e5c7d9b3f20a64",
+    "name": "StimHits",
+    "displayName": "Stim Hits",
+    "skipSafetyChecks": false,
+    "disableScripts": false,
+    "accessesExtraAssemblies": true,
+    "disableHarmonyPatching": false,
+    "requiredOn": 3,
+    "files": [
+        {
+            "path": "Scripts/StimHitsMod.cs",
+            "guid": "7c3e9a51d2b84f06a1e5c7d9b3f20a65"
+        },
+        {
+            "path": "Scripts/SoundBank.cs",
+            "guid": "7c3e9a51d2b84f06a1e5c7d9b3f20a66"
+        },
+        {
+            "path": "Scripts/Patches.cs",
+            "guid": "7c3e9a51d2b84f06a1e5c7d9b3f20a67"
+        },
+        {
+            "path": "Sounds/stim_hit.wav",
+            "guid": ""
+        },
+        {
+            "path": "Sounds/stim_hurt.wav",
+            "guid": ""
+        }
+    ],
+    "dependencies": [
+        {
+            "modName": "CoreLib",
+            "required": true
+        },
+        {
+            "modName": "ModOptions",
+            "required": true
+        }
+    ]
+}

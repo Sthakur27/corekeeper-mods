@@ -170,13 +170,16 @@ namespace QuickBuff.Systems
 
             // Main inventory (hotbar + bag, InventoryBuffer[0]) then the equipped pouches' contents
             // (InventoryBuffer[1..4], size 0 when the pouch slot is empty); equipment slots are excluded.
+            // Mods that add pouch slots (e.g. Pouch Lite, pouches 5-8) append more InventoryBuffer
+            // entries whose extraInventorySizeSlot is the pouch's equipment slot; those count too.
             DynamicBuffer<ContainedObjectsBuffer> contained = em.GetBuffer<ContainedObjectsBuffer>(player, true);
             var ranges = new List<int2>();
             if (em.HasBuffer<InventoryBuffer>(player))
             {
                 DynamicBuffer<InventoryBuffer> inventories = em.GetBuffer<InventoryBuffer>(player, true);
-                for (int n = 0; n < inventories.Length && n <= 4; n++)
+                for (int n = 0; n < inventories.Length; n++)
                 {
+                    if (n > 4 && !IsEquippedPouchInventory(inventories[n], contained, databaseBank)) continue;
                     int s = math.clamp(inventories[n].startIndex, 0, contained.Length);
                     int e = math.clamp(s + inventories[n].size, s, contained.Length);
                     if (e > s) ranges.Add(new int2(s, e));
@@ -430,6 +433,16 @@ namespace QuickBuff.Systems
             var item = new GhostEffectEventBuffer { Tick = currentTick, value = effect };
             buffer.AddToRingBuffer(ref pointer, in item);
             em.SetComponentData(player, pointer);
+        }
+
+        /// <summary>An extra inventory (added by a pouch mod) whose size slot holds an equipped pouch.</summary>
+        private static bool IsEquippedPouchInventory(InventoryBuffer inventory, DynamicBuffer<ContainedObjectsBuffer> contained, PugDatabase.DatabaseBankCD databaseBank)
+        {
+            int slot = inventory.extraInventorySizeSlot;
+            if (slot < 0 || slot >= contained.Length) return false;
+            ObjectID id = contained[slot].objectData.objectID;
+            if (id == ObjectID.None) return false;
+            return PugDatabase.GetEntityObjectInfo(id, databaseBank.databaseBankBlob).objectType == ObjectType.Pouch;
         }
     }
 }

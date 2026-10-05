@@ -8,7 +8,7 @@ never wastes anything.
 ## What it does
 
 - One key press consumes **one** of every distinct food / potion (distinct = item + cooked-food
-  variation) in your main inventory (hotbar + bag) and your equipped pouches (e.g. a Potion Pouch). Equipment
+  variation) in your main inventory (hotbar + bag) and your equipped pouches (e.g. a Potion Pouch, including extra pouch slots added by mods like Pouch Lite). Equipment
   and other slots are never touched.
 - Only consumables that grant a **timed buff** count. Hunger-only or heal-only items (raw mushrooms,
   healing potions), items with no effect, bombs, seeds, pet candy and cattle are never consumed.

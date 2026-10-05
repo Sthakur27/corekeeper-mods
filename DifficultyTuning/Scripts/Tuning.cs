@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Runtime.CompilerServices;
 using Pug.Conversion;
@@ -162,5 +163,72 @@ namespace DifficultyTuning
         }
 
         public static int Scale(int value, float factor) => (int)Math.Round(value * factor);
+
+        // ------------------------------------------------------------------ move speed curve
+
+        private static float _referenceSpeed = -1f;
+
+        /// <summary>
+        /// Median base move speed of all regular enemies (MovementSpeedAuthoring.speed on their prefabs in
+        /// PugDatabase), computed once. 0 if the database could not be read (the curve then falls back to linear).
+        /// </summary>
+        public static float ReferenceSpeed
+        {
+            get
+            {
+                if (_referenceSpeed < 0f) _referenceSpeed = ComputeReferenceSpeed();
+                return _referenceSpeed;
+            }
+        }
+
+        /// <summary>
+        /// Speed-up that is inversely proportional to base speed above the reference:
+        ///   new = base + (m - 1) * min(base, reference)
+        /// Enemies at or below the median get the full multiplier; faster ones all get the same absolute
+        /// bonus as a median-speed enemy, i.e. an effective multiplier of 1 + (m - 1) * reference / base.
+        /// Slow-downs (m below 1) stay linear.
+        /// </summary>
+        public static float ScaledMoveSpeed(float baseSpeed, float m)
+        {
+            float reference = ReferenceSpeed;
+            if (m <= 1f || reference <= 0f || baseSpeed <= reference) return baseSpeed * m;
+            return baseSpeed + (m - 1f) * reference;
+        }
+
+        private static float ComputeReferenceSpeed()
+        {
+            var speeds = new List<(float speed, string name)>();
+            try
+            {
+                if (PugDatabase.objectsByType != null)
+                {
+                    var seen = new HashSet<GameObject>();
+                    foreach (var info in PugDatabase.objectsByType.Values)
+                    {
+                        GameObject go = info?.prefabInfo?.prefab != null ? info.prefabInfo.prefab.gameObject : null;
+                        if (go == null || !seen.Add(go) || !IsRegularEnemy(go)) continue;
+                        if (!go.TryGetComponent(out MovementSpeedAuthoring move) || move.speed <= 0f) continue;
+                        speeds.Add((move.speed, info.objectID.ToString()));
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.LogWarning($"[{DifficultyTuningMod.Name}] Could not read enemy base speeds: {e.Message}");
+            }
+            if (speeds.Count == 0)
+            {
+                Debug.LogWarning($"[{DifficultyTuningMod.Name}] No enemy base speeds found; move speed setting falls back to a plain multiplier.");
+                return 0f;
+            }
+            speeds.Sort((a, b) => a.speed.CompareTo(b.speed));
+            float median = speeds.Count % 2 == 1
+                ? speeds[speeds.Count / 2].speed
+                : (speeds[speeds.Count / 2 - 1].speed + speeds[speeds.Count / 2].speed) / 2f;
+            var parts = new List<string>();
+            foreach (var s in speeds) parts.Add($"{s.name}={s.speed:0.##}");
+            Debug.Log($"[{DifficultyTuningMod.Name}] Move speed curve: reference (median of {speeds.Count} regular enemies) = {median:0.##}. Base speeds: {string.Join(", ", parts)}");
+            return median;
+        }
     }
 }

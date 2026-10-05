@@ -11,7 +11,11 @@ namespace DifficultyTuning.Patches
     // Speed settings, regular enemies only (each world uses its own profile, hard or normal). Same pattern as the damage patches: scale the
     // authoring fields the converter copies, then restore them. Vanilla never changes these per mode.
 
-    /// <summary>Movement speed (MovementSpeedCD.originalSpeed; slows, enrage etc. multiply on top).</summary>
+    /// <summary>
+    /// Movement speed (MovementSpeedCD.originalSpeed; slows, enrage etc. multiply on top). Uses
+    /// Tuning.ScaledMoveSpeed: full multiplier up to the median enemy speed, a fixed bonus above it, so
+    /// fast late game enemies are not multiplied as hard as slow ones.
+    /// </summary>
     [HarmonyPatch(typeof(MovementSpeedConverter), "Convert", new[] { typeof(MovementSpeedAuthoring) })]
     public static class MovementSpeedPatch
     {
@@ -22,7 +26,7 @@ namespace DifficultyTuning.Patches
             var p = Tuning.RegularProfile(__instance, authoring);
             if (p == null || Tuning.IsOne(p.MoveSpeed)) return;
             __state = new SavedFloats { A = authoring.speed };
-            authoring.speed *= p.MoveSpeed;
+            authoring.speed = Tuning.ScaledMoveSpeed(authoring.speed, p.MoveSpeed);
         }
 
         [HarmonyPostfix]

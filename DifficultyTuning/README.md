@@ -29,7 +29,15 @@ worlds, **Difficulty Tuning (Normal)** only to normal worlds. They have the same
 | Boss health | 0.9x to 1.5x vs vanilla hard, **1x** | 0.9x to 1.5x vs vanilla normal, **1x** |
 
 The speed settings make enemies harder without more damage or health: faster enemies, faster
-shots, shorter gaps between attacks. They only affect regular enemies; boss attack patterns are
+shots, shorter gaps between attacks.
+
+**Move speed is not a flat multiplier.** A flat 2x would make the already-fast late game enemies
+absurdly fast. Instead, `new speed = base + (setting - 1) x min(base, reference)`, where the
+reference is the median base speed of all regular enemies (read from the game data and printed
+with every enemy's base speed in Player.log). Enemies at or below the median get the full
+multiplier; faster ones all get the same flat bonus, so their effective multiplier shrinks as
+`1 + (setting - 1) x reference / base` (at 2x: an enemy twice the median speed gets 1.5x, three
+times the median about 1.33x). Settings below 1x stay a plain multiplier. They only affect regular enemies; boss attack patterns are
 timed to their animations, so bosses only get the damage and health settings.
 
 Bosses, boss parts and boss projectiles are anything with a boss component, an ObjectID containing

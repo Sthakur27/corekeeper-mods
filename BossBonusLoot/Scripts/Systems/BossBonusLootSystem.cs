@@ -43,6 +43,16 @@ namespace BossBonusLoot.Systems
                     (ObjectID.DesertGemstone, 1, 1f),
                     (ObjectID.LargeValuablePouch, 1, 0.4f), (ObjectID.LargeOreAndBlockPouch, 1, 0.4f),
                 },
+                // Mimite and Orbital Turret (not bosses): 10% each biome gem. Their own loot tables' gem
+                // entries are zeroed by HydraGemSystem so these rolls are the whole chance.
+                [ObjectID.Mimite] = new[]
+                {
+                    (ObjectID.NatureGemstone, 1, 0.1f), (ObjectID.SeaGemstone, 1, 0.1f), (ObjectID.DesertGemstone, 1, 0.1f),
+                },
+                [ObjectID.OrbitalTurret] = new[]
+                {
+                    (ObjectID.NatureGemstone, 1, 0.1f), (ObjectID.SeaGemstone, 1, 0.1f), (ObjectID.DesertGemstone, 1, 0.1f),
+                },
             };
 
         private static readonly System.Random Rng = new System.Random();
@@ -53,8 +63,8 @@ namespace BossBonusLoot.Systems
 
         protected override void OnCreate()
         {
+            // Any dying entity, not just BossCD ones: the table also lists regular enemies (Mimite).
             _deadBosses = GetEntityQuery(
-                ComponentType.ReadOnly<BossCD>(),
                 ComponentType.ReadOnly<ObjectDataCD>(),
                 ComponentType.ReadOnly<LocalTransform>(),
                 ComponentType.ReadOnly<HealthCD>(),

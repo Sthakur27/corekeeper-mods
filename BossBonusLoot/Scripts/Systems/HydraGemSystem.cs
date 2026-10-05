@@ -18,6 +18,9 @@ namespace BossBonusLoot.Systems
     {
         private const int Multiplier = 2;
 
+        /// <summary>Loot tables whose gem entries get weight 0 (BossBonusLootSystem rolls these gems itself).</summary>
+        private static readonly HashSet<LootTableID> ZeroGemTables = new HashSet<LootTableID> { LootTableID.Mimite, LootTableID.OrbitalTurret };
+
         private static readonly HashSet<LootTableID> Tables = new HashSet<LootTableID>
         {
             LootTableID.HydraBossNature, LootTableID.HydraBossSea, LootTableID.HydraBossDesert,
@@ -54,13 +57,45 @@ namespace BossBonusLoot.Systems
             for (int i = 0; i < root.lootTables.Length; i++)
             {
                 ref EntityLootTable table = ref root.lootTables[i];
+                if (ZeroGemTables.Contains(table.lootTableID))
+                {
+                    log.Add(DescribeAndZeroGems(table.lootTableID, ref table));
+                    continue;
+                }
                 if (!Tables.Contains(table.lootTableID)) continue;
                 Patch(table.lootTableID, false, ref table.lootTable, log);
                 Patch(table.lootTableID, true, ref table.guaranteedDropsLootTable, log);
             }
-            Debug.Log($"[{BossBonusLootMod.Name}] Hydra gems x{Multiplier} ({World.Name}): "
+            Debug.Log($"[{BossBonusLootMod.Name}] Loot tables ({World.Name}): Hydra gems x{Multiplier}; "
                       + (log.Count > 0 ? string.Join(", ", log) : "no gem entries found"));
         }
+
+        /// <summary>Logs the whole table (vanilla values) and sets the weight of biome gem entries to 0.</summary>
+        private static string DescribeAndZeroGems(LootTableID id, ref EntityLootTable table)
+        {
+            var parts = new List<string>();
+            for (int n = 0; n < table.lootTable.Length; n++)
+            {
+                ref EntityLootInfo e = ref table.lootTable[n];
+                var key = (id, false, n);
+                if (!VanillaWeight.TryGetValue(key, out float w))
+                {
+                    w = e.weight;
+                    VanillaWeight[key] = w;
+                }
+                parts.Add($"{e.objectID} w{w:0.###} x{e.amount.min}-{e.amount.max}");
+                if (Gems.Contains(e.objectID)) e.weight = 0f;
+            }
+            for (int n = 0; n < table.guaranteedDropsLootTable.Length; n++)
+            {
+                ref EntityLootInfo e = ref table.guaranteedDropsLootTable[n];
+                parts.Add($"guaranteed {e.objectID} x{e.amount.min}-{e.amount.max}");
+            }
+            return $"{id} table (unique drops {table.minUniqueDrops}-{table.maxUniqueDrops}): {string.Join("; ", parts)}; gem weights zeroed";
+        }
+
+        private static readonly Dictionary<(LootTableID, bool, int), float> VanillaWeight =
+            new Dictionary<(LootTableID, bool, int), float>();
 
         private static void Patch(LootTableID id, bool guaranteed, ref BlobArray<EntityLootInfo> entries, List<string> log)
         {

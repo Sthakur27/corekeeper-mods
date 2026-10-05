@@ -8,6 +8,7 @@ Core Keeper mod: bosses drop extra items on top of their normal loot chest, and 
 | Azeos the Sky Titan | Jungle Emerald (always), Chipped Blade 25%, Clear Gemstone 25%, Large Seed and Crop Pouch 40%, Large Critter Pouch 40% |
 | Omoroth the Sea Titan | Ocean Sapphire (always), Large Fish Pouch 40%, Large Potion Pouch 40% |
 | Ra-Akar the Sand Titan | Desert Ruby (always), Large Valuable Pouch 40%, Large Ore and Block Pouch 40% |
+| Mimite, Orbital Turret (regular enemies) | Jungle Emerald 10%, Ocean Sapphire 10%, Desert Ruby 10% (their vanilla gem drops are replaced by these rolls) |
 | The three biome Hydras (HydraBossNature, Sea, Desert) | Jungle Emerald / Ocean Sapphire / Desert Ruby amounts x2 |
 
 Bonus items drop at the boss's body and fly to the player who landed the kill (same as vanilla

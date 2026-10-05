@@ -18,7 +18,7 @@ Included features (each is also available as its own mod on mod.io):
 - **Difficulty Tuning** (was Hard Mode Tuning): separate enemy damage, health, speed and boss settings for hard mode worlds and normal worlds. Defaults: hard mode regular enemies hit for 1.5x normal damage instead of 2x; normal worlds vanilla.
 - **Keep Minions On Teleport**: summoned minions survive teleports and arrive with you.
 - **Pet Editor**: set your pet's level and put any talent in any slot from the pet talent window.
-- **Boss Bonus Loot**: bosses drop guaranteed extras (Ghorm: larva meat; Titans: their biome gem and large pouches; Azeos: chance of Chipped Blade and Clear Gemstone; Hydras: double gems).
+- **Boss Bonus Loot**: bosses drop guaranteed extras (Ghorm: larva meat; Titans: their biome gem and large pouches; Azeos: chance of Chipped Blade and Clear Gemstone; Hydras: double gems; Mimites and Orbital Turrets: 10% each biome gem).
 - **Ender Stash**: a personal 40-slot stash per character, opened from any chest (purple button under Sort); same stash in every chest and world, never dropped on death.
 - **Vehicle Speed**: boat and go-kart speed multipliers (1x, 2x, 3x, 5x, 10x). Replaces the Boat Turbo mod; disable that one.
 - **Golden Chance**: multiplies what your golden plant (Gardening) and golden cooking (Cooking) talents give (1x, 1.5x, 2x, 3x; default 2x). No talent points = vanilla odds.

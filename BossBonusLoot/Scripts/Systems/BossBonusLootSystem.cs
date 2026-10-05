@@ -53,6 +53,8 @@ namespace BossBonusLoot.Systems
                 {
                     (ObjectID.NatureGemstone, 1, 0.1f), (ObjectID.SeaGemstone, 1, 0.1f), (ObjectID.DesertGemstone, 1, 0.1f),
                 },
+                // Void Larva (not a boss): 20% Oblivion Fragment; its loot table entry is zeroed the same way.
+                [ObjectID.VoidLarva] = new[] { (ObjectID.HydraBossVoidCraftingItem, 1, 0.2f) },
             };
 
         private static readonly System.Random Rng = new System.Random();

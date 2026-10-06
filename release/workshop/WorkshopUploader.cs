@@ -33,6 +33,8 @@ public static class WorkshopUploader
         public string changelog { get; set; }
         public string[] dependencies { get; set; }
         public string[] removeDependencies { get; set; }
+        /// <summary>A Steam collection: no content, "dependencies" are its member items.</summary>
+        public bool collection { get; set; }
     }
 
     public static int Main(string[] args)
@@ -68,14 +70,24 @@ public static class WorkshopUploader
         foreach (var item in items)
         {
             bool isNew = !ids.TryGetValue(item.key, out ulong existing);
-            Editor editor = isNew ? Editor.NewCommunityFile : new Editor(new PublishedFileId { Value = existing });
+            if (isNew && !item.collection && string.IsNullOrEmpty(item.content))
+            {
+                Console.WriteLine($"Skipping {item.key}: not on the Workshop yet and no content to upload (description-only run).");
+                continue;
+            }
+            Editor editor = !isNew ? new Editor(new PublishedFileId { Value = existing })
+                : item.collection ? Editor.NewCollection : Editor.NewCommunityFile;
+            string description = item.description
+                .Replace("{overhaul}", ids.TryGetValue("SidsOverhaul", out ulong oh) ? oh.ToString() : "")
+                .Replace("{collection}", ids.TryGetValue("Collection", out ulong col) ? col.ToString() : "");
             editor = editor
                 .ForAppId(CoreKeeperAppId)
                 .WithTitle(item.title)
-                .WithDescription(item.description.Replace("{overhaul}", ids.TryGetValue("SidsOverhaul", out ulong oh) ? oh.ToString() : ""))
-                .WithContent(Path.GetFullPath(item.content))
+                .WithDescription(description)
                 .WithPublicVisibility()
                 .WithChangeLog(item.changelog ?? "");
+            // No content folder = keep the item's current files (collections, description-only updates).
+            if (!string.IsNullOrEmpty(item.content)) editor = editor.WithContent(Path.GetFullPath(item.content));
             if (!string.IsNullOrEmpty(item.preview)) editor = editor.WithPreviewFile(Path.GetFullPath(item.preview));
             foreach (var tag in item.tags ?? Array.Empty<string>()) editor = editor.WithTag(tag);
 
@@ -111,7 +123,7 @@ public static class WorkshopUploader
                         continue;
                     }
                     bool ok = await new Item(result.FileId).AddDependency(new PublishedFileId { Value = dep });
-                    Console.WriteLine($"  required item {depRef} ({dep}): {(ok ? "ok" : "not added (maybe already listed)")}");
+                    Console.WriteLine($"  {(item.collection ? "member" : "required item")} {depRef} ({dep}): {(ok ? "ok" : "not added (maybe already listed)")}");
                 }
             }
             else

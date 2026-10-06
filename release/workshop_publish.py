@@ -52,6 +52,9 @@ MODS = [
 ]
 OVERHAUL = ("SidsOverhaul", "Sid's Overhaul", "overhaul_logo.png", "Overhaul")
 
+# Steam collection with every individual mod (+ CoreLib); processed first so other descriptions can link it.
+COLLECTION = ("Collection", "Sid's Core Keeper Mods", "collection_logo.png")
+
 
 # ------------------------------------------------------------------ README -> Steam BBCode
 
@@ -118,20 +121,34 @@ def description(key, folder, readme_path):
     md = open(readme_path, encoding="utf-8").read() if os.path.exists(readme_path) else ""
     md = re.sub(r"^#\s+.*\n", "", md, count=1)  # Steam shows the title already
     if key == OVERHAUL[0]:
-        note = ("[b]All of Sid's mods in one.[/b] Do not also subscribe to the individual mods (each feature "
-                "would run twice). Requires CoreLib. Settings: Settings > Mod Options (built in).")
+        note = ("[b]All of Sid's mods in one mod.[/b] Want to pick and choose instead? Use the "
+                "[url=https://steamcommunity.com/workshop/filedetails/?id={collection}]Sid's Core Keeper Mods[/url] "
+                "collection, which has every feature as its own mod. Do not subscribe to both the Overhaul and the "
+                "individual mods (each feature would run twice). Requires CoreLib. Settings: Settings > Mod Options (built in).")
     elif key == "ModOptions":
         note = ("[b]Library.[/b] Mods that use it list it as a required item, so Steam installs it for you. "
                 "Works alongside Mod Settings Menu.")
     else:
-        note = ("Also included in [url=https://steamcommunity.com/workshop/filedetails/?id={overhaul}]Sid's Overhaul[/url]; "
-                "use one or the other, not both.")
+        note = ("Part of the [url=https://steamcommunity.com/workshop/filedetails/?id={collection}]Sid's Core Keeper Mods[/url] "
+                "collection. Also bundled in the all-in-one [url=https://steamcommunity.com/workshop/filedetails/?id={overhaul}]Sid's Overhaul[/url]; "
+                "use the Overhaul or the individual mods, not both.")
     footer = f"\n\nSource and full docs: [url={GITHUB}{folder}]{GITHUB}{folder}[/url]"
     body = to_bbcode(md)
     text = note + "\n\n" + body
     if len(text) + len(footer) > 7900:
         text = text[: 7900 - len(footer) - 20].rsplit("\n", 1)[0] + "\n[i](continued on GitHub)[/i]"
     return text + footer
+
+
+def collection_description():
+    names = "".join(f"[*]{title}" for key, title, _, _ in MODS)
+    return ("Every one of Sid's Core Keeper mods as its own Workshop item. Click [b]Subscribe to all[/b], then "
+            "unsubscribe from anything you don't want; each mod updates on its own. CoreLib and Mod Options are "
+            "installed automatically as required items.\n\n"
+            "Prefer a single mod? [url=https://steamcommunity.com/workshop/filedetails/?id={overhaul}]Sid's Overhaul[/url] "
+            "bundles all of them. Use the Overhaul [b]or[/b] these mods, not both (each feature would run twice).\n\n"
+            f"[list]{names}[/list]\n\n"
+            f"Source: [url={GITHUB}]{GITHUB}[/url]")
 
 
 # ------------------------------------------------------------------ staging
@@ -220,16 +237,42 @@ def main():
     ap.add_argument("--dry-run", action="store_true")
     ap.add_argument("--only", default="")
     ap.add_argument("--changelog", default="")
+    ap.add_argument("--description-only", action="store_true",
+                    help="update titles/descriptions/tags/previews only; keep each item's current files")
     a = ap.parse_args()
     only = set(x for x in a.only.split(",") if x)
 
     ids = json.load(open(IDS)) if os.path.exists(IDS) else {}
     entries = [OVERHAUL] + MODS
     items = []
+
+    # The collection goes first so the other descriptions can link it ("{collection}").
+    if not only or COLLECTION[0] in only:
+        members = [m[0] for m in MODS] + [str(CORE_DEPS["CoreLib"])]
+        items.append({
+            "key": COLLECTION[0], "title": COLLECTION[1], "description": collection_description(),
+            "content": "", "preview": os.path.join(REL, COLLECTION[2]), "tags": [],
+            "changelog": a.changelog, "dependencies": members, "removeDependencies": [], "collection": True,
+        })
+        print(f"staged {COLLECTION[0]}: {len(members)} members")
+
     for key, title, logo, category in entries:
         if only and key not in only:
             continue
-        dst, man = stage_overhaul() if key == OVERHAUL[0] else stage_mod(key)
+        folder = "Overhaul" if key == OVERHAUL[0] else key
+        if a.description_only:
+            # Keep the item's current files; describe what is committed, not the working tree.
+            dst = ""
+            man_path = "release/build_overhaul.py" if key == OVERHAUL[0] else f"{key}/ModManifest.json"
+            man = {"dependencies": [{"modName": "CoreLib", "required": True}]} if key == OVERHAUL[0] else json.loads(
+                subprocess.run(["git", "show", f"HEAD:{man_path}"], cwd=ROOT, capture_output=True, text=True, encoding="utf-8").stdout.lstrip("\ufeff"))
+            readme = subprocess.run(["git", "show", f"HEAD:{folder}/README.md"], cwd=ROOT, capture_output=True, text=True, encoding="utf-8").stdout
+            readme_path = os.path.join(STAGE, f"_readme_{key}.md")
+            os.makedirs(STAGE, exist_ok=True)
+            open(readme_path, "w", encoding="utf-8").write(readme)
+        else:
+            dst, man = stage_overhaul() if key == OVERHAUL[0] else stage_mod(key)
+            readme_path = os.path.join(dst, "README.md")
         deps = []
         for d in man.get("dependencies", []):
             if not d.get("required"):
@@ -240,8 +283,7 @@ def main():
                 deps.append(d["modName"])  # resolved by the uploader from workshop_ids.json (uploaded earlier in MODS order)
             else:
                 print(f"  note: {key} requires {d['modName']}, which is not one of our Workshop items")
-        folder = "Overhaul" if key == OVERHAUL[0] else key
-        desc = description(key, folder, os.path.join(dst, "README.md"))  # "{overhaul}" filled in by the uploader
+        desc = description(key, folder, readme_path)  # "{overhaul}" / "{collection}" filled in by the uploader
         preview = os.path.join(REL, logo)
         if not os.path.exists(preview):
             print(f"  WARNING: {key} has no preview image ({logo})")
@@ -251,7 +293,8 @@ def main():
             "tags": [category, GAME_VERSION, "Client", "Server", "Script"],
             "changelog": a.changelog, "dependencies": deps, "removeDependencies": STALE_DEPS,
         })
-        print(f"staged {key}: {sum(len(fs) for _, _, fs in os.walk(dst))} files, {len(desc)} chars, deps {deps}")
+        files = sum(len(fs) for _, _, fs in os.walk(dst)) if dst else 0
+        print(f"staged {key}: {files if dst else 'description only'}{' files' if dst else ''}, {len(desc)} chars, deps {deps}")
 
     items_path = os.path.join(STAGE, "items.json")
     json.dump(items, open(items_path, "w", encoding="utf-8"), indent=2)

@@ -334,6 +334,7 @@ SkipIntro 6363825. Refresh the list from Player.log (`loaded mod X from mod.io`)
 - Published 2026-10-03, all public: Sid's Overhaul https://steamcommunity.com/sharedfiles/filedetails/?id=3813043354 + 19 individual mods (ids in workshop_ids.json). Not MasterPetPlus.
 - New mod: add a row to `MODS` in workshop_publish.py (folder, title, logo, category) and a logo in release/.
 - After a game update: bump `GAME_VERSION` and rerun the script for every item.
+- **Collection** "Sid's Core Keeper Mods" https://steamcommunity.com/sharedfiles/filedetails/?id=3814775238 (2026-10-06, key `Collection` in workshop_ids.json): every MODS item + CoreLib, created/updated first by workshop_publish.py (members via AddDependency). Overhaul stays as the all-in-one option; descriptions cross-link both (`{collection}`/`{overhaul}` placeholders). `--description-only` refreshes pages without re-uploading files (READMEs read from git HEAD). New mods join the collection on the next run.
 
 ## Mod Options (own settings menu, 2026-10-04)
 

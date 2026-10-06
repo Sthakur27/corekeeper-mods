@@ -20,6 +20,13 @@ namespace EnderStash
         public static int End => Start + Size;
         public static bool Ready => Start >= 0;
 
+        /// <summary>
+        /// One hidden slot right after the stash that records where the stash was when the character was
+        /// saved (see <see cref="StashGuard"/>). Appended slots in total: Size + 1.
+        /// </summary>
+        public static int MarkerIndex => End;
+        public static int TotalLength => End + 1;
+
         public static void OnObjectTypeAdded(Entity entity, GameObject authoringData, EntityManager em)
         {
             if (authoringData == null || !authoringData.TryGetComponent<PlayerAuthoring>(out _)) return;
@@ -27,7 +34,7 @@ namespace EnderStash
 
             var contained = em.GetBuffer<ContainedObjectsBuffer>(entity);
             int start = contained.Length;
-            for (int i = 0; i < Size; i++) contained.Add(default);
+            for (int i = 0; i < Size + 1; i++) contained.Add(default); // stash + marker slot
 
             if (Ready && start != Start)
                 Debug.LogWarning($"[{EnderStashMod.Name}] Stash start differs between worlds (had {Start}, now {start}). Another mod may be adding player slots later.");

@@ -404,3 +404,17 @@ fully headless (see `EnderStash/Unity/`, run `python EnderStash/Unity/build_bund
   EnderStash's bundle first (build_overhaul.py BUNDLE_MODS order).
 - Verify in Player.log: `staged mod bundle: EnderStash_Windows.assetbundle`, `Got N data blocks from <guid>`,
   `[EnderStash] Ender Chest registered as ObjectID ...`.
+
+## Ender Stash guard + player-slot lessons (2026-10-06)
+
+- Player archetype limit (Discord #mod-creators, LordOfClouD): the player entity must fit one 16 KB chunk;
+  every component/buffer TYPE a mod adds to the player counts (a buffer without `[InternalBufferCapacity]`
+  costs 128 B even empty; use `[InternalBufferCapacity(0)]` or a separate linked entity). Appending ELEMENTS
+  to an existing buffer (ContainedObjectsBuffer has capacity 1) costs nothing in the chunk. None of our mods
+  add player component types.
+- Slot-appending mods shift each other's indices when the mod set changes. Join paths: character save
+  (`SaveManager.GetCharacterDataFromSerialized` -> `StartGameRPCSystem` copies only prefab-length slots, so
+  a layout that shrank truncates) vs. rejoining the last world ("Skipping load inventory by
+  PlayerWasLastConnectedToThisServer": the world save's player entity keeps its saved length, but data in
+  empty slots is not kept). `PlayerGhost.playerGuid` (Unity.Entities.Hash128) = `UnityEngine.Hash128.Parse(CharacterData.characterGuid)`.
+  See `EnderStash/Scripts/StashGuard.cs` for the marker + pending-move pattern.

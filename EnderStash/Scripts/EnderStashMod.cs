@@ -13,7 +13,7 @@ namespace EnderStash
     public sealed class EnderStashMod : IMod
     {
         public const string Name = "EnderStash";
-        public const string Version = "2.0.0";
+        public const string Version = "2.0.1";
 
         private bool _subscribed;
         private bool _loggedId;

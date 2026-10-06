@@ -17,6 +17,14 @@
             "guid": ""
         },
         {
+            "path": "Scripts/StashGuard.cs",
+            "guid": ""
+        },
+        {
+            "path": "Scripts/Patches/StashGuardPatch.cs",
+            "guid": ""
+        },
+        {
             "path": "Scripts/EnderChest.cs",
             "guid": ""
         },

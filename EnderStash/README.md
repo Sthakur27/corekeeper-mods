@@ -27,7 +27,19 @@ gone; buy an Ender Chest to get at them.
   (`API.Authoring.OnObjectTypeAdded`, subscribed on the first `Update` so they always come after
   Loadout Fallback / Five Loadouts / vanity slots). The character save stores the whole buffer.
   Death drops only slots 10..maxSize of `InventoryBuffer[0]`, so the stash is safe.
-- `StashGrowSystem` (server) grows older characters' buffers to include the stash.
+- `StashGrowSystem` (server) grows older characters' buffers to include the stash and runs `StashGuard`.
+- `StashGuard` keeps the stash in place when a mod that also appends player slots (Pouch Lite, Five
+  Loadouts...) is installed or removed, which shifts where the stash starts. The slot after the stash is a
+  marker (`objectID` None, `variationUpdateCount` = 0x45535448, `variation` = stash start) that the
+  character save keeps. On join, a postfix on `SaveManager.GetCharacterDataFromSerialized` moves the stash
+  inside the decoded character (before `StartGameRPCSystem` copies it, which would cut off slots past the
+  new length). Rejoining the world you were last in uses the world save's player instead (the world save
+  drops the marker but keeps the old slot count), so the guard remembers the stash items it saw and moves
+  them on the live player if they are still at the old position. Tested both directions (+10 / -10 slots,
+  both join paths): items, aux data and other slots unchanged.
+- Player memory: the stash adds no component or buffer type to the player (it only appends elements to
+  `ContainedObjectsBuffer`, `InternalBufferCapacity(1)`, so they live on the heap), so it does not count
+  toward the shared 16 KB chunk limit for the player archetype.
 - `EnderChestMerchantSystem` (server) puts the Ender Chest at index 0 of the Fishing Merchant's
   `MerchantItemInfoBuffer` (prefab and merchants already in saves; forces one restock when added).
 - Patches: `Chest.Use` (an Ender Chest opens the chest window on

@@ -82,8 +82,9 @@ the (possibly new) `auxDataIndex` back into the slot.
   a palette panel left of the bucket (4x4 swatches: 10 colors, 5 hue shifts, Remove dye; drawn in
   front of the UI it covers, with a click-blocking background). Picking a swatch closes it. With a
   color picked, left-clicking a dyeable item in the player's own slots sends
-  `/dye slot <absolute index> <color>` instead of the normal click. Right-click the bucket to put it
-  away. The picked color persists across inventory closes (only the palette closes).
+  `/dye slot <absolute index> <color>` instead of the normal click. Right-click the bucket to turn
+  dye mode off. Closing the inventory always turns dye mode off (so normal clicks/drags work when it
+  reopens); the color is remembered and ringed in the palette. The bucket is dimmed while off.
 - Item icons in every `InventorySlotUI` show their own dye (sprite region copied from the icon atlas).
 - Character-window and vanity-window previews show the local player's dyes.
 

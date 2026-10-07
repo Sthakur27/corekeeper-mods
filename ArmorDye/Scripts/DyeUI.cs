@@ -46,13 +46,15 @@ namespace ArmorDye
         private const float SwatchStep = 0.9f;
         private const float PanelPadding = 0.3f;
 
-        private static int _selected;
+        private static int _selected;   // remembered color (palette index; 0 = none yet)
+        private static bool _armed;     // dye mode: left-clicks on dyeable items dye them
         private static GameObject _bucket, _palette;
         private static SpriteRenderer _paint, _rainbow, _cross;
+        private static readonly List<SpriteRenderer> _bucketSprites = new List<SpriteRenderer>();
         private static readonly List<SpriteRenderer> _rings = new List<SpriteRenderer>();
         private static bool _failed;
 
-        public static bool Active => _selected != 0;
+        public static bool Active => _armed && _selected != 0;
         public static string SelectedName => Palette[_selected].name;
         public static string NameOf(int index) => Palette[index].name;
         public static bool PaletteOpen => _palette != null && _palette.activeSelf;
@@ -63,8 +65,13 @@ namespace ArmorDye
             try
             {
                 if (_bucket == null) TryInject();
-                // The picked color stays across inventory closes; only the palette panel closes with it.
-                if (PaletteOpen && (Manager.ui == null || !Manager.ui.isPlayerInventoryShowing)) _palette.SetActive(false);
+                // Closing the inventory ends dye mode (so clicks are normal when it opens again) but the
+                // color is remembered, and the palette shows it ringed.
+                if (Manager.ui == null || !Manager.ui.isPlayerInventoryShowing)
+                {
+                    if (_armed) SetArmed(false);
+                    if (PaletteOpen) _palette.SetActive(false);
+                }
             }
             catch (System.Exception e)
             {
@@ -79,18 +86,32 @@ namespace ArmorDye
             if (_palette != null) _palette.SetActive(!_palette.activeSelf);
         }
 
-        /// <summary>Right-click on the bucket: stop dyeing (normal clicks again).</summary>
+        /// <summary>Right-click on the bucket: stop dyeing (normal clicks again); the color is kept.</summary>
         public static void PutAway()
         {
-            Select(0);
+            SetArmed(false);
             if (_palette != null) _palette.SetActive(false);
         }
 
-        /// <summary>A swatch was clicked: pick it and close the palette.</summary>
+        /// <summary>A swatch was clicked: remember it, turn dye mode on and close the palette.</summary>
         public static void Pick(int index)
         {
             Select(index);
+            SetArmed(true);
             if (_palette != null) _palette.SetActive(false);
+        }
+
+        /// <summary>Dye mode on/off; the bucket is drawn dimmed while off.</summary>
+        private static void SetArmed(bool armed)
+        {
+            _armed = armed;
+            float a = armed ? 1f : 0.45f;
+            foreach (var sr in _bucketSprites)
+            {
+                if (sr == null) continue;
+                var c = sr.color;
+                sr.color = new Color(c.r, c.g, c.b, a);
+            }
         }
 
         private static void Select(int index)
@@ -103,7 +124,7 @@ namespace ArmorDye
             bool shift = e.arg != null && e.arg.StartsWith("shift");
             bool remove = e.arg == "off";
             _paint.enabled = index != 0 && !shift && !remove;
-            _paint.color = e.swatch;
+            _paint.color = new Color32(e.swatch.r, e.swatch.g, e.swatch.b, (byte)(_armed ? 255 : 115));
             _rainbow.enabled = shift;
             _cross.enabled = remove;
         }
@@ -157,12 +178,17 @@ namespace ArmorDye
             col.center = srcCol != null ? srcCol.center : Vector3.zero;
             _bucket.AddComponent<DyeBucketButton>();
 
-            AddSprite(_bucket.transform, "Bucket", DyeSprites.Bucket(), Color.white, iconSR, 1);
+            _bucketSprites.Clear();
+            _bucketSprites.Add(AddSprite(_bucket.transform, "Bucket", DyeSprites.Bucket(), Color.white, iconSR, 1));
             _paint = AddSprite(_bucket.transform, "Paint", DyeSprites.Paint(), Color.white, iconSR, 2);
             _rainbow = AddSprite(_bucket.transform, "Rainbow", DyeSprites.Rainbow(), Color.white, iconSR, 2);
             _cross = AddSprite(_bucket.transform, "Cross", DyeSprites.Cross(), new Color(1f, 0.35f, 0.35f, 1f), iconSR, 3);
+            _bucketSprites.Add(_paint);
+            _bucketSprites.Add(_rainbow);
+            _bucketSprites.Add(_cross);
             BuildPalette(iconSR, col.size);
             Select(_selected);
+            SetArmed(_armed);
             _bucket.SetActive(true);
             Debug.Log($"[{ArmorDyeMod.Name}] dye bucket added to the character window at {pos} (row step {row}, vanity column {(vanityPants != null)})");
         }
@@ -247,7 +273,7 @@ namespace ArmorDye
 
         public override TextAndFormatFields GetHoverTitle()
         {
-            return new TextAndFormatFields { text = "Armor dye: " + DyeUI.SelectedName, dontLocalize = true };
+            return new TextAndFormatFields { text = DyeUI.Active ? "Dyeing: " + DyeUI.SelectedName : "Armor dye (off)", dontLocalize = true };
         }
 
         public override List<TextAndFormatFields> GetHoverDescription()
@@ -255,9 +281,9 @@ namespace ArmorDye
             var grey = new Color(0.8f, 0.8f, 0.8f);
             return new List<TextAndFormatFields>
             {
-                new TextAndFormatFields { text = "Left-click: choose a color", dontLocalize = true, color = grey },
+                new TextAndFormatFields { text = "Left-click: choose a color (turns dye mode on)", dontLocalize = true, color = grey },
                 new TextAndFormatFields { text = "Then click armor, a weapon or a tool to dye it", dontLocalize = true, color = grey },
-                new TextAndFormatFields { text = "Right-click: put the bucket away", dontLocalize = true, color = grey },
+                new TextAndFormatFields { text = "Right-click: dye mode off (also when you close the inventory)", dontLocalize = true, color = grey },
             };
         }
     }

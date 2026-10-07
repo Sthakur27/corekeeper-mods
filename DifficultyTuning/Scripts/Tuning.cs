@@ -166,49 +166,50 @@ namespace DifficultyTuning
 
         // ------------------------------------------------------------------ move speed curve
 
-        private static float _referenceSpeed = -1f;
+        /// <summary>Share of the speed boost the fastest regular enemy keeps (0.1: at 2x it gets 1.1x).</summary>
+        public const float FastestBoostShare = 0.1f;
+
+        private static bool _speedsRead;
+        private static float _referenceSpeed;   // median base speed of regular enemies
+        private static float _maxSpeed;         // fastest regular enemy
+        private static float _curveExponent;    // k in (reference / base)^k
 
         /// <summary>
-        /// Median base move speed of all regular enemies (MovementSpeedAuthoring.speed on their prefabs in
-        /// PugDatabase), computed once. 0 if the database could not be read (the curve then falls back to linear).
-        /// </summary>
-        public static float ReferenceSpeed
-        {
-            get
-            {
-                if (_referenceSpeed < 0f) _referenceSpeed = ComputeReferenceSpeed();
-                return _referenceSpeed;
-            }
-        }
-
-        /// <summary>
-        /// Speed-up that is inversely proportional to base speed above the reference:
-        ///   new = base + (m - 1) * min(base, reference)
-        /// Enemies at or below the median get the full multiplier; faster ones all get the same absolute
-        /// bonus as a median-speed enemy, i.e. an effective multiplier of 1 + (m - 1) * reference / base.
-        /// Slow-downs (m below 1) stay linear.
+        /// Move speed boost that tapers off for fast enemies:
+        ///   new = base * (1 + (m - 1) * share),  share = 1 at or below the median base speed,
+        ///   share = (median / base)^k above it, with k chosen so the fastest regular enemy keeps
+        ///   FastestBoostShare of the boost (at 2x: median and slower 2x, fastest 1.1x).
+        /// Slow-downs (m below 1) stay a plain multiplier. Falls back to a plain multiplier if the
+        /// enemy speeds could not be read.
         /// </summary>
         public static float ScaledMoveSpeed(float baseSpeed, float m)
         {
-            float reference = ReferenceSpeed;
-            if (m <= 1f || reference <= 0f || baseSpeed <= reference) return baseSpeed * m;
-            return baseSpeed + (m - 1f) * reference;
+            if (!_speedsRead) ReadEnemySpeeds();
+            if (m <= 1f || _curveExponent <= 0f || baseSpeed <= _referenceSpeed) return baseSpeed * m;
+            float share = (float)Math.Pow(_referenceSpeed / baseSpeed, _curveExponent);
+            if (share < FastestBoostShare) share = FastestBoostShare; // enemies faster than the scanned max
+            return baseSpeed * (1f + (m - 1f) * share);
         }
 
-        private static float ComputeReferenceSpeed()
+        private static void ReadEnemySpeeds()
         {
+            _speedsRead = true;
             var speeds = new List<(float speed, string name)>();
             try
             {
-                if (PugDatabase.objectsByType != null)
+                // The authoring components of every object prefab (what the converters run on).
+                var monos = PugDatabase.entityMonobehaviours;
+                if (monos != null)
                 {
                     var seen = new HashSet<GameObject>();
-                    foreach (var info in PugDatabase.objectsByType.Values)
+                    foreach (var data in monos)
                     {
-                        GameObject go = info?.prefabInfo?.prefab != null ? info.prefabInfo.prefab.gameObject : null;
+                        if (!(data is MonoBehaviour mb) || mb == null) continue;
+                        GameObject go = mb.gameObject;
                         if (go == null || !seen.Add(go) || !IsRegularEnemy(go)) continue;
                         if (!go.TryGetComponent(out MovementSpeedAuthoring move) || move.speed <= 0f) continue;
-                        speeds.Add((move.speed, info.objectID.ToString()));
+                        string name = data.ObjectInfo != null ? data.ObjectInfo.objectID.ToString() : go.name;
+                        speeds.Add((move.speed, name));
                     }
                 }
             }
@@ -216,19 +217,24 @@ namespace DifficultyTuning
             {
                 Debug.LogWarning($"[{DifficultyTuningMod.Name}] Could not read enemy base speeds: {e.Message}");
             }
-            if (speeds.Count == 0)
+            if (speeds.Count < 2)
             {
-                Debug.LogWarning($"[{DifficultyTuningMod.Name}] No enemy base speeds found; move speed setting falls back to a plain multiplier.");
-                return 0f;
+                Debug.LogWarning($"[{DifficultyTuningMod.Name}] Found {speeds.Count} enemy base speeds; move speed setting falls back to a plain multiplier.");
+                return;
             }
             speeds.Sort((a, b) => a.speed.CompareTo(b.speed));
-            float median = speeds.Count % 2 == 1
+            _referenceSpeed = speeds.Count % 2 == 1
                 ? speeds[speeds.Count / 2].speed
                 : (speeds[speeds.Count / 2 - 1].speed + speeds[speeds.Count / 2].speed) / 2f;
+            _maxSpeed = speeds[speeds.Count - 1].speed;
+            if (_maxSpeed > _referenceSpeed * 1.01f)
+                _curveExponent = (float)(Math.Log(1.0 / FastestBoostShare) / Math.Log(_maxSpeed / _referenceSpeed));
+
             var parts = new List<string>();
-            foreach (var s in speeds) parts.Add($"{s.name}={s.speed:0.##}");
-            Debug.Log($"[{DifficultyTuningMod.Name}] Move speed curve: reference (median of {speeds.Count} regular enemies) = {median:0.##}. Base speeds: {string.Join(", ", parts)}");
-            return median;
+            foreach (var sp in speeds) parts.Add($"{sp.name}={sp.speed:0.##}");
+            Debug.Log($"[{DifficultyTuningMod.Name}] Move speed curve: {speeds.Count} regular enemies, median {_referenceSpeed:0.##}, " +
+                      $"fastest {_maxSpeed:0.##}, exponent {_curveExponent:0.##} (at 2x: median 2x, fastest {1f + FastestBoostShare:0.##}x). " +
+                      $"Base speeds: {string.Join(", ", parts)}");
         }
     }
 }

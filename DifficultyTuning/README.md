@@ -32,12 +32,12 @@ The speed settings make enemies harder without more damage or health: faster ene
 shots, shorter gaps between attacks.
 
 **Move speed is not a flat multiplier.** A flat 2x would make the already-fast late game enemies
-absurdly fast. Instead, `new speed = base + (setting - 1) x min(base, reference)`, where the
-reference is the median base speed of all regular enemies (read from the game data and printed
-with every enemy's base speed in Player.log). Enemies at or below the median get the full
-multiplier; faster ones all get the same flat bonus, so their effective multiplier shrinks as
-`1 + (setting - 1) x reference / base` (at 2x: an enemy twice the median speed gets 1.5x, three
-times the median about 1.33x). Settings below 1x stay a plain multiplier. They only affect regular enemies; boss attack patterns are
+absurdly fast. Instead each enemy keeps a share of the boost: `new = base x (1 + (setting - 1) x share)`.
+Enemies at or below the median base speed of all regular enemies keep the full boost (share 1); above
+it the share falls off as `(median / base)^k`, with `k` chosen so the fastest regular enemy keeps 10%.
+At 2x: median and slower enemies move 2x, the fastest 1.1x, everything between on a smooth curve
+(at 3x the fastest gets 1.2x). Base speeds are read from the game data; Player.log prints the median,
+the fastest and every enemy's base speed. Settings below 1x stay a plain multiplier. They only affect regular enemies; boss attack patterns are
 timed to their animations, so bosses only get the damage and health settings.
 
 Bosses, boss parts and boss projectiles are anything with a boss component, an ObjectID containing

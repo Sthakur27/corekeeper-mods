@@ -20,7 +20,7 @@ namespace DifficultyTuning
     public sealed class DifficultyTuningMod : IMod
     {
         public const string Name = "DifficultyTuning";
-        public const string Version = "2.1.0";
+        public const string Version = "2.2.0";
 
         private sealed class Handles
         {
@@ -35,9 +35,9 @@ namespace DifficultyTuning
             Debug.Log($"[{Name}] v{Version}");
         }
 
-        public const string SettingsHint = "Hard mode worlds only; applies next time you load a world. Regular enemy damage/health are vs normal mode (vanilla hard: 2x damage, 1.5x health). Speeds apply to regular enemies (move speed: full boost up to the median enemy speed, faster enemies get the same flat bonus); recharge speed 1.25x = attacks come back 1.25x as fast. Boss damage/health are vs vanilla hard (1x = vanilla).";
+        public const string SettingsHint = "Hard mode worlds only; applies next time you load a world. Regular enemy damage/health are vs normal mode (vanilla hard: 2x damage, 1.5x health). Speeds apply to regular enemies (move speed: full boost up to the median enemy speed, tapering to 10% of the boost for the fastest, e.g. 1.1x at 2x); recharge speed 1.25x = attacks come back 1.25x as fast. Boss damage/health are vs vanilla hard (1x = vanilla).";
 
-        public const string NormalSettingsHint = "Normal (non-hard) worlds only; applies next time you load a world. Everything is vs vanilla normal mode (1x = vanilla). Speeds apply to regular enemies (move speed: full boost up to the median enemy speed, faster enemies get the same flat bonus); recharge speed 1.25x = attacks come back 1.25x as fast.";
+        public const string NormalSettingsHint = "Normal (non-hard) worlds only; applies next time you load a world. Everything is vs vanilla normal mode (1x = vanilla). Speeds apply to regular enemies (move speed: full boost up to the median enemy speed, tapering to 10% of the boost for the fastest, e.g. 1.1x at 2x); recharge speed 1.25x = attacks come back 1.25x as fast.";
 
         public void Init()
         {

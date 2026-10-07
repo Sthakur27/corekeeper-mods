@@ -6,7 +6,7 @@ store, trade or upgrade it.
 
 - **Dye palette**: hover an armor piece, weapon or tool in your inventory, hotbar, equipment or vanity
   slots and press **P** (rebind under Controls > Armor Dye). A panel shows that item's icon in every
-  color (10 colors, 5 hue shifts, Remove dye); click one to dye it. P again or right-click closes it.
+  color (10 colors, 11 hue shifts every 30°, Remove dye); click one to dye it. P again or right-click closes it.
 - **Shows everywhere**: on your character (armor and the item in your hand), on its projectiles (arrows, chakrams, rockets; particle effects are tinted), in the character and
   vanity previews, and on the item icons in every slot, chests included. Other players see your dyes.
 - **Vanity**: a dyed vanity piece shows its own dye; an undyed vanity piece shows the dye of the

@@ -81,7 +81,7 @@ the (possibly new) `auxDataIndex` back into the slot.
 - Palette: hover a dyeable item in the player's own slots (`Manager.ui.currentSelectedUIElement` is an
   `InventorySlotUI` of the player's inventory) and press the CoreLib key bind `ArmorDye_Palette`
   (default P; I/K/L/P were the only unbound letters in Sid's controls, middle mouse is bound in UI maps).
-  A 4x4 panel beside the slot shows the item's icon dyed in each of the 16 entries (icon variants cut
+  A 6-column panel beside the slot shows the item's icon dyed in each of the 22 entries (10 colors, hue shifts every 30 degrees, Remove dye) (icon variants cut
   from one CPU copy of the icon atlas), a color chip per cell and a ring on the current dye. Click sends
   `/dye slot <absolute index> <color>`. P again, right-click, the item leaving the slot or closing the
   inventory closes it. (0.2-0.4 had a dye bucket in the character window; replaced.)

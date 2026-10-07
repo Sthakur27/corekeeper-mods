@@ -20,7 +20,7 @@ namespace ArmorDye
     public sealed class ArmorDyeMod : IMod
     {
         public const string Name = "ArmorDye";
-        public const string Version = "0.5.0";
+        public const string Version = "0.5.1";
 
         public void EarlyInit()
         {

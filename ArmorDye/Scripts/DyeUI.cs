@@ -35,15 +35,21 @@ namespace ArmorDye
             new Entry("Pink", "pink", new Color32(240, 110, 190, 255)),
             new Entry("White", "white", new Color32(235, 235, 235, 255)),
             new Entry("Black", "black", new Color32(60, 60, 70, 255)),
+            new Entry("Hue shift 30", "shift 30", default),
             new Entry("Hue shift 60", "shift 60", default),
+            new Entry("Hue shift 90", "shift 90", default),
             new Entry("Hue shift 120", "shift 120", default),
+            new Entry("Hue shift 150", "shift 150", default),
             new Entry("Hue shift 180", "shift 180", default),
+            new Entry("Hue shift 210", "shift 210", default),
             new Entry("Hue shift 240", "shift 240", default),
+            new Entry("Hue shift 270", "shift 270", default),
             new Entry("Hue shift 300", "shift 300", default),
+            new Entry("Hue shift 330", "shift 330", default),
             new Entry("Remove dye", "off", default),
         };
 
-        private const int Columns = 4;
+        private const int Columns = 6;
         private const float CellStep = 1.25f;
         private const float Padding = 0.25f;
 

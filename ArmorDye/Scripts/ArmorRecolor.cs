@@ -21,12 +21,22 @@ namespace ArmorDye
         private static readonly HashSet<string> Logged = new HashSet<string>();
 
         internal static readonly List<PlayerController> Previews = new List<PlayerController>();
+        internal static readonly Dictionary<Unity.Entities.Entity, PlayerController> Players = new Dictionary<Unity.Entities.Entity, PlayerController>();
+
+        /// <summary>The dye of the weapon <paramref name="pc"/> is holding (0 if none or held-item dyes are off).</summary>
+        internal static int HeldDye(PlayerController pc)
+        {
+            if (pc == null) return 0;
+            var held = pc.visuallyEquippedContainedObject;
+            return held.objectID != ObjectID.None && held.auxDataIndex != 0 && DyeColor.CanDye(held.objectData) ? DyeOf(held) : 0;
+        }
 
         [HarmonyPostfix]
         public static void Postfix(PlayerController __instance)
         {
             var pc = __instance;
             if (pc == null || pc.vanitySlotsHandler == null || pc.equipmentHandler == null) return;
+            Players[pc.entity] = pc;
             try
             {
                 if (pc.isLocal && pc.shirtSkin != null && pc.shirtSkin.skin != null && pc.shirtSkin.sr.material != null)
@@ -83,7 +93,7 @@ namespace ArmorDye
         private static void ApplyHeld(PlayerController pc)
         {
             var held = pc.visuallyEquippedContainedObject;
-            int dye = held.objectID != ObjectID.None && held.auxDataIndex != 0 && DyeColor.CanDye(held.objectData) ? DyeOf(held) : 0;
+            int dye = DyeSettings.HeldItems && held.objectID != ObjectID.None && held.auxDataIndex != 0 && DyeColor.CanDye(held.objectData) ? DyeOf(held) : 0;
             ApplyHeldLayer(pc.carryableSwingItemSkinSkin, dye);
             ApplyHeldLayer(pc.carryableRangeItemSkinSkin, dye);
             ApplyHeldLayer(pc.carryableShieldItemSkinSkin, dye);
@@ -107,7 +117,7 @@ namespace ArmorDye
             ApplyLayer(layer, DisplayedDye(vanity, equipped));
         }
 
-        private static void ApplyLayer(SpriteSheetSkin layer, int dye)
+        internal static void ApplyLayer(SpriteSheetSkin layer, int dye)
         {
             if (layer == null || layer.skin == null) return;
             var sr = layer.sr;
@@ -230,7 +240,7 @@ namespace ArmorDye
             Sprite current = icon.sprite;
             Sprite original = DyeTextures.Original(current);
             int dye = 0;
-            if (item.objectID != ObjectID.None && item.auxDataIndex != 0 && DyeColor.CanDye(item.objectData))
+            if (DyeSettings.Icons && item.objectID != ObjectID.None && item.auxDataIndex != 0 && DyeColor.CanDye(item.objectData))
                 dye = ArmorRecolor.DyeOf(item);
             Sprite want = dye == 0 ? original : (DyeTextures.Icon(original, dye) ?? original);
             if (want != current) icon.sprite = want;

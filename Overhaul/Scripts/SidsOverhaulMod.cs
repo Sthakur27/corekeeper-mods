@@ -53,6 +53,7 @@ namespace SidsOverhaul
             Page("Difficulty Tuning (Normal)", "Normal Mode: ", DifficultyTuning.DifficultyTuningMod.NormalSettingsHint, DifficultyTuning.DifficultyTuningMod.RegisterNormalSettings);
             Page("Skill XP Multiplier", "Skill XP: ", SkillXPMultiplier.SkillXPMultiplierMod.SettingsHint, SkillXPMultiplier.SkillXPMultiplierMod.RegisterSettings);
             Page("Stim Hits", "Stim Hits: ", StimHits.StimHitsMod.SettingsHint, StimHits.StimHitsMod.RegisterSettings);
+            Page("Armor Dye", "Armor Dye: ", ArmorDye.DyeSettings.SettingsHint, ArmorDye.DyeSettings.RegisterSettings);
             Debug.Log($"[{Name}] Loaded all features.");
         }
 

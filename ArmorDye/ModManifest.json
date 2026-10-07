@@ -39,11 +39,23 @@
         {
             "path": "Scripts/DyeSprites.cs",
             "guid": ""
+        },
+        {
+            "path": "Scripts/DyeSettings.cs",
+            "guid": ""
+        },
+        {
+            "path": "Scripts/ProjectileRecolor.cs",
+            "guid": ""
         }
     ],
     "dependencies": [
         {
             "modName": "CoreLib",
+            "required": true
+        },
+        {
+            "modName": "ModOptions",
             "required": true
         }
     ]

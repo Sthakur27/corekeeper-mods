@@ -43,9 +43,25 @@ namespace ArmorDye
             return tex;
         }
 
-        /// <summary>A dyed copy of an item icon sprite, or null if the sprite can't be copied.</summary>
+        // CPU copies of whole source textures (icon atlases, projectile sheets), read once per texture so the
+        // palette's 16 previews and animated projectile frames don't each copy the texture back from the GPU.
+        private static readonly Dictionary<Texture2D, Color32[]> SourcePixels = new Dictionary<Texture2D, Color32[]>();
+
+        private static Color32[] PixelsOf(Texture2D src)
+        {
+            if (SourcePixels.TryGetValue(src, out var px) && px != null) return px;
+            var copy = Read(src, new RectInt(0, 0, src.width, src.height));
+            px = copy.GetPixels32();
+            Object.Destroy(copy);
+            SourcePixels[src] = px;
+            return px;
+        }
+
+        /// <summary>A dyed copy of an item icon (or any sprite), or null if the sprite can't be copied. dye 0 = original.</summary>
         public static Sprite Icon(Sprite src, int dye)
         {
+            if (src == null) return null;
+            if (dye == 0) return Original(src);
             long key = Key(src, dye);
             if (Sprites.TryGetValue(key, out var s) && s != null) return s;
             if (Failed.Contains(key)) return null;
@@ -54,8 +70,19 @@ namespace ArmorDye
                 Rect r = src.packed ? src.textureRect : src.rect;
                 var rect = new RectInt(Mathf.RoundToInt(r.x), Mathf.RoundToInt(r.y), Mathf.RoundToInt(r.width), Mathf.RoundToInt(r.height));
                 if (rect.width <= 0 || rect.height <= 0) throw new System.Exception("empty rect");
-                var tex = Read(src.texture, rect);
-                Dye(tex, dye);
+                var all = PixelsOf(src.texture);
+                int tw = src.texture.width;
+                var region = new Color32[rect.width * rect.height];
+                for (int y = 0; y < rect.height; y++)
+                    for (int x = 0; x < rect.width; x++)
+                        region[y * rect.width + x] = DyeColor.Apply(all[(rect.y + y) * tw + rect.x + x], dye);
+                var tex = new Texture2D(rect.width, rect.height, TextureFormat.RGBA32, false, !src.texture.isDataSRGB)
+                {
+                    filterMode = src.texture.filterMode,
+                    wrapMode = TextureWrapMode.Clamp,
+                };
+                tex.SetPixels32(region);
+                tex.Apply(false, false);
                 tex.name = src.name + "_dye_" + dye.ToString("x8");
                 // Keep the pivot where the original has it, relative to the copied (possibly trimmed) region.
                 Vector2 offset = src.packed ? src.textureRectOffset : Vector2.zero;

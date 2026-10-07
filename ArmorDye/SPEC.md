@@ -76,24 +76,36 @@ the (possibly new) `auxDataIndex` back into the slot.
   drill, fishing rod, instrument), recolored the same way as armor. `/dye hand <color>` dyes the
   selected hotbar item (`EquippedObjectCD.equippedSlotIndex`).
 
-## UI (0.2.0+)
+## UI (0.5.0)
 
-- Dye bucket in the character window's free cell under the vanity pants slot (0.4.0). Left-click opens
-  a palette panel left of the bucket (4x4 swatches: 10 colors, 5 hue shifts, Remove dye; drawn in
-  front of the UI it covers, with a click-blocking background). Picking a swatch closes it. With a
-  color picked, left-clicking a dyeable item in the player's own slots sends
-  `/dye slot <absolute index> <color>` instead of the normal click. Right-click the bucket to turn
-  dye mode off. Closing the inventory always turns dye mode off (so normal clicks/drags work when it
-  reopens); the color is remembered and ringed in the palette. The bucket is dimmed while off.
-- Item icons in every `InventorySlotUI` show their own dye (sprite region copied from the icon atlas).
-- Character-window and vanity-window previews show the local player's dyes.
+- Palette: hover a dyeable item in the player's own slots (`Manager.ui.currentSelectedUIElement` is an
+  `InventorySlotUI` of the player's inventory) and press the CoreLib key bind `ArmorDye_Palette`
+  (default P; I/K/L/P were the only unbound letters in Sid's controls, middle mouse is bound in UI maps).
+  A 4x4 panel beside the slot shows the item's icon dyed in each of the 16 entries (icon variants cut
+  from one CPU copy of the icon atlas), a color chip per cell and a ring on the current dye. Click sends
+  `/dye slot <absolute index> <color>`. P again, right-click, the item leaving the slot or closing the
+  inventory closes it. (0.2-0.4 had a dye bucket in the character window; replaced.)
+- Item icons in every `InventorySlotUI` show their own dye; character/vanity previews show the local
+  player's dyes (appearance-only copies with a disabled PlayerController).
+
+## Projectiles (0.5.0)
+
+- Postfix on `EntityMonoBehaviour.Spawn` (all visuals, incl. pooled reuse): if the entity has
+  `ProjectileCD` + `OwnerReferenceCD` and the owner is a player, the projectile gets that player's held-item
+  dye. A `DyedProjectile` component re-dyes sprites in `LateUpdate` (after the Animator), dyes
+  SpriteSheetSkins, and tints ParticleSystem start colors and TrailRenderer gradients.
+
+## Settings (Mod Options page "Armor Dye", client-side)
+
+Dye weapons and tools in hand, Dye projectiles, Dye item icons (all default on).
 
 ## Known limits (prototype)
 
 - Emissive (glowing) parts are recolored too since 0.4.4 (`_EmissiveTex` on the same material).
-- A thrown weapon in flight (e.g. a chakram) is a separate projectile and keeps its vanilla look.
 - Crafting a new piece gives an undyed item (it's a new item).
 - Off-hand items are not recolored yet (only the main-hand item).
+- Projectile color = the shooter's held item when the projectile appears (swapping weapons while a
+  boomerang is out recolors it). Particle effects are tinted, not exactly recolored.
 - With Loadout Fallback's per-loadout vanity, the dye on the **equipped** piece recolors whatever
   look is displayed, including a vanity piece on top (seen in test 2026-10-07: Ninja/Soaring vanity
   chests took the equipped Scholar chest's dye). Sid is fine with this; leave it unless he asks.

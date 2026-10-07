@@ -1,0 +1,50 @@
+{
+    "guid": "3f6c2d8e9a1b4c7d8e2f5a6b7c8d9e0f",
+    "name": "ArmorDye",
+    "displayName": "Armor Dye",
+    "skipSafetyChecks": false,
+    "disableScripts": false,
+    "accessesExtraAssemblies": true,
+    "disableHarmonyPatching": false,
+    "requiredOn": 3,
+    "files": [
+        {
+            "path": "Scripts/ArmorDyeMod.cs",
+            "guid": ""
+        },
+        {
+            "path": "Scripts/DyeColor.cs",
+            "guid": ""
+        },
+        {
+            "path": "Scripts/DyeServer.cs",
+            "guid": ""
+        },
+        {
+            "path": "Scripts/DyeCommand.cs",
+            "guid": ""
+        },
+        {
+            "path": "Scripts/ArmorRecolor.cs",
+            "guid": ""
+        },
+        {
+            "path": "Scripts/DyeTextures.cs",
+            "guid": ""
+        },
+        {
+            "path": "Scripts/DyeUI.cs",
+            "guid": ""
+        },
+        {
+            "path": "Scripts/DyeSprites.cs",
+            "guid": ""
+        }
+    ],
+    "dependencies": [
+        {
+            "modName": "CoreLib",
+            "required": true
+        }
+    ]
+}

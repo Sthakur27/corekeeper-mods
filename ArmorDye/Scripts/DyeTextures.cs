@@ -17,7 +17,12 @@ namespace ArmorDye
 
         private static long Key(Object o, int dye) => ((long)o.GetInstanceID() << 32) | (uint)dye;
 
+        private static readonly Dictionary<Texture, Texture2D> SheetOriginal = new Dictionary<Texture, Texture2D>();
+
         public static bool IsOurs(Texture t) => t != null && OurSheets.Contains(t);
+
+        /// <summary>The vanilla texture behind a dyed sheet (itself if it is not one of ours).</summary>
+        public static Texture2D OriginalSheet(Texture t) => t != null && SheetOriginal.TryGetValue(t, out var o) ? o : t as Texture2D;
 
         /// <summary>The vanilla sprite behind <paramref name="s"/> (itself if it is not one of ours).</summary>
         public static Sprite Original(Sprite s) => s != null && SpriteOriginal.TryGetValue(s, out var o) ? o : s;
@@ -33,6 +38,7 @@ namespace ArmorDye
             tex.name = src.name + "_dye_" + dye.ToString("x8");
             Sheets[key] = tex;
             OurSheets.Add(tex);
+            SheetOriginal[tex] = src;
             Debug.Log($"[{ArmorDyeMod.Name}] recolored {src.name} ({src.width}x{src.height} {src.format} sRGB={src.isDataSRGB}) -> {DyeColor.Describe(dye)}");
             return tex;
         }
@@ -97,6 +103,7 @@ namespace ArmorDye
             foreach (var t in Sheets.Values) if (t != null) Object.Destroy(t);
             Sheets.Clear();
             OurSheets.Clear();
+            SheetOriginal.Clear();
         }
     }
 }

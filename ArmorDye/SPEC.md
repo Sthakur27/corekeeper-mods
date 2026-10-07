@@ -90,7 +90,8 @@ the (possibly new) `auxDataIndex` back into the slot.
 
 ## Known limits (prototype)
 
-- Emissive (glowing) parts keep their original color (the `_EmissiveTex` is not recolored).
+- Emissive (glowing) parts are recolored too since 0.4.4 (`_EmissiveTex` on the same material).
+- A thrown weapon in flight (e.g. a chakram) is a separate projectile and keeps its vanilla look.
 - Crafting a new piece gives an undyed item (it's a new item).
 - Off-hand items are not recolored yet (only the main-hand item).
 - With Loadout Fallback's per-loadout vanity, the dye on the **equipped** piece recolors whatever

@@ -17,6 +17,7 @@ namespace ArmorDye
     {
         private static readonly int ReplacementTex = Shader.PropertyToID("_ReplacementTex");
         private static readonly int ColorReplaceTex = Shader.PropertyToID("_colorReplaceTexture");
+        private static readonly int EmissiveTex = Shader.PropertyToID("_EmissiveTex");
         private static readonly HashSet<string> Logged = new HashSet<string>();
 
         internal static readonly List<PlayerController> Previews = new List<PlayerController>();
@@ -116,10 +117,19 @@ namespace ArmorDye
 
             Texture current = mat.GetTexture(ReplacementTex);
             Texture want = dye == 0 ? layer.skin : DyeTextures.Sheet(layer.skin, dye);
-            if (want == null || current == want) return;
             // With no dye only undo our own texture; anything else (temporary skins etc.) belongs to the game.
-            if (dye == 0 && !DyeTextures.IsOurs(current)) return;
-            mat.SetTexture(ReplacementTex, want);
+            if (want != null && current != want && (dye != 0 || DyeTextures.IsOurs(current)))
+                mat.SetTexture(ReplacementTex, want);
+
+            // Glowing parts (Galaxite gear, Burnzooka flames, glowing armor) live in a separate emissive texture
+            // on the same material; dye it the same way so the glow matches.
+            if (!mat.HasProperty(EmissiveTex)) return;
+            Texture emissive = mat.GetTexture(EmissiveTex);
+            if (emissive == null) return;
+            Texture2D original = DyeTextures.OriginalSheet(emissive);
+            if (original == null) return;
+            Texture wantEmissive = dye == 0 ? original : DyeTextures.Sheet(original, dye);
+            if (wantEmissive != null && wantEmissive != emissive) mat.SetTexture(EmissiveTex, wantEmissive);
         }
 
         /// <summary>Same choice as PlayerController.UpdateGearCustomization: vanity item if any, else the equipped one.</summary>

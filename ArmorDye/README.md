@@ -19,7 +19,7 @@ Chat commands (any color, also what the bucket sends):
 
 Dyeable: armor, and single non-stacking items with durability (weapons, tools, fishing rods).
 
-Limits: glowing (emissive) parts keep their original color; off-hand items are not recolored yet.
+Glowing parts are dyed too. Limits: off-hand items and thrown weapons in flight keep their vanilla look.
 
 How it works: the color is stored in a vanilla per-item data slot the game only uses on live cattle
 (`MealsEatenCD`), so it is saved and synced like a pet's color; every client recolors the armor and

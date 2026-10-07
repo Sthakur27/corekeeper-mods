@@ -51,7 +51,12 @@ namespace ArmorDye
                 {
                     var p = Previews[i];
                     if (p == null) { Previews.RemoveAt(i); continue; }
-                    if (p != player && p.isActiveAndEnabled) ApplyAll(p, player);
+                    // The previews are "appearance only" copies whose PlayerController component is disabled, so test the object.
+                    if (p != player && p.gameObject.activeInHierarchy)
+                    {
+                        ApplyAll(p, player);
+                        LogOnce("preview:" + p.GetInstanceID(), $"dyeing preview {p.name}", false);
+                    }
                 }
             }
             catch (System.Exception e)

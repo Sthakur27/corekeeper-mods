@@ -18,7 +18,7 @@ namespace AutoReplant
     public sealed class AutoReplantMod : IMod
     {
         public const string Name = "AutoReplant";
-        public const string Version = "1.2.0";
+        public const string Version = "1.3.0";
 
         public const bool DefaultEnabled = true;
         public const int DefaultGoldenChancePercent = 5;
@@ -56,7 +56,7 @@ namespace AutoReplant
             Debug.Log($"[{Name}] v{Version}");
         }
 
-        public const string SettingsHint = "Harvesting a ripe crop replants it from a seed in your inventory. Golden roll is vanilla (3% + Gardening bonus) unless 'Override golden chance' is on; then the % below replaces the 3% base.";
+        public const string SettingsHint = "Harvesting a ripe crop on tilled ground replants it right away with the seed it dropped (taken off the ground), or else a seed from your inventory. Golden roll is vanilla (3% + Gardening bonus) unless 'Override golden chance' is on; then the % below replaces the 3% base.";
 
         public void Init()
         {

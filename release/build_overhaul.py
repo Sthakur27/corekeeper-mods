@@ -8,7 +8,7 @@ copies their Scripts/ into Scripts/<Mod>/, adds Overhaul/Scripts (the central Si
 re-patches the two asset bundles so their MonoBehaviours bind to the SidsOverhaul assembly, and writes
 one manifest with every file. Features detect the overhaul via their InOverhaul(this) check.
 """
-import json, os, shutil, sys
+import json, os, re, shutil, sys
 
 ROOT = r"C:\Users\Sid\CoreKeeperMods"
 OUT = os.path.join(ROOT, "build", "SidsOverhaul")
@@ -49,11 +49,88 @@ def patch_bundle(src, dst, old_assembly):
     return n
 
 
+# ---------------------------------------------------------------- feature switches
+# Every feature listed in Overhaul/Scripts/Features.cs (Features.All) gets guards so it can be switched
+# off from Mod Options ("Features On/Off"). They are added here, at build time, so the standalone mods
+# stay untouched:
+#   - Harmony patch classes: static bool Prepare() => Features.On(key)   (Harmony skips the class)
+#   - IMod EarlyInit/Init/Update/ModObjectLoaded: return early
+#   - system OnUpdate: disable the system
+#   - CoreLib chat commands: answer "switched off"
+GUARD = 'global::SidsOverhaul.Features.On("{key}")'
+
+
+def read_switchable():
+    text = open(os.path.join(ROOT, "Overhaul", "Scripts", "Features.cs"), encoding="utf-8").read()
+    return dict(re.findall(r'\{\s*"(\w+)",\s*"([^"]+)"\s*\}', text))
+
+
+def gate_source(text, key, title, counts):
+    guard = GUARD.format(key=key)
+    nl = "\r\n" if "\r\n" in text else "\n"
+    prepare = f"static bool Prepare() => {guard};"
+
+    # Harmony patch classes (class-level [HarmonyPatch], possibly several attribute lines).
+    out, pending, inject = [], False, False
+    for line in text.split(nl):
+        out.append(line)
+        stripped = line.strip()
+        indent = re.match(r"\s*", line).group(0)
+        if inject:
+            if "{" in stripped:
+                out.append(indent + "    " + prepare)
+                counts["patches"] += 1
+                inject = False
+            continue
+        if stripped.startswith("[HarmonyPatch"):
+            pending = True
+        elif pending and re.search(r"\bclass\s+\w+", stripped):
+            pending = False
+            if "{" in stripped:  # brace on the class line
+                out.append(indent + "    " + prepare)
+                counts["patches"] += 1
+            else:
+                inject = True
+        elif stripped and not stripped.startswith(("[", "//")):
+            pending = False
+    text = nl.join(out)
+
+    def sub(pattern, repl, name):
+        nonlocal text
+        text, n = re.subn(pattern, repl, text)
+        counts[name] += n
+
+    if re.search(r":\s*IMod\b", text):
+        sig = r"(public void (?:EarlyInit|Init|Update|ModObjectLoaded)\([^)]*\))"
+        sub(sig + r"\s*=>\s*([^;]+);", lambda m: f"{m.group(1)} {{ if (!{guard}) return; {m.group(2)}; }}", "imod")
+        sub(sig + r"(\s*\{)(?! if \(!global::)", lambda m: f"{m.group(1)}{m.group(2)} if (!{guard}) return;", "imod")
+    sub(r"(protected override void OnUpdate\(\)\s*\{)",
+        lambda m: f"{m.group(1)} if (!{guard}) {{ Enabled = false; return; }}", "systems")
+    sub(r"(public CommandOutput Execute\([^)]*\)\s*\{)",
+        lambda m: f'{m.group(1)} if (!{guard}) return new CommandOutput("{title} is switched off (Mod Options > Features On/Off).", CommandStatus.Warning);',
+        "commands")
+    return text
+
+
+def copy_script(src, dst, mod, switchable, counts):
+    if mod not in switchable or not src.endswith(".cs"):
+        shutil.copy2(src, dst)
+        return
+    text = open(src, encoding="utf-8-sig", newline="").read()
+    c = counts.setdefault(mod, {"patches": 0, "imod": 0, "systems": 0, "commands": 0})
+    open(dst, "w", encoding="utf-8", newline="").write(gate_source(text, mod, switchable[mod], c))
+
+
 def main():
     if os.path.exists(OUT):
         shutil.rmtree(OUT)
     os.makedirs(OUT)
     files = []
+    switchable = read_switchable()
+    counts = {}
+    unknown = [m for m in switchable if m not in MODS]
+    if unknown:
+        sys.exit(f"Features.cs lists mods that are not in MODS: {unknown}")
 
     def add(rel, guid=""):
         files.append({"path": rel.replace("\\", "/"), "guid": guid})
@@ -71,7 +148,7 @@ def main():
                 rel = path  # e.g. Localization/Localization.csv (only FastAutoFishing has one)
             dst = os.path.join(OUT, rel)
             os.makedirs(os.path.dirname(dst), exist_ok=True)
-            shutil.copy2(src, dst)
+            copy_script(src, dst, mod, switchable, counts)
             add(rel, f.get("guid", ""))
 
     os.makedirs(os.path.join(OUT, "Bundles"), exist_ok=True)
@@ -96,6 +173,12 @@ def main():
             shutil.copy2(src, dst)
             add(rel, "")
     shutil.copy2(os.path.join(ROOT, "Overhaul", "README.md"), os.path.join(OUT, "README.md"))
+    for mod in switchable:
+        c = counts.get(mod, {})
+        print(f"  switch {mod}: {c.get('patches', 0)} patch classes, {c.get('imod', 0)} IMod methods, "
+              f"{c.get('systems', 0)} systems, {c.get('commands', 0)} commands")
+        if not c.get("imod"):
+            sys.exit(f"feature switch for {mod}: no IMod method guarded, check gate_source")
 
     manifest = {
         "guid": GUID, "name": NAME, "displayName": "Sid's Overhaul",

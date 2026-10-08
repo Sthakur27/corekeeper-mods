@@ -418,3 +418,7 @@ fully headless (see `EnderStash/Unity/`, run `python EnderStash/Unity/build_bund
   PlayerWasLastConnectedToThisServer": the world save's player entity keeps its saved length, but data in
   empty slots is not kept). `PlayerGhost.playerGuid` (Unity.Entities.Hash128) = `UnityEngine.Hash128.Parse(CharacterData.characterGuid)`.
   See `EnderStash/Scripts/StashGuard.cs` for the marker + pending-move pattern.
+
+## Overhaul feature switches (2026-10-07)
+
+- Mod Options page "Features On/Off" (Overhaul/Scripts/Features.cs, table `Features.All` = mod folder + label). build_overhaul.py injects `Features.On("<folder>")` guards into the listed features only: `Prepare()` in every class-level [HarmonyPatch] class, early return in IMod EarlyInit/Init/Update/ModObjectLoaded, `Enabled = false` in system OnUpdate, "switched off" reply in CoreLib command Execute. Standalone sources are untouched. Switches are read from SidsOverhaul/config.cfg via API.ConfigFilesystem at Harmony patch time (before EarlyInit) and frozen for the session (restart to apply). Loadout Fallback, Five Loadouts, Ender Stash are deliberately not switchable (slot layout -> item loss). New feature: add a row to Features.All; the build fails if no IMod method got a guard.

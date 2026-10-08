@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using Inventory;
 using Pug.Properties;
+using Pug.UnityExtensions;
+using PugTilemap;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
@@ -46,6 +48,8 @@ namespace AutoReplant.Systems
         private const int PropGoldenSeedVariation = 1273594437;
         /// <summary>SummarizedConditionsBuffer index of ConditionID.ChanceToGainRarePlant (vanilla adds it to the 3% base).</summary>
         private const int CondChanceToGainRarePlant = 126;
+        /// <summary>ObjectPropertiesCD list key: the tiles (as ObjectIDs) a placed object may stand on (read by DestroyEntityIfPlacementNotValidSystem).</summary>
+        private const int PropAllowedTiles = -179233515;
         /// <summary>How long we wait for the harvested plant to disappear and for a seed to show up.</summary>
         private const double WindowSeconds = 6.0;
 
@@ -53,6 +57,8 @@ namespace AutoReplant.Systems
         {
             public ObjectID seed;
             public int goldenVariation;
+            /// <summary>Tiles the seed can be planted on (tilled ground); null = not checked.</summary>
+            public HashSet<ObjectID> allowedTiles;
         }
 
         private sealed class Pending
@@ -69,12 +75,30 @@ namespace AutoReplant.Systems
         private EntityQuery _harvested;
         private EntityQuery _changeBuffer;
         private EntityQuery _database;
+        private EntityQuery _networkTime;
+        private EntityQuery _droppedItems;
 
         private Dictionary<ObjectID, SeedInfo> _seedByPlant;
+        private BlobAssetReference<PugDatabase.PugDatabaseBank> _bank;
         private readonly HashSet<Entity> _seen = new HashSet<Entity>();
         private readonly List<Entity> _seenScratch = new List<Entity>();
         private readonly List<Pending> _pending = new List<Pending>();
         private readonly System.Random _rng = new System.Random();
+
+        /// <summary>
+        /// Seeds already claimed by a replant whose consume the game has not applied yet. An area harvest
+        /// (e.g. Scarlet Hoe) queues many replants in one tick; without this they all saw the same seed,
+        /// all tried to consume it, and only the first one planted. Keyed by (player, slot); a claim is
+        /// dropped once the slot's amount changes (consume applied) or after a second.
+        /// </summary>
+        private struct Claim
+        {
+            public int amountAtClaim;
+            public int claimed;
+            public double time;
+        }
+        private readonly Dictionary<(Entity, int), Claim> _claims = new Dictionary<(Entity, int), Claim>();
+        private double _now;
 
         protected override void OnCreate()
         {
@@ -91,6 +115,12 @@ namespace AutoReplant.Systems
                 ComponentType.ReadOnly<ObjectPropertiesCD>());
             _changeBuffer = GetEntityQuery(ComponentType.ReadWrite<InventoryChangeBuffer>());
             _database = GetEntityQuery(ComponentType.ReadOnly<PugDatabase.DatabaseBankCD>());
+            _networkTime = GetEntityQuery(ComponentType.ReadOnly<NetworkTime>());
+            _droppedItems = GetEntityQuery(
+                ComponentType.ReadOnly<ObjectDataCD>(),
+                ComponentType.ReadOnly<PickUpItemCD>(),
+                ComponentType.ReadOnly<LocalTransform>(),
+                ComponentType.ReadWrite<ContainedObjectsBuffer>());
             RequireForUpdate(_database);
         }
 
@@ -108,6 +138,7 @@ namespace AutoReplant.Systems
             if (_seedByPlant == null && !BuildSeedMap()) return;
 
             double now = World.Time.ElapsedTime;
+            _now = now;
             DetectHarvests(now);
             ProcessPending(now);
             PruneSeen();
@@ -137,6 +168,10 @@ namespace AutoReplant.Systems
 
                 float3 pos = EntityManager.GetComponentData<LocalTransform>(plant).Position;
                 pos = new float3(math.round(pos.x), 0f, math.round(pos.z));   // same convention as PlaceItem
+
+                // Wild crops grow on plain ground, where a seed can't be planted: vanilla's placement
+                // check would destroy our seed and drop it on the ground a moment later.
+                if (!CanPlantAt(seed, pos)) continue;
 
                 _pending.Add(new Pending
                 {
@@ -169,8 +204,24 @@ namespace AutoReplant.Systems
                 }
                 // The tile must be free: DestroyEntityIfPlacementNotValidSystem would delete the new
                 // seed if the old plant entity still physically occupied the tile.
-                if (EntityManager.Exists(p.plant)) continue;
+                if (EntityManager.Exists(p.plant))
+                {
+                    HurryRemoval(p.plant);
+                    continue;
+                }
 
+                // 1. The seed this harvest dropped, taken straight off the ground: vanilla odds, no wait
+                //    for the pickup, nothing goes through the inventory.
+                if (TakeDroppedSeed(p))
+                {
+                    int groundVariation = RollGolden(p.player, p.seed) ? p.seed.goldenVariation : 0;
+                    PlantSeed(p, groundVariation);
+                    _pending.RemoveAt(i);
+                    continue;
+                }
+
+                // 2. Otherwise a seed from the inventory (or, with inventory seeds off, the harvest's own
+                //    seed if it was already picked up).
                 int count = CountSeeds(p.player, p.seed.seed);
                 bool haveSeed = AutoReplantMod.UseInventorySeeds ? count > 0 : count > p.baselineSeeds;
                 if (!haveSeed) continue;
@@ -188,9 +239,92 @@ namespace AutoReplant.Systems
                     // slot and instantiate the seed prefab at the tile with the chosen variation.
                     inventoryChangeData = Create.ConsumeEntityAt(p.player, slot, 1, false, false, p.position, variation, default(float3), p.seed.seed)
                 });
+                AddClaim(p.player, slot);
 
                 _pending.RemoveAt(i);
             }
+        }
+
+        /// <summary>Removes one dropped seed of the right kind lying near the harvested tile. True if one was taken.</summary>
+        private bool TakeDroppedSeed(Pending p)
+        {
+            if (_droppedItems.IsEmptyIgnoreFilter) return false;
+            var items = _droppedItems.ToEntityArray(Allocator.Temp);
+            try
+            {
+                Entity best = Entity.Null;
+                float bestDist = 2.5f * 2.5f; // loot spawns on or right next to the plant
+                for (int i = 0; i < items.Length; i++)
+                {
+                    Entity e = items[i];
+                    if (EntityManager.GetComponentData<ObjectDataCD>(e).objectID != ObjectID.DroppedItem) continue;
+                    var contents = EntityManager.GetBuffer<ContainedObjectsBuffer>(e);
+                    if (contents.Length == 0 || contents[0].objectID != p.seed.seed || contents[0].amount <= 0) continue;
+                    float3 pos = EntityManager.GetComponentData<LocalTransform>(e).Position;
+                    float d = math.distancesq(new float2(pos.x, pos.z), new float2(p.position.x, p.position.z));
+                    if (d < bestDist) { bestDist = d; best = e; }
+                }
+                if (best == Entity.Null) return false;
+
+                var buffer = EntityManager.GetBuffer<ContainedObjectsBuffer>(best);
+                var item = buffer[0];
+                if (item.amount > 1)
+                {
+                    item.objectData.amount -= 1;
+                    buffer[0] = item;
+                }
+                else
+                {
+                    EntityManager.DestroyEntity(best);
+                }
+                return true;
+            }
+            finally
+            {
+                items.Dispose();
+            }
+        }
+
+        /// <summary>Instantiates the seed at the tile the way InventoryUtility.CreateEntity does when you plant by hand.</summary>
+        private void PlantSeed(Pending p, int variation)
+        {
+            var ecb = CreateCommandBuffer();
+            Entity seed = EntityUtility.CreateEntity(ecb, p.position, p.seed.seed, 1, _bank, variation);
+            if (seed == Entity.Null) return;
+            Entity prefab = PugDatabase.GetPrimaryPrefabEntity(p.seed.seed, _bank);
+            if (prefab != Entity.Null && EntityManager.HasComponent<RandomCD>(prefab) && EntityManager.HasComponent<RandomCD>(p.player))
+            {
+                var playerRandom = EntityManager.GetComponentData<RandomCD>(p.player);
+                ecb.SetComponent(seed, new RandomCD { Value = PugRandom.InheritRngFromEntity(ref playerRandom.Value) });
+                EntityManager.SetComponentData(p.player, playerRandom);
+            }
+            ecb.AddComponent<DestroyEntityIfPlacementNotValidCD>(seed);
+        }
+
+        /// <summary>
+        /// A harvested plant lingers until its EntityDestroyedCD timer runs out (SetEntitiesDestroyedSystem
+        /// starts it at ~1-2 s), which is what made the replant visibly late. Once the timer is running and
+        /// the loot has had its tick to drop, end the timer so DestroyEntitiesSystem removes the plant now.
+        /// </summary>
+        private void HurryRemoval(Entity plant)
+        {
+            if (!EntityManager.HasComponent<EntityDestroyedCD>(plant)) return;
+            if (EntityManager.HasComponent<DropLootDelayCD>(plant) && EntityManager.IsComponentEnabled<DropLootDelayCD>(plant)) return;
+            if (!_networkTime.TryGetSingleton<NetworkTime>(out NetworkTime time) || !time.ServerTick.IsValid) return;
+
+            var destroyed = EntityManager.GetComponentData<EntityDestroyedCD>(plant);
+            if (!destroyed.destroyTimer.HasStarted) return;
+            int elapsed = destroyed.destroyTimer.GetElapsedTicks(time.ServerTick);
+            if (elapsed < 2 || destroyed.destroyTimer.targetTicks <= (uint)elapsed) return;
+            destroyed.destroyTimer.targetTicks = (uint)elapsed;
+            EntityManager.SetComponentData(plant, destroyed);
+        }
+
+        private bool CanPlantAt(SeedInfo seed, float3 pos)
+        {
+            if (seed.allowedTiles == null) return true;
+            TileCD top = CreateTileAccessor().GetTop(new int2((int)pos.x, (int)pos.z));
+            return seed.allowedTiles.Contains(PugDatabase.GetObjectID(top.tileset, top.tileType, _bank));
         }
 
         private bool RollGolden(Entity player, SeedInfo seed)
@@ -209,13 +343,37 @@ namespace AutoReplant.Systems
 
         // ------------------------------------------------------------------ inventory helpers
 
+        /// <summary>Seeds of that kind in the inventory, minus the ones already claimed by queued replants.</summary>
         private int CountSeeds(Entity player, ObjectID seed)
         {
             var items = EntityManager.GetBuffer<ContainedObjectsBuffer>(player);
             int total = 0;
             for (int i = 0; i < items.Length; i++)
-                if (items[i].objectID == seed) total += items[i].amount;
+                if (items[i].objectID == seed) total += Available(player, i, items[i].amount);
             return total;
+        }
+
+        /// <summary>Unclaimed amount in a slot.</summary>
+        private int Available(Entity player, int slot, int amount)
+        {
+            if (!_claims.TryGetValue((player, slot), out Claim c)) return amount;
+            if (amount != c.amountAtClaim || _now - c.time > 1.0)
+            {
+                _claims.Remove((player, slot)); // the game applied the consume (or something else changed the slot)
+                return amount;
+            }
+            return amount - c.claimed;
+        }
+
+        private void AddClaim(Entity player, int slot)
+        {
+            int amount = EntityManager.GetBuffer<ContainedObjectsBuffer>(player)[slot].amount;
+            if (_claims.TryGetValue((player, slot), out Claim c) && c.amountAtClaim == amount)
+                c.claimed++;
+            else
+                c = new Claim { amountAtClaim = amount, claimed = 1 };
+            c.time = _now;
+            _claims[(player, slot)] = c;
         }
 
         /// <summary>First slot holding that seed. Plain seeds (variation 0) are preferred over odd variations.</summary>
@@ -227,7 +385,7 @@ namespace AutoReplant.Systems
             for (int i = 0; i < items.Length; i++)
             {
                 var item = items[i];
-                if (item.objectID != seed || item.amount <= 0) continue;
+                if (item.objectID != seed || Available(player, i, item.amount) <= 0) continue;
                 if (item.variation == 0) return i;
                 if (fallback < 0) { fallback = i; variation = item.variation; }
             }
@@ -261,10 +419,18 @@ namespace AutoReplant.Systems
 
                 int golden = 0;
                 props.TryGet<int>(PropGoldenSeedVariation, out golden);
-                map[plant] = new SeedInfo { seed = info.objectID, goldenVariation = golden };
+                HashSet<ObjectID> tiles = null;
+                if (props.TryGetList(PropAllowedTiles, out NativeArray<ObjectID> list, Allocator.Temp))
+                {
+                    tiles = new HashSet<ObjectID>();
+                    foreach (ObjectID t in list) tiles.Add(t);
+                    list.Dispose();
+                }
+                map[plant] = new SeedInfo { seed = info.objectID, goldenVariation = golden, allowedTiles = tiles };
             }
 
             _seedByPlant = map;
+            _bank = bank;
             Debug.Log($"[{AutoReplantMod.Name}] seed map built: {map.Count} plants.");
             return true;
         }
@@ -273,6 +439,13 @@ namespace AutoReplant.Systems
 
         private void PruneSeen()
         {
+            if (_claims.Count > 0)
+            {
+                var stale = new List<(Entity, int)>();
+                foreach (var kv in _claims)
+                    if (_now - kv.Value.time > 1.0) stale.Add(kv.Key);
+                foreach (var key in stale) _claims.Remove(key);
+            }
             if (_seen.Count == 0) return;
             _seenScratch.Clear();
             foreach (Entity e in _seen)

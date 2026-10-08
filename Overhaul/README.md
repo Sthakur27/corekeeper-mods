@@ -12,7 +12,7 @@ Included features (each is also available as its own mod on mod.io):
 - **Faster Mushrooms**: mycelium spreads faster; picked wild mushrooms respawn near you.
 - **Bigger Watering Cans**: watering cans water 2x2 or 4x4.
 - **Better Fishing Loot**: rare fishing loot drops more often.
-- **Auto Replant**: harvesting a crop replants it from a seed in your inventory.
+- **Auto Replant**: harvesting a crop replants it from a seed in your inventory (only on tilled ground; wild crops are left alone).
 - **Quick Buff**: one key (default B) eats or drinks one of every buff food and potion; F does the same for buff food only; H drinks the first healing potion. Pouches included.
 - **Potion Seller**: the Caveling Merchant sells every potion and Recall Idols; the Slime Merchant sells every grenade and bomb.
 - **Difficulty Tuning** (was Hard Mode Tuning): separate enemy damage, health, speed and boss settings for hard mode worlds and normal worlds. Defaults: hard mode regular enemies hit for 1.5x normal damage instead of 2x; normal worlds vanilla.
@@ -27,7 +27,7 @@ Included features (each is also available as its own mod on mod.io):
 
 Settings: Settings > **Mod Options** (main menu or pause menu). Pick a feature to see just its options;
 left/right or click the arrows to change a value, and each page has a "Reset to defaults" button
-(click twice to confirm). In multiplayer the host's values count. The menu is built in (Mod Options);
+(click twice to confirm). In multiplayer the host's values count. The **Features On/Off** page switches whole features off (takes effect after restarting the game; Loadout Fallback, Five Loadouts and Ender Stash stay on because they hold items in extra slots). The menu is built in (Mod Options);
 Mod Settings Menu is not needed, and it is fine to keep it installed for other mods.
 
 ## Requirements

@@ -30,6 +30,7 @@ public void Init()
 Options: `Toggle` (bool), `Choice` (string list, wraps around), `Stepper` (int range), `Slider`
 (float range with a step). `SettingsPages.Create(mod, title, keyPrefix)` lets one mod own several
 pages in one config file (Sid's Overhaul uses it to keep the keys of earlier versions).
+Pages are listed alphabetically; `.PinToTop()` lists a page above the rest.
 
 How the menu works: the game's Gameplay settings screen is cloned twice at runtime (list and page);
 their rows are replaced with `SettingsRow` components (subclass of `RadicalMenuOption`), and the

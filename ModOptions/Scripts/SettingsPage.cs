@@ -19,7 +19,7 @@ namespace ModOptions
         private static readonly List<SettingsPage> _pages = new List<SettingsPage>();
         private static readonly Dictionary<string, ConfigFile> _files = new Dictionary<string, ConfigFile>();
 
-        /// <summary>Every built page, sorted by title.</summary>
+        /// <summary>Every built page: pinned pages first, then sorted by title.</summary>
         public static IReadOnlyList<SettingsPage> All => _pages;
 
         /// <summary>
@@ -43,7 +43,8 @@ namespace ModOptions
         {
             _pages.RemoveAll(p => p.Title == page.Title);
             _pages.Add(page);
-            _pages.Sort((a, b) => string.Compare(a.Title, b.Title, StringComparison.OrdinalIgnoreCase));
+            _pages.Sort((a, b) => a.PinnedToTop != b.PinnedToTop ? (a.PinnedToTop ? -1 : 1)
+                : string.Compare(a.Title, b.Title, StringComparison.OrdinalIgnoreCase));
         }
 
         internal static ConfigEntry<T> Bind<T>(ConfigFile file, string key, T def)
@@ -61,6 +62,8 @@ namespace ModOptions
 
         public string Title { get; }
         public string Description { get; private set; } = "";
+        /// <summary>Listed above the alphabetical pages (see <see cref="PinToTop"/>).</summary>
+        public bool PinnedToTop { get; private set; }
         public IReadOnlyList<SettingBase> Items => _items;
 
         internal SettingsPage(string title, string keyPrefix, ConfigFile file)
@@ -68,6 +71,13 @@ namespace ModOptions
             Title = title;
             _keyPrefix = keyPrefix;
             _file = file;
+        }
+
+        /// <summary>Lists this page at the top of the Mod Options menu instead of alphabetically.</summary>
+        public SettingsPage PinToTop()
+        {
+            PinnedToTop = true;
+            return this;
         }
 
         /// <summary>Text shown above the options.</summary>

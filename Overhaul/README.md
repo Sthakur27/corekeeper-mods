@@ -27,7 +27,7 @@ Included features (each is also available as its own mod on mod.io):
 
 Settings: Settings > **Mod Options** (main menu or pause menu). Pick a feature to see just its options;
 left/right or click the arrows to change a value, and each page has a "Reset to defaults" button
-(click twice to confirm). In multiplayer the host's values count. The **Features On/Off** page switches whole features off (takes effect after restarting the game; Loadout Fallback, Five Loadouts and Ender Stash stay on because they hold items in extra slots). The menu is built in (Mod Options);
+(click twice to confirm). In multiplayer the host's values count. The **Turn Sub-Mods On/Off** page (at the top of Mod Options) switches whole sub-mods off (takes effect after restarting the game; Loadout Fallback, Five Loadouts and Ender Stash stay on because they hold items in extra slots). The menu is built in (Mod Options);
 Mod Settings Menu is not needed, and it is fine to keep it installed for other mods.
 
 ## Requirements

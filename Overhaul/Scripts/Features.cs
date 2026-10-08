@@ -7,7 +7,7 @@ using UnityEngine;
 namespace SidsOverhaul
 {
     /// <summary>
-    /// Per-feature on/off switches (Mod Options > "Features On/Off"). A switched-off feature does nothing:
+    /// Per-feature on/off switches (Mod Options > "Turn Sub-Mods On/Off", pinned at the top). A switched-off feature does nothing:
     /// release/build_overhaul.py adds a <c>Features.On("Key")</c> guard to every Harmony patch class
     /// (<c>Prepare</c>), IMod method, system <c>OnUpdate</c> and chat command of that feature. The standalone
     /// mods are not changed.
@@ -18,8 +18,8 @@ namespace SidsOverhaul
     /// </summary>
     public static class Features
     {
-        public const string PageTitle = "Features On/Off";
-        public const string KeyPrefix = "Feature: ";
+        public const string PageTitle = "Turn Sub-Mods On/Off";
+        public const string KeyPrefix = "Feature: "; // kept from "Features On/Off" so saved switches carry over
         private const string ConfigPath = SidsOverhaulMod.Name + "/config.cfg";
 
         /// <summary>
@@ -52,7 +52,7 @@ namespace SidsOverhaul
             { "ArmorDye", "Armor Dye" },
         };
 
-        public const string Hint = "Switch whole features on or off. Changes take effect after restarting the game. "
+        public const string Hint = "Turn whole sub-mods on or off. Changes take effect after restarting the game. "
             + "Loadout Fallback, Five Loadouts and Ender Stash are always on (they hold items in extra inventory slots). "
             + "In multiplayer, use the same switches as the host.";
 
@@ -68,6 +68,7 @@ namespace SidsOverhaul
         /// <summary>Adds one toggle per feature to the switches page (same keys the snapshot reads).</summary>
         public static void RegisterSettings(SettingsPage page)
         {
+            page.PinToTop();
             for (int i = 0; i < All.GetLength(0); i++)
                 page.Toggle(out _, All[i, 1], true);
         }

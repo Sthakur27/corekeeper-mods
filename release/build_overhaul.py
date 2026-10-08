@@ -51,7 +51,7 @@ def patch_bundle(src, dst, old_assembly):
 
 # ---------------------------------------------------------------- feature switches
 # Every feature listed in Overhaul/Scripts/Features.cs (Features.All) gets guards so it can be switched
-# off from Mod Options ("Features On/Off"). They are added here, at build time, so the standalone mods
+# off from Mod Options ("Turn Sub-Mods On/Off"). They are added here, at build time, so the standalone mods
 # stay untouched:
 #   - Harmony patch classes: static bool Prepare() => Features.On(key)   (Harmony skips the class)
 #   - IMod EarlyInit/Init/Update/ModObjectLoaded: return early
@@ -107,7 +107,7 @@ def gate_source(text, key, title, counts):
     sub(r"(protected override void OnUpdate\(\)\s*\{)",
         lambda m: f"{m.group(1)} if (!{guard}) {{ Enabled = false; return; }}", "systems")
     sub(r"(public CommandOutput Execute\([^)]*\)\s*\{)",
-        lambda m: f'{m.group(1)} if (!{guard}) return new CommandOutput("{title} is switched off (Mod Options > Features On/Off).", CommandStatus.Warning);',
+        lambda m: f'{m.group(1)} if (!{guard}) return new CommandOutput("{title} is switched off (Mod Options > Turn Sub-Mods On/Off).", CommandStatus.Warning);',
         "commands")
     return text
 

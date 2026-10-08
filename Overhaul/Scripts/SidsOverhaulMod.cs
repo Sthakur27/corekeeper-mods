@@ -45,6 +45,7 @@ namespace SidsOverhaul
             Page("QuickBuff", "Quick Buff", "Quick Buff: ", QuickBuff.QuickBuffMod.SettingsHint, QuickBuff.QuickBuffMod.RegisterSettings);
             Page("BuffDurationFloor", "Buff Duration Floor", "Buff Floor: ", BuffDurationFloor.BuffDurationFloorMod.SettingsHint, BuffDurationFloor.BuffDurationFloorMod.RegisterSettings);
             Page("PotionSeller", "Potion Seller", "Potion Seller: ", PotionSeller.PotionSellerMod.SettingsHint, PotionSeller.PotionSellerMod.RegisterSettings);
+            Page("FishSeller", "Fish Seller", "Fish Seller: ", FishSeller.FishSellerMod.SettingsHint, FishSeller.FishSellerMod.RegisterSettings);
             Page("FasterMushrooms", "Faster Mushrooms", "Mushrooms: ", FasterMushrooms.FasterMushroomsMod.SettingsHint, FasterMushrooms.FasterMushroomsMod.RegisterSettings);
             Page("BetterFishingLoot", "Better Fishing Loot", "Fishing Loot: ", BetterFishingLoot.BetterFishingLootMod.SettingsHint, BetterFishingLoot.BetterFishingLootMod.RegisterSettings);
             Page("DurabilityMultiplier", "Durability", "Durability: ", DurabilityMultiplier.DurabilityMultiplierMod.SettingsHint, DurabilityMultiplier.DurabilityMultiplierMod.RegisterSettings);

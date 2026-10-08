@@ -39,6 +39,10 @@
         {
             "path": "Scripts/Systems/MerchantStockSystem.cs",
             "guid": "a4f18c2e7d3b4a6f9e0c5b7d1f3a8e49"
+        },
+        {
+            "path": "Scripts/Patches/BuyUILayoutClaim.cs",
+            "guid": "a4f18c2e7d3b4a6f9e0c5b7d1f3a8e4a"
         }
     ],
     "dependencies": [

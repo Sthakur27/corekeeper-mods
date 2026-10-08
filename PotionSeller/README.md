@@ -127,6 +127,12 @@ Prices:
   (Harmony postfix on `ObjectAuthoringToObjectInfo`), and the built `PugDatabase` blob itself
   (`PotionPriceSystem`, client + server, re-run whenever the multiplier changes).
 
+## With Fish Seller (1.4.0)
+
+- The grid's columns only grow now (rows stay 3), so Fish Seller can share the merchants. Both mods carry
+  the same buy-window layout; a marker on the window makes sure only one of them moves it.
+- Fish Seller adds room past 24 slots and a scrolling buy window, so longer lists are no longer cut off.
+
 ## Limits
 
 - The buy window grid is 8 columns x 3 rows = 24 slots (`MerchantStock.Columns/Rows`). The vanilla

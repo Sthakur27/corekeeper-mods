@@ -1,7 +1,7 @@
 using HarmonyLib;
 using UnityEngine;
 
-namespace PotionSeller.Patches
+namespace FishSeller.Patches
 {
     /// <summary>
     /// The merchant buy window (BuyUI -> BuyInventoryUI) instantiates a fixed MAX_ROWS x MAX_COLUMNS slot grid
@@ -12,27 +12,28 @@ namespace PotionSeller.Patches
     /// the container origin, so only the background and the window position need help (below).
     /// </summary>
     [HarmonyPatch(typeof(BuyInventoryUI), "MAX_ROWS", MethodType.Getter)]
-    public static class BuyInventoryRowsPatch
+    public static class FishBuyInventoryRowsPatch
     {
         [HarmonyPostfix]
         public static void Postfix(ref int __result)
         {
-            if (__result < MerchantStock.Rows) __result = MerchantStock.Rows;
+            if (__result < MerchantRoom.Rows) __result = MerchantRoom.Rows;
         }
     }
 
     [HarmonyPatch(typeof(BuyInventoryUI), "MAX_COLUMNS", MethodType.Getter)]
-    public static class BuyInventoryColumnsPatch
+    public static class FishBuyInventoryColumnsPatch
     {
         [HarmonyPostfix]
         public static void Postfix(ref int __result)
         {
-            if (__result < MerchantStock.Columns) __result = MerchantStock.Columns;
+            if (__result < MerchantRoom.Columns) __result = MerchantRoom.Columns;
         }
     }
 
     /// <summary>
-    /// Fish Seller carries the same code; only one copy may move the window, see <see cref="BuyUILayoutClaim"/>.
+    /// Same code as Potion Seller's (it widens the same window to the same 8 columns); only one copy may
+    /// move the window, see <see cref="BuyUILayoutClaim"/>.
     ///
     /// What vanilla does: BuyUI.ShowContainerUI calls buyInventory.ShowContainerUI (InventoryUI.UpdateContainerSize
     /// positions the slots centred on the container origin: x = -(cols-1)/2*spread + k*spread), then sets
@@ -66,7 +67,7 @@ namespace PotionSeller.Patches
         /// <summary>Called right after the original ShowContainerUI so the vanilla root position is known.</summary>
         public static void OnShown(BuyUI ui)
         {
-            if (!BuyUILayoutClaim.Owns(ui, PotionSellerMod.Name, otherModOwns: false)) return;
+            if (!BuyUILayoutClaim.Owns(ui, FishSellerMod.Name, otherModOwns: BuyUILayoutClaim.StandaloneModLoaded("PotionSeller"))) return;
             if (ui == null || ui.root == null) return;
             _vanillaRootPos = ui.root.transform.localPosition;
             Apply(ui);
@@ -74,7 +75,7 @@ namespace PotionSeller.Patches
 
         public static void Apply(BuyUI ui)
         {
-            if (ui == null || !BuyUILayoutClaim.Owns(ui, PotionSellerMod.Name, otherModOwns: false)) return;
+            if (ui == null || !BuyUILayoutClaim.Owns(ui, FishSellerMod.Name, otherModOwns: BuyUILayoutClaim.StandaloneModLoaded("PotionSeller"))) return;
             var inv = ui.buyInventory;
             var root = ui.root;
             if (inv == null || root == null || !root.activeInHierarchy) return;
@@ -159,13 +160,13 @@ namespace PotionSeller.Patches
                 string bgInfo = bg != null
                     ? $"bg '{bg.sprite?.name}' mode {bg.drawMode}->{bgMode} size {_bgSize}->{bg.size} scale {bg.transform.localScale} pos {bg.transform.localPosition} parent '{bg.transform.parent?.name}' isInvBackgroundSR={inv.backgroundSR == bg}"
                     : "bg null";
-                Debug.Log($"[{PotionSellerMod.Name}] buy window: grid {cols}x{rows} (max {inv.MAX_COLUMNS}x{inv.MAX_ROWS}, spread {inv.spread}), dx {dx} dy {dy}; {bgInfo}; root {_vanillaRootPos}->{root.transform.localPosition}; inv pos {inv.transform.localPosition} extendDown={inv.extendSlotsDownwards} keepBg={inv.keepBackgroundPositionAndSizeTheSame}; {sellInfo}");
+                Debug.Log($"[{FishSellerMod.Name}] buy window: grid {cols}x{rows} (max {inv.MAX_COLUMNS}x{inv.MAX_ROWS}, spread {inv.spread}), dx {dx} dy {dy}; {bgInfo}; root {_vanillaRootPos}->{root.transform.localPosition}; inv pos {inv.transform.localPosition} extendDown={inv.extendSlotsDownwards} keepBg={inv.keepBackgroundPositionAndSizeTheSame}; {sellInfo}");
             }
         }
     }
 
     [HarmonyPatch(typeof(BuyUI), "ShowContainerUI")]
-    public static class BuyUIShowPatch
+    public static class FishBuyUIShowPatch
     {
         [HarmonyPostfix]
         public static void Postfix(BuyUI __instance)
@@ -176,7 +177,7 @@ namespace PotionSeller.Patches
 
     /// <summary>Re-applies the layout every frame the window is open so nothing vanilla does can undo it.</summary>
     [HarmonyPatch(typeof(BuyUI), "LateUpdate")]
-    public static class BuyUILateUpdatePatch
+    public static class FishBuyUILateUpdatePatch
     {
         [HarmonyPostfix]
         public static void Postfix(BuyUI __instance)

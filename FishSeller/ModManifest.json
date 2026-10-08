@@ -1,0 +1,62 @@
+{
+    "guid": "e53ecfdd7ce2438782f2f0b90f937a57",
+    "name": "FishSeller",
+    "displayName": "Fish Seller",
+    "skipSafetyChecks": false,
+    "disableScripts": false,
+    "accessesExtraAssemblies": true,
+    "disableHarmonyPatching": false,
+    "requiredOn": 3,
+    "files": [
+        {
+            "path": "Scripts/FishSellerMod.cs",
+            "guid": "c3c93c9d90704b2daa8aefd0613cf602"
+        },
+        {
+            "path": "Scripts/ShopItems.cs",
+            "guid": "9a30de0b7e0640138a95421cd968d3b2"
+        },
+        {
+            "path": "Scripts/MerchantRoom.cs",
+            "guid": "12ec87632fb9465787c115fe088110bb"
+        },
+        {
+            "path": "Scripts/Systems/ShopStockSystem.cs",
+            "guid": "e090f986592e4b0ca34f3f153db21af5"
+        },
+        {
+            "path": "Scripts/Systems/ShopPriceSystem.cs",
+            "guid": "1238be6327244ad3a3abb8b89bebd301"
+        },
+        {
+            "path": "Scripts/Patches/BuyScroll.cs",
+            "guid": "3734820119d1479983f7598a540e2001"
+        },
+        {
+            "path": "Scripts/Patches/BuyUIPatches.cs",
+            "guid": "8257c493614b4e5c83fce17ff8fb25aa"
+        },
+        {
+            "path": "Scripts/Patches/BuyUILayoutClaim.cs",
+            "guid": "401214e843d44350816f594187cc8d7d"
+        },
+        {
+            "path": "Scripts/Patches/SpecialBuy.cs",
+            "guid": "863f3288564241d796f3838c693f7e42"
+        },
+        {
+            "path": "Scripts/SpecialBuyCommand.cs",
+            "guid": "9149a0427be24d2bbf6af27a8c44c0fb"
+        }
+    ],
+    "dependencies": [
+        {
+            "modName": "CoreLib",
+            "required": true
+        },
+        {
+            "modName": "ModOptions",
+            "required": true
+        }
+    ]
+}

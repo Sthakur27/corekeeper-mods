@@ -29,6 +29,8 @@ namespace PotionSeller
         public const int Rows = 3;
         public const int Slots = Columns * Rows;
 
+        private static bool _warned;
+
         public static bool IsTarget(EntityManager em, Entity e)
         {
             return em.HasComponent<ObjectDataCD>(e)
@@ -95,22 +97,19 @@ namespace PotionSeller
                     changed = true;
                 }
             }
-            if (items.Length > Slots)
-            {
-                Debug.LogWarning($"[{PotionSellerMod.Name}] merchant list has {items.Length} entries but only {Slots} slots; the last ones will never be stocked. Raise MerchantStock.Columns/Rows.");
-            }
-
             var inventories = em.GetBuffer<InventoryBuffer>(e);
             int startIndex = 0;
             if (inventories.Length > 0)
             {
                 var inv = inventories[0];
                 startIndex = inv.startIndex;
-                if (inv.sizeX != Columns || inv.sizeY != Rows || inv.maxSize < Slots)
+                // Columns grow only (another mod may use a wider grid); rows stay at 3 so the window never
+                // grows down over the player inventory (v1.0.0 saves had 5 rows). Fish Seller scrolls the rest.
+                if (inv.sizeX < Columns || inv.sizeY != Rows || inv.maxSize < math.max(inv.sizeX, Columns) * Rows)
                 {
-                    inv.sizeX = Columns;
+                    inv.sizeX = math.max(inv.sizeX, Columns);
                     inv.sizeY = Rows;
-                    inv.maxSize = math.max(inv.maxSize, Slots);
+                    inv.maxSize = math.max(inv.maxSize, inv.sizeX * inv.sizeY);
                     inventories[0] = inv;
                     changed = true;
                 }
@@ -122,6 +121,11 @@ namespace PotionSeller
             {
                 contained.Add(default);
                 changed = true;
+            }
+            if (items.Length > contained.Length - startIndex && !_warned)
+            {
+                _warned = true;
+                Debug.LogWarning($"[{PotionSellerMod.Name}] merchant list has {items.Length} entries but only {contained.Length - startIndex} slots; the last ones are not stocked (Fish Seller adds room and scrolling).");
             }
             return changed;
         }

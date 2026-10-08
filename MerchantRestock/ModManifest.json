@@ -1,0 +1,34 @@
+{
+    "guid": "8f2c6a1d4e9b4b37a5c0d3e7f1a9b264",
+    "name": "MerchantRestock",
+    "displayName": "Merchant Restock",
+    "skipSafetyChecks": false,
+    "disableScripts": false,
+    "accessesExtraAssemblies": true,
+    "disableHarmonyPatching": true,
+    "requiredOn": 3,
+    "files": [
+        {
+            "path": "Scripts/MerchantRestockMod.cs",
+            "guid": ""
+        },
+        {
+            "path": "Scripts/RestockSettings.cs",
+            "guid": ""
+        },
+        {
+            "path": "Scripts/Systems/MerchantRestockSystem.cs",
+            "guid": ""
+        }
+    ],
+    "dependencies": [
+        {
+            "modName": "CoreLib",
+            "required": true
+        },
+        {
+            "modName": "ModOptions",
+            "required": true
+        }
+    ]
+}

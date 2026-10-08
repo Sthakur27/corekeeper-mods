@@ -34,6 +34,14 @@ namespace StimHits
         private const float Memory = 1.5f;
         private static int _logged;
 
+        // Objects show no damage numbers and OnTakeDamage carries no attacker, so object dings only
+        // count while we're attacking: attack/use button held now or within AttackWindow seconds
+        // (arrows still in flight). Keeps drills, explosions and other players from dinging.
+        private static float _lastAttackInput = -100f;
+        private const float AttackWindow = 1f;
+        private const uint AttackButtons = (uint)(CommandInputButtonStateNames.Interact_HeldDown
+            | CommandInputButtonStateNames.SecondInteract_HeldDown | CommandInputButtonStateNames.UseOffHand_HeldDown);
+
         internal static PlayerController LocalPlayer
         {
             get { var m = Manager.main; return m != null ? m.player : null; }
@@ -52,6 +60,20 @@ namespace StimHits
             d.y = 0f;
             return d.sqrMagnitude <= range * range;
         }
+
+        /// <summary>Called every frame: remembers when the local player last held an attack button.</summary>
+        internal static void TrackAttackInput()
+        {
+            var player = LocalPlayer;
+            if (player == null) return;
+            var world = Manager.ecs.ClientWorld;
+            if (world == null || !EntityUtility.EntityExists(player.entity, world)) return;
+            if (EntityUtility.TryGetComponentData<ClientInput>(player.entity, world, out var input)
+                && (input.buttonSetMask & AttackButtons) != 0)
+                _lastAttackInput = Time.unscaledTime;
+        }
+
+        internal static bool Attacking => Time.unscaledTime - _lastAttackInput < AttackWindow;
 
         internal static bool Recent(Dictionary<Entity, float> map, Entity e)
             => map.TryGetValue(e, out var t) && Time.unscaledTime - t < Memory;
@@ -185,8 +207,9 @@ namespace StimHits
             if (creature)
                 // The ding itself comes from the damage number; here we only silence the vanilla sound.
                 return near || Hits.RecentTarget(entity.entity) ? 0 : -1;
-            // Objects show no damage numbers, so they ding here (proximity) when enabled.
-            return StimHitsMod.HitObjects != null && StimHitsMod.HitObjects.Value && near ? 2 : -1;
+            // Objects show no damage numbers, so they ding here (proximity) when enabled, but only
+            // while we're attacking: a drill mining ore next to us is not our hit.
+            return StimHitsMod.HitObjects != null && StimHitsMod.HitObjects.Value && near && Hits.Attacking ? 2 : -1;
         }
     }
 

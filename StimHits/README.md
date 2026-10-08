@@ -10,7 +10,7 @@ Everything is on the **Mod Options → Stim Hits** page; set a slot to **Off** f
 | Kill sound / volume / pitch | Auto / 0.9 / 1.0 | A creature you hit in the last 1.5 s dies. |
 | Hurt sound / volume / pitch | Auto / 0.9 / 1.0 | You take damage. |
 | Hit range (tiles) | 16 | Creatures' vanilla hurt sounds are muted within this range (objects ding within it). |
-| Ding on objects too | Off | Also ding on ore boulders, destructibles etc. |
+| Ding on objects too | Off | Also ding on ore boulders, destructibles etc. while you are attacking (drills and other players hitting nearby objects stay vanilla) |
 
 Sounds: **Auto** (your own hit/kill/hurt file if present, else the built-in sound for that slot),
 **Ting**, **Clang**, **Coin** (the mod's own synthesized sounds), **Game Clang / Small Clang / Ding /

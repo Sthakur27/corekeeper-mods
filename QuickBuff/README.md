@@ -23,7 +23,8 @@ never wastes anything.
   Does nothing at full health. Also `/quickheal` (or `/qh`) in chat.
 - **Quick Food** (default **F**): Quick Buff for food only. Eats one of every buff food (no
   potions, no Caveling Coffee) regardless of hunger, skipping foods whose buffs are all still
-  active (same skip setting as Quick Buff). Also `/quickfood` (or `/qf`).
+  active (same skip setting as Quick Buff). By default it only eats cooked food (raw fish, berries,
+  mushrooms etc. are left alone), and it can skip fish dishes. Also `/quickfood` (or `/qf`).
 - A one-line summary appears in chat ("Quick Buff: consumed 3 item(s), 1 skipped (buff active)").
 - You can also type `/quickbuff` (or `/qb`) in chat: `/quickbuff [skipActive 0|1] [skipSeconds]`.
 
@@ -33,6 +34,8 @@ never wastes anything.
 |---|---|---|
 | Skip buffs that are still active | on | Do not consume an item whose buffs are all still running |
 | Still active means more than (seconds) | 30 | Remaining time that counts as "still active" (0-300, step 5) |
+| Quick Food: only cooked food | on | F skips raw food (Quick Buff B is unaffected) |
+| Quick Food: skip fish dishes | off | F skips fish and dishes made with fish (B is unaffected) |
 
 Key bindings: **Controls > Quick Buff > QuickBuff_Use** and **QuickBuff_Heal** (CoreLib control mapping, saved with your controls).
 

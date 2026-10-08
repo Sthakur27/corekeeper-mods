@@ -98,7 +98,10 @@ namespace QuickBuff.Systems
         /// consume effects include an instant health gain); nothing at full health. Food: like Buff but only
         /// food (no potions, no Caveling Coffee); hunger is ignored. Slot order is hotbar, bag, then pouches.
         /// </summary>
-        public QuickBuffResult Consume(Entity player, bool skipActive, float skipSeconds, ConsumeMode mode = ConsumeMode.Buff)
+        /// <param name="cookedOnly">Food mode: skip raw food (anything without CookedFoodCD).</param>
+        /// <param name="skipFish">Food mode: skip fish and dishes with a fish ingredient.</param>
+        public QuickBuffResult Consume(Entity player, bool skipActive, float skipSeconds, ConsumeMode mode = ConsumeMode.Buff,
+            bool cookedOnly = false, bool skipFish = false)
         {
             bool healOnly = mode == ConsumeMode.Heal;
             bool foodOnly = mode == ConsumeMode.Food;
@@ -214,6 +217,7 @@ namespace QuickBuff.Systems
 
                 bool isCooked = em.HasComponent<CookedFoodCD>(prefab);
                 bool isPotion = em.HasComponent<PotionCD>(prefab);
+                if (foodOnly && !isPotion && cookedOnly && !isCooked) continue;
 
                 // Same ingredient expansion as the vanilla evaluation system.
                 var ingredients = new FixedList64Bytes<ObjectDataCD>();
@@ -223,6 +227,7 @@ namespace QuickBuff.Systems
                     ingredients.Add(new ObjectDataCD { objectID = CookedFoodCD.GetPrimaryIngredientFromVariation(item.variation), amount = 1 });
                     ingredients.Add(new ObjectDataCD { objectID = CookedFoodCD.GetSecondaryIngredientFromVariation(item.variation), amount = 1 });
                 }
+                if (foodOnly && skipFish && IsFish(ingredients, databaseBank)) continue;
 
                 DynamicBuffer<SummarizedConditionsBuffer> summarizedConditions = em.GetBuffer<SummarizedConditionsBuffer>(player);
                 NativeArray<ConditionData> conditions = ConditionUIExtensions.GetConditionsOnConsume(
@@ -279,6 +284,17 @@ namespace QuickBuff.Systems
         }
 
         /// <summary>Instant effects handled by the evaluation system's switch; they are not buffs.</summary>
+        /// <summary>Fish or a dish with a fish ingredient (same test the game uses for its fish bonus).</summary>
+        private bool IsFish(FixedList64Bytes<ObjectDataCD> ingredients, PugDatabase.DatabaseBankCD databaseBank)
+        {
+            foreach (ObjectDataCD ingredient in ingredients)
+            {
+                Entity prefab = PugDatabase.GetPrimaryPrefabEntity(ingredient.objectID, databaseBank.databaseBankBlob, ingredient.variation);
+                if (prefab != Entity.Null && _fishLookup.HasComponent(prefab)) return true;
+            }
+            return false;
+        }
+
         private static bool IsInstant(ConditionID id)
         {
             return id == ConditionID.HealthAddition

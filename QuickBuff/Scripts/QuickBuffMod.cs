@@ -29,7 +29,7 @@ namespace QuickBuff
     public sealed class QuickBuffMod : IMod
     {
         public const string Name = "QuickBuff";
-        public const string Version = "1.3.1";
+        public const string Version = "1.4.0";
 
         /// <summary>Rewired action name registered with CoreLib's control mapping module.</summary>
         public const string UseKeyBind = "QuickBuff_Use";
@@ -43,9 +43,13 @@ namespace QuickBuff
 
         public const bool DefaultSkipActive = true;
         public const float DefaultSkipSeconds = 30f;
+        public const bool DefaultFoodCookedOnly = true;
+        public const bool DefaultFoodSkipFish = false;
 
         private static Setting<bool> _skipActive;
         private static Setting<float> _skipSeconds;
+        private static Setting<bool> _foodCookedOnly;
+        private static Setting<bool> _foodSkipFish;
 
         private static Player _rewiredPlayer;
         private float _nextPressAllowed;
@@ -55,6 +59,8 @@ namespace QuickBuff
 
         public static bool SkipActive => _skipActive?.Value ?? DefaultSkipActive;
         public static float SkipSeconds => _skipSeconds?.Value ?? DefaultSkipSeconds;
+        public static bool FoodCookedOnly => _foodCookedOnly?.Value ?? DefaultFoodCookedOnly;
+        public static bool FoodSkipFish => _foodSkipFish?.Value ?? DefaultFoodSkipFish;
 
         public void EarlyInit()
         {
@@ -115,7 +121,9 @@ namespace QuickBuff
         {
             section
                 .Toggle(out _skipActive, "Skip buffs that are still active", DefaultSkipActive)
-                .Slider(out _skipSeconds, "Still active means more than (seconds)", 0f, 300f, DefaultSkipSeconds, 5f);
+                .Slider(out _skipSeconds, "Still active means more than (seconds)", 0f, 300f, DefaultSkipSeconds, 5f)
+                .Toggle(out _foodCookedOnly, "Quick Food: only cooked food", DefaultFoodCookedOnly)
+                .Toggle(out _foodSkipFish, "Quick Food: skip fish dishes", DefaultFoodSkipFish);
 
 
             Debug.Log($"[{Name}] Loaded. Skip active buffs: {SkipActive} (threshold {SkipSeconds:0}s). Key: {UseKeyBind}.");
@@ -168,7 +176,8 @@ namespace QuickBuff
             }
 
             string command = heal ? "/quickheal"
-                : string.Format(CultureInfo.InvariantCulture, food ? "/quickfood {0} {1:0.#}" : "/quickbuff {0} {1:0.#}", SkipActive ? 1 : 0, SkipSeconds);
+                : food ? string.Format(CultureInfo.InvariantCulture, "/quickfood {0} {1:0.#} {2} {3}", SkipActive ? 1 : 0, SkipSeconds, FoodCookedOnly ? 1 : 0, FoodSkipFish ? 1 : 0)
+                : string.Format(CultureInfo.InvariantCulture, "/quickbuff {0} {1:0.#}", SkipActive ? 1 : 0, SkipSeconds);
             comm.SendCommand(command, CommandFlags.None);
         }
 

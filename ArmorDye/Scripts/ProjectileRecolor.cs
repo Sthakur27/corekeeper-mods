@@ -27,15 +27,30 @@ namespace ArmorDye
                 if (!TryGetShooter(__instance, out PlayerController pc, out bool isProjectile)) return;
                 int dye = isProjectile ? ArmorRecolor.HeldDye(pc) : 0;
                 var tag = __instance.GetComponent<DyedProjectile>();
-                Describe(__instance, isProjectile, dye);
+                if (isProjectile) Describe(__instance, isProjectile, dye);
                 if (dye == 0 && tag == null) return;
                 if (tag == null) tag = __instance.gameObject.AddComponent<DyedProjectile>();
-                tag.SetDye(dye);
+                tag.SetDye(dye, dye == 0 ? Color.white : TintFor(pc, dye));
             }
             catch (System.Exception e)
             {
                 if (Logged.Add("error:" + e.Message)) Debug.LogError($"[{ArmorDyeMod.Name}] projectile dye failed: {e}");
             }
+        }
+
+        /// <summary>
+        /// One tint color for the game's own sprite objects (they can only be tinted, not re-textured): the held
+        /// item's typical icon color run through the dye, scaled so its brightest channel is 1.
+        /// </summary>
+        private static Color TintFor(PlayerController pc, int dye)
+        {
+            var held = pc.visuallyEquippedContainedObject;
+            var info = PugDatabase.GetObjectInfo(held.objectID, held.variation);
+            Color avg = DyeTextures.AverageColor(info != null ? info.icon : null);
+            Color32 dyed = DyeColor.Apply((Color32)avg, dye);
+            Color t = new Color(dyed.r / 255f, dyed.g / 255f, dyed.b / 255f, 1f);
+            float max = Mathf.Max(t.r, Mathf.Max(t.g, t.b));
+            return max > 0.01f ? new Color(t.r / max, t.g / max, t.b / max, 1f) : Color.white;
         }
 
         /// <summary>True for objects owned by a player; <paramref name="isProjectile"/> says whether it is a shot.</summary>
@@ -86,7 +101,10 @@ namespace ArmorDye
         private static readonly int EmissiveTex = Shader.PropertyToID("_EmissiveTex");
 
         private int _dye;
+        private Color _tint = Color.white;
         private int _appliedTint = -1;
+        private Pug.Sprite.SpriteObject[] _spriteObjects;
+        private readonly Dictionary<Pug.Sprite.SpriteObject, Color[]> _spriteObjectColors = new Dictionary<Pug.Sprite.SpriteObject, Color[]>();
         private SpriteRenderer[] _sprites;
         private SpriteSheetSkin[] _skins;
         private ParticleSystem[] _particles;
@@ -98,9 +116,11 @@ namespace ArmorDye
         private readonly Dictionary<Object, Gradient> _gradients = new Dictionary<Object, Gradient>();
         private readonly Dictionary<Light, Color> _lightColors = new Dictionary<Light, Color>();
 
-        public void SetDye(int dye)
+        public void SetDye(int dye, Color tint)
         {
             _dye = dye;
+            _tint = tint;
+            _appliedTint = -1;
             if (_sprites == null)
             {
                 _sprites = GetComponentsInChildren<SpriteRenderer>(true);
@@ -109,6 +129,7 @@ namespace ArmorDye
                 _trails = GetComponentsInChildren<TrailRenderer>(true);
                 _lines = GetComponentsInChildren<LineRenderer>(true);
                 _lights = GetComponentsInChildren<Light>(true);
+                _spriteObjects = GetComponentsInChildren<Pug.Sprite.SpriteObject>(true);
             }
             enabled = true;
             LateUpdate();
@@ -173,6 +194,15 @@ namespace ArmorDye
                 if (lr == null) continue;
                 if (!_gradients.TryGetValue(lr, out var g)) _gradients[lr] = g = lr.colorGradient;
                 lr.colorGradient = dye == 0 ? g : Tint(g, dye);
+            }
+            // The game's own sprite objects (most projectile bodies, e.g. Galaxite Chakram, Burnzooka rocket) are
+            // GPU-instanced from shared atlases; per instance they only take a tint and a glow tint.
+            foreach (var so in _spriteObjects)
+            {
+                if (so == null) continue;
+                if (!_spriteObjectColors.TryGetValue(so, out var c)) _spriteObjectColors[so] = c = new[] { so.color, so.emissiveColor };
+                so.color = dye == 0 ? c[0] : c[0] * _tint;
+                so.emissiveColor = dye == 0 ? c[1] : c[1] * _tint;
             }
             foreach (var light in _lights)
             {

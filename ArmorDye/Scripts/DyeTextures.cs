@@ -57,6 +57,39 @@ namespace ArmorDye
             return px;
         }
 
+        private static readonly Dictionary<Sprite, Color> AverageColors = new Dictionary<Sprite, Color>();
+
+        /// <summary>
+        /// The sprite's typical color: opaque pixels averaged, weighted by saturation so outlines and grey
+        /// metal don't wash it out. Used to turn a dye into a single tint color.
+        /// </summary>
+        public static Color AverageColor(Sprite src)
+        {
+            if (src == null) return Color.white;
+            if (AverageColors.TryGetValue(src, out var c)) return c;
+            c = Color.white;
+            try
+            {
+                Rect r = src.packed ? src.textureRect : src.rect;
+                var all = PixelsOf(src.texture);
+                int tw = src.texture.width;
+                float sr = 0f, sg = 0f, sb = 0f, sw = 0f;
+                for (int y = (int)r.y; y < (int)(r.y + r.height); y++)
+                    for (int x = (int)r.x; x < (int)(r.x + r.width); x++)
+                    {
+                        Color32 p = all[y * tw + x];
+                        if (p.a < 128) continue;
+                        Color.RGBToHSV(p, out _, out float s, out float v);
+                        float w = 0.05f + s * v;
+                        sr += p.r * w; sg += p.g * w; sb += p.b * w; sw += w;
+                    }
+                if (sw > 0f) c = new Color(sr / sw / 255f, sg / sw / 255f, sb / sw / 255f, 1f);
+            }
+            catch (System.Exception) { }
+            AverageColors[src] = c;
+            return c;
+        }
+
         /// <summary>A dyed copy of an item icon (or any sprite), or null if the sprite can't be copied. dye 0 = original.</summary>
         public static Sprite Icon(Sprite src, int dye)
         {

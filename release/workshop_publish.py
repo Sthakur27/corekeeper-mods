@@ -51,6 +51,7 @@ MODS = [
     ("StimHits", "Stim Hits", "stimhits_logo.png", "Other"),
     ("ArmorDye", "Armor Dye", "armordye_logo.png", "Quality of Life"),
     ("MerchantRestock", "Merchant Restock", "merchantrestock_logo.png", "Quality of Life"),
+    ("FishSeller", "Fish Seller", "fishseller_logo.png", "Quality of Life"),
 ]
 OVERHAUL = ("SidsOverhaul", "Sid's Overhaul", "overhaul_logo.png", "Overhaul")
 

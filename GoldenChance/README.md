@@ -1,29 +1,33 @@
 # Golden Chance
 
-Core Keeper mod: multiplies what your talents give to golden plants and golden cooked food.
+Adds separate percentage-point bonuses to golden plants and the rarity upgrade roll for bonus cooked food. Requires **CoreLib** and **Mod Options**. Included in Sid's Overhaul; install either the standalone mod or the overhaul.
+
+Open **Options → Mod Options → Golden Chance**.
 
 | Setting | Options | Default |
 |---|---|---|
-| Golden plant talent | 1x, 1.5x, 2x, 3x | 2x |
-| Golden cooking talent | 1x, 1.5x, 2x, 3x | 2x |
+| Golden plant chance bonus | +0%, +5%, +10%, …, +100% | +0% |
+| Golden food chance bonus | +0%, +5%, +10%, …, +100% | +0% |
 
-Only the talent bonus is multiplied, so it never gives you something you have not earned:
+These are additive bonuses: a 20% roll with +5% becomes 25%. Bonuses apply even with zero points in the relevant talent. +0% preserves vanilla behavior. The modified talent condition is capped at 100%; a plant roll including its base chance can exceed 100%, which simply guarantees a golden plant.
 
-- Golden plants: planting a seed rolls 3% + your Gardening talent bonus. The 3% base stays vanilla;
-  only the talent part is multiplied. No points in the talent = vanilla 3%.
-- Golden cooking: the Cooking talent's "chance for extra cooked food to be rare" is multiplied.
-  No points = no golden food, same as vanilla.
+## Vanilla maximums
 
-The talent tooltip values are not changed (they show the vanilla per-point value). Changing a
-setting applies right away. Works with Auto Replant (its replants use the same talent value).
-In multiplayer each player's own setting applies to their own talents.
+- **Golden plants:** 3% base plus up to 15% from Expert Gardener (3% per point, five points), for **18% total**. At full talent, +5% gives 23%; with no talent points, +5% gives 8%. Already planted seeds keep the outcome rolled when they were planted.
+- **Bonus cooked-food rarity:** Master Chef gives up to **25%** (5% per point, five points). At full talent, +5% gives 30%. This roll applies only to **additional food** produced by the Cooking skill; it upgrades that food's rarity by one tier. It does not affect every cooked dish or the chance of receiving additional food. Cooking level 100's **20%** is the separate chance for additional food.
 
-## How it works (for modders)
+The Mod Options page includes these maximums and an additive example. Talent tooltips retain vanilla per-point values. Settings apply immediately when a character is active, and after joining a world. A talent reset is detected within half a second and the bonus is restored.
 
-Harmony postfix on `SkillTalentsTable.GetConditionDataForSkillTalent` (managed). That is what builds
-a talent's `ConditionData` when the character loads (`StartGameRPCSystem`) and when a point is spent
-(`SkillTalentUIElement` -> `SetSkillTalentCondition` command), so the multiplied total lands in the
-replicated `SkillTalentConditionsBuffer` and from there in `SummarizedConditionsBuffer`, which the
-Burst golden rolls read (`PlaceObjectSlot` / `SeederSlot` [`ChanceToGainRarePlant`],
-`InventoryUtility.IncreaseCookingSkillAndSpawnExtraFoodIfWeShould` [`ChanceForExtraCookedFoodToBeRare`]).
-On a settings change the local player's golden talents are re-sent the same way.
+In multiplayer each player's local settings are sent through their talent-condition commands, following the existing game's replicated condition path. Install the mod and its dependencies on client and server. Live multiplayer behavior still needs an in-game check.
+
+Works with Auto Replant: its base chance is normally 3%; enabling its base override replaces that 3%, and the Gardening talent plus this mod's bonus still add on top. Automated seeders that do not read a player's talent conditions are unaffected.
+
+## Implementation
+
+A Harmony postfix on the managed `SkillTalentsTable.GetConditionDataForSkillTalent` adds the selected bonus to `ChanceToGainRarePlant` or `ChanceForExtraCookedFoodToBeRare`, including zero-point talents. The existing `SkillTalentConditionsBuffer` → `SummarizedConditionsBuffer` path supplies the game's Burst rolls. No Burst systems are patched and no player component types are added.
+
+The local player re-sends golden conditions on joining, settings changes, and talent-point changes. Every refresh starts from the raw talent table, so bonuses do not accumulate. New additive config keys deliberately leave old multiplier settings unused.
+
+## 2.0.0
+
+Replaces the old 1x–3x talent multipliers with separate +0%–+100% bonuses, defaults to vanilla odds, explains vanilla maximums in the settings menu, and restores bonuses after talent resets.

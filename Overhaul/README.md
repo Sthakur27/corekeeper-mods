@@ -21,7 +21,7 @@ Included features (each is also available as its own mod on mod.io):
 - **Boss Bonus Loot**: bosses drop guaranteed extras (Ghorm: larva meat; Titans: their biome gem and large pouches; Azeos: chance of Chipped Blade and Clear Gemstone; Hydras: double gems; Mimites and Orbital Turrets: 10% each biome gem; Void Larvae: 20% Oblivion Fragment).
 - **Ender Stash**: a personal 40-slot stash per character, opened from any chest (purple button under Sort); same stash in every chest and world, never dropped on death.
 - **Vehicle Speed**: boat and go-kart speed multipliers (1x, 2x, 3x, 5x, 10x). Replaces the Boat Turbo mod; disable that one.
-- **Golden Chance**: multiplies what your golden plant (Gardening) and golden cooking (Cooking) talents give (1x, 1.5x, 2x, 3x; default 2x). No talent points = vanilla odds.
+- **Golden Chance**: adds separate golden plant and bonus cooked-food chance bonuses (+0% to +100% in 5% steps; default +0%). Vanilla max: 18% plants (3% base + 15% talent), 25% rarity upgrade on bonus cooked food.
 - **Infinite Ore Boulders**: ore boulders never break; keep mining for ore forever.
 - **Stim Hits**: crisp metallic hit feedback: a ting when you hit, a coin chime when something you hit dies, a clang when you get hit (custom sounds supported; Off = vanilla).
 

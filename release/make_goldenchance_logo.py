@@ -1,10 +1,18 @@
 """1280x720 mod.io listing image for Golden Chance: a glowing golden crop sprouting from tilled soil, a
-golden cooked dish with sparkles, a x2 multiplier tag and the 1x/1.5x/2x/3x choices.
+golden cooked dish with sparkles, an additive bonus tag and percentage-point choices.
 python make_goldenchance_logo.py"""
 import os, sys, random
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from PIL import Image, ImageDraw
-from make_art import W, H, font, sprite, cave_bg, text_shadow, P
+from PIL import Image, ImageDraw, ImageFont
+from make_art import W, H, sprite, cave_bg, text_shadow, P
+
+def font(size):
+    for path in ("C:/Windows/Fonts/consolab.ttf", "/usr/share/fonts/truetype/dejavu/DejaVuSansMono-Bold.ttf"):
+        try:
+            return ImageFont.truetype(path, size)
+        except OSError:
+            pass
+    return ImageFont.load_default()
 
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "goldenchance_logo.png")
 
@@ -146,32 +154,32 @@ def main():
     text_shadow(d, (px, 540), "GARDENING", font(30), (200, 240, 190))
     text_shadow(d, (dx, 540), "COOKING", font(30), (255, 215, 180))
 
-    # centre: x2 tag and setting choices
+    # centre: additive bonus tag and setting choices
     tx, ty, tw, th = W // 2 - 95, 250, 190, 110
     d.rounded_rectangle([tx + 5, ty + 6, tx + tw + 5, ty + th + 6], radius=18, fill=(8, 6, 14))
     d.rounded_rectangle([tx, ty, tx + tw, ty + th], radius=18, fill=(70, 50, 16), outline=(255, 220, 110), width=5)
-    text_shadow(d, (W // 2, ty + th // 2 + 2), "x2", font(76), (255, 228, 120), anchor="mm", shadow=(40, 24, 0))
+    text_shadow(d, (W // 2, ty + th // 2 + 2), "+5%", font(58), (255, 228, 120), anchor="mm", shadow=(40, 24, 0))
     text_shadow(d, (W // 2, ty + th + 18), "GOLDEN ODDS", font(22), (240, 220, 160))
-    opts = ["1x", "1.5x", "2x", "3x"]
-    cw, gap = 62, 8
+    opts = ["+0%", "+5%", "+10%", "+15%"]
+    cw, gap = 72, 8
     total = len(opts) * cw + (len(opts) - 1) * gap
     x0 = W // 2 - total // 2
     for i, o in enumerate(opts):
         x = x0 + i * (cw + gap)
-        hot = o == "2x"
+        hot = o == "+5%"
         col = (255, 220, 110) if hot else (170, 170, 200)
         d.rounded_rectangle([x, 420, x + cw, 458], radius=9, fill=(70, 52, 20) if hot else (36, 32, 52),
                             outline=col, width=3)
         d.text((x + cw // 2, 439), o, font=font(20), fill=col, anchor="mm")
 
     text_shadow(d, (W // 2, 22), "GOLDEN CHANCE", font(84), (255, 236, 170))
-    text_shadow(d, (W // 2, 112), "Multiplies your golden plant and golden cooking talents.", font(28), (226, 214, 190))
+    text_shadow(d, (W // 2, 112), "Add to your golden plant and bonus cooked-food chances.", font(28), (226, 214, 190))
 
     # caption box
     bx0, bx1 = 250, W - 250
     d.rounded_rectangle([bx0, 614, bx1, 698], radius=16, fill=(16, 12, 20, 230), outline=(210, 170, 90), width=3)
-    text_shadow(d, (W // 2, 626), "Scales your talent bonus only.", font(25), (255, 236, 190))
-    text_shadow(d, (W // 2, 660), "No points = vanilla odds.", font(25), (200, 230, 200))
+    text_shadow(d, (W // 2, 626), "Separate bonuses in 5% steps.", font(25), (255, 236, 190))
+    text_shadow(d, (W // 2, 660), "+0% keeps vanilla chances.", font(25), (200, 230, 200))
 
     img.convert("RGB").save(OUT, optimize=True)
     print(OUT)

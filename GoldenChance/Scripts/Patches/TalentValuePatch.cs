@@ -4,57 +4,75 @@ using UnityEngine;
 namespace GoldenChance.Patches
 {
     /// <summary>
-    /// A talent's effect is ConditionData { givesCondition, conditionValuePerPoint * points }, built by
-    /// SkillTalentsTable.GetConditionDataForSkillTalent (managed) when the character loads
-    /// (StartGameRPCSystem) and when a point is spent (SkillTalentUIElement -> SetSkillTalentCondition
-    /// command). It lands in the player's replicated SkillTalentConditionsBuffer, SummarizeConditionsSystem
-    /// folds it into SummarizedConditionsBuffer, and the golden rolls read that:
-    ///   plants  (PlaceObjectSlot / SeederSlot / Auto Replant): 3% + [ChanceToGainRarePlant]
-    ///   cooking (InventoryUtility.IncreaseCookingSkillAndSpawnExtraFoodIfWeShould): [ChanceForExtraCookedFoodToBeRare] %
-    /// Scaling the talent total here multiplies only what the talent gives (0 points stays 0), with one
-    /// rounding per talent. Talent resets use the blob table with 0 points, so they are unaffected.
+    /// Adds a flat bonus once to the raw talent condition, including a zero-point talent.
+    /// The existing replicated condition path feeds the Burst plant/cooking rolls; no Burst patching
+    /// is needed. Cooking changes the rarity roll for extra food, not the extra-food spawn chance.
     /// </summary>
     [HarmonyPatch(typeof(SkillTalentsTable), nameof(SkillTalentsTable.GetConditionDataForSkillTalent))]
     public static class TalentValuePatch
     {
+        private static object _lastPlayer;
+        private static object _lastCommands;
+        private static string _lastSignature;
+
         public static void Postfix(ref ConditionData __result)
         {
-            float mult = MultiplierFor(__result.conditionID);
-            if (mult == 1f || __result.value <= 0) return;
-            __result.value = Mathf.RoundToInt(__result.value * mult);
+            int bonus;
+            switch (__result.conditionID)
+            {
+                case ConditionID.ChanceToGainRarePlant: bonus = GoldenChanceMod.PlantBonus; break;
+                case ConditionID.ChanceForExtraCookedFoodToBeRare: bonus = GoldenChanceMod.CookingBonus; break;
+                default: return;
+            }
+            // Leave vanilla and other mods' values untouched when the setting is +0%.
+            if (bonus == 0) return;
+            __result.value = Mathf.Clamp(__result.value + bonus, 0, 100);
         }
 
-        private static float MultiplierFor(ConditionID id)
+        public static void ClearRefreshState()
         {
-            switch (id)
-            {
-                case ConditionID.ChanceToGainRarePlant: return GoldenChanceMod.PlantMultiplier;
-                case ConditionID.ChanceForExtraCookedFoodToBeRare: return GoldenChanceMod.CookingMultiplier;
-                default: return 1f;
-            }
+            _lastPlayer = null;
+            _lastCommands = null;
+            _lastSignature = null;
         }
+
+        public static void ResendTalentValues() => RefreshTalentValues(true);
 
         /// <summary>
-        /// After a settings change, re-send the local player's golden talents with the new multiplier,
-        /// exactly as spending a talent point does, so it applies without rejoining.
+        /// Re-send on joining, changed settings, or changed talent points (including resets).
+        /// Read the raw table again every time; never add a bonus to an already modified buffer value.
         /// </summary>
-        public static void ResendTalentValues()
+        public static void RefreshTalentValues(bool force = false)
         {
             var player = Manager.main?.player;
             var table = Manager.mod?.SkillTalentsTable;
-            if (player == null || table == null || Manager.saves == null || player.playerCommandSystem == null) return;
+            if (player == null || table == null || Manager.saves == null || player.playerCommandSystem == null)
+            {
+                ClearRefreshState();
+                return;
+            }
+
+            var conditions = new System.Collections.Generic.List<ConditionData>();
+            string signature = player.entity.ToString() + ":" + GoldenChanceMod.PlantBonus + ":" + GoldenChanceMod.CookingBonus;
             foreach (var tree in table.skillTalentTrees)
             {
                 var points = Manager.saves.GetSkillTalentTreesPoints(tree.skillID);
-                if (points == null) continue;
-                for (int i = 0; i < tree.skillTalents.Count && i < points.Count; i++)
+                for (int i = 0; i < tree.skillTalents.Count; i++)
                 {
                     if (!IsGolden(tree.skillTalents[i].givesCondition)) continue;
-                    var data = table.GetConditionDataForSkillTalent(tree.skillID, i, points[i]); // patched above
-                    player.playerCommandSystem.SetSkillTalentCondition(player.entity, data);
-                    Debug.Log($"[{GoldenChanceMod.Name}] {tree.skillID} talent {i} ({data.conditionID}): {points[i]} pts -> {data.value}");
+                    if (points == null || i >= points.Count) return; // character still loading
+                    signature += ":" + tree.skillID + ":" + i + ":" + points[i];
+                    conditions.Add(table.GetConditionDataForSkillTalent(tree.skillID, i, points[i]));
                 }
             }
+            if (!force && ReferenceEquals(_lastPlayer, player) && ReferenceEquals(_lastCommands, player.playerCommandSystem)
+                && _lastSignature == signature) return;
+
+            foreach (var data in conditions)
+                player.playerCommandSystem.SetSkillTalentCondition(player.entity, data);
+            _lastPlayer = player;
+            _lastCommands = player.playerCommandSystem;
+            _lastSignature = signature;
         }
 
         private static bool IsGolden(ConditionID id) =>

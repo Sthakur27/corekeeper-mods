@@ -32,6 +32,7 @@ Each folder is one mod (also published separately on [mod.io](https://mod.io/g/c
 | EnderStash | Personal 40-slot stash from any chest, same in every world, kept on death |
 | ModOptions | The Mod Options settings menu (library used by the other mods; built into the overhaul) |
 | InfiniteOreBoulders | Ore boulders never break |
+| GoldenChance | Separate additive bonuses for golden plants and bonus cooked-food rarity (+0% to +100%) |
 
 `Overhaul/` + `release/build_overhaul.py` combine them into Sid's Overhaul. Notes for modders are in
 `AGENTS.md`.

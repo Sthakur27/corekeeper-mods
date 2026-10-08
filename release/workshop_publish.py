@@ -49,6 +49,7 @@ MODS = [
     ("InfiniteOreBoulders", "Infinite Ore Boulders", "infiniteore_logo.png", "Quality of Life"),
     ("GoldenChance", "Golden Chance", "goldenchance_logo.png", "Quality of Life"),
     ("StimHits", "Stim Hits", "stimhits_logo.png", "Other"),
+    ("ArmorDye", "Armor Dye", "armordye_logo.png", "Quality of Life"),
 ]
 OVERHAUL = ("SidsOverhaul", "Sid's Overhaul", "overhaul_logo.png", "Overhaul")
 

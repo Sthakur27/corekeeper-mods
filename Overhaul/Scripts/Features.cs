@@ -34,6 +34,7 @@ namespace SidsOverhaul
             { "BuffDurationFloor", "Buff Duration Floor" },
             { "PotionSeller", "Potion Seller" },
             { "FishSeller", "Fish Seller" },
+            { "MerchantRestock", "Merchant Restock" },
             { "FasterMushrooms", "Faster Mushrooms" },
             { "BiggerWateringCans", "Bigger Watering Cans" },
             { "FastAutoFishing", "Fast Auto Fishing" },

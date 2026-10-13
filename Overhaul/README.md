@@ -4,7 +4,7 @@
 
 Spend less time repeating chores and more time exploring. Sid's Overhaul brings the individual mods in this repository into one package: easier farming and fishing, equipment tools, merchant supplies, and adjustable combat and progression.
 
-**Golden Chance is still a work in progress.** It is included, but its intended golden-crop and bonus-food behavior should not be treated as a finished feature. To skip it, open **Settings > Mod Options > Turn Sub-Mods On/Off**, turn Golden Chance off, and restart Core Keeper.
+**Golden Chance is still a work in progress.** Golden harvests and the optional main-dish rarity roll have passed a player smoke test; multiplayer and broader edge cases remain under testing. To skip it, open **Settings > Mod Options > Turn Sub-Mods On/Off**, turn Golden Chance off, and restart Core Keeper.
 
 ## Install and get started
 

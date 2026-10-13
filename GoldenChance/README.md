@@ -2,7 +2,7 @@
 
 ![Golden plant and cooking pot concept art, clearly marked WORK IN PROGRESS.](../release/goldenchance_logo.png)
 
-**WORK IN PROGRESS: this mod is still being developed and tested.** The settings below describe the current source's intended behavior, not a guarantee that every planting, cooking or multiplayer case works. The published Workshop files may differ from this development version.
+**WORK IN PROGRESS:** golden harvests and upgraded main dishes have passed a player smoke test in the overhaul. Multiplayer and the broader edge-case checklist are still being tested.
 
 Increase the odds of **golden plants** and **rarer cooked food**, with separate bonuses and an optional rarity roll for the main dish.
 
@@ -32,7 +32,7 @@ Requires **CoreLib and Mod Options** on the host and every client. Use the stand
 
 The current implementation refreshes player talent conditions on joining a world, changing settings and changing talent points. It also repairs late condition overwrites after a short replication grace period, including resets while already at zero talent points.
 
-Version 2.1.0 and the assembled Overhaul 1.3.2 pass offline compilation against the installed 1.3.0.5 game assemblies. The overhaul also passes the game's script compiler and security check, registers all three options, and initializes its Burst-disabling hook. Actual cooking, multiplayer, and Auto Replant interactions still need in-world testing. This is not a published release.
+Version 2.1.0 and the assembled Overhaul 1.3.2 pass offline compilation against the installed 1.3.0.5 game assemblies. The overhaul also passes the game's script compiler and security check, registers all three options, and initializes its Burst-disabling hook. On October 13, 2026, Sid confirmed that both golden harvests and upgraded main dishes worked in-game in the overhaul. The log confirmed the managed server collection hook ran, with no relevant errors detected. Multiplayer, standalone in-game behavior, and the full reset/rejoin/inventory edge-case checklist remain unverified.
 
 ## For contributors
 

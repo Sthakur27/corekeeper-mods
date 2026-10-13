@@ -2,7 +2,7 @@
 
 ## PC implementation update — October 13, 2026
 
-Implemented in Golden Chance **2.1.0**, included in Overhaul **1.3.2**. Publishing remains deferred.
+Implemented in Golden Chance **2.1.0**, included in Overhaul **1.3.2**. On October 13 Sid confirmed both golden harvests and upgraded main dishes worked, and explicitly authorized publishing both updates to Steam. The managed server collection hook was confirmed in Player.log with no relevant errors. The broader test checklist below remains open; the user confirmation is a smoke test, not exhaustive verification.
 
 - Added the persisted regular-cooking toggle, off by default, keeping the additive config keys.
 - The toggle is **host/server-wide**, while each collection uses that request's player's replicated rarity condition. A client's toggle does not override the host. No new player components or custom networking are needed.

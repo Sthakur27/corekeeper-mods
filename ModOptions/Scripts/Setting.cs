@@ -8,6 +8,7 @@ namespace ModOptions
     public abstract class SettingBase
     {
         public string Label { get; }
+        public virtual string Description => "";
 
         protected SettingBase(string label)
         {

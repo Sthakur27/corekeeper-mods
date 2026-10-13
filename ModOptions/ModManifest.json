@@ -10,6 +10,7 @@
     "files": [
         { "path": "Scripts/ModOptionsMod.cs", "guid": "" },
         { "path": "Scripts/Setting.cs", "guid": "" },
+        { "path": "Scripts/ConfigDiscovery.cs", "guid": "" },
         { "path": "Scripts/SettingsPage.cs", "guid": "" },
         { "path": "Scripts/UI/SettingsMenu.cs", "guid": "" },
         { "path": "Scripts/UI/SettingsRow.cs", "guid": "" }

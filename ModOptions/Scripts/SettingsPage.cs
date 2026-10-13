@@ -36,7 +36,7 @@ namespace ModOptions
                 file = new ConfigFile(modName + "/config.cfg", true, info);
                 _files[modName] = file;
             }
-            return new SettingsPage(title, keyPrefix ?? "", file);
+            return new SettingsPage(title, keyPrefix ?? "", file, modName);
         }
 
         internal static void Add(SettingsPage page)
@@ -51,6 +51,10 @@ namespace ModOptions
         {
             return file.Bind(new ConfigDefinition(ConfigSection, key), def);
         }
+
+        internal static bool HasAuthoredPage(string owner, string path) => _pages.Exists(p =>
+            string.Equals(p.Owner, owner, StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(ConfigDiscovery.NormalizePath(p.FilePath), path, StringComparison.OrdinalIgnoreCase));
     }
 
     /// <summary>One page in the Mod Options menu: a title, an optional description and its options.</summary>
@@ -60,18 +64,25 @@ namespace ModOptions
         private readonly string _keyPrefix;
         private readonly List<SettingBase> _items = new List<SettingBase>();
 
-        public string Title { get; }
+        public string Title { get; internal set; }
         public string Description { get; private set; } = "";
         /// <summary>Listed above the alphabetical pages (see <see cref="PinToTop"/>).</summary>
         public bool PinnedToTop { get; private set; }
         public IReadOnlyList<SettingBase> Items => _items;
+        internal string Owner { get; }
+        internal string FilePath => _file?.ConfigFilePath;
+        internal bool Discovered { get; }
 
-        internal SettingsPage(string title, string keyPrefix, ConfigFile file)
+        internal SettingsPage(string title, string keyPrefix, ConfigFile file, string owner = "", bool discovered = false)
         {
             Title = title;
             _keyPrefix = keyPrefix;
             _file = file;
+            Owner = owner;
+            Discovered = discovered;
         }
+
+        internal void AddDiscovered(SettingBase item) => _items.Add(item);
 
         /// <summary>Lists this page at the top of the Mod Options menu instead of alphabetically.</summary>
         public SettingsPage PinToTop()

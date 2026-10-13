@@ -37,7 +37,7 @@ namespace ModOptions.UI
 
         public static void Update()
         {
-            if (_failed || SettingsPages.All.Count == 0) return;
+            if (_failed) return;
             try
             {
                 var menus = Manager.menu;
@@ -56,12 +56,34 @@ namespace ModOptions.UI
         {
             if (_list == null) return;
             var rows = Rebuild(_list);
-            foreach (var page in SettingsPages.All)
+            var pages = new List<SettingsPage>(SettingsPages.All);
+            try
+            {
+                pages.AddRange(ConfigDiscovery.Scan());
+            }
+            catch (Exception ex)
+            {
+                Debug.LogWarning("[ModOptions] Config discovery unavailable: " + ex.Message);
+                rows.Add(AddInfo(_list, "Some mod settings could not be loaded."));
+            }
+            pages.Sort((a, b) => a.PinnedToTop != b.PinnedToTop ? (a.PinnedToTop ? -1 : 1)
+                : string.Compare(a.Title, b.Title, StringComparison.OrdinalIgnoreCase));
+            foreach (var page in pages)
             {
                 var p = page;
                 rows.Add(AddRow(_list, _buttonTemplate, p.Title, null, () => OpenPage(p)));
             }
             Show(_list, rows, ListTitle);
+        }
+
+        private static SettingsRow AddInfo(RadicalOptionsMenu menu, string text)
+        {
+            var info = AddRow(menu, _buttonTemplate, text, null, null);
+            info.IsInfo = true;
+            foreach (var effect in info.GetComponentsInChildren<PugTextEffectMenuOption>(true)) Object.DestroyImmediate(effect);
+            info.canBeActivated = false;
+            if (info.labelText != null) info.labelText.maxWidth = DescriptionWidth;
+            return info;
         }
 
         private static void OpenPage(SettingsPage page)
@@ -87,8 +109,14 @@ namespace ModOptions.UI
                 }
                 if (row.valueText != null) row.valueText.transform.localPosition += new Vector3(ValueRowShift, 0f, 0f);
                 rows.Add(row);
+                if (!string.IsNullOrEmpty(item.Description))
+                {
+                    var help = AddInfo(_page, item.Description);
+                    help.extraVerticalSpacing = 0.5f;
+                    rows.Add(help);
+                }
             }
-            if (page.Items.Count > 0)
+            if (page.Items.Count > 0 && !page.Discovered)
             {
                 var reset = AddRow(_page, _buttonTemplate, "Reset to defaults", null, null);
                 reset.ConfirmLabel = "Click again to reset";
@@ -113,8 +141,11 @@ namespace ModOptions.UI
             Manager.menu.PushMenu(menu);
             SetTitle(menu, title);
             // The description row is not selectable; start keyboard / controller selection below it.
-            if (menu.selectedIndex == 0 && rows.Count > 1 && rows[0] is SettingsRow first && first.IsInfo)
-                menu.SelectOptionIndex(1);
+            if (rows.Count > 0 && rows[0] is SettingsRow first && first.IsInfo)
+            {
+                int selectable = rows.FindIndex(r => !(r is SettingsRow s) || !s.IsInfo);
+                if (selectable >= 0) menu.SelectOptionIndex(selectable);
+            }
         }
 
         // ---------------------------------------------------------------- building

@@ -10,7 +10,7 @@ namespace ModOptions
     /// </summary>
     public sealed class ModOptionsMod : IMod
     {
-        public const string Version = "1.1.0";
+        public const string Version = "1.2.2";
 
         public void EarlyInit()
         {

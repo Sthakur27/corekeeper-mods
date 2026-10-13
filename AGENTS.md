@@ -422,3 +422,25 @@ fully headless (see `EnderStash/Unity/`, run `python EnderStash/Unity/build_bund
 ## Overhaul feature switches (2026-10-07)
 
 - Mod Options page "Turn Sub-Mods On/Off" (was "Features On/Off"; key prefix "Feature: " unchanged; pinned first via ModOptions 1.1.0 `SettingsPage.PinToTop()`) (Overhaul/Scripts/Features.cs, table `Features.All` = mod folder + label). build_overhaul.py injects `Features.On("<folder>")` guards into the listed features only: `Prepare()` in every class-level [HarmonyPatch] class, early return in IMod EarlyInit/Init/Update/ModObjectLoaded, `Enabled = false` in system OnUpdate, "switched off" reply in CoreLib command Execute. Standalone sources are untouched. Switches are read from SidsOverhaul/config.cfg via API.ConfigFilesystem at Harmony patch time (before EarlyInit) and frozen for the session (restart to apply). Loadout Fallback, Five Loadouts, Ender Stash are deliberately not switchable (slot layout -> item loss). New feature: add a row to Features.All; the build fails if no IMod method got a guard.
+
+## Mod Options discovery release (2026-10-13)
+
+- Published Mod Options 1.2.2 (Workshop 3813531202) and Overhaul 1.3.4 (3813043354).
+  GitHub manual package: https://github.com/Sthakur27/corekeeper-mods/releases/tag/overhaul-1.3.4 .
+- Compatible third-party CoreLib client settings appear directly in the alphabetical Mod Options list,
+  alongside authored pages. Use manifest display names, readable labels, and descriptions below controls.
+  Do not add an opt-in discovery submenu or show config paths/status boilerplate; Sid rejected those.
+- Discovery reads existing described client-scoped CoreLib entries: booleans, bounded numbers and
+  acceptable-value lists. It preserves original entries/events/save behavior and never writes on discovery.
+  Authored-page owners are excluded. No server/admin settings, custom JSON, keybinds, free text,
+  unbounded/custom types, unknown metadata tags, ambiguous duplicate paths or deferred-save files.
+  Do not advertise universal mod compatibility or a dependency downloader.
+- Placement Plus's six installed settings were validated; Health Bars/Roofing Gadget Plus custom JSON
+  is unsupported. 29 regression checks passed, standalone/overhaul compile and game-loader checks passed,
+  and Sid approved the final 1.2.2 UI. Manual restart-value persistence was not separately confirmed.
+- Refreshed cover is release/modoptions_logo.png; prompt is release/art_direction/modoptions_discovery_prompt.json.
+  Steam preview PNGs must stay below 1 MB (current cover is 960x960, 552205 bytes).
+- Discord available-mods posts use descriptive subtitles and a plain-language lead. Put non-image links
+  inside <...> to suppress previews; otherwise GitHub's card crowds out the artwork. The Mod Options
+  announcement is https://discord.com/channels/851842678340845600/1083718088526139443/threads/1559696047629013012 .
+  Edit existing announcements for updates instead of creating duplicates. Respect Discord posting limits.

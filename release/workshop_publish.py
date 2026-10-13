@@ -47,7 +47,7 @@ MODS = [
     ("EnderStash", "Ender Stash", "enderstash_logo.png", "Quality of Life"),
     ("VehicleSpeed", "Vehicle Speed", "vehiclespeed_logo.png", "Quality of Life"),
     ("InfiniteOreBoulders", "Infinite Ore Boulders", "infiniteore_logo.png", "Quality of Life"),
-    ("GoldenChance", "Golden Chance", "goldenchance_logo.png", "Quality of Life"),
+    ("GoldenChance", "Golden Chance — Work in Progress", "goldenchance_logo.png", "Quality of Life"),
     ("StimHits", "Hit Sound Effects", "stimhits_logo.png", "Other"),
     ("ArmorDye", "Armor Dye", "armordye_logo.png", "Quality of Life"),
     ("MerchantRestock", "Merchant Restock", "merchantrestock_logo.png", "Quality of Life"),
@@ -126,7 +126,7 @@ def description(key, folder, readme_path):
     md = open(readme_path, encoding="utf-8-sig").read() if os.path.exists(readme_path) else ""
     md = re.sub(r"^#\s+.*\n", "", md, count=1)  # Steam shows the title already
     if key == OVERHAUL[0]:
-        note = ("[b]All of Sid's mods in one mod.[/b] Want to pick and choose instead? Use the "
+        note = ("[b]The features listed below in one package.[/b] Want to pick and choose instead? Use the "
                 "[url=https://steamcommunity.com/workshop/filedetails/?id={collection}]Sid's Core Keeper Mods[/url] "
                 "collection, which has every feature as its own mod. Do not subscribe to both the Overhaul and the "
                 "individual mods (each feature would run twice). Requires CoreLib. Settings: Settings > Mod Options (built in). "

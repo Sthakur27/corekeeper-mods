@@ -2,7 +2,7 @@
 
 ![Golden Chance — illustrated mod cover](../release/goldenchance_logo.png)
 
-**WORK IN PROGRESS:** golden harvests and upgraded main dishes have passed a player smoke test in the overhaul. Multiplayer and the broader edge-case checklist are still being tested.
+**WORK IN PROGRESS:** golden harvests and upgraded main dishes worked in a basic in-game test in the overhaul. Multiplayer, the standalone mod in-game, and less common situations are still being tested.
 
 Increase the odds of **golden plants** and **rarer cooked food**, with separate bonuses and an optional rarity roll for the main dish.
 

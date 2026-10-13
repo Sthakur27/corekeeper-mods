@@ -4,7 +4,7 @@
 
 Spend less time repeating chores and more time exploring. Sid's Overhaul brings the individual mods in this repository into one package: easier farming and fishing, equipment tools, merchant supplies, and adjustable combat and progression.
 
-**Golden Chance is still a work in progress.** Golden harvests and the optional main-dish rarity roll have passed a player smoke test; multiplayer and broader edge cases remain under testing. To skip it, open **Settings > Mod Options > Turn Sub-Mods On/Off**, turn Golden Chance off, and restart Core Keeper.
+**Golden Chance is still a work in progress.** Golden harvests and upgraded main dishes worked in a basic in-game test in the overhaul; multiplayer and less common situations are still being tested. To skip it, open **Settings > Mod Options > Turn Sub-Mods On/Off**, turn Golden Chance off, and restart Core Keeper.
 
 ## Install and get started
 
@@ -24,7 +24,7 @@ Prefer to pick individual mods? Use [Sid's Core Keeper Mods collection](https://
 | Ender Stash | A personal 40-slot stash accessed through an Ender Chest bought from the Fishing Merchant; travels with your character and stays safe on death. |
 | Armor Dye | Color individual armor, weapons and tools with an inventory palette. |
 | Pet Editor | Change pet levels, talents and colors through the pet window. |
-| Auto Replant | Replant harvested crops on tilled ground using seeds in your inventory. |
+| Auto Replant | Replant player-harvested crops on suitable planting ground using a matching nearby dropped seed or one you carry. |
 | Bigger Watering Cans | Water a 2x2 or 4x4 patch with supported cans. |
 | Faster Mushrooms | Tune spread and mushroom regrowth near players. |
 | Fast Auto Fishing | Automate fishing and shorten waiting and animations; special boss fishing keeps its bite timing. |

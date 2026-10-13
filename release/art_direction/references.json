@@ -1,0 +1,21 @@
+{
+  "purpose": "Original Core Keeper mod-cover illustrations, redesigned from visual study of official gameplay screenshots.",
+  "references": [
+    "https://store.steampowered.com/app/1621690/Core_Keeper/",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1621690/ss_1e162c49418038f8042c92810fe3c753449e204b.1920x1080.jpg",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1621690/ss_2a6cdb26200932593b4edd5ab3d1cc2da5bc15ee.1920x1080.jpg",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1621690/bca1feb5ec1bf64543f80c74effdcaed4216033c/ss_bca1feb5ec1bf64543f80c74effdcaed4216033c.1920x1080.jpg",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1621690/632a42b91e005b2d2daf99fee946732c95a9737c/ss_632a42b91e005b2d2daf99fee946732c95a9737c.1920x1080.jpg"
+  ],
+  "observed_features": [
+    "Orthogonal overhead environments with small shaded humanoid sprites",
+    "Textured wood, irregular rock faces, layered foliage and grounded furniture",
+    "Warm localized torchlight, colored emissive objects and dark cave boundaries",
+    "Crisp source pixels enlarged with nearest-neighbor scaling"
+  ],
+  "authorship": "Original Pillow drawings and authored sprite grids. No screenshot pixels, extracted game sprites, or other mod artwork incorporated.",
+  "scope": "27 covers; preserve the readable descriptions. Golden Chance remains labeled WORK IN PROGRESS.",
+  "generators": ["make_native_a.py", "make_native_b.py", "make_native_c.py", "make_native_pack.py"],
+  "regenerate": "Run each generator with Python + Pillow from any working directory. Each writes its assigned release PNGs.",
+  "publish": "python release/workshop_artwork.py updates only existing item previews; --dry-run validates and stages without upload."
+}

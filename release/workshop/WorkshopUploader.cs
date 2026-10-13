@@ -35,6 +35,8 @@ public static class WorkshopUploader
         public string[] removeDependencies { get; set; }
         /// <summary>A Steam collection: no content, "dependencies" are its member items.</summary>
         public bool collection { get; set; }
+        /// <summary>Update an existing item's cover without changing its metadata or gameplay files.</summary>
+        public bool previewOnly { get; set; }
     }
 
     public static int Main(string[] args)
@@ -70,6 +72,12 @@ public static class WorkshopUploader
         foreach (var item in items)
         {
             bool isNew = !ids.TryGetValue(item.key, out ulong existing);
+            if (item.previewOnly && (isNew || string.IsNullOrEmpty(item.preview)))
+            {
+                Console.Error.WriteLine($"Cannot update artwork for {item.key}: existing item and preview required.");
+                failures++;
+                continue;
+            }
             if (isNew && !item.collection && string.IsNullOrEmpty(item.content))
             {
                 Console.WriteLine($"Skipping {item.key}: not on the Workshop yet and no content to upload (description-only run).");
@@ -77,19 +85,20 @@ public static class WorkshopUploader
             }
             Editor editor = !isNew ? new Editor(new PublishedFileId { Value = existing })
                 : item.collection ? Editor.NewCollection : Editor.NewCommunityFile;
-            string description = item.description
+            editor = editor.ForAppId(CoreKeeperAppId);
+            string description = (item.description ?? "")
                 .Replace("{overhaul}", ids.TryGetValue("SidsOverhaul", out ulong oh) ? oh.ToString() : "")
                 .Replace("{collection}", ids.TryGetValue("Collection", out ulong col) ? col.ToString() : "");
-            editor = editor
-                .ForAppId(CoreKeeperAppId)
+            if (!item.previewOnly) editor = editor
                 .WithTitle(item.title)
                 .WithDescription(description)
                 .WithPublicVisibility()
                 .WithChangeLog(item.changelog ?? "");
             // No content folder = keep the item's current files (collections, description-only updates).
-            if (!string.IsNullOrEmpty(item.content)) editor = editor.WithContent(Path.GetFullPath(item.content));
+            if (!item.previewOnly && !string.IsNullOrEmpty(item.content)) editor = editor.WithContent(Path.GetFullPath(item.content));
             if (!string.IsNullOrEmpty(item.preview)) editor = editor.WithPreviewFile(Path.GetFullPath(item.preview));
-            foreach (var tag in item.tags ?? Array.Empty<string>()) editor = editor.WithTag(tag);
+            if (!item.previewOnly)
+                foreach (var tag in item.tags ?? Array.Empty<string>()) editor = editor.WithTag(tag);
 
             Console.WriteLine($"{(isNew ? "Creating" : "Updating")} {item.key} ...");
             PublishResult result = await editor.SubmitAsync(null, created =>
@@ -108,6 +117,7 @@ public static class WorkshopUploader
                 ids[item.key] = result.FileId.Value;
                 File.WriteAllText(idsPath, JsonSerializer.Serialize(ids, new JsonSerializerOptions { WriteIndented = true }));
                 Console.WriteLine($"  OK https://steamcommunity.com/sharedfiles/filedetails/?id={result.FileId.Value}");
+                if (item.previewOnly) continue;
                 foreach (string old in item.removeDependencies ?? Array.Empty<string>())
                 {
                     if (!ulong.TryParse(old, out ulong oldId)) continue;

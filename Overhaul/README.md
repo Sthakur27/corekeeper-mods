@@ -42,7 +42,7 @@ Prefer to pick individual mods? Use [Sid's Core Keeper Mods collection](https://
 | Keep Minions On Teleport | Bring summoned minions with you through teleports. |
 | Vehicle Speed | Adjust boat and go-kart speeds. |
 | Stim Hits | Pick hit, kill and hurt sounds, including custom audio. |
-| Golden Chance — WIP | Experimental chance bonuses for golden plants and the rarity of bonus cooked food. |
+| Golden Chance — WIP | Additive golden-plant and food-rarity bonuses; optional host-controlled rarity roll for main dishes on collection (off by default). Upgraded dishes drop for pickup. |
 
 The individual mod folders on [GitHub](https://github.com/Sthakur27/corekeeper-mods) explain controls, defaults and limits in more detail. Features change game balance in different ways; check their settings before starting a new playthrough.
 

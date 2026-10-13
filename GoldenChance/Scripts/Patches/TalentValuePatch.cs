@@ -14,6 +14,7 @@ namespace GoldenChance.Patches
         private static object _lastPlayer;
         private static object _lastCommands;
         private static string _lastSignature;
+        private static float _lastSendTime;
 
         public static void Postfix(ref ConditionData __result)
         {
@@ -34,6 +35,7 @@ namespace GoldenChance.Patches
             _lastPlayer = null;
             _lastCommands = null;
             _lastSignature = null;
+            _lastSendTime = 0f;
         }
 
         public static void ResendTalentValues() => RefreshTalentValues(true);
@@ -46,7 +48,9 @@ namespace GoldenChance.Patches
         {
             var player = Manager.main?.player;
             var table = Manager.mod?.SkillTalentsTable;
-            if (player == null || table == null || Manager.saves == null || player.playerCommandSystem == null)
+            if (player == null || table == null || Manager.saves == null || player.playerCommandSystem == null
+                || player.world == null || !player.world.IsCreated || !player.world.EntityManager.Exists(player.entity)
+                || !player.world.EntityManager.HasBuffer<SkillTalentConditionsBuffer>(player.entity))
             {
                 ClearRefreshState();
                 return;
@@ -62,17 +66,38 @@ namespace GoldenChance.Patches
                     if (!IsGolden(tree.skillTalents[i].givesCondition)) continue;
                     if (points == null || i >= points.Count) return; // character still loading
                     signature += ":" + tree.skillID + ":" + i + ":" + points[i];
-                    conditions.Add(table.GetConditionDataForSkillTalent(tree.skillID, i, points[i]));
+                    var data = table.GetConditionDataForSkillTalent(tree.skillID, i, points[i]);
+                    conditions.Add(data);
+                    signature += ":" + data.value;
                 }
             }
             if (!force && ReferenceEquals(_lastPlayer, player) && ReferenceEquals(_lastCommands, player.playerCommandSystem)
-                && _lastSignature == signature) return;
+                && _lastSignature == signature)
+            {
+                // A reset at zero points (or a late join/reset command) can overwrite the buffer
+                // without changing the points signature. Allow replication to settle, then repair.
+                if (Time.unscaledTime - _lastSendTime < 2f || ConditionsMatch(player, conditions)) return;
+            }
 
             foreach (var data in conditions)
                 player.playerCommandSystem.SetSkillTalentCondition(player.entity, data);
             _lastPlayer = player;
             _lastCommands = player.playerCommandSystem;
             _lastSignature = signature;
+            _lastSendTime = Time.unscaledTime;
+        }
+
+        private static bool ConditionsMatch(PlayerController player, System.Collections.Generic.List<ConditionData> expected)
+        {
+            var buffer = player.world.EntityManager.GetBuffer<SkillTalentConditionsBuffer>(player.entity, true);
+            foreach (var data in expected)
+            {
+                int value = 0;
+                for (int i = 0; i < buffer.Length; i++)
+                    if (buffer[i].conditionData.conditionID == data.conditionID) { value = buffer[i].conditionData.value; break; }
+                if (value != data.value) return false;
+            }
+            return true;
         }
 
         private static bool IsGolden(ConditionID id) =>

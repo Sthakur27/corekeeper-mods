@@ -1,5 +1,30 @@
 # Golden Chance: PC agent handoff
 
+## PC implementation update — October 13, 2026
+
+Implemented in Golden Chance **2.1.0**, included in Overhaul **1.3.2**. Publishing remains deferred.
+
+- Added the persisted regular-cooking toggle, off by default, keeping the additive config keys.
+- The toggle is **host/server-wide**, while each collection uses that request's player's replicated rarity condition. A client's toggle does not override the host. No new player components or custom networking are needed.
+- Verified the current installed **1.3.0.5-cb48** inventory utility and dispatcher by decompiling the installed DLL. The SDK's `BurstDisabler.DisableBurstForSystemAndJobs<T>` does support unmanaged systems: it uses `SystemBaseRegistry.SetBurstEnabledForSystem`, disables Burst around world dispatch, and completes jobs before restoring Burst. This supersedes the older blanket warning that unmanaged systems cannot be reached. Actual job-hook execution still requires an in-world check.
+- Collection context follows the inventory job's player sequence, including the exact guest-mode skip rule. Cookbook recipe changes supply their explicit `playerEntity` separately. Hooks act only on cooking output slots, after successful moves/swaps or during a drop; failed moves never roll. Bonus-food creation remains untouched.
+- Upgraded main dishes are removed using the native consume helper and dropped for pickup like bonus food. This handles mixed rarities without putting two types in the mouse slot. The copied item retains both ingredient IDs, variation-update count, and auxiliary-data index. Unchanged main dishes use the ordinary transfer. Automation without a player has no roll.
+- Added a condition-buffer consistency check after a two-second replication grace period, covering zero-point resets/late overwrites that do not change the talent-point signature. Values still come from the raw talent table, avoiding accumulation.
+- All seven Golden Chance patch classes and IMod initialization are guarded in the generated overhaul. Disabling the overhaul feature avoids the Burst-disabler registration as well as all new hooks. The live regular-cooking toggle off leaves the native inventory jobs managed; performance on busy servers is not measured.
+
+Verification completed:
+
+- Offline Roslyn compilation against the installed game DLLs: standalone (with real Mod Options source and minimal CoreLib config stubs) and assembled overhaul: **zero errors**.
+- Installed the overhaul after backing up the previous local install under ignored `build/golden-research/installed-backup`. No duplicate standalone Golden Chance is installed.
+- Launched the previously closed game. `Player.log` confirms `Successfully compiled SidsOverhaul safetyCheck=True`, `[SidsOverhaul] v1.3.2`, `[GoldenChance] v2.1.0`, `Page "Golden Chance" with 3 options`, and `BurstDisabler: Patched OnUpdate on InventoryUpdateSystem for job burst disabling`.
+- The existing second-bundle "Data block loader already added" message remains (documented in AGENTS.md); no new Golden Chance load/patch exception was observed at the main menu.
+
+Still pending: standalone loader test; in-world 0%/100% collection boundaries, one/two golden ingredients, partial/full inventories, drop and cookbook collection, live changes, resets/rejoin, multiplayer player ownership, and feature-off behavior. The log message `[GoldenChance] Managed server inventory collection hook active.` confirms the new job hook actually executes when a server world runs. Do not equate menu compilation/initialization with passing these gameplay tests.
+
+The original remote handoff below is retained as the specification and test checklist; its statements that the toggle has not been added describe the state **before** this PC implementation.
+
+---
+
 Written October 8, 2026. This is unfinished implementation work, not a release announcement.
 
 ## User request and publishing boundary

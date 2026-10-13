@@ -1,81 +1,36 @@
 # Quick Buff
 
-Terraria-style quick buff for Core Keeper. Press one key (default **B**, rebindable) and you eat one
-of every buff food and drink one of every buff potion in your inventory, applying all their buffs
-at once. Press it again and items whose buffs are still running are left alone, so spamming the key
-never wastes anything.
+![Quick Buff: original pixel-art illustration](../release/quickbuff_logo.png)
 
-## What it does
+Get ready for a fight with one key, then heal or refresh your food buffs just as quickly.
 
-- One key press consumes **one** of every distinct food / potion (distinct = item + cooked-food
-  variation) in your main inventory (hotbar + bag) and your equipped pouches (e.g. a Potion Pouch, including extra pouch slots added by mods like Pouch Lite). Equipment
-  and other slots are never touched.
-- Only consumables that grant a **timed buff** count. Hunger-only or heal-only items (raw mushrooms,
-  healing potions), items with no effect, bombs, seeds, pet candy and cattle are never consumed.
-  Items that give a permanent effect (max-health foods) are also left alone.
-- **Skip active buffs** (default on): an item is skipped when every buff it gives is still active
-  with at least the threshold (default **30 s**) remaining. If any of its buffs is missing or about
-  to run out, the item is consumed and its buffs refresh exactly as if you ate it by hand.
-- Health, mana, hunger, potion heal-over-time, condition stacking/refresh rules and the eat / drink
-  particles all come from the game's own code paths, so the result matches manual eating.
-- **Quick Heal** (default **H**): drinks the *first* healing potion in your main inventory, hotbar
-  first, then your pouches (any potion whose effect includes an instant heal: Healing Potion, Greater Healing Potion...).
-  Does nothing at full health. Also `/quickheal` (or `/qh`) in chat.
-- **Quick Food** (default **F**): Quick Buff for food only. Eats one of every buff food (no
-  potions, no Caveling Coffee) regardless of hunger, skipping foods whose buffs are all still
-  active (same skip setting as Quick Buff). By default it only eats cooked food (raw fish, berries,
-  mushrooms etc. are left alone), and it can skip fish dishes. Also `/quickfood` (or `/qf`).
-- A one-line summary appears in chat ("Quick Buff: consumed 3 item(s), 1 skipped (buff active)").
-- You can also type `/quickbuff` (or `/qb`) in chat: `/quickbuff [skipActive 0|1] [skipSeconds]`.
+## Keys at a glance
 
-## Settings (Settings > Mod Options)
+- **B — Quick Buff:** consume one of each distinct buff food and buff potion you carry.
+- **H — Quick Heal:** drink the first instant-healing potion found, starting with the hotbar. Does nothing at full health.
+- **F — Quick Food:** consume buff foods only. By default, this uses cooked food and leaves raw food alone. It works regardless of hunger.
 
-| Setting | Default | Meaning |
-|---|---|---|
-| Skip buffs that are still active | on | Do not consume an item whose buffs are all still running |
-| Still active means more than (seconds) | 30 | Remaining time that counts as "still active" (0-300, step 5) |
-| Quick Food: only cooked food | on | F skips raw food (Quick Buff B is unaffected) |
-| Quick Food: skip fish dishes | off | F skips fish and dishes made with fish (B is unaffected) |
+Rebind these in **Controls > Quick Buff**. The actions search your main inventory and equipped pouches, including extra pouch slots. Keys are ignored while menus, inventories or text entry are open. A chat message reports the result.
 
-Key bindings: **Controls > Quick Buff > QuickBuff_Use** and **QuickBuff_Heal** (CoreLib control mapping, saved with your controls).
+## Avoid using supplies too early
 
-## How it works (technical)
+By default, an item is skipped when **all** of its buffs have more than **30 seconds** left. If even one buff is missing or running low, the item can be used again. Quick Buff leaves hunger-only, heal-only and permanent-upgrade items alone; use Quick Heal for healing potions.
 
-1. Client: `QuickBuffMod.Update` polls the Rewired action registered through CoreLib
-   `ControlMappingModule.AddKeyboardBind` (ignored while an inventory, menu or text field is open)
-   and sends `/quickbuff <skip> <seconds>` through CoreLib's command RPC
-   (`CommandModule.ClientCommSystem.SendCommand`). This is the same client-to-server channel every
-   CoreLib chat command uses, so it works in single player and on multiplayer servers.
-2. Server: `QuickBuffCommand` (an `IServerCommandHandler`) resolves the player entity from the
-   connection and calls `QuickBuffServerSystem.Consume` synchronously on the server main thread.
-3. `QuickBuffServerSystem` scans `ContainedObjectsBuffer` inside `InventoryBuffer[0]`, evaluates each
-   distinct eatable with the game's `ConditionUIExtensions.GetConditionsOnConsume` (same ingredient
-   and rarity math the game uses), and for every qualifying item:
-   - enqueues `Inventory.Create.ConsumeEntityAt(player, slot, 1, destroy: true, dontConsume: godMode)`
-     into the `InventoryChangeBuffer` singleton, the exact request `EatableSlot.EatItem` makes, so the
-     stack decrement, slot lock reset and replication go through the vanilla inventory system;
-   - applies the effects with the same helpers `EatableSlotConsumeResultEvaluationSystem` uses
-     (`EntityUtility.AddOrRefreshCondition`, `PlayerController.HealPlayer/AddManaToPlayer/AddHunger`,
-     `HealthChangeBuffer`), including the healing-potion heal-over-time bonus;
-   - pushes the vanilla eat / drink effect event into the player's `GhostEffectEventBuffer`.
-   The vanilla evaluation system itself cannot be reused because it only reads the *equipped* item.
+Open **Settings > Mod Options > Quick Buff** to change:
 
-Requests are rate limited to one per 0.4 s per player (the game's default eat cooldown) on both
-client and server.
+- **Skip buffs that are still active:** on by default.
+- **Still active means more than:** 30 seconds, adjustable from 0–300.
+- **Quick Food: only cooked food:** on by default.
+- **Quick Food: skip fish dishes:** off by default.
 
-## Limitations
+The last two settings affect F only. B still considers all qualifying buff foods.
 
-- No client-side prediction: buffs and the stack decrement show up when the server snapshot arrives
-  (instant in single player, one round trip on servers).
-- The equipped item's own use cooldown is not started (quick buff does not use the eatable slot).
-- Feedback is a chat line (CoreLib command responses always print one). Effects rely on the
-  server-written ghost effect ring buffer reaching clients; if the eat particles do not show, the
-  consumption itself is unaffected.
-- Dedicated (headless) servers: the command handler is registered, but CoreLib's command module
-  also loads its control-mapping module there, which is untested in batch mode.
-- CoreLib's command module logs every executed command to the log file by default
-  (`Commands.LogAllExecutedCommands` in CoreLib's config).
+## Chat commands
 
-## Dependencies
+Use `/quickbuff` (`/qb`), `/quickheal` (`/qh`) or `/quickfood` (`/qf`) as alternatives to the keys.
 
-CoreLib and Mod Options. Client + server (`requiredOn: 3`).
+## Requirements and limits
+
+Requires **CoreLib** and **Mod Options** on the host/server and every client. Supplies are consumed on the server; multiplayer results may appear after a short network delay. Each action is limited to one request per 0.4 seconds per player. Dedicated headless server behavior has not been verified.
+
+Also included in **Sid's Overhaul**; use one version of this feature.

@@ -1,19 +1,24 @@
 # Ender Stash
 
-Core Keeper mod: the **Ender Chest**, a personal 40-slot stash per character, like Minecraft's
-ender chest.
+![Two linked purple chests open one personal stash.](../release/enderstash_logo.png)
 
-Buy an Ender Chest from the **Fishing Merchant** (9999 ancient coins, 1 per restock, always first
-on his list) and place it anywhere. Opening it shows your stash, not an inventory of its own: every
-Ender Chest in every world opens the same 40 slots. The stash belongs to your character (each player
-in multiplayer sees their own) and is never dropped on death. Regular chests are untouched. No settings.
+Keep a **personal 40-slot stash** you can open from any Ender Chest, across worlds. Your character owns the contents, so each player sees their own items and the stash stays safe when you die.
 
-While the stash is open: Sort sorts the stash, the quick stack key moves inventory items the stash
-already holds into it (hotbar excluded), and shift-click moves items between your inventory and the
-stash. Walking away or breaking the chest closes the window; breaking it never touches the stash.
+## Getting started
 
-Upgrading from 1.x (the purple button on every chest): your stash contents are kept, the button is
-gone; buy an Ender Chest to get at them.
+1. Buy an **Ender Chest from the Fishing Merchant for 9,999 ancient coins**. He stocks one per restock, at the top of his list.
+2. Place it and open it like a normal chest.
+3. Place more Ender Chests wherever you need access. They all open that character's same stash.
+
+Shift-click moves items between your inventory and stash. Sort sorts the stash. Quick stack adds matching items from your inventory, excluding your hotbar. Walking away or breaking the chest closes the window; breaking the chest leaves your stored items safe.
+
+## Requirements and limits
+
+No settings or library dependencies. Install on the host and every client in multiplayer. Ordinary chests keep their normal behavior.
+
+**Empty your stash before removing the mod.** Removing it removes placed Ender Chests and can lose the items stored in its extra slots. Keep a save backup before changing mods that add inventory slots.
+
+Upgrading from 1.x? Your items are kept, but the old purple button is gone. Buy an Ender Chest to reach them.
 
 ## How it works (for modders)
 

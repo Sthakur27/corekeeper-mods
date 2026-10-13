@@ -1,15 +1,17 @@
 # Infinite Ore Boulders
 
-Core Keeper mod: ore boulders never break. Keep mining one and it keeps dropping ore at the normal
-rate, forever. Works for every ore boulder type (copper to pandorium and relucite). No settings.
+![A drill mines a glowing ore boulder beside an infinity symbol.](../release/infiniteore_logo.png)
 
-Server side (the host decides in multiplayer); client + server (`requiredOn: 3`).
+Keep your mining operation running: **ore boulders keep producing ore without being used up**. You can leave drills in place instead of finding a new boulder when one runs out.
 
-## How it works (for modders)
+## How to use
 
-Vanilla boulders drop one ore each time a hit takes their health across another multiple of
-`DropsLootWhenDamagedCD.damageToDealToDropLoot`, and are destroyed at 0 health.
-`InfiniteOreBouldersSystem` runs on the server right before `UpdateHealthFromBufferSystem`: it refills
-every ore boulder (ObjectID ending in `OreBoulder`) to full health and caps that tick's queued
-`HealthChangeBuffer` damage so it cannot reach 0. The game then applies the damage and drops ore as
-usual. Written from the game's own code.
+Enable the mod and mine or drill an existing ore boulder as usual. There are no settings. It covers the game's ore boulder types, including pandorium and relucite.
+
+The mod preserves the game's ore-drop process and protects boulders from breaking. It does not create new boulders or bring back ones that have already disappeared.
+
+## Requirements and limits
+
+No library dependencies. Install on the host and every client in multiplayer; the host runs the boulder protection.
+
+Only ore boulders are protected. Ordinary rocks and ore walls are unchanged. Extremely large bursts of damage are capped to keep the boulder alive.

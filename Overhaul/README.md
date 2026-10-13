@@ -1,51 +1,61 @@
 # Sid's Overhaul
 
-All of Sid's Core Keeper mods in one mod, so a multiplayer group only has to install one thing.
+![Sid's Overhaul: everyday comforts in one mod, with options built in.](../release/overhaul_logo.png)
 
-Included features (each is also available as its own mod on mod.io):
+Spend less time repeating chores and more time exploring. Sid's Overhaul brings the individual mods in this repository into one package: easier farming and fishing, equipment tools, merchant supplies, and adjustable combat and progression.
 
-- **Loadout Fallback** and **Five Loadouts**: empty slots waterfall down to the next lower loadout; per-loadout vanity outfits; two extra loadout tabs.
-- **Skill XP Multiplier**: XP multiplier per skill (`/xp` command).
-- **Fast Auto Fishing**: auto fishing with no wait between bites.
-- **Durability Multiplier**: tools, weapons and armor wear out slower (default 0.5x).
-- **Buff Duration Floor**: short food and potion buffs last at least 3 minutes (healing separately configurable).
-- **Faster Mushrooms**: mycelium spreads faster; picked wild mushrooms respawn near you.
-- **Bigger Watering Cans**: watering cans water 2x2 or 4x4.
-- **Better Fishing Loot**: rare fishing loot drops more often.
-- **Auto Replant**: harvesting a crop replants it from a seed in your inventory (only on tilled ground; wild crops are left alone).
-- **Quick Buff**: one key (default B) eats or drinks one of every buff food and potion; F does the same for buff food only; H drinks the first healing potion. Pouches included.
-- **Potion Seller**: the Caveling Merchant sells every potion and Recall Idols; the Slime Merchant sells every grenade and bomb.
-- **Difficulty Tuning** (was Hard Mode Tuning): separate enemy damage, health, speed and boss settings for hard mode worlds and normal worlds. Defaults: hard mode regular enemies hit for 1.5x normal damage instead of 2x; normal worlds vanilla.
-- **Keep Minions On Teleport**: summoned minions survive teleports and arrive with you.
-- **Pet Editor**: set your pet's level and put any talent in any slot from the pet talent window.
-- **Boss Bonus Loot**: bosses drop guaranteed extras (Ghorm: larva meat; Titans: their biome gem and large pouches; Azeos: chance of Chipped Blade and Clear Gemstone; Hydras: double gems; Mimites and Orbital Turrets: 10% each biome gem; Void Larvae: 20% Oblivion Fragment).
-- **Ender Stash**: a personal 40-slot stash per character, opened from any chest (purple button under Sort); same stash in every chest and world, never dropped on death.
-- **Vehicle Speed**: boat and go-kart speed multipliers (1x, 2x, 3x, 5x, 10x). Replaces the Boat Turbo mod; disable that one.
-- **Golden Chance**: adds separate golden plant and bonus cooked-food chance bonuses (+0% to +100% in 5% steps; default +0%). Vanilla max: 18% plants (3% base + 15% talent), 25% rarity upgrade on bonus cooked food.
-- **Infinite Ore Boulders**: ore boulders never break; keep mining for ore forever.
-- **Stim Hits**: crisp metallic hit feedback: a ting when you hit, a coin chime when something you hit dies, a clang when you get hit (custom sounds supported; Off = vanilla).
+**Golden Chance is still a work in progress.** It is included, but its intended golden-crop and bonus-food behavior should not be treated as a finished feature. To skip it, open **Settings > Mod Options > Turn Sub-Mods On/Off**, turn Golden Chance off, and restart Core Keeper.
 
-Settings: Settings > **Mod Options** (main menu or pause menu). Pick a feature to see just its options;
-left/right or click the arrows to change a value, and each page has a "Reset to defaults" button
-(click twice to confirm). In multiplayer the host's values count. The **Turn Sub-Mods On/Off** page (at the top of Mod Options) switches whole sub-mods off (takes effect after restarting the game; Loadout Fallback, Five Loadouts and Ender Stash stay on because they hold items in extra slots). The menu is built in (Mod Options);
-Mod Settings Menu is not needed, and it is fine to keep it installed for other mods.
+## Install and get started
 
-## Requirements
+1. Subscribe to [Sid's Overhaul](https://steamcommunity.com/sharedfiles/filedetails/?id=3813043354) and [CoreLib](https://steamcommunity.com/sharedfiles/filedetails/?id=3673516180) on Steam Workshop.
+2. Disable the separate versions of the included mods so the same features do not run twice.
+3. Restart Core Keeper, then open **Settings > Mod Options** from the main menu or pause menu.
 
-- [CoreLib](https://mod.io/g/corekeeper/m/corelib)
-- [Mod Options](https://github.com/Sthakur27/corekeeper-mods/tree/main/ModOptions)
+**Mod Options is built in.** You do not need a separate Mod Options subscription for the Overhaul. For multiplayer, install matching versions and CoreLib on the host and every client. World-changing settings generally use the host's values; local controls and cosmetic options are configured by each player.
 
-Do not install the separate versions of these mods at the same time; every feature would run twice.
+Prefer to pick individual mods? Use [Sid's Core Keeper Mods collection](https://steamcommunity.com/sharedfiles/filedetails/?id=3814775238). For manual installation, see the [latest GitHub release](https://github.com/Sthakur27/corekeeper-mods/releases/latest) and the instructions inside its zip.
 
-## License
+## What's included
 
-Fast Auto Fishing is a fork of mikufish (GPL-3.0-or-later), so this combined mod is distributed under
-GPL-3.0-or-later.
+| Feature | What it does |
+|---|---|
+| Loadout Fallback + Five Loadouts | Fill empty equipment slots from lower loadouts, use separate vanity outfits, and add two loadout tabs. |
+| Ender Stash | A personal 40-slot stash accessed through an Ender Chest bought from the Fishing Merchant; travels with your character and stays safe on death. |
+| Armor Dye | Color individual armor, weapons and tools with an inventory palette. |
+| Pet Editor | Change pet levels, talents and colors through the pet window. |
+| Auto Replant | Replant harvested crops on tilled ground using seeds in your inventory. |
+| Bigger Watering Cans | Water a 2x2 or 4x4 patch with supported cans. |
+| Faster Mushrooms | Tune spread and mushroom regrowth near players. |
+| Fast Auto Fishing | Automate fishing and shorten waiting and animations; special boss fishing keeps its bite timing. |
+| Better Fishing Loot | Adjust the chance of valuable non-fish fishing loot. |
+| Potion Seller | Add potions, explosives and Titan summon items to merchant shops. |
+| Fish Seller | Buy fish and Shiny Larva Meat, and scroll through expanded shops. |
+| Merchant Restock | Choose a restock interval for all merchants or individual merchant types. |
+| Infinite Ore Boulders | Keep drilling ore boulders without depleting them. |
+| Quick Buff | Shortcuts for buffs (B), food only (F), and a healing potion (H), including items in pouches. |
+| Buff Duration Floor | Set minimum durations for food and potion buffs. |
+| Durability Multiplier | Choose how fast equipment wears out. |
+| Difficulty Tuning | Separate enemy and boss settings for Hard and Normal worlds. |
+| Boss Bonus Loot | Extra drops from selected bosses and enemies. |
+| Skill XP Multiplier | Adjust experience gains per skill. |
+| Keep Minions On Teleport | Bring summoned minions with you through teleports. |
+| Vehicle Speed | Adjust boat and go-kart speeds. |
+| Stim Hits | Pick hit, kill and hurt sounds, including custom audio. |
+| Golden Chance — WIP | Experimental chance bonuses for golden plants and the rarity of bonus cooked food. |
 
-## Building (for modders)
+The individual mod folders on [GitHub](https://github.com/Sthakur27/corekeeper-mods) explain controls, defaults and limits in more detail. Features change game balance in different ways; check their settings before starting a new playthrough.
 
-The individual mod folders in the repo are the source. `python release/build_overhaul.py` copies
-their scripts into `build/SidsOverhaul/Scripts/<Mod>/`, adds the central `SidsOverhaulMod`
-(one settings section, one chat-command registration), re-patches the Fast Auto Fishing asset bundle so their
-MonoBehaviours bind to the `SidsOverhaul` assembly, and writes one manifest.
-`python release/switch_mods.py overhaul|separate` switches a local install between the two forms.
+## Choose your settings
+
+Features with adjustable settings have their own pages under **Settings > Mod Options**. Use the arrows to change values. **Reset to defaults** asks for a second click to confirm.
+
+The **Turn Sub-Mods On/Off** page disables whole features after a restart. Loadout Fallback, Five Loadouts and Ender Stash stay enabled because they hold items in added inventory slots. Empty the stash and extra equipment slots before removing mods that provide them.
+
+## Credits and license
+
+Fast Auto Fishing is a fork of mikufish (GPL-3.0-or-later). The combined Overhaul is distributed under **GPL-3.0-or-later**. Master Pet Plus is not included; Pet Editor is the replacement in this package.
+
+## For modders
+
+The individual mod folders are the source of truth. Run `python release/build_overhaul.py` to assemble `build/SidsOverhaul`; it copies the scripts, adds the central settings and command registration, and prepares the asset bundles. `python release/switch_mods.py overhaul|separate` switches a local install between the combined and individual versions.

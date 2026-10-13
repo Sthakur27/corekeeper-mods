@@ -1,24 +1,24 @@
 # Merchant Restock
 
-Core Keeper mod: choose how often merchants refill their stock, in Settings > Mod Options > Merchant Restock.
+![A shop shelf refills beside a large clock and returning arrow.](../release/merchantrestock_logo.png)
 
-| Setting | Options | Default |
+Spend less time waiting for shop stock. **Choose how often merchants refill**, with one setting for all shops and optional settings for individual merchants.
+
+## Choose a restock time
+
+Open **Settings > Mod Options > Merchant Restock**.
+
+| Setting | Choices | Default |
 |---|---|---|
-| All merchants | Vanilla (25-35 min), 15, 10, 5, 2, 1 min | Vanilla |
-| Caveling, Slime, Fishing, Crystal, Void, Seasonal Merchant | Same as all, or any of the above | Same as all |
+| All merchants | Normal (25–35 min), 15, 10, 5, 2 or 1 min | Normal |
+| Each merchant | Same as all, or its own time | Same as all |
 
-Changes apply right away, including to a merchant's current countdown. The game's random spread is
-kept (5 min = about 3.5 to 5 min). With everything on Vanilla the mod changes nothing.
-In multiplayer the host's values count.
+Individual choices cover Caveling, Slime, Fishing, Crystal, Void and Seasonal Merchants. The game keeps a random spread: **5 minutes means roughly 3.5–5 minutes**, rather than exactly five.
 
-Works with Potion Seller and Fish Seller: they decide what merchants sell, this mod decides how often
-it comes back.
+Shorter settings reduce a current countdown if it is above the chosen limit. Choosing a longer time or returning to normal does not lengthen a countdown already in progress. With all settings left at their defaults, timers are unchanged.
 
-Requires [CoreLib](https://mod.io/g/corekeeper/m/corelib) and Mod Options.
+## Requirements and compatibility
 
-## How it works (for modders)
+Requires **CoreLib and Mod Options** on the host and every client. The host's settings control multiplayer shops.
 
-The game keeps each merchant's restock countdown in `ObjectDataCD.amount` (seconds).
-`MerchantBuyInventorySystem` (Burst, server) counts it down every 4 s and, below 1, refills the shelves
-and sets it to a random 1500-2100. `MerchantRestockSystem` (server) scales any countdown above the
-chosen cap into 0..cap once per second; countdowns at or below the cap are left alone.
+Works with **Potion Seller and Fish Seller**: those add stock, while Merchant Restock changes the wait for a refill. It does not change prices or add items.

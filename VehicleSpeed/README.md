@@ -1,23 +1,22 @@
 # Vehicle Speed
 
-Core Keeper mod: boat and go-kart speed multipliers in Settings > Mod Options.
+![A fast boat and go-kart leave bright trails behind them.](../release/vehiclespeed_logo.png)
 
-| Setting | Options | Default |
+Spend less time travelling: choose separate speed boosts for **boats and go-karts**. Both start at normal speed, so you decide how fast to go.
+
+## Choose your speed
+
+Open **Settings > Mod Options > Vehicle Speed**.
+
+| Setting | Choices | Default |
 |---|---|---|
-| Boat speed | 1x, 2x, 3x, 5x, 10x | 1x |
-| Go-kart speed | 1x, 2x, 3x, 5x, 10x | 1x |
+| Boat speed | 1x, 2x, 3x, 5x, 10x | 1x (normal) |
+| Go-kart speed | 1x, 2x, 3x, 5x, 10x | 1x (normal) |
 
-Applies instantly to every boat and go-kart. Replaces the third-party Boat Turbo mod: disable that
-one, since both set the boat's speed. In multiplayer everyone should use the host's values (each
-client predicts its own ride).
+Changes apply while you play to existing boats and karts. This includes Primitive, Renegade and Speeder go-karts.
 
-## How it works (for modders)
+## Requirements and limits
 
-- Boats: `PlayerVelocityCalculationSystem` multiplies the rider's velocity by `BoatCD.speedMultiplier`.
-- Go-karts (Primitive, Renegade, Speeder): `VehicleRiding` and `PlayerVelocityCalculationSystem`
-  multiply the kart's speed by `VehicleCD.speedMultiplier`.
-- `VehicleSpeedSystem` (client + server) sets both fields to prefab value x multiplier on every boat
-  and kart, every half second and immediately when a setting changes. Neither field is replicated
-  nor written by vanilla code after conversion.
+Requires **CoreLib and Mod Options** on the host and every client. In multiplayer, everyone should choose the same values as the host.
 
-Limit: steering speed is vanilla, so at 5x-10x karts turn wide.
+Steering stays at normal speed, so fast karts take wider turns. Disable Boat Turbo or other mods that also change vehicle speeds to avoid conflicting settings.

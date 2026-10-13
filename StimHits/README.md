@@ -1,8 +1,9 @@
 # Stim Hits
 
-Crisp metallic hit feedback for Core Keeper: a ting when you hit something, a coin "cha-ching" when
-something you hit dies, and a clang when you get hit. The vanilla sounds they replace are muted.
-Everything is on the **Mod Options → Stim Hits** page; set a slot to **Off** for the vanilla sound.
+![A sword impact sends clear sound waves toward a speaker.](../release/stimhits_logo.png)
+
+**Hear hits, kills and damage more clearly** with separate sounds: a ting when you hit a creature, a coin "cha-ching" when a recently hit creature dies, and a clang when you take damage. The vanilla sounds they replace are muted.
+Open **Settings > Mod Options > Stim Hits** to choose sounds and adjust each volume and pitch; set a slot to **Off** for the vanilla sound.
 
 | Option | Default | |
 |---|---|---|
@@ -34,6 +35,6 @@ the mod, so updates never touch it and your files are never shared with anyone. 
   minions and other players do not. Their creature-hurt sounds are still muted within the range.
 - Replaced: the creature's hurt sound, the melee impact sound and the impact sound of your
   projectiles that hit. Flash, particles and enemy death sounds stay vanilla.
-- Client-side only: other players hear their own settings.
+- Sound playback is local: other players hear their own settings. The manifest requires the mod on both client and server for multiplayer.
 
 Requires CoreLib and Mod Options. Built into Sid's Overhaul.

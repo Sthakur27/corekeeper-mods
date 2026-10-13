@@ -71,6 +71,8 @@ def inline(s):
 
 
 def to_bbcode(md):
+    # GitHub hero images are already supplied as the Workshop preview.
+    md = re.sub(r'^!\[[^\]]*\]\([^\n]+\)\s*$', '', md, flags=re.MULTILINE)
     out, lines, i = [], md.replace("\r\n", "\n").split("\n"), 0
     while i < len(lines):
         line = lines[i]
@@ -121,20 +123,23 @@ def to_bbcode(md):
 
 
 def description(key, folder, readme_path):
-    md = open(readme_path, encoding="utf-8").read() if os.path.exists(readme_path) else ""
+    md = open(readme_path, encoding="utf-8-sig").read() if os.path.exists(readme_path) else ""
     md = re.sub(r"^#\s+.*\n", "", md, count=1)  # Steam shows the title already
     if key == OVERHAUL[0]:
         note = ("[b]All of Sid's mods in one mod.[/b] Want to pick and choose instead? Use the "
                 "[url=https://steamcommunity.com/workshop/filedetails/?id={collection}]Sid's Core Keeper Mods[/url] "
                 "collection, which has every feature as its own mod. Do not subscribe to both the Overhaul and the "
-                "individual mods (each feature would run twice). Requires CoreLib. Settings: Settings > Mod Options (built in).")
+                "individual mods (each feature would run twice). Requires CoreLib. Settings: Settings > Mod Options (built in). "
+                "Golden Chance is still a work in progress.")
     elif key == "ModOptions":
-        note = ("[b]Library.[/b] Mods that use it list it as a required item, so Steam installs it for you. "
+        note = ("[b]Library.[/b] Subscribe to it when a mod lists it as a required item. "
                 "Works alongside Mod Settings Menu.")
     else:
         note = ("Part of the [url=https://steamcommunity.com/workshop/filedetails/?id={collection}]Sid's Core Keeper Mods[/url] "
                 "collection. Also bundled in the all-in-one [url=https://steamcommunity.com/workshop/filedetails/?id={overhaul}]Sid's Overhaul[/url]; "
                 "use the Overhaul or the individual mods, not both.")
+    if key == "GoldenChance":
+        note = "[b]WORK IN PROGRESS[/b] — Golden Chance is still being developed.\n\n" + note
     footer = f"\n\nSource and full docs: [url={GITHUB}{folder}]{GITHUB}{folder}[/url]"
     body = to_bbcode(md)
     text = note + "\n\n" + body
@@ -144,10 +149,11 @@ def description(key, folder, readme_path):
 
 
 def collection_description():
-    names = "".join(f"[*]{title}" for key, title, _, _ in MODS)
+    names = "".join(f"[*]{title}" + (" — WORK IN PROGRESS" if key == "GoldenChance" else "") for key, title, _, _ in MODS)
     return ("Every one of Sid's Core Keeper mods as its own Workshop item. Click [b]Subscribe to all[/b], then "
             "unsubscribe from anything you don't want; each mod updates on its own. CoreLib and Mod Options are "
-            "installed automatically as required items.\n\n"
+            "required by many of these mods; subscribe to the required items shown on each mod page.\n\n"
+            "[b]Golden Chance is still a work in progress.[/b] Skip it if you only want finished features.\n\n"
             "Prefer a single mod? [url=https://steamcommunity.com/workshop/filedetails/?id={overhaul}]Sid's Overhaul[/url] "
             "bundles all of them. Use the Overhaul [b]or[/b] these mods, not both (each feature would run twice).\n\n"
             f"[list]{names}[/list]\n\n"

@@ -1,30 +1,30 @@
-# Loadout Fallback (Core Keeper mod)
+# Loadout Fallback
 
-Gear waterfalls down through your loadouts. In loadouts 2 and 3, every equipment slot (helmet,
-chest, pants, necklace, both rings, off-hand, bag, lantern, pet) uses its own item if it holds one,
-otherwise the nearest lower loadout's item: loadout 3 falls through to 2, then to 1. No settings.
+![Loadout Fallback — original pixel artwork](../release/loadout_logo.png)
 
-- Inherited items show **dimmed** in the equipment window, with their real durability.
-- Drop an item onto a dimmed slot to give that loadout its own item. Take it out again and the
-  slot falls back to the loadout below.
-- Clicking a dimmed slot does nothing: the item lives in a lower loadout, change it there.
-- Stats, player sprite, bag capacity and pet all follow the same rule.
+Share your best gear across loadouts without moving it back and forth. Empty equipment slots borrow the nearest earlier loadout's item automatically.
 
-## Per-loadout vanity
+## How to use it
 
-Every loadout also has its own vanity outfit (helmet, chest, pants). Three vanity slots sit to the left
-of your armor in the character window, marked with an eye; whatever you put there is what your
-character looks like in that loadout. An empty vanity slot shows that loadout's real armor (like
-vanilla), and clicking an empty vanity slot toggles "hide this piece", per loadout. The vanity
-furniture edits the current loadout's outfit too. Other players see your active loadout's outfit.
-(Idea for the in-window slots from the mod.io mod "Vanity Slots"; this is a separate implementation.
-If Vanity Slots is installed and adds its slots first, this mod uses those instead of adding its own.)
+Put your everyday gear in loadout 1, then add only the items you want to change in loadouts 2 and 3. For example, an empty helmet slot in loadout 3 uses loadout 2's helmet, or loadout 1's if both are empty.
 
-Install: run `..\install.bat` (copies into `CoreKeeper_Data\StreamingAssets\Mods\LoadoutSharing`),
-then restart the game. Keep **Loadout Plus** disabled; this mod replaces it and reuses its slots.
-Check `%USERPROFILE%\AppData\LocalLow\Pugstorm\Core Keeper\Player.log` for
-`Successfully compiled LoadoutSharing` and `[LoadoutSharing] Player layout: ...`.
+- Borrowed items appear **dimmed** and show their real durability.
+- Drag an item onto a dimmed slot to give that loadout its own item. Remove it to borrow again.
+- To change or remove a borrowed item, go to the loadout that owns it.
+- Armor, jewelry, off-hand, bag, lantern and pet follow this rule. Bag capacity and appearance update with your active gear.
 
-Known limit: right-clicking gear on the hotbar while in loadout 2/3 equips it through the server's own path and will replace the lower loadout's item if that slot is currently inherited. Use drag-and-drop or shift-click from the inventory to give the loadout its own item.
+With **Five Loadouts**, the same rule continues through loadouts 4 and 5. There are no settings.
 
-Works with **Five Loadouts**: loadouts 4 and 5 waterfall the same way (5 -> 4 -> 3 -> 2 -> 1).
+## A different outfit for each loadout
+
+Three vanity slots beside your armor let you choose a cosmetic helmet, chest and pants for each loadout. Empty vanity slots show the real armor; clicking an empty slot toggles hiding that piece. Vanity furniture also edits your current outfit, which other players can see.
+
+The in-window slot idea was inspired by **Vanity Slots**; this is a separate implementation. If that mod adds its slots first, Loadout Fallback reuses them.
+
+## Requirements and limits
+
+Install on the host/server and all clients, then restart the game. No library dependency is required. Keep **Loadout Plus** disabled because this mod replaces its equipment behavior.
+
+**Use drag-and-drop or inventory shift-click for borrowed slots.** Right-clicking gear on the hotbar can replace the earlier loadout's original item instead of creating an override in your current loadout.
+
+This mod adds equipment slots. Move items out of added slots before removing it or changing other mods that alter the player inventory layout.

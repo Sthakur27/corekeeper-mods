@@ -1,22 +1,29 @@
-# Skill XP Multiplier (Core Keeper mod)
+# Skill XP Multiplier
 
-Choose an XP multiplier **per skill**: Mining, Running, Melee, Vitality, Crafting, Range,
-Gardening, Fishing, Cooking, Magic, Summoning, Explosives.
+![Skill XP Multiplier — original pixel artwork](../release/skillxp-logo.png)
 
-- Set them in **Settings > Mod Options** (needs Mod Options). Each skill cycles through
-  0x, 0.25x, 0.5x, 0.75x, 1x, 1.5x, 2x, 3x, 4x, 5x, 6x, 8x, 10x, 12x, 15x, 20x, 25x, 30x, 40x, 50x, 75x, 100x.
-  0x freezes a skill; 1x is vanilla. Default is 1x for every skill.
-- Or in chat: `/xp` shows all, `/xp mining 20` sets one, `/xp all 1` sets every skill.
-  Values snap to the nearest choice above.
-- Changes apply instantly and are saved in CoreLib's config (`SkillXPMultiplier/config.cfg`).
+Choose how quickly each skill levels up. Speed up the skills you find slow, slow down others, or pause XP gains entirely.
 
-How it works: every XP grant in the game is an `AddSkillValueCD` entity consumed by the game's
-`AddSkillValueSystem`. This mod scales the amount on those entities one system earlier, so only
-the XP actually being earned is multiplied, fractional multipliers work, and nothing is counted twice.
+## Set your pace
 
-Install: run `..\install.bat SkillXPMultiplier` (copies into
-`CoreKeeper_Data\StreamingAssets\Mods\SkillXPMultiplier`), then restart the game.
-Requires CoreLib and Mod Options. **Disable the mod.io "XP Multiplier" mod**: it multiplies
-any XP it sees land, including this mod's, so both together would stack (x10 on top).
-Check `%USERPROFILE%\AppData\LocalLow\Pugstorm\Core Keeper\Player.log` for
-`Successfully compiled SkillXPMultiplier` and `[SkillXPMultiplier] Loaded. Multipliers: ...`.
+Open **Settings > Mod Options > Skill XP Multiplier** and choose a multiplier for each skill. All skills start at **1x**, the normal game rate.
+
+- **0x** pauses new XP for that skill; it does not remove earned levels.
+- **0.25x–0.75x** slow progress down.
+- **1.5x–100x** speed it up, using the menu's preset choices.
+
+Supports Mining, Running, Melee, Vitality, Crafting, Range, Gardening, Fishing, Cooking, Magic, Summoning and Explosives. Changes apply to newly earned XP immediately and save automatically.
+
+## Chat shortcuts
+
+- `/xp` — show every multiplier.
+- `/xp mining 20` — set Mining to 20x.
+- `/xp all 1` — restore every skill to the normal rate.
+
+Commands choose the nearest supported multiplier. This changes XP earned from playing; it does not directly set skill levels.
+
+## Requirements and compatibility
+
+Requires **CoreLib** and **Mod Options**. Install, then restart Core Keeper. The loader does not require matching installations across multiplayer participants; settings are stored locally rather than synchronized by this mod.
+
+Disable the other **XP Multiplier** mod if installed: its multiplier can stack with this one and produce much larger gains than intended.

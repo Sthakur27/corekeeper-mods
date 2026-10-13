@@ -1,23 +1,31 @@
 # Pet Editor
 
-Core Keeper mod: edit your equipped pet right in the vanilla pet talent window.
+![Pet Editor: original pixel-art illustration](../release/peteditor_logo.png)
 
-- **Level**: a "Level X/10" row with - and + buttons under the reset button.
-- **Color**: a "Color X/N" row with < and > buttons cycles through the pet's color variants (the game's
-  own skin change, same as when you pick a color in vanilla).
-- **Any talent in any slot**: right-click a talent slot and the talent tree turns into a grid of every
-  pet talent in the game (hover for the usual description). Left-click one to put it in that slot;
-  right-click to close the grid.
-- **Free point removal**: Shift + left-click a talent that has a point to take the point back.
+Choose your equipped pet’s level, color and talents directly in its familiar talent window.
 
-Placing points still works the vanilla way, and the number of points follows the game's own formula
-(so mods that change it, like AllSkills, are respected). Lowering the level resets the points if the
-pet would have more placed than it owns.
+## How to use
 
-Chat commands (what the buttons send; work in multiplayer for each player's own pet):
-`/pet level <1-10>`, `/pet talent <slot 1-9> <talent name or id>`, `/pet color <n>`, `/pet unpoint <slot 1-9>`.
+Equip a pet, then open its talent window.
 
-Requires **CoreLib**. Client + server (`requiredOn: 3`).
+- **Change level:** use the minus and plus buttons under the reset button.
+- **Change color:** use the left and right buttons to cycle through that pet's available colors.
+- **Replace a talent:** right-click a talent slot, then left-click a talent in the selection grid. Hover to read its description; right-click to close the grid.
+- **Refund a talent:** Shift + left-click a filled talent slot to clear its spent points for free.
 
-Written from scratch against the game's own code (PetTalentsWindow, PetExtensions, inventory aux
-data). Not based on any other pet mod.
+Spending points still works as usual. The total follows the game's own point formula, including changes from mods such as AllSkills. Lowering a pet's level resets allocated points if the pet would otherwise have too many.
+
+## Chat alternatives
+
+- `/pet level <1-10>`
+- `/pet talent <slot 1-9> <talent name or id>`
+- `/pet color <n>`
+- `/pet unpoint <slot 1-9>`
+
+Commands and buttons edit your own equipped pet. No separate Mod Options page is needed.
+
+## Requirements
+
+Requires **CoreLib** on the host/server and every client. No Mod Options dependency. Changes affect the pet itself and are saved with it.
+
+Written from scratch against Core Keeper's own pet systems; not based on another pet mod. Also included in **Sid's Overhaul**; use one version of this feature.

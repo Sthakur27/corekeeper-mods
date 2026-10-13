@@ -1,14 +1,22 @@
 # Mod Options
 
-A general settings menu for Core Keeper mods. Adds **Mod Options** to the game's Settings menu
-(main menu and pause menu): a list of mods, and one page per mod with its options.
+![Mod Options — original pixel artwork](../release/modoptions_logo.png)
 
-- Left/right (keyboard, controller) or click the `<` / `>` side of a value to change it.
-- Each page shows the mod's description and has **Reset to defaults** (click twice to confirm).
-- Values are saved immediately to `<mod name>/config.cfg` in the game's mod config folder (CoreLib).
+Change supported mod settings from inside Core Keeper, using your mouse, keyboard or controller.
 
-Independent of Mod Settings Menu: both can be installed at the same time, each with its own button.
-Built into Sid's Overhaul; the standalone mods depend on this one.
+## Get started
+
+1. Install **CoreLib** and **Mod Options**, then restart Core Keeper.
+2. Open **Settings > Mod Options** from the main menu or pause menu.
+3. Choose a mod, then adjust its options. Settings save automatically.
+
+Click the left or right side of a value, or use left/right navigation. **Reset to defaults** resets the current page; select it twice to confirm.
+
+## Requirements and compatibility
+
+Requires **CoreLib**. Install on the host/server and clients when using mods that require this library. Only mods that register a page appear here; it does not add controls for every installed mod.
+
+Built into **Sid's Overhaul**. The standalone mods use this separate library. It can coexist with Mod Settings Menu, which has its own button.
 
 ## For modders
 
@@ -27,12 +35,6 @@ public void Init()
 }
 ```
 
-Options: `Toggle` (bool), `Choice` (string list, wraps around), `Stepper` (int range), `Slider`
-(float range with a step). `SettingsPages.Create(mod, title, keyPrefix)` lets one mod own several
-pages in one config file (Sid's Overhaul uses it to keep the keys of earlier versions).
-Pages are listed alphabetically; `.PinToTop()` lists a page above the rest.
+Controls: `Toggle` (bool), `Choice` (string list), `Stepper` (int range), and `Slider` (float range with a step). Read `Setting<T>.Value` or subscribe to `.OnChanged`.
 
-How the menu works: the game's Gameplay settings screen is cloned twice at runtime (list and page);
-their rows are replaced with `SettingsRow` components (subclass of `RadicalMenuOption`), and the
-pages are pushed with `MenuManager.PushMenu`, so scrolling, navigation and Back are vanilla. The
-Settings menu gets an extra row cloned from "Gameplay settings". Requires CoreLib.
+`SettingsPages.Create(mod, title, keyPrefix)` supports several pages in one config file. Pages sort alphabetically; `.PinToTop()` places a page first. CoreLib saves values in `<mod name>/config.cfg`. The interface uses the game's menu navigation and scrolling.

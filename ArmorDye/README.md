@@ -1,28 +1,29 @@
 # Armor Dye
 
-Core Keeper mod: dye your armor, weapons and tools any color. The dye belongs to the item, so two
-copies of the same chestplate can be different colors, and a piece keeps its color when you move,
-store, trade or upgrade it.
+![Three armor pieces in distinct colors above a dye palette.](../release/armordye_logo.png)
 
-- **Dye palette**: hover an armor piece, weapon or tool in your inventory, hotbar, equipment or vanity
-  slots and press **P** (rebind under Controls > Armor Dye). A panel shows that item's icon in every
-  color (10 colors, 11 hue shifts every 30°, Remove dye); click one to dye it. P again or right-click closes it.
-- **Shows everywhere**: on your character (armor and the item in your hand), on its projectiles (arrows, chakrams, rockets; particle effects are tinted), in the character and
-  vanity previews, and on the item icons in every slot, chests included. Other players see your dyes.
-- **Vanity**: a dyed vanity piece shows its own dye; an undyed vanity piece shows the dye of the
-  armor equipped under it.
+Make your gear your own: **recolor armor, weapons and tools**, with a separate dye for each item. The color stays with the item when you store, trade or upgrade it.
 
-Chat commands (any color, also what the bucket sends):
-`/dye <helm|chest|pants|all|hand> <red|orange|gold|green|teal|blue|purple|pink|white|black|#rrggbb|shift <degrees>|off>`,
-`/dye info`.
+## Pick a color
 
-Dyeable: armor, and single non-stacking items with durability (weapons, tools, fishing rods).
+1. Hover over an armor piece, weapon or tool in your inventory, hotbar, equipment or vanity slots.
+2. Press **P** to open the palette. You can rebind this key under **Controls > Armor Dye**.
+3. Click a color or hue shift. Choose **Remove dye** to restore the original look. Press P again or right-click to close.
 
-Glowing parts are dyed too. Settings (Mod Options > Armor Dye): dye weapons in hand, dye projectiles,
-dye item icons (all on by default, client-side only). Limit: off-hand items keep their vanilla look.
+The palette has 10 colors and 11 hue shifts. Dyes appear on armor, held items, item icons and supported projectiles. Other players with the mod can see them too. A dyed vanity item uses its own color; an undyed one uses the dye from the armor beneath it.
 
-How it works: the color is stored in a vanilla per-item data slot the game only uses on live cattle
-(`MealsEatenCD`), so it is saved and synced like a pet's color; every client recolors the armor and
-held-item sheets and icons from it. Details in SPEC.md.
+## Settings and requirements
 
-Requires **CoreLib** and **Mod Options**. Client + server (`requiredOn: 3`).
+Requires **CoreLib and Mod Options** on the host and every client.
+
+In **Settings > Mod Options > Armor Dye**, you can separately show dyes on held weapons/tools, projectiles and item icons. All three start on. These switches only change your view.
+
+Dyeable items include armor and single, non-stacking items with durability, such as weapons, tools and fishing rods. Off-hand items keep their normal appearance. Glowing parts are recolored too.
+
+## Optional chat commands
+
+For equipped items, use `/dye <helm|chest|pants|all|hand> <color>`.
+
+Colors: `red`, `orange`, `gold`, `green`, `teal`, `blue`, `purple`, `pink`, `white`, `black`, a hex value such as `#33aaff`, `shift <degrees>`, or `off`. Use `/dye info` to inspect your dyes.
+
+Implementation details are in [SPEC.md](SPEC.md).

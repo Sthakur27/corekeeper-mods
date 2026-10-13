@@ -57,7 +57,7 @@ Use the Overhaul or the individual versions of its features. Installing both run
 
 ### Settings and the full package
 
-- [Mod Options](ModOptions/README.md) provides the in-game settings menu used by many standalone mods. Their manifests list required dependencies.
+- [Mod Options](ModOptions/README.md) puts supported mod settings in one in-game menu. It also discovers compatible third-party CoreLib client settings; not every mod or setting is supported. Individual mod pages list their required dependencies.
 - [Sid's Overhaul](Overhaul/README.md) combines the mods above, with Mod Options built in.
 
 ## Source, credits and artwork

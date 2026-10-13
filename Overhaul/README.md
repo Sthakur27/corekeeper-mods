@@ -48,7 +48,9 @@ The individual mod folders on [GitHub](https://github.com/Sthakur27/corekeeper-m
 
 ## Choose your settings
 
-Features with adjustable settings have their own pages under **Settings > Mod Options**. Use the arrows to change values. **Reset to defaults** asks for a second click to confirm.
+Features with adjustable settings have their own pages under **Settings > Mod Options**. Use the arrows to change values. On these authored pages, **Reset to defaults** asks for a second click to confirm.
+
+**Overhaul 1.3.4 includes Mod Options 1.2.2.** Compatible third-party CoreLib client settings can now appear automatically in the same list, with readable names and help text below each option. Reopen the menu to discover settings initialized later. These edits use the original mod's configuration; discovered pages have no bulk reset, and the original mod determines whether a restart is needed. Discovery is limited: it does not expose every installed mod, server/admin settings, keybindings, or custom JSON settings. See [Mod Options](../ModOptions/README.md) for supported types and limits.
 
 The **Turn Sub-Mods On/Off** page disables whole features after a restart. Loadout Fallback, Five Loadouts and Ender Stash stay enabled because they hold items in added inventory slots. Empty the stash and extra equipment slots before removing mods that provide them.
 

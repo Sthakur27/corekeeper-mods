@@ -2,25 +2,35 @@
 
 ![Mod Options — illustrated mod cover](../release/modoptions_logo.png)
 
-Change supported mod settings from inside Core Keeper, using your mouse, keyboard or controller.
+Change supported mod settings in one place, without leaving Core Keeper or editing configuration files. Use your mouse, keyboard or controller.
+
+Mods with their own Mod Options pages appear alongside compatible settings discovered from other installed mods. Discovery is limited to supported client-side CoreLib settings; not every mod or option will appear.
 
 ## Get started
 
-1. Install **CoreLib** and **Mod Options**, then restart Core Keeper.
+1. Subscribe to [CoreLib](https://steamcommunity.com/sharedfiles/filedetails/?id=3673516180) and [Mod Options](https://steamcommunity.com/sharedfiles/filedetails/?id=3813531202), then restart Core Keeper.
 2. Open **Settings > Mod Options** from the main menu or pause menu.
 3. Choose a mod, then adjust its options. Settings save automatically.
 
-Click the left or right side of a value, or use left/right navigation. **Reset to defaults** resets the current page; select it twice to confirm.
+Click the left or right side of a value, or use left/right navigation. On pages that offer **Reset to defaults**, select it twice to confirm. Automatically discovered settings do not have a bulk reset.
 
 ## Requirements and compatibility
 
-Requires **CoreLib**. Install on the host/server and clients when using mods that require this library. Mods can register a page, or expose compatible CoreLib settings automatically in the same menu. This does not add controls for every installed mod.
+Requires **CoreLib**. Keep it updated for automatic discovery support. For multiplayer, install this library where your chosen mods require it, including the host/server and clients when required. Automatically discovered options change local client settings; they do not synchronize server settings.
 
 Built into **Sid's Overhaul**. The standalone mods use this separate library. It can coexist with Mod Settings Menu, which has its own button.
 
 ## Third-party settings
 
-Compatible third-party mods appear directly in the main Mod Options list, alongside authored pages. Titles use the mod's display name, and setting labels use readable words rather than config keys. If a mod has multiple settings files, a friendly file name distinguishes them without the extension. Reopen Mod Options to discover settings initialized later. Opening the menu never changes values.
+Compatible third-party mods appear directly in the main Mod Options list. Names and labels are made readable, and the original mod's help text appears beneath each setting. Reopen Mod Options to find settings initialized after the menu was opened. Opening the menu does not change saved values.
+
+The original mod decides when a change takes effect. Options explicitly marked for restart show **Restart required**; some mods also cache settings, so restart if a change is not visible immediately. Your edits go back to that mod's existing configuration.
+
+**Placement Plus** has been checked with six supported settings. Mods that use their own storage format, such as **Health Bars** and **Roofing Gadget Plus**, are not discovered. Server/admin controls, keybindings and free-text settings are also outside this feature's scope.
+
+## For modders
+
+### Automatic discovery scope
 
 Discovery supports existing, described **client-scoped CoreLib** entries: booleans, bounded integers/floats, and bool/int/float/string acceptable-value lists. Integer controls move by one; float controls move by one twentieth of the declared range. Descriptions retain the original mod's help text. Only settings marked as needing a restart show **Restart required**; ordinary options have no status prefix. The original mod decides when changes take effect, so restart if an option is cached by that mod.
 
@@ -36,7 +46,7 @@ The initial version deliberately excludes:
 
 Requires a CoreLib version with `ConfigFile.AllConfigFilesReadOnly`, `ConfigScope`, and acceptable-value metadata. No disk search or reflection into mod internals is used. Installed Placement Plus's six settings were validated; Health Bars and Roofing Gadget Plus use custom JSON and are outside this scope.
 
-## For modders
+### Registering a settings page
 
 ```csharp
 using ModOptions;
@@ -57,7 +67,7 @@ Controls: `Toggle` (bool), `Choice` (string list), `Stepper` (int range), and `S
 
 `SettingsPages.Create(mod, title, keyPrefix)` supports several pages in one config file. Pages sort alphabetically; `.PinToTop()` places a page first. CoreLib saves values in `<mod name>/config.cfg`. The interface uses the game's menu navigation and scrolling.
 
-## Validation
+### Validation
 
 `python ModOptions/Tests/run.py --csc <path/to/csc.dll>` compiles and runs regression checks against the installed CoreLib configuration source and extracts the installed Placement Plus `Bind` declarations as an integration fixture. Override `--corelib` and `--placement` for different install locations. Tests use an in-memory filesystem and do not access player configs. Outputs go to ignored `build/modoptions-tests`.
 

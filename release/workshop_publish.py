@@ -149,7 +149,7 @@ def description(key, folder, readme_path):
 
 
 def collection_description():
-    names = "".join(f"[*]{title}" + (" — WORK IN PROGRESS" if key == "GoldenChance" else "") for key, title, _, _ in MODS)
+    names = "".join(f"[*]{title}" for key, title, _, _ in MODS)
     return ("Every one of Sid's Core Keeper mods as its own Workshop item. Click [b]Subscribe to all[/b], then "
             "unsubscribe from anything you don't want; each mod updates on its own. CoreLib and Mod Options are "
             "required by many of these mods; subscribe to the required items shown on each mod page.\n\n"

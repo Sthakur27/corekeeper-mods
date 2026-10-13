@@ -1,6 +1,6 @@
 # Faster Mushrooms
 
-![Faster Mushrooms — original pixel artwork](../release/fastermushrooms_logo.png)
+![Faster Mushrooms — illustrated mod cover](../release/fastermushrooms_logo.png)
 
 Shorten mushroom growth waits and give wild mushrooms more chances to return near your base.
 

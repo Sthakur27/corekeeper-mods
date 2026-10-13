@@ -1,6 +1,6 @@
 # Fish Seller
 
-![A fishing shop displays three colorful fish above price labels.](../release/fishseller_logo.png)
+![Fish Seller — illustrated mod cover](../release/fishseller_logo.png)
 
 Buy cooking ingredients without a fishing trip: the **Fishing Merchant stocks all 44 supported fish**, including Starlight Nautilus. The **Caveling Merchant also sells Shiny Larva Meat**.
 

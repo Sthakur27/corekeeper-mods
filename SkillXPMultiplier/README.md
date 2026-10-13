@@ -1,6 +1,6 @@
 # Skill XP Multiplier
 
-![Skill XP Multiplier — original pixel artwork](../release/skillxp-logo.png)
+![Skill XP Multiplier — illustrated mod cover](../release/skillxp-logo.png)
 
 Choose how quickly each skill levels up. Speed up the skills you find slow, slow down others, or pause XP gains entirely.
 

@@ -1,9 +1,11 @@
-# Stim Hits
+# Hit Sound Effects
 
-![A sword impact sends clear sound waves toward a speaker.](../release/stimhits_logo.png)
+![Hit Sound Effects — illustrated mod cover](../release/stimhits_logo.png)
 
 **Hear hits, kills and damage more clearly** with separate sounds: a ting when you hit a creature, a coin "cha-ching" when a recently hit creature dies, and a clang when you take damage. The vanilla sounds they replace are muted.
-Open **Settings > Mod Options > Stim Hits** to choose sounds and adjust each volume and pitch; set a slot to **Off** for the vanilla sound.
+Open **Settings > Mod Options > Hit Sound Effects** to choose sounds and adjust each volume and pitch; set a slot to **Off** for the vanilla sound.
+
+Previously named **Stim Hits**. Existing settings and custom sound files carry over; the internal folder remains `StimHits`.
 
 | Option | Default | |
 |---|---|---|

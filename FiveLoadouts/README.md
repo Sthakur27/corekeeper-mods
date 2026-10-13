@@ -1,6 +1,6 @@
 # Five Loadouts
 
-![Five Loadouts — original pixel artwork](../release/fiveloadouts_logo.png)
+![Five Loadouts — illustrated mod cover](../release/fiveloadouts_logo.png)
 
 Keep five equipment setups ready instead of three. Add dedicated loadouts for mining, fishing, exploration or combat without rebuilding your gear each time.
 

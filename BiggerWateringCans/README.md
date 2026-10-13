@@ -1,6 +1,6 @@
 # Bigger Watering Cans
 
-![Bigger Watering Cans — original pixel artwork](../release/wateringcans_logo.png)
+![Bigger Watering Cans — illustrated mod cover](../release/wateringcans_logo.png)
 
 Water more of your garden with each pour. The basic Watering Can covers **2×2 tiles** and the Iron Watering Can covers **4×4 tiles**.
 

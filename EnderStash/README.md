@@ -1,6 +1,6 @@
 # Ender Stash
 
-![Two linked purple chests open one personal stash.](../release/enderstash_logo.png)
+![Ender Stash — illustrated mod cover](../release/enderstash_logo.png)
 
 Keep a **personal 40-slot stash** you can open from any Ender Chest, across worlds. Your character owns the contents, so each player sees their own items and the stash stays safe when you die.
 

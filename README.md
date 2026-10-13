@@ -52,7 +52,7 @@ Use the Overhaul or the individual versions of its features. Installing both run
 | [Skill XP Multiplier](SkillXPMultiplier/README.md) | Adjust experience gains separately for each skill. |
 | [Keep Minions On Teleport](KeepMinions/README.md) | Bring summoned minions along when you teleport. |
 | [Vehicle Speed](VehicleSpeed/README.md) | Change boat and go-kart speeds. |
-| [Stim Hits](StimHits/README.md) | Choose sounds for hits, kills and damage taken. |
+| [Hit Sound Effects](StimHits/README.md) | Choose sounds for hits, kills and damage taken. |
 | [Golden Chance — WIP](GoldenChance/README.md) | Golden crop and food-rarity bonuses, with an optional rarity roll for main dishes. |
 
 ### Settings and the full package

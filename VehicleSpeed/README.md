@@ -1,6 +1,6 @@
 # Vehicle Speed
 
-![A fast boat and go-kart leave bright trails behind them.](../release/vehiclespeed_logo.png)
+![Vehicle Speed — illustrated mod cover](../release/vehiclespeed_logo.png)
 
 Spend less time travelling: choose separate speed boosts for **boats and go-karts**. Both start at normal speed, so you decide how fast to go.
 

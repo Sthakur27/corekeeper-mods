@@ -1,6 +1,6 @@
 # Armor Dye
 
-![Three armor pieces in distinct colors above a dye palette.](../release/armordye_logo.png)
+![Armor Dye — illustrated mod cover](../release/armordye_logo.png)
 
 Make your gear your own: **recolor armor, weapons and tools**, with a separate dye for each item. The color stays with the item when you store, trade or upgrade it.
 

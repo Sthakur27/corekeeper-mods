@@ -1,6 +1,6 @@
 # Keep Minions On Teleport
 
-![Keep Minions On Teleport: original pixel-art illustration](../release/keepminions_logo.png)
+![Keep Minions On Teleport — illustrated mod cover](../release/keepminions_logo.png)
 
 Take your summoned minions through portals, waypoints and recalls without having to summon them again.
 

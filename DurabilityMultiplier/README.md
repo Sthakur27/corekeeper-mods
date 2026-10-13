@@ -1,6 +1,6 @@
 # Durability Multiplier
 
-![Durability Multiplier — original pixel artwork](../release/durability_logo.png)
+![Durability Multiplier — illustrated mod cover](../release/durability_logo.png)
 
 Make tools, weapons and armor last longer between repairs. Choose reduced wear or turn durability loss off entirely.
 

@@ -1,6 +1,6 @@
 # Infinite Ore Boulders
 
-![A drill mines a glowing ore boulder beside an infinity symbol.](../release/infiniteore_logo.png)
+![Infinite Ore Boulders — illustrated mod cover](../release/infiniteore_logo.png)
 
 Keep your mining operation running: **ore boulders keep producing ore without being used up**. You can leave drills in place instead of finding a new boulder when one runs out.
 

@@ -1,6 +1,6 @@
 # Better Fishing Loot
 
-![Better Fishing Loot: original pixel-art illustration](../release/betterfishingloot_logo.png)
+![Better Fishing Loot — illustrated mod cover](../release/betterfishingloot_logo.png)
 
 A better chance of finding fishing gear and rare treasures, without changing the fishing minigame.
 

@@ -1,6 +1,6 @@
 # Merchant Restock
 
-![A shop shelf refills beside a large clock and returning arrow.](../release/merchantrestock_logo.png)
+![Merchant Restock — illustrated mod cover](../release/merchantrestock_logo.png)
 
 Spend less time waiting for shop stock. **Choose how often merchants refill**, with one setting for all shops and optional settings for individual merchants.
 

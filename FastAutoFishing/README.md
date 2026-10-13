@@ -1,6 +1,6 @@
 # Fast Auto Fishing
 
-![Fast Auto Fishing — original pixel artwork](../release/fastfish_logo.png)
+![Fast Auto Fishing — illustrated mod cover](../release/fastfish_logo.png)
 
 Spend less time waiting for bites. Automatically respond to fish nibbles and shorten the delays in the fishing loop.
 

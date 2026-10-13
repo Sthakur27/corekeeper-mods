@@ -1,6 +1,6 @@
 # Mod Options
 
-![Mod Options — original pixel artwork](../release/modoptions_logo.png)
+![Mod Options — illustrated mod cover](../release/modoptions_logo.png)
 
 Change supported mod settings from inside Core Keeper, using your mouse, keyboard or controller.
 

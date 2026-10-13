@@ -1,6 +1,6 @@
 # Loadout Fallback
 
-![Loadout Fallback — original pixel artwork](../release/loadout_logo.png)
+![Loadout Fallback — illustrated mod cover](../release/loadout_logo.png)
 
 Share your best gear across loadouts without moving it back and forth. Empty equipment slots borrow the nearest earlier loadout's item automatically.
 

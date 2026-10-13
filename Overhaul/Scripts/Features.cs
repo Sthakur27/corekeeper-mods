@@ -48,7 +48,7 @@ namespace SidsOverhaul
             { "PetEditor", "Pet Editor" },
             { "BossBonusLoot", "Boss Bonus Loot" },
             { "InfiniteOreBoulders", "Infinite Ore Boulders" },
-            { "StimHits", "Stim Hits" },
+            { "StimHits", "Hit Sound Effects" },
             { "ArmorDye", "Armor Dye" },
         };
 
@@ -68,14 +68,17 @@ namespace SidsOverhaul
         /// <summary>Adds one toggle per feature to the switches page (same keys the snapshot reads).</summary>
         public static void RegisterSettings(SettingsPage page)
         {
+            // Seed the renamed setting from the saved switch before binding any new config keys.
+            bool hitSoundEffectsDefault = On("StimHits");
             page.PinToTop();
             for (int i = 0; i < All.GetLength(0); i++)
-                page.Toggle(out _, All[i, 1], true);
+                page.Toggle(out _, All[i, 1], All[i, 0] == "StimHits" ? hitSoundEffectsDefault : true);
         }
 
         private static Dictionary<string, bool> ReadSnapshot()
         {
             var result = new Dictionary<string, bool>();
+            bool? legacyStimHits = null;
             var byLabel = new Dictionary<string, string>();
             for (int i = 0; i < All.GetLength(0); i++)
                 byLabel[KeyPrefix + All[i, 1]] = All[i, 0];
@@ -94,7 +97,10 @@ namespace SidsOverhaul
                         if (line.StartsWith("[") && line.EndsWith("]")) { section = line.Substring(1, line.Length - 2); continue; }
                         int eq = line.IndexOf('=');
                         if (section != "Settings" || eq < 0) continue;
-                        if (byLabel.TryGetValue(line.Substring(0, eq).Trim(), out string key))
+                        string label = line.Substring(0, eq).Trim();
+                        if (label == KeyPrefix + "Stim Hits")
+                            legacyStimHits = line.Substring(eq + 1).Trim().ToLowerInvariant() != "false";
+                        else if (byLabel.TryGetValue(label, out string key))
                             result[key] = line.Substring(eq + 1).Trim().ToLowerInvariant() != "false";
                     }
                 }
@@ -103,6 +109,10 @@ namespace SidsOverhaul
             {
                 Debug.LogWarning($"[{SidsOverhaulMod.Name}] Could not read feature switches, all features on: {e.Message}");
             }
+
+            // The new key wins even when the legacy line appears later in the file.
+            if (!result.ContainsKey("StimHits") && legacyStimHits.HasValue)
+                result["StimHits"] = legacyStimHits.Value;
 
             var off = new List<string>();
             foreach (var kv in result)

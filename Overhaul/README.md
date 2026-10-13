@@ -1,6 +1,6 @@
 # Sid's Overhaul
 
-![Sid's Overhaul: everyday comforts in one mod, with options built in.](../release/overhaul_logo.png)
+![Sid's Overhaul — illustrated mod cover](../release/overhaul_logo.png)
 
 Spend less time repeating chores and more time exploring. Sid's Overhaul brings the individual mods in this repository into one package: easier farming and fishing, equipment tools, merchant supplies, and adjustable combat and progression.
 
@@ -41,7 +41,7 @@ Prefer to pick individual mods? Use [Sid's Core Keeper Mods collection](https://
 | Skill XP Multiplier | Adjust experience gains per skill. |
 | Keep Minions On Teleport | Bring summoned minions with you through teleports. |
 | Vehicle Speed | Adjust boat and go-kart speeds. |
-| Stim Hits | Pick hit, kill and hurt sounds, including custom audio. |
+| Hit Sound Effects | Pick hit, kill and hurt sounds, including custom audio. |
 | Golden Chance — WIP | Additive golden-plant and food-rarity bonuses; optional host-controlled rarity roll for main dishes on collection (off by default). Upgraded dishes drop for pickup. |
 
 The individual mod folders on [GitHub](https://github.com/Sthakur27/corekeeper-mods) explain controls, defaults and limits in more detail. Features change game balance in different ways; check their settings before starting a new playthrough.

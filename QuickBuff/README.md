@@ -1,6 +1,6 @@
 # Quick Buff
 
-![Quick Buff: original pixel-art illustration](../release/quickbuff_logo.png)
+![Quick Buff — illustrated mod cover](../release/quickbuff_logo.png)
 
 Get ready for a fight with one key, then heal or refresh your food buffs just as quickly.
 

@@ -29,8 +29,8 @@ def main():
             parser.error(f'{key} has no existing Workshop item')
         preview = Path(workshop.REL) / logo
         with Image.open(preview) as im:
-            if im.width * 9 != im.height * 16:
-                parser.error(f'{preview} must be 16:9')
+            if im.width != im.height and im.width * 9 != im.height * 16:
+                parser.error(f'{preview} must be square or 16:9')
             im.verify()
         if preview.stat().st_size >= 1_000_000:
             parser.error(f'{preview} exceeds the preview size budget')

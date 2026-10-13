@@ -1,6 +1,6 @@
 # Buff Duration Floor
 
-![Buff Duration Floor — original pixel artwork](../release/buffduration_logo.png)
+![Buff Duration Floor — illustrated mod cover](../release/buffduration_logo.png)
 
 Keep short food and potion buffs active longer. Choose a minimum duration; effects already lasting longer keep their normal duration.
 

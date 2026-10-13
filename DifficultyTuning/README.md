@@ -1,6 +1,6 @@
 # Difficulty Tuning
 
-![Difficulty Tuning: original pixel-art illustration](../release/difficultytuning_logo.png)
+![Difficulty Tuning — illustrated mod cover](../release/difficultytuning_logo.png)
 
 Adjust enemy damage, health and speed to find a challenge that suits your world.
 

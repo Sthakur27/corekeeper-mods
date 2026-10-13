@@ -21,7 +21,7 @@ namespace SidsOverhaul
     public sealed class SidsOverhaulMod : IMod
     {
         public const string Name = "SidsOverhaul";
-        public const string Version = "1.3.2";
+        public const string Version = "1.3.3";
 
         public void EarlyInit()
         {
@@ -55,7 +55,7 @@ namespace SidsOverhaul
             Page("DifficultyTuning", "Difficulty Tuning (Hard)", "Hard Mode: ", DifficultyTuning.DifficultyTuningMod.SettingsHint, DifficultyTuning.DifficultyTuningMod.RegisterSettings);
             Page("DifficultyTuning", "Difficulty Tuning (Normal)", "Normal Mode: ", DifficultyTuning.DifficultyTuningMod.NormalSettingsHint, DifficultyTuning.DifficultyTuningMod.RegisterNormalSettings);
             Page("SkillXPMultiplier", "Skill XP Multiplier", "Skill XP: ", SkillXPMultiplier.SkillXPMultiplierMod.SettingsHint, SkillXPMultiplier.SkillXPMultiplierMod.RegisterSettings);
-            Page("StimHits", "Stim Hits", "Stim Hits: ", StimHits.StimHitsMod.SettingsHint, StimHits.StimHitsMod.RegisterSettings);
+            Page("StimHits", "Hit Sound Effects", "Stim Hits: ", StimHits.StimHitsMod.SettingsHint, StimHits.StimHitsMod.RegisterSettings);
             Page("ArmorDye", "Armor Dye", "Armor Dye: ", ArmorDye.DyeSettings.SettingsHint, ArmorDye.DyeSettings.RegisterSettings);
             Debug.Log($"[{Name}] Loaded all features.");
         }

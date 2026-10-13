@@ -1,6 +1,6 @@
 # Pet Editor
 
-![Pet Editor: original pixel-art illustration](../release/peteditor_logo.png)
+![Pet Editor — illustrated mod cover](../release/peteditor_logo.png)
 
 Choose your equipped pet’s level, color and talents directly in its familiar talent window.
 

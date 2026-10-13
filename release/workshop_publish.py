@@ -48,7 +48,7 @@ MODS = [
     ("VehicleSpeed", "Vehicle Speed", "vehiclespeed_logo.png", "Quality of Life"),
     ("InfiniteOreBoulders", "Infinite Ore Boulders", "infiniteore_logo.png", "Quality of Life"),
     ("GoldenChance", "Golden Chance", "goldenchance_logo.png", "Quality of Life"),
-    ("StimHits", "Stim Hits", "stimhits_logo.png", "Other"),
+    ("StimHits", "Hit Sound Effects", "stimhits_logo.png", "Other"),
     ("ArmorDye", "Armor Dye", "armordye_logo.png", "Quality of Life"),
     ("MerchantRestock", "Merchant Restock", "merchantrestock_logo.png", "Quality of Life"),
     ("FishSeller", "Fish Seller", "fishseller_logo.png", "Quality of Life"),

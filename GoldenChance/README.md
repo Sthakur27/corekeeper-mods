@@ -1,6 +1,6 @@
 # Golden Chance — Work in Progress
 
-![Golden plant and cooking pot concept art, clearly marked WORK IN PROGRESS.](../release/goldenchance_logo.png)
+![Golden Chance — illustrated mod cover](../release/goldenchance_logo.png)
 
 **WORK IN PROGRESS:** golden harvests and upgraded main dishes have passed a player smoke test in the overhaul. Multiplayer and the broader edge-case checklist are still being tested.
 

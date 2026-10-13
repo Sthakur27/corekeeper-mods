@@ -1,7 +1,7 @@
 {
     "guid": "7c3e9a51d2b84f06a1e5c7d9b3f20a64",
     "name": "StimHits",
-    "displayName": "Stim Hits",
+    "displayName": "Hit Sound Effects",
     "skipSafetyChecks": false,
     "disableScripts": false,
     "accessesExtraAssemblies": true,

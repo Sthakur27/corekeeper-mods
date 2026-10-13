@@ -1,6 +1,6 @@
 # Boss Bonus Loot
 
-![Boss Bonus Loot: original pixel-art illustration](../release/bossloot_logo.png)
+![Boss Bonus Loot — illustrated mod cover](../release/bossloot_logo.png)
 
 Make selected boss victories more rewarding with extra materials, gemstones and chances at useful gear.
 

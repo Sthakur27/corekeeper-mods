@@ -25,4 +25,3 @@ Dyeable items include armor and single, non-stacking items with durability, such
 For equipped items, use `/dye <helm|chest|pants|all|hand> <color>`.
 
 Colors: `red`, `orange`, `gold`, `green`, `teal`, `blue`, `purple`, `pink`, `white`, `black`, a hex value such as `#33aaff`, `shift <degrees>`, or `off`. Use `/dye info` to inspect your dyes.
-

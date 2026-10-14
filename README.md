@@ -64,4 +64,4 @@ Use the Overhaul or the individual versions of its features. Installing both run
 
 Each folder contains its mod's source and documentation. Credits and license details are kept on the individual pages; Fast Auto Fishing is a mikufish fork, and the Overhaul uses GPL-3.0-or-later. Listing artwork lives in `release/`; older artwork scripts are retained there too.
 
-For modding and publishing instructions, see [AGENTS.md](AGENTS.md). `release/build_overhaul.py` assembles the combined package.
+`release/build_overhaul.py` assembles the combined package.

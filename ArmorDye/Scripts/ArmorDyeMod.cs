@@ -13,7 +13,7 @@ namespace ArmorDye
 {
     /// <summary>
     /// Armor Dye: dye armor, weapons and tools. The dye is stored on the item (vanilla MealsEatenCD inventory
-    /// aux data, see SPEC.md), so it is saved, replicated and follows the piece; every client recolors the
+    /// aux data), so it is saved, replicated and follows the piece; every client recolors the
     /// armor layers, held items, projectiles and icons of every player from it (ArmorRecolor,
     /// ProjectileRecolor). Pick dyes with the palette (hover an item + P, see DyeUI) or "/dye".
     /// </summary>

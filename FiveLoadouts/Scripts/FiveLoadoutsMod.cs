@@ -14,8 +14,7 @@ namespace FiveLoadouts
     /// the buffer length, so five entries need no Burst patch. The character window gets two
     /// more preset tabs (cloned at runtime) and the cycle hotkey wraps at 5.
     ///
-    /// LoadoutSharing (Loadout Fallback) is optional. When it is present and updated (see
-    /// LoadoutSharing.patch.md), loadouts 4 and 5 get the same fallback-to-loadout-1 rule as 2
+    /// LoadoutSharing (Loadout Fallback) is optional. When it is present and updated, loadouts 4 and 5 get the same fallback-to-loadout-1 rule as 2
     /// and 3. Without it they behave like vanilla 2 and 3 (own gear, shared bag/lantern/pet).
     /// </summary>
     public class FiveLoadoutsMod : IMod

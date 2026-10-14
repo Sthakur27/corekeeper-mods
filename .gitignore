@@ -4,3 +4,9 @@ MasterPet_original_bundles/
 .modio_token
 __pycache__/
 build/
+
+# Local development notes
+/AGENTS.md
+/ArmorDye/SPEC.md
+/FiveLoadouts/LoadoutSharing.patch.md
+/docs/golden-chance-handoff.md

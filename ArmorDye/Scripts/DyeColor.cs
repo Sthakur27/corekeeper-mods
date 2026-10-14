@@ -4,7 +4,7 @@ using UnityEngine;
 namespace ArmorDye
 {
     /// <summary>
-    /// The dye value stored in an armor item's MealsEatenCD (see SPEC.md). 0 = no dye; the top byte is
+    /// The dye value stored in an armor item's MealsEatenCD. 0 = no dye; the top byte is
     /// the mode: 1 = colorize to the RGB in the low 24 bits, 2 = hue shift by the degrees in the low 9 bits.
     /// </summary>
     public static class DyeColor

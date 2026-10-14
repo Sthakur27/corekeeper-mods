@@ -140,7 +140,7 @@ def description(key, folder, readme_path):
                 "use the Overhaul or the individual mods, not both.")
     if key == "GoldenChance":
         note = "[b]WORK IN PROGRESS[/b] — Golden Chance is still being developed.\n\n" + note
-    footer = f"\n\nSource and full docs: [url={GITHUB}{folder}]{GITHUB}{folder}[/url]"
+    footer = f"\n\nCover artwork generated with AI; not an in-game screenshot.\n\nSource and full docs: [url={GITHUB}{folder}]{GITHUB}{folder}[/url]"
     body = to_bbcode(md)
     text = note + "\n\n" + body
     if len(text) + len(footer) > 7900:
@@ -157,6 +157,7 @@ def collection_description():
             "Prefer a single mod? [url=https://steamcommunity.com/workshop/filedetails/?id={overhaul}]Sid's Overhaul[/url] "
             "bundles all of them. Use the Overhaul [b]or[/b] these mods, not both (each feature would run twice).\n\n"
             f"[list]{names}[/list]\n\n"
+            "Cover artwork generated with AI; not an in-game screenshot.\n\n"
             f"Source: [url={GITHUB}]{GITHUB}[/url]")
 
 

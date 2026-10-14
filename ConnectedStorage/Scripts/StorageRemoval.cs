@@ -1,9 +1,13 @@
 using System;
 using System.Collections.Generic;
 using Inventory;
+using CoreLib.Submodule.Command.Data;
+using CoreLib.Submodule.Command.System;
 using Unity.Collections;
 using Unity.Entities;
+using Unity.Mathematics;
 using Unity.NetCode;
+using Unity.Transforms;
 using UnityEngine;
 
 namespace ConnectedStorage
@@ -39,6 +43,8 @@ namespace ConnectedStorage
         private EntityQuery chests;
         private EntityQuery changes;
         private EntityQuery databaseQuery;
+        private EntityQuery players;
+        private readonly Dictionary<Entity, double> nextWarning = new Dictionary<Entity, double>();
         private int pendingTicks;
 
         private struct Slot
@@ -63,6 +69,7 @@ namespace ConnectedStorage
                 ComponentType.ReadOnly<ContainedObjectsBuffer>());
             changes = GetEntityQuery(ComponentType.ReadWrite<InventoryChangeBuffer>());
             databaseQuery = GetEntityQuery(ComponentType.ReadOnly<PugDatabase.DatabaseBankCD>());
+            players = GetEntityQuery(ComponentType.ReadOnly<PlayerGhost>(), ComponentType.ReadOnly<LocalTransform>());
         }
 
         protected override void OnUpdate()
@@ -187,8 +194,39 @@ namespace ConnectedStorage
             var health = EntityManager.GetComponentData<HealthCD>(ActiveChest);
             health.health = Math.Max(1, health.maxHealth);
             EntityManager.SetComponentData(ActiveChest, health);
+            WarnNearbyPlayers();
             Debug.Log("[ConnectedStorage] Not enough connected storage space; chest removal blocked.");
             ActiveChest = Entity.Null;
+        }
+
+        private void WarnNearbyPlayers()
+        {
+            if (!EntityManager.HasComponent<LocalTransform>(ActiveChest)) return;
+            var comm = World.GetExistingSystemManaged<CommandCommSystem>();
+            if (comm == null) return;
+            var position = EntityManager.GetComponentData<LocalTransform>(ActiveChest).Position;
+            double now = World.Time.ElapsedTime;
+            // Entries belong to this world and connection incarnation; prune stale connections.
+            var expired = new List<Entity>();
+            foreach (var entry in nextWarning)
+                if (!EntityManager.Exists(entry.Key) || entry.Value <= now) expired.Add(entry.Key);
+            foreach (var connection in expired) nextWarning.Remove(connection);
+            using (var entities = players.ToEntityArray(Allocator.Temp))
+            {
+                foreach (var player in entities)
+                {
+                    if (math.distancesq(position, EntityManager.GetComponentData<LocalTransform>(player).Position) > 25f)
+                        continue;
+                    // PlayerGhost.connection is the same explicit owner connection CoreLib's
+                    // whisper handler uses. Never pass Entity.Null: that would broadcast.
+                    var connection = EntityManager.GetComponentData<PlayerGhost>(player).connection;
+                    if (connection == Entity.Null || !EntityManager.Exists(connection) ||
+                        !EntityManager.HasComponent<NetworkId>(connection) || nextWarning.ContainsKey(connection)) continue;
+                    comm.SendResponse("Not enough connected storage space. Add capacity or keep the occupied chests connected.",
+                        CommandStatus.Warning, CommandFlags.None, connection);
+                    nextWarning[connection] = now + 2.0;
+                }
+            }
         }
     }
 }

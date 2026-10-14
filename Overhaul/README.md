@@ -4,7 +4,7 @@
 
 Spend less time repeating chores and more time exploring. Sid's Overhaul brings the individual mods in this repository into one package: easier farming and fishing, equipment tools, merchant supplies, and adjustable combat and progression.
 
-**Golden Chance is still a work in progress.** Golden harvests and upgraded main dishes worked in a basic in-game test in the overhaul; multiplayer and less common situations are still being tested. To skip it, open **Settings > Mod Options > Turn Sub-Mods On/Off**, turn Golden Chance off, and restart Core Keeper.
+**Golden Chance performance fix:** this release keeps native golden-plant and bonus-food rarity bonuses, removes inventory-system Burst disabling and periodic talent checks, and removes the optional regular-main-dish upgrades. Restart after updating.
 
 ## Install and get started
 
@@ -42,7 +42,7 @@ Prefer to pick individual mods? Use [Sid's Core Keeper Mods collection](https://
 | Keep Minions On Teleport | Bring summoned minions with you through teleports. |
 | Vehicle Speed | Adjust boat and go-kart speeds. |
 | Hit Sound Effects | Pick hit, kill and hurt sounds, including custom audio. |
-| Golden Chance — WIP | Additive golden-plant and food-rarity bonuses; optional host-controlled rarity roll for main dishes on collection (off by default). Upgraded dishes drop for pickup. |
+| Golden Chance — WIP | Additive golden-plant and bonus-food rarity bonuses using native rolls. Regular main dishes are unchanged. |
 
 The individual mod folders on [GitHub](https://github.com/Sthakur27/corekeeper-mods) explain controls, defaults and limits in more detail. Features change game balance in different ways; check their settings before starting a new playthrough.
 
@@ -50,9 +50,11 @@ The individual mod folders on [GitHub](https://github.com/Sthakur27/corekeeper-m
 
 Features with adjustable settings have their own pages under **Settings > Mod Options**. Use the arrows to change values. On these authored pages, **Reset to defaults** asks for a second click to confirm.
 
-**Overhaul 1.3.5 includes Mod Options 1.2.2.** Compatible third-party CoreLib client settings can now appear automatically in the same list, with readable names and help text below each option. Reopen the menu to discover settings initialized later. These edits use the original mod's configuration; discovered pages have no bulk reset, and the original mod determines whether a restart is needed. Discovery is limited: it does not expose every installed mod, server/admin settings, keybindings, or custom JSON settings. See [Mod Options](../ModOptions/README.md) for supported types and limits.
+**Overhaul 1.3.6 includes Mod Options 1.2.2.** Compatible third-party CoreLib client settings can now appear automatically in the same list, with readable names and help text below each option. Reopen the menu to discover settings initialized later. These edits use the original mod's configuration; discovered pages have no bulk reset, and the original mod determines whether a restart is needed. Discovery is limited: it does not expose every installed mod, server/admin settings, keybindings, or custom JSON settings. See [Mod Options](../ModOptions/README.md) for supported types and limits.
 
-Version 1.3.5 fixes repeated Buff Duration Floor scans caused by live items loading and unloading. Duration updates now target item templates only. This update does not change the game's automation or sound-pool behavior.
+Version 1.3.6 includes Golden Chance 2.2.0: native inventory processing keeps Burst optimization, and talent updates run only on relevant events. Regular-main-dish upgrades have been removed to prioritize performance. Existing upgraded food is unchanged.
+
+Version 1.3.5 fixed repeated Buff Duration Floor scans caused by live items loading and unloading. Duration updates now target item templates only. This update does not change the game's automation or sound-pool behavior.
 
 The **Turn Sub-Mods On/Off** page disables whole features after a restart. Loadout Fallback, Five Loadouts and Ender Stash stay enabled because they hold items in added inventory slots. Empty the stash and extra equipment slots before removing mods that provide them.
 

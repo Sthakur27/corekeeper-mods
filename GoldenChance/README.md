@@ -1,12 +1,10 @@
-# Golden Chance — Work in Progress
+# Golden Chance
 
 ![Golden Chance — illustrated mod cover](../release/goldenchance_logo.png)
 
-**WORK IN PROGRESS:** golden harvests and upgraded main dishes worked in a basic in-game test in the overhaul. Multiplayer, the standalone mod in-game, and less common situations are still being tested.
+Increase the odds of **golden plants** and **rarer bonus cooked food**, using the game's native talent conditions and rolls.
 
-Increase the odds of **golden plants** and **rarer cooked food**, with separate bonuses and an optional rarity roll for the main dish.
-
-## Current development settings
+## Settings
 
 Open **Settings > Mod Options > Golden Chance**.
 
@@ -14,28 +12,21 @@ Open **Settings > Mod Options > Golden Chance**.
 |---|---|---|
 | Golden plant chance bonus | +0% to +100%, in steps of 5 | +0% |
 | Golden food chance bonus | +0% to +100%, in steps of 5 | +0% |
-| Apply food rarity chance to regular cooking | Off / On | Off |
 
-These are intended as percentage-point additions: a 20% chance with a +5% bonus becomes 25%. At +0%, this mod leaves the talent value unchanged. The source attempts to apply bonuses even with no points in the relevant talent.
+Bonuses add percentage points, capped at 100%. A 20% chance with a +5% bonus becomes 25%. At +0%, the mod preserves the native talent value. Bonuses also apply with zero talent points.
 
-With regular cooking **off**, the food bonus affects only the rarity roll for **extra food produced by the Cooking skill**. With it **on**, each main dish successfully collected from a cooking pot gets a separate roll at the collecting player's effective Master Chef chance, capped at 100%. This also works without bonus food or any Cooking talent points when the additive food bonus is nonzero. The chance of producing bonus food is unchanged.
+The food bonus affects the rarity of **extra food produced by the Cooking skill**. It does not increase the chance of producing extra food. Regular main dishes use vanilla behavior. Already planted seeds keep their earlier outcome; automated seeders that ignore player talents are outside this approach. Auto Replant's base-chance override still applies.
 
-An ordinary dish upgrades to rare; a dish made rare by golden ingredients upgrades to epic. Both ingredient IDs are preserved, including the extra benefit from two golden ingredients. Upgraded main dishes drop for pickup at the collector, like bonus food; unchanged dishes follow the usual mouse/inventory transfer. A mixed-rarity result cannot share one mouse slot. Failed transfers do not roll, and ordinary inventory moves or picking up the dropped dishes do not roll again. Cooking into an existing pot-output stack does not roll the older dishes repeatedly: rolls happen on collection, including output cleared by changing cookbook recipes.
+## Performance fix in 2.2.0
 
-The **host/server controls the regular-cooking toggle for everyone**. Each collector's own replicated food-rarity condition supplies their chance; the host's talents are not substituted for remote players. Clients' copies of the toggle do not control the server. Additive bonuses remain individual player settings. Changes apply to subsequent collections, including food already waiting in a pot. Automatic collection without a player has no talent roll.
+The regular-main-dish upgrade option from 2.1.0 has been removed. That implementation disabled Burst optimization for the inventory system and its jobs, even when the option was off. Version 2.2.0 removes the inventory hooks and leaves Burst enabled. Any old saved regular-cooking setting is ignored; existing upgraded items are unchanged.
 
-Already planted seeds keep their earlier outcome; automated seeders that ignore player talents are outside this approach.
+There is no timer, recurring talent scan, or frame-update work. Talent conditions are sent through the native player-command path only on local-player initialization/rejoin, saved talent-point changes, confirmed talent resets, and changes to the bonus settings. A confirmed reset works even when the saved point list is empty. Each client uses its own talent points; the host does not substitute its points for other players.
 
-## Requirements and testing status
+Regular-main-dish upgrades are deferred until a separate implementation can preserve performance and inventory correctness. The existing collection and crafting request paths are unchanged in this release.
 
-Requires **CoreLib and Mod Options** on the host and every client. Use the standalone mod or Sid's Overhaul, not both.
+## Requirements and validation
 
-The current implementation refreshes player talent conditions on joining a world, changing settings and changing talent points. It also repairs late condition overwrites after a short replication grace period, including resets while already at zero talent points.
+Requires **CoreLib and Mod Options** on the host and every client. Use the standalone mod or Sid's Overhaul, not both. Restart the game after installation; an already running session retains the old patches.
 
-Version 2.1.0 and the assembled Overhaul 1.3.2 pass offline compilation against the installed 1.3.0.5 game assemblies. The overhaul also passes the game's script compiler and security check, registers all three options, and initializes its Burst-disabling hook. On October 13, 2026, Sid confirmed that both golden harvests and upgraded main dishes worked in-game in the overhaul. The log confirmed the managed server collection hook ran, with no relevant errors detected. Multiplayer, standalone in-game behavior, and the full reset/rejoin/inventory edge-case checklist remain unverified.
-
-## For contributors
-
-The 2.1.0 source retains the 2.0.0 additive config keys. A managed talent-value patch changes the plant and bonus-food conditions, then sends them through the game's existing condition commands. Old multiplier configuration keys are unused.
-
-Regular cooking uses `BurstDisabler.DisableBurstForSystemAndJobs<InventoryUpdateSystem>()` from the installed SDK, which supports unmanaged systems. Its inventory jobs therefore run managed, even with the live toggle off; performance on busy servers needs testing. Scoped job context supplies the exact request's player (including guest-mode filtering); cookbook collection supplies its explicit player. Hooks on successful `TryMove`, output-to-empty-slot `Swap`, and output `DropItem` perform one roll per removed item. Upgraded quantities use vanilla consume/drop helpers, preserving the food's variation, variation-update count and auxiliary-data index. No component types are added to players, and the vanilla bonus-food routine is unchanged. All hook classes and initialization are gated by the overhaul's Golden Chance feature switch.
+The event callbacks and talent calculations pass 20 isolated checks covering zero-point joins, talent changes, repeated events, confirmed resets, settings changes, clamping, remote players and unavailable worlds. Both standalone and overhaul builds are compile-checked against the installed 1.3.0.6 assemblies. These tests do not simulate Harmony patch registration or NetCode. The overhaul passed the in-game loader and safety check on October 14, 2026; Sid confirmed movement felt good after restarting with 2.2.0. Reset/rejoin, multiplayer, and standalone in-game checks remain unverified. No instrumented FPS benchmark was recorded.

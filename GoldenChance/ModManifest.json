@@ -15,10 +15,6 @@
         {
             "path": "Scripts/Patches/TalentValuePatch.cs",
             "guid": "7f2b9d4e1c6a48b3a5e0d9c8b7a61f27"
-        },
-        {
-            "path": "Scripts/Patches/RegularCookingPatch.cs",
-            "guid": "7f2b9d4e1c6a48b3a5e0d9c8b7a61f28"
         }
     ],
     "dependencies": [

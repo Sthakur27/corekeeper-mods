@@ -53,7 +53,7 @@ Use the Overhaul or the individual versions of its features. Installing both run
 | [Keep Minions On Teleport](KeepMinions/README.md) | Bring summoned minions along when you teleport. |
 | [Vehicle Speed](VehicleSpeed/README.md) | Change boat and go-kart speeds. |
 | [Hit Sound Effects](StimHits/README.md) | Choose sounds for hits, kills and damage taken. |
-| [Golden Chance — WIP](GoldenChance/README.md) | Golden crop and food-rarity bonuses, with an optional rarity roll for main dishes. |
+| [Golden Chance — WIP](GoldenChance/README.md) | Golden crop and bonus-food rarity bonuses using native rolls; regular main dishes are unchanged. |
 
 ### Settings and the full package
 

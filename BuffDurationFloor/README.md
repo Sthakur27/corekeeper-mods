@@ -17,6 +17,8 @@ Both settings offer Off, 30 s, 45 s, 1:00, 1:30, 2:00, 3:00, 5:00 and 10:00. **O
 
 Changes affect the next food or potion you consume. Buffs already active keep their existing timers. Settings save automatically, and item tooltips reflect the adjusted consumable durations.
 
+Version 1.3.1 limits duration updates to item templates. Dropped items loading or unloading no longer trigger repeated full scans or accumulate cached copies of their durations.
+
 ## Requirements and multiplayer
 
 Requires **CoreLib** and **Mod Options**. Install on the host/server and every client, then restart Core Keeper. The host/server determines actual durations; matching settings avoids temporary client differences.

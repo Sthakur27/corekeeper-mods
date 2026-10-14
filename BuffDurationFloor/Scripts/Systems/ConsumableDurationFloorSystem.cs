@@ -40,7 +40,14 @@ namespace BuffDurationFloor.Systems
             base.OnCreate();
             _consumables = GetEntityQuery(new EntityQueryDesc
             {
-                All = new[] { ComponentType.ReadWrite<GivesConditionsWhenConsumedBuffer>() },
+                // IncludePrefab only permits prefabs; it does not exclude live item entities.
+                // Consumption and tooltips read these durations from the database prefab.
+                // Requiring Prefab avoids rescanning/caching every dropped or streamed item.
+                All = new[]
+                {
+                    ComponentType.ReadOnly<Prefab>(),
+                    ComponentType.ReadWrite<GivesConditionsWhenConsumedBuffer>()
+                },
                 Options = EntityQueryOptions.IncludePrefab | EntityQueryOptions.IncludeDisabledEntities
             });
             _table = GetEntityQuery(new EntityQueryDesc

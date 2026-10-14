@@ -12,7 +12,7 @@ matches the game (major.minor.patch).
 """
 import argparse, glob, json, os, re, shutil, struct, subprocess, sys
 
-ROOT = r"C:\Users\Sid\CoreKeeperMods"
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 REL = os.path.join(ROOT, "release")
 STAGE = os.path.join(ROOT, "build", "workshop")
 TOOL = os.path.join(ROOT, "build", "workshop_tool")
@@ -52,6 +52,7 @@ MODS = [
     ("ArmorDye", "Armor Dye", "armordye_logo.png", "Quality of Life"),
     ("MerchantRestock", "Merchant Restock", "merchantrestock_logo.png", "Quality of Life"),
     ("FishSeller", "Fish Seller", "fishseller_logo.png", "Quality of Life"),
+    ("MagicMirror", "Magic Mirror", "magicmirror_logo.png", "Item"),
 ]
 OVERHAUL = ("SidsOverhaul", "Sid's Overhaul", "overhaul_logo.png", "Overhaul")
 

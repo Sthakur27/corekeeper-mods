@@ -50,6 +50,7 @@ namespace SidsOverhaul
             { "InfiniteOreBoulders", "Infinite Ore Boulders" },
             { "StimHits", "Hit Sound Effects" },
             { "ArmorDye", "Armor Dye" },
+            { "MagicMirror", "Magic Mirror" },
         };
 
         public const string Hint = "Turn whole sub-mods on or off. Changes take effect after restarting the game. "

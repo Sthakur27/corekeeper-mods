@@ -10,27 +10,26 @@ one manifest with every file. Features detect the overhaul via their InOverhaul(
 """
 import json, os, re, shutil, sys
 
-ROOT = r"C:\Users\Sid\CoreKeeperMods"
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(ROOT, "build", "SidsOverhaul")
 GAME_MODS = r"C:\Program Files (x86)\Steam\steamapps\common\Core Keeper\CoreKeeper_Data\StreamingAssets\Mods"
 NAME = "SidsOverhaul"
 GUID = "5d1a0c3e9b7f4e21a8c6d4b2f0e19a73"  # fixed forever, identifies the mod
 
 MODS = [
-    "ModOptions", "LoadoutSharing", "FiveLoadouts", "SkillXPMultiplier", "FastAutoFishing",
+    "ModOptions", "LoadoutSharing", "FiveLoadouts", "SkillXPMultiplier", "FastAutoFishing", "MagicMirror",
     "DurabilityMultiplier", "BuffDurationFloor", "FasterMushrooms", "BiggerWateringCans",
     "BetterFishingLoot", "AutoReplant", "QuickBuff", "PotionSeller", "FishSeller", "MerchantRestock", "DifficultyTuning", "KeepMinions", "PetEditor", "BossBonusLoot", "EnderStash", "VehicleSpeed", "GoldenChance", "InfiniteOreBoulders", "StimHits", "ArmorDye",
 ]
 # Bundles whose MonoScripts bind to the old assembly name.
 # MasterPetPlus is NOT included: it is a fork of Parcew's Master Pet and mod.io took it down;
 # it stays a separate, side-loaded mod.
-# EnderStash's bundle (Ender Chest prefab) has no MonoScripts of its own (vanilla Chest only), so
-# patching is a no-op copy; it is listed so the bundle ships with the overhaul.
 # ORDER MATTERS: the loader registers ONE data-block loader per mod guid (ScriptableData.AddDataBlocksLoader
 # rejects the second bundle: "Data block loader already added"), so only the first bundle's data blocks
-# (SpriteAsset, TextDataBlock, Entity/GraphicalObjectDataBlock) are seen. EnderStash's bundle has them,
-# FastAutoFishing's has none, so EnderStash goes first. A third bundle with data blocks would need merging.
-BUNDLE_MODS = {"EnderStash": "EnderStash", "FastAutoFishing": "mikufish"}
+# (SpriteAsset, TextDataBlock, Entity/GraphicalObjectDataBlock) are seen. FastAutoFishing has none.
+# MagicMirror/OverhaulBundles contains EnderStash AND MagicMirror data blocks in
+# one SDK-built bundle per platform. Never include their separate bundles here.
+BUNDLE_MODS = {"MagicMirror": "SidsItemAssets", "FastAutoFishing": "mikufish"}
 
 
 def patch_bundle(src, dst, old_assembly):
@@ -113,6 +112,12 @@ def gate_source(text, key, title, counts):
 
 
 def copy_script(src, dst, mod, switchable, counts):
+    # The mirror cast system must cancel use of existing mirrors when the feature
+    # is off; otherwise vanilla Casting gets stuck on an unknown item ID. Active
+    # remains false because the normal EarlyInit feature guard prevents setting it.
+    if mod == "MagicMirror" and os.path.basename(src) == "MirrorCastSystem.cs":
+        shutil.copy2(src, dst)
+        return
     if mod not in switchable or not src.endswith(".cs"):
         shutil.copy2(src, dst)
         return
@@ -153,7 +158,7 @@ def main():
 
     os.makedirs(os.path.join(OUT, "Bundles"), exist_ok=True)
     for mod, old in BUNDLE_MODS.items():
-        bdir = os.path.join(ROOT, mod, "Bundles")
+        bdir = os.path.join(ROOT, mod, "OverhaulBundles" if mod == "MagicMirror" else "Bundles")
         for fn in sorted(os.listdir(bdir)):
             src = os.path.join(bdir, fn)
             dst = os.path.join(OUT, "Bundles", fn)

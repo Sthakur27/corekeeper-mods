@@ -4,7 +4,7 @@
 
 Spend less time repeating chores and more time exploring. Sid's Overhaul brings the individual mods in this repository into one package: easier farming and fishing, equipment tools, merchant supplies, and adjustable combat and progression.
 
-**New in 1.3.7: Magic Mirror.** Craft a reusable way back to the Core for 50 Solarite Bars, or find one as a 20% Omoroth drop. This release also retains the Golden Chance performance fix from 1.3.6. Restart after updating.
+**New in 1.3.8: Mushroom Slayer.** Strong hits break through gray Shrooman Brute armor. Mod Options defaults: threshold 200, damage 10%; red phase unchanged. Bow combat and multiplayer await live testing. Match settings on host and clients. Includes Magic Mirror and the Golden Chance performance fix. Restart after updating.
 
 ## Install and get started
 
@@ -38,6 +38,7 @@ Prefer to pick individual mods? Use [Sid's Core Keeper Mods collection](https://
 | Buff Duration Floor | Set minimum durations for food and potion buffs. |
 | Durability Multiplier | Choose how fast equipment wears out. |
 | Difficulty Tuning | Separate enemy and boss settings for Hard and Normal worlds. |
+| Mushroom Slayer | Configurable gray brute armor: hits below 200 deal 1; hits of 200 or more deal 10%. Red phase unchanged. |
 | Boss Bonus Loot | Extra drops from selected bosses and enemies. |
 | Skill XP Multiplier | Adjust experience gains per skill. |
 | Keep Minions On Teleport | Bring summoned minions with you through teleports. |
@@ -51,7 +52,7 @@ The individual mod folders on [GitHub](https://github.com/Sthakur27/corekeeper-m
 
 Features with adjustable settings have their own pages under **Settings > Mod Options**. Use the arrows to change values. On these authored pages, **Reset to defaults** asks for a second click to confirm.
 
-**Overhaul 1.3.7 includes Mod Options 1.2.2.** Compatible third-party CoreLib client settings can now appear automatically in the same list, with readable names and help text below each option. Reopen the menu to discover settings initialized later. These edits use the original mod's configuration; discovered pages have no bulk reset, and the original mod determines whether a restart is needed. Discovery is limited: it does not expose every installed mod, server/admin settings, keybindings, or custom JSON settings. See [Mod Options](../ModOptions/README.md) for supported types and limits.
+**Overhaul 1.3.8 includes Mod Options 1.2.2.** Compatible third-party CoreLib client settings can now appear automatically in the same list, with readable names and help text below each option. Reopen the menu to discover settings initialized later. These edits use the original mod's configuration; discovered pages have no bulk reset, and the original mod determines whether a restart is needed. Discovery is limited: it does not expose every installed mod, server/admin settings, keybindings, or custom JSON settings. See [Mod Options](../ModOptions/README.md) for supported types and limits.
 
 Version 1.3.7 adds Magic Mirror 1.0.2: a permanent Recall Idol alternative, crafted in the Solarite Workbench Gear category or dropped by Omoroth. The boss drop is one shared roll per defeat, alongside normal loot. Its feature switch takes effect after restarting; remove mirrors before uninstalling.
 
@@ -64,7 +65,3 @@ The **Turn Sub-Mods On/Off** page disables whole features after a restart. Loado
 ## Credits and license
 
 Fast Auto Fishing is a fork of mikufish (GPL-3.0-or-later). The combined Overhaul is distributed under **GPL-3.0-or-later**. Master Pet Plus is not included; Pet Editor is the replacement in this package.
-
-## For modders
-
-The individual mod folders are the source of truth. Run `python release/build_overhaul.py` to assemble `build/SidsOverhaul`; it copies the scripts, adds the central settings and command registration, and prepares the asset bundles. `python release/switch_mods.py overhaul|separate` switches a local install between the combined and individual versions.

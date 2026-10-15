@@ -1,0 +1,38 @@
+{
+    "guid": "419d9a524d614982b615fdd5fb97ddb3",
+    "name": "MushroomSlayer",
+    "displayName": "Mushroom Slayer",
+    "skipSafetyChecks": false,
+    "disableScripts": false,
+    "accessesExtraAssemblies": true,
+    "disableHarmonyPatching": false,
+    "requiredOn": 3,
+    "files": [
+        {
+            "path": "Scripts/ArmorRule.cs",
+            "guid": "a488420070c5409389241c6ffcc18468"
+        },
+        {
+            "path": "Scripts/MushroomSlayerMod.cs",
+            "guid": "284fa5773f994c04b2891d1a6d48e5c7"
+        },
+        {
+            "path": "Scripts/MushroomSlayerSystem.cs",
+            "guid": "7940a2981aae4a3ba479b01ea872d194"
+        },
+        {
+            "path": "Scripts/ProjectileArmorWindow.cs",
+            "guid": "b9204bfe12e942138ae6400df061981f"
+        }
+    ],
+    "dependencies": [
+        {
+            "modName": "CoreLib",
+            "required": true
+        },
+        {
+            "modName": "ModOptions",
+            "required": true
+        }
+    ]
+}

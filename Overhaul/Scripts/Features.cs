@@ -51,6 +51,7 @@ namespace SidsOverhaul
             { "StimHits", "Hit Sound Effects" },
             { "ArmorDye", "Armor Dye" },
             { "MagicMirror", "Magic Mirror" },
+            { "MushroomSlayer", "Mushroom Slayer" },
         };
 
         public const string Hint = "Turn whole sub-mods on or off. Changes take effect after restarting the game. "

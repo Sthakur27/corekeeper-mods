@@ -1,0 +1,66 @@
+{
+  "guid": "6d6f71a04b8e4a49ba1782ac229bbd51",
+  "name": "ConnectedStorage",
+  "displayName": "Connected Storage",
+  "skipSafetyChecks": false,
+  "disableScripts": false,
+  "accessesExtraAssemblies": true,
+  "disableHarmonyPatching": false,
+  "requiredOn": 3,
+  "files": [
+    {
+      "guid": "",
+      "path": "Scripts/ConnectedStorageMod.cs"
+    },
+    {
+      "guid": "",
+      "path": "Scripts/StorageCommand.cs"
+    },
+    {
+      "guid": "",
+      "path": "Scripts/StorageCrafting.cs"
+    },
+    {
+      "guid": "",
+      "path": "Scripts/StorageNetwork.cs"
+    },
+    {
+      "guid": "",
+      "path": "Scripts/StorageRemoval.cs"
+    },
+    {
+      "guid": "",
+      "path": "Scripts/StorageTerminalUI.cs"
+    },
+    {
+      "guid": "",
+      "path": "Scripts/StorageTransfer.cs"
+    },
+    {
+      "guid": "",
+      "path": "Bundles/ConnectedStorage_Linux.assetbundle"
+    },
+    {
+      "guid": "",
+      "path": "Bundles/ConnectedStorage_Linux.assetbundle.manifest"
+    },
+    {
+      "guid": "",
+      "path": "Bundles/ConnectedStorage_Windows.assetbundle"
+    },
+    {
+      "guid": "",
+      "path": "Bundles/ConnectedStorage_Windows.assetbundle.manifest"
+    },
+    {
+      "path": "Scripts/StorageRecipeTabs.cs",
+      "guid": ""
+    }
+  ],
+  "dependencies": [
+    {
+      "required": true,
+      "modName": "CoreLib"
+    }
+  ]
+}

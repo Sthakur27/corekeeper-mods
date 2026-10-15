@@ -1,13 +1,9 @@
 using System;
 using System.Collections.Generic;
 using Inventory;
-using CoreLib.Submodule.Command.Data;
-using CoreLib.Submodule.Command.System;
 using Unity.Collections;
 using Unity.Entities;
-using Unity.Mathematics;
 using Unity.NetCode;
-using Unity.Transforms;
 using UnityEngine;
 
 namespace ConnectedStorage
@@ -43,9 +39,7 @@ namespace ConnectedStorage
         private EntityQuery chests;
         private EntityQuery changes;
         private EntityQuery databaseQuery;
-        private EntityQuery players;
-        private readonly Dictionary<Entity, double> nextWarning = new Dictionary<Entity, double>();
-        private int pendingTicks;
+        private bool transfersQueued;
 
         private struct Slot
         {
@@ -69,7 +63,6 @@ namespace ConnectedStorage
                 ComponentType.ReadOnly<ContainedObjectsBuffer>());
             changes = GetEntityQuery(ComponentType.ReadWrite<InventoryChangeBuffer>());
             databaseQuery = GetEntityQuery(ComponentType.ReadOnly<PugDatabase.DatabaseBankCD>());
-            players = GetEntityQuery(ComponentType.ReadOnly<PlayerGhost>(), ComponentType.ReadOnly<LocalTransform>());
         }
 
         protected override void OnUpdate()
@@ -89,14 +82,24 @@ namespace ConnectedStorage
                             !EntityManager.GetComponentData<DontDestroyOnZeroHealthCD>(e).disabled)
                         {
                             ActiveChest = e;
-                            pendingTicks = 0;
+                            transfersQueued = false;
                             break;
                         }
                     }
                 }
             }
             if (ActiveChest == Entity.Null) return;
-            if (pendingTicks > 0) { pendingTicks--; return; }
+            EntityManager.CompleteAllTrackedJobs();
+            if (transfersQueued)
+            {
+                // Wait for vanilla to consume the moves, including failed moves. Remaining
+                // contents belong to the chest and will be dropped by vanilla destruction.
+                var pending = EntityManager.GetBuffer<InventoryChangeBuffer>(changes.GetSingletonEntity());
+                for (int i = 0; i < pending.Length; i++)
+                    if (pending[i].inventoryChangeData.inventory1 == ActiveChest) return;
+                Finish();
+                return;
+            }
 
             var source = EntityManager.GetBuffer<ContainedObjectsBuffer>(ActiveChest);
             bool empty = true;
@@ -105,19 +108,11 @@ namespace ConnectedStorage
             var before = StorageNetwork.Scan(World, ActiveChest);
             if (before.Terminals.Count == 0)
             {
-                if (empty) Finish(); else Reject();
+                Finish();
                 return;
             }
             before.Terminals.Sort((a, b) => a.Index.CompareTo(b.Index));
             var after = StorageNetwork.Scan(World, before.Terminals[0], ActiveChest);
-            // Breaking a bridge must not strand occupied storage outside the remaining network.
-            foreach (var chest in before.Chests)
-            {
-                if (chest == ActiveChest || after.Chests.Contains(chest)) continue;
-                var contents = EntityManager.GetBuffer<ContainedObjectsBuffer>(chest);
-                for (int i = 0; i < contents.Length; i++)
-                    if (contents[i].objectID != ObjectID.None) { Reject(); return; }
-            }
             if (empty) { Finish(); return; }
             var slots = new List<Slot>();
             foreach (var chest in after.Chests)
@@ -131,8 +126,8 @@ namespace ConnectedStorage
             var items = new List<ObjectDataCD>();
             for (int i = 0; i < source.Length; i++) items.Add(source[i].objectData);
             var bank = databaseQuery.GetSingleton<PugDatabase.DatabaseBankCD>().databaseBankBlob;
-            if (!TryPlan(items, slots, id => PugDatabase.GetEntityObjectInfo(id, bank).isStackable, out var moves))
-            { Reject(); return; }
+            TryPlan(items, slots, id => PugDatabase.GetEntityObjectInfo(id, bank).isStackable, out var moves);
+            if (moves.Count == 0) { Finish(); return; }
             var queue = EntityManager.GetBuffer<InventoryChangeBuffer>(changes.GetSingletonEntity());
             foreach (var move in moves)
                 queue.Add(new InventoryChangeBuffer
@@ -141,14 +136,14 @@ namespace ConnectedStorage
                     inventoryChangeData = Inventory.Create.MoveAmount(ActiveChest, move.Source,
                         move.Target, move.Index, -1, move.Amount, false)
                 });
-            // Concurrent deposits can make a planned move fail. MoveAmount never drops items;
-            // re-plan from actual buffers after processing instead of assuming success.
-            pendingTicks = 1;
+            // Concurrent deposits can make a move fail; vanilla will drop its leftovers.
+            transfersQueued = true;
         }
 
         private static bool TryPlan(List<ObjectDataCD> source, List<Slot> slots, Func<ObjectID, bool> isStackable, out List<Move> moves)
         {
             moves = new List<Move>();
+            bool allFit = true;
             for (int i = 0; i < source.Count; i++)
             {
                 var item = source[i];
@@ -175,9 +170,9 @@ namespace ConnectedStorage
                         slots[j] = slot;
                         remaining -= amount;
                     }
-                if (remaining > 0) { moves.Clear(); return false; }
+                if (remaining > 0) allFit = false;
             }
-            return true;
+            return allFit;
         }
 
         private void Finish()
@@ -189,45 +184,5 @@ namespace ConnectedStorage
             ActiveChest = Entity.Null;
         }
 
-        private void Reject()
-        {
-            var health = EntityManager.GetComponentData<HealthCD>(ActiveChest);
-            health.health = Math.Max(1, health.maxHealth);
-            EntityManager.SetComponentData(ActiveChest, health);
-            WarnNearbyPlayers();
-            Debug.Log("[ConnectedStorage] Not enough connected storage space; chest removal blocked.");
-            ActiveChest = Entity.Null;
-        }
-
-        private void WarnNearbyPlayers()
-        {
-            if (!EntityManager.HasComponent<LocalTransform>(ActiveChest)) return;
-            var comm = World.GetExistingSystemManaged<CommandCommSystem>();
-            if (comm == null) return;
-            var position = EntityManager.GetComponentData<LocalTransform>(ActiveChest).Position;
-            double now = World.Time.ElapsedTime;
-            // Entries belong to this world and connection incarnation; prune stale connections.
-            var expired = new List<Entity>();
-            foreach (var entry in nextWarning)
-                if (!EntityManager.Exists(entry.Key) || entry.Value <= now) expired.Add(entry.Key);
-            foreach (var connection in expired) nextWarning.Remove(connection);
-            using (var entities = players.ToEntityArray(Allocator.Temp))
-            {
-                foreach (var player in entities)
-                {
-                    if (math.distancesq(position, EntityManager.GetComponentData<LocalTransform>(player).Position) > 25f)
-                        continue;
-                    // PlayerGhost.connection is the same explicit owner connection CoreLib's
-                    // whisper handler uses. Never pass Entity.Null: that would broadcast.
-                    var connection = EntityManager.GetComponentData<PlayerGhost>(player).connection;
-                    if (connection == Entity.Null || !EntityManager.Exists(connection) ||
-                        !EntityManager.HasComponent<NetworkId>(connection) || nextWarning.ContainsKey(connection)) continue;
-                    comm.SendResponse("Not enough connected storage space. Add capacity or keep the occupied chests connected.",
-                        CommandStatus.Warning, CommandFlags.None, connection);
-                    nextWarning[connection] = now + 2.0;
-                }
-            }
-        }
     }
 }
-

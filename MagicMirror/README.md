@@ -2,13 +2,17 @@
 
 ![Magic Mirror — illustrated cover](../release/magicmirror_logo.png)
 
-Craft a permanent way home: **50 Solarite Bars → 1 Magic Mirror** at the **Solarite Workbench**, in its Gear category. Higher-tier benches that include Solarite recipes can craft it too.
+Craft a permanent way home: **50 Solarite Bars + 10 Recall Idols → 1 Magic Mirror** at the **Solarite Workbench**, in its Gear category. Higher-tier benches that include Solarite recipes can craft it too.
 
 **Omoroth the Sea Titan also has a 20% chance to drop one Magic Mirror per defeat.** This is an independent bonus drop at the boss's position, in addition to its normal loot. Multiplayer shares one roll per boss, not one roll per player. No Boss Bonus Loot dependency is required.
 
 Equip the mirror and use it as you would a Recall Idol. After a three-second cast, it uses the game's normal teleport sequence to return you to the Core. The mirror is never consumed, has no durability, and needs no fuel or recharge. Moving or changing the held item cancels the cast. Recall Idols remain unchanged.
 
 The mod includes original pixel art, an inventory icon, item text, and Windows/Linux asset bundles. No library dependencies or settings are needed. Install on both the host and clients in multiplayer.
+
+### 1.0.3
+
+- Crafting now requires 50 Solarite Bars and 10 Recall Idols. Existing mirrors and the 20% Omoroth drop are unchanged.
 
 ### 1.0.2
 

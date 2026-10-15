@@ -4,7 +4,7 @@ These are manual acceptance checks, not claims of completed gameplay testing.
 
 - Defeat Omoroth repeatedly. Each death gets one independent 20% roll for one mirror dropped at the boss position; misses must not reroll during the death animation. Normal boss loot remains intact. Check multiplayer produces one shared roll, and other bosses/tentacles do not drop mirrors. A short run is not expected to hit exactly 20%.
 
-- At an existing and a freshly placed Solarite Workbench, find Magic Mirror in Gear; recipe shows exactly 50 Solarite Bars and produces one mirror. Verify 49 bars cannot craft it.
+- At an existing and a freshly placed Solarite Workbench, find Magic Mirror in Gear; recipe shows exactly 50 Solarite Bars and 10 Recall Idols and produces one mirror. Verify 49 bars plus 10 idols cannot craft it, and 50 bars plus 9 idols cannot craft it. Verify a successful craft consumes exactly 50 bars and 10 idols.
 - Leave the Solarite Gear tab open for at least one minute. The icon must remain visible across periodic recipe refreshes; the log must not continuously report recipe re-registration. Repeat on a higher-tier bench.
 - Check the Solarite category of a higher-tier workbench. Other workbench recipes must remain unchanged.
 - Equip the mirror away from the Core. Cast for three seconds, finish the normal teleport sequence, and verify return to the Core with the same mirror in the same inventory slot.

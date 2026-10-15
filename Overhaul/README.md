@@ -4,7 +4,9 @@
 
 Spend less time repeating chores and more time exploring. Sid's Overhaul brings the individual mods in this repository into one package: easier farming and fishing, equipment tools, merchant supplies, and adjustable combat and progression.
 
-**New in 1.3.8: Mushroom Slayer.** Strong hits break through gray Shrooman Brute armor. Mod Options defaults: threshold 200, damage 10%; red phase unchanged. Bow combat and multiplayer await live testing. Match settings on host and clients. Includes Magic Mirror and the Golden Chance performance fix. Restart after updating.
+**New in 1.3.9:** Magic Mirror crafting now also requires 10 Recall Idols, in addition to 50 Solarite Bars. Existing mirrors and the 20% Omoroth drop are unchanged.
+
+**Included from 1.3.8: Mushroom Slayer.** Strong hits break through gray Shrooman Brute armor. Mod Options defaults: threshold 200, damage 10%; red phase unchanged. Bow combat and multiplayer await live testing. Match settings on host and clients. Includes Magic Mirror and the Golden Chance performance fix. Restart after updating.
 
 ## Install and get started
 
@@ -22,7 +24,7 @@ Prefer to pick individual mods? Use [Sid's Core Keeper Mods collection](https://
 |---|---|
 | Loadout Fallback + Five Loadouts | Fill empty equipment slots from lower loadouts, use separate vanity outfits, and add two loadout tabs. |
 | Ender Stash | A personal 40-slot stash accessed through an Ender Chest bought from the Fishing Merchant; travels with your character and stays safe on death. |
-| Magic Mirror | Reusable three-second return to the Core. Craft for 50 Solarite Bars at a Solarite Workbench, or get one from Omoroth with a 20% chance per defeat. |
+| Magic Mirror | Reusable three-second return to the Core. Craft for 50 Solarite Bars + 10 Recall Idols at a Solarite Workbench, or get one from Omoroth with a 20% chance per defeat. |
 | Armor Dye | Color individual armor, weapons and tools with an inventory palette. |
 | Pet Editor | Change pet levels, talents and colors through the pet window. |
 | Auto Replant | Replant player-harvested crops on suitable planting ground using a matching nearby dropped seed or one you carry. |
@@ -52,7 +54,7 @@ The individual mod folders on [GitHub](https://github.com/Sthakur27/corekeeper-m
 
 Features with adjustable settings have their own pages under **Settings > Mod Options**. Use the arrows to change values. On these authored pages, **Reset to defaults** asks for a second click to confirm.
 
-**Overhaul 1.3.8 includes Mod Options 1.2.2.** Compatible third-party CoreLib client settings can now appear automatically in the same list, with readable names and help text below each option. Reopen the menu to discover settings initialized later. These edits use the original mod's configuration; discovered pages have no bulk reset, and the original mod determines whether a restart is needed. Discovery is limited: it does not expose every installed mod, server/admin settings, keybindings, or custom JSON settings. See [Mod Options](../ModOptions/README.md) for supported types and limits.
+**Overhaul 1.3.9 includes Mod Options 1.2.2.** Compatible third-party CoreLib client settings can now appear automatically in the same list, with readable names and help text below each option. Reopen the menu to discover settings initialized later. These edits use the original mod's configuration; discovered pages have no bulk reset, and the original mod determines whether a restart is needed. Discovery is limited: it does not expose every installed mod, server/admin settings, keybindings, or custom JSON settings. See [Mod Options](../ModOptions/README.md) for supported types and limits.
 
 Version 1.3.7 adds Magic Mirror 1.0.2: a permanent Recall Idol alternative, crafted in the Solarite Workbench Gear category or dropped by Omoroth. The boss drop is one shared roll per defeat, alongside normal loot. Its feature switch takes effect after restarting; remove mirrors before uninstalling.
 

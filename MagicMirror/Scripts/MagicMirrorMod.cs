@@ -8,7 +8,7 @@ namespace MagicMirror
 {
     public sealed class MagicMirrorMod : IMod
     {
-        public const string Version = "1.0.2";
+        public const string Version = "1.0.3";
         public const string ObjectName = "MagicMirror_Mirror";
         internal static bool Active;
         public static ObjectID Id => API.Authoring.GetObjectID(ObjectName);
@@ -16,7 +16,7 @@ namespace MagicMirror
         {
             Active = true;
             API.Authoring.OnObjectTypeAdded += OnObjectTypeAdded;
-            Debug.Log("[MagicMirror] v" + Version + " loaded: reusable recall, 50 Solarite Bars or 20% Omoroth drop.");
+            Debug.Log("[MagicMirror] v" + Version + " loaded: reusable recall, 50 Solarite Bars + 10 Recall Idols or 20% Omoroth drop.");
         }
         public void Init() { }
         public void Update() { }

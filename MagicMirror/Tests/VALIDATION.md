@@ -1,5 +1,9 @@
 # Validation — 2026-10-14
 
+## 1.0.3 crafting cost — 2026-10-15
+
+Standalone 1.0.3 and Overhaul 1.3.9 compile with zero errors. All four rebuilt Windows/Linux bundles contain exactly 50 Solarite Bars and 10 Recall Idols, while preserving item identity, icon, cast settings and the combined Ender Stash assets. Archive integrity and manifest coverage pass. This change adds no hot-path behavior. Live ingredient consumption has not yet been checked in-game; the manual checklist includes insufficient-bar, insufficient-idol and exact-consumption cases.
+
 ## Release candidate
 
 Magic Mirror 1.0.2 and Sid's Overhaul 1.3.7 both compile with zero errors against the installed game assemblies. The isolated release is based on published Overhaul 1.3.6, retaining Golden Chance 2.2.0, and excludes unfinished Brute Armor, Connected Storage, and diagnostic tooling. All four bundle checks and 27 recipe assertions pass. Both distribution archives pass manifest coverage and ZIP integrity checks. These checks do not replace the in-world checks below.

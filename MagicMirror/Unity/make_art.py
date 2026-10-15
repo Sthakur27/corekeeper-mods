@@ -47,5 +47,5 @@ cover.paste(im.resize((224,336),Image.Resampling.NEAREST),(153,70),im.resize((22
 font=lambda n:ImageFont.truetype('C:/Windows/Fonts/seguisb.ttf',n)
 d.text((455,150),'MAGIC',font=font(57),fill='#fff0c7'); d.text((455,212),'MIRROR',font=font(57),fill='#fff0c7')
 d.text((458,295),'One craft. Every journey home.',font=font(23),fill='#8cddd9')
-d.text((458,337),'50 SOLARITE BARS',font=font(22),fill='#d9b66e')
+d.text((458,337),'50 BARS + 10 RECALL IDOLS',font=font(22),fill='#d9b66e')
 cover.save(ART/'MagicMirror_cover_reference.png')

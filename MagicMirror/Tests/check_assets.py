@@ -25,7 +25,9 @@ for folder in ('Bundles', 'OverhaulBundles'):
         owner = mirror['m_GameObject']
         components = [x for x in behaviours if x.get('m_GameObject') == owner]
         item = next(x for x in components if 'requiredObjectsToCraft' in x)
-        assert item['requiredObjectsToCraft'] == [{'objectName': 'SolariteBar', 'amount': 50}]
+        assert item['requiredObjectsToCraft'] == [
+            {'objectName': 'SolariteBar', 'amount': 50},
+            {'objectName': 'RecallIdol', 'amount': 10}]
         assert not item['isStackable']
         cast = next(x for x in components if 'castTime' in x)
         assert cast['castTime'] == 3 and cast['useType'] == 3 and not cast['allowHoldToRepeat']

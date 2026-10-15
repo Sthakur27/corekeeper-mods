@@ -46,9 +46,11 @@ public static class MagicMirrorBuilder
                     so.FindProperty("icon").objectReferenceValue=icon;
                     so.FindProperty("smallIcon").objectReferenceValue=icon;
                     B(so,"isStackable",false);
-                    var list=so.FindProperty("requiredObjectsToCraft");list.arraySize=1;
+                    var list=so.FindProperty("requiredObjectsToCraft");list.arraySize=2;
                     list.GetArrayElementAtIndex(0).FindPropertyRelative("objectName").stringValue="SolariteBar";
                     list.GetArrayElementAtIndex(0).FindPropertyRelative("amount").intValue=50;
+                    list.GetArrayElementAtIndex(1).FindPropertyRelative("objectName").stringValue="RecallIdol";
+                    list.GetArrayElementAtIndex(1).FindPropertyRelative("amount").intValue=10;
                 });
                 Fill(Add(go,"CastItemAuthoring"),so=>{
                     N(so,"castTime",3);N(so,"useType",3);

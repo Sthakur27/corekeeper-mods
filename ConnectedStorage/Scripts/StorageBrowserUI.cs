@@ -1,0 +1,502 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using ConnectedStorage.Browser;
+using CoreLib.Submodule.Command;
+using CoreLib.Submodule.Command.Data;
+using HarmonyLib;
+using Unity.Entities;
+using Unity.Mathematics;
+using Unity.Transforms;
+using UnityEngine;
+using UnityEngine.Events;
+
+namespace ConnectedStorage
+{
+    // Authored Item Browser visuals, with storage-specific bindings. No catalogue
+    // controllers, global Item Browser settings, or spawn actions are loaded.
+    [DefaultExecutionOrder(10000)]
+    public sealed class StorageBrowserUI : MonoBehaviour
+    {
+        public sealed class Address { public Entity Entity; public int Index; public ContainedObjectsBuffer Item; }
+        public static StorageBrowserUI Instance;
+        public static GameObject Prefab;
+        public static bool Active => Instance != null && Instance.terminal != null;
+        private Chest terminal;
+        private GameObject screen;
+        private TextInputField search;
+        private UIScrollWindow scroll;
+        private StorageBrowserModel<Address> model;
+        private readonly List<StorageBrowserItem> grid = new List<StorageBrowserItem>();
+        private readonly List<StorageBrowserItem> list = new List<StorageBrowserItem>();
+        private BrowserLayout layout;
+        private BrowserSort sort = BrowserSort.Physical;
+        private bool descending;
+        private int filter;
+        private GameObject categoryMenu;
+        private readonly List<ButtonUIElement> categoryButtons=new List<ButtonUIElement>();
+        private int categoryOpenedFrame, hoveredCategory=-1;
+        private static readonly string[] Categories={"All","Weapons","Tools","Armor","Accessories","Food","Building","Materials","Pets","Valuables","Other"};
+        private static int Category(ObjectType type) {
+            switch(type) {
+                case ObjectType.MeleeWeapon: case ObjectType.RangeWeapon: case ObjectType.SummoningWeapon: case ObjectType.ThrowingWeapon: case ObjectType.BeamWeapon:return 1;
+                case ObjectType.Shovel: case ObjectType.Hoe: case ObjectType.MiningPick: case ObjectType.PaintTool: case ObjectType.FishingRod: case ObjectType.BugNet: case ObjectType.Sledge: case ObjectType.RoofingTool: case ObjectType.DrillTool: case ObjectType.WaterCan: case ObjectType.Bucket: case ObjectType.Seeder:return 2;
+                case ObjectType.Helm: case ObjectType.BreastArmor: case ObjectType.PantsArmor:return 3;
+                case ObjectType.Necklace: case ObjectType.Ring: case ObjectType.Offhand: case ObjectType.Bag: case ObjectType.Lantern: case ObjectType.Pouch:return 4;
+                case ObjectType.Eatable:return 5;
+                case ObjectType.PlaceablePrefab: case ObjectType.TrainingDummy:return 6;
+                case ObjectType.NonUsable: case ObjectType.UniqueCraftingComponent:return 7;
+                case ObjectType.Pet: case ObjectType.Critter:return 8;
+                case ObjectType.Valuable:return 9;
+                default:return 10;
+            }
+        }
+        private float spread, nextScan, nextNetworkScan;
+        private StorageNetwork.Snapshot cachedNetwork;
+        private World expansionWorld;
+        private StorageExpansionTracker<int2> expansions = new StorageExpansionTracker<int2>();
+        private void FitInventoryToScreen() {
+            var camera=Manager.ui.UICamera.GetComponent<Camera>();
+            if(camera==null)return;
+            bool first=true;var bounds=new Bounds();
+            foreach(var slot in Manager.ui.playerInventoryUI.itemSlots) {
+                if(slot==null || !slot.gameObject.activeInHierarchy || slot.background==null)continue;
+                if(first){bounds=slot.background.bounds;first=false;}else bounds.Encapsulate(slot.background.bounds);
+            }
+            if(first)return;
+            var low=camera.WorldToViewportPoint(bounds.min);var high=camera.WorldToViewportPoint(bounds.max);
+            float dx=high.x>.98f?.98f-high.x:low.x<.02f?.02f-low.x:0;
+            float dy=low.y<.02f?.02f-low.y:high.y>.98f?.98f-high.y:0;
+            var origin=camera.WorldToViewportPoint(Manager.ui.playerInventoryUI.transform.position);
+            Manager.ui.playerInventoryUI.transform.position=camera.ViewportToWorldPoint(origin+new Vector3(dx,dy,0));
+        }
+        private Vector3 bagPosition, barPosition;
+        private string lastSearch = "";
+        private PugText heading;
+        private PugText emptyMessage;
+        private int used,capacity;
+        private bool closing;
+        private readonly Dictionary<SpriteRenderer,(int layer,int order,SpriteMaskInteraction mask)> cursorLayers=new Dictionary<SpriteRenderer,(int,int,SpriteMaskInteraction)>();
+        private readonly Dictionary<PugText,PugTextStyle> cursorTextStyles=new Dictionary<PugText,PugTextStyle>();
+        private void RaiseCursor() {
+            var mouse=Manager.ui.mouse;int order=100;
+            foreach(var renderer in new[]{mouse.grabbedItemUnderlaySR,mouse.grabbedItemSR,mouse.grabbedItemOverlaySR}) {
+                if(renderer==null)continue;
+                if(!cursorLayers.ContainsKey(renderer))cursorLayers.Add(renderer,(renderer.sortingLayerID,renderer.sortingOrder,renderer.maskInteraction));
+                renderer.sortingLayerID=grid[0].icon.sortingLayerID;renderer.sortingOrder=order++;renderer.maskInteraction=SpriteMaskInteraction.None;
+            }
+            foreach(var text in new[]{mouse.amountGrabbedNumberOutline,mouse.amountGrabbedNumber}) {
+                if(text==null)continue;
+                if(!cursorTextStyles.ContainsKey(text))cursorTextStyles.Add(text,text.style.GetCopy());
+                text.style.sortingLayer=grid[0].icon.sortingLayerID;text.style.orderInLayer=order++;text.style.maskInteraction=SpriteMaskInteraction.None;
+                foreach(var renderer in text.GetComponentsInChildren<Renderer>(true)){renderer.sortingLayerID=text.style.sortingLayer;renderer.sortingOrder=text.style.orderInLayer;}
+            }
+        }
+        private void RestoreCursor() {
+            foreach(var entry in cursorLayers)if(entry.Key!=null){entry.Key.sortingLayerID=entry.Value.layer;entry.Key.sortingOrder=entry.Value.order;entry.Key.maskInteraction=entry.Value.mask;}
+            foreach(var entry in cursorTextStyles)if(entry.Key!=null){entry.Key.style=entry.Value;entry.Key.Render(entry.Key.displayedTextString,false,true,false);}
+            cursorLayers.Clear();cursorTextStyles.Clear();
+        }
+        private void Awake() { Instance=this; StorageUIDev.Init(); }
+        private void OnDestroy() { Close(); if(screen!=null) Destroy(screen); if(Instance==this) Instance=null; }
+        private Transform Find(string name) => screen.GetComponentsInChildren<Transform>(true).First(t=>t.name==name);
+        public static void Open(Chest chest)
+        {
+            if(Instance==null || Prefab==null) { Debug.LogError("[ConnectedStorage] Browser layout has not loaded."); return; }
+            Close(); StorageTerminalUI.Close();
+            Manager.ui.TryHideAllInventoryAndCraftingUI();
+            var self=Instance;
+            try {
+                self.terminal=chest;self.cachedNetwork=null;self.nextNetworkScan=0;
+                self.bagPosition=Manager.ui.playerInventoryUI.transform.position;
+                self.barPosition=Manager.ui.itemSlotsBar.transform.position;
+                if(self.screen==null) self.Build();
+                Manager.ui.mouse.ReleaseGrabbedItemBackToInventory();
+                // InventoryUI already includes its own hotbar row. The gameplay
+                // bar normally hides in Update, which may have run before Use.
+                Manager.ui.itemSlotsBar.HideContainerUI();
+                Manager.ui.playerInventoryUI.ShowContainerUI();
+                self.ApplyLayout();
+                self.screen.SetActive(true);
+                self.search.SetInputText(""); self.lastSearch="";
+                self.categoryMenu.SetActive(false);self.scroll.gameObject.SetActive(true);
+                self.Refresh(); self.Configure(); self.nextScan=Time.unscaledTime+0.1f;
+                StorageUIDev.Opened();
+                Debug.Log("[ConnectedStorage] Browser opened; camera depth="+Manager.ui.UICamera.transform.position.z+", panel depth="+self.screen.transform.position.z);
+            } catch(Exception ex) { Debug.LogError("[ConnectedStorage] Browser open: "+ex); Close(); }
+        }
+        public static void Close(string reason="explicit close")
+        {
+            var self=Instance;
+            if(self==null || self.terminal==null || self.closing) return;
+            Debug.Log("[ConnectedStorage] Browser closed: "+reason);
+            self.closing=true; self.terminal=null;
+            self.RestoreCursor();
+            self.cachedNetwork=null;
+            if(self.search!=null && self.search.inputIsActive) self.search.Deactivate(false);
+            if(self.screen!=null) self.screen.SetActive(false);
+            if(Manager.ui!=null) {
+                Manager.ui.mouse.ReleaseGrabbedItemBackToInventory();
+                Manager.ui.playerInventoryUI.transform.position=self.bagPosition;
+                Manager.ui.itemSlotsBar.transform.position=self.barPosition;
+                Manager.ui.TryHideAllInventoryAndCraftingUI();
+            }
+            self.closing=false;
+        }
+        private void Build()
+        {
+            screen=Instantiate(Prefab,Manager.ui.UICamera.transform,false);
+            screen.SetActive(false);
+            Find("TabsAnchor").gameObject.SetActive(false);
+            foreach(var t in screen.GetComponentsInChildren<Transform>(true))
+                if(t.name=="FiltersPanel" || t.name=="FakeScrollBar" || t.name=="Toggled") t.gameObject.SetActive(false);
+            search=Find("StorageSearch").GetComponent<TextInputField>();
+            search.hintString="Search";
+            search.hintText.localize=false;
+            search.hintText.Render("Search",false,true);
+            search.dontAllowNewLines=true;
+            search.onInputFieldDone=new UnityEvent();
+            var metrics=Find("StorageMetrics").localPosition;
+            spread=metrics.z;
+            scroll=Find("StorageGrid").GetComponent<UIScrollWindow>();
+            model=new StorageBrowserModel<Address>((int)metrics.x,Math.Max(1,Mathf.FloorToInt(scroll.windowHeight/spread)));
+            var scrollable=scroll.gameObject.AddComponent<StorageBrowserScroll>();
+            scroll.scrollable=scrollable;
+            scroll.cursorMustBeInsideWindowToScroll=true;
+            heading=Instantiate(search.hintText,screen.transform,false);
+            heading.transform.localPosition=new Vector3(-5.4f,5,0);
+            heading.style.maskInteraction=SpriteMaskInteraction.None;
+            heading.localize=false; heading.maxWidth=11;
+            heading.gameObject.SetActive(true);
+            emptyMessage=Instantiate(heading,screen.transform,false);
+            emptyMessage.transform.localPosition=new Vector3(-5.4f,2.5f,0);
+            emptyMessage.maxWidth=10;
+            emptyMessage.gameObject.SetActive(false);
+            CreateSlots("StorageGridSlot",grid,model.GridColumns*model.ViewportRows);
+            CreateSlots("StorageListSlot",list,model.ViewportRows);
+            Bind("StorageLayout",()=>{layout=layout==BrowserLayout.Grid?BrowserLayout.List:BrowserLayout.Grid;Configure();},"Grid / list");
+            Bind("StorageSort",()=>Send("sort "+(descending?1:0)),"Sort storage by name");
+            Bind("StorageOrder",()=>{descending=!descending;Send("sort "+(descending?1:0));},"Sort ascending / descending");
+            Bind("StorageFilters",()=>ShowCategories(!categoryMenu.activeSelf),"Item categories");
+            BuildCategories();
+            var filterLabel=Instantiate(search.hintText,Find("StorageFilters"),false);
+            filterLabel.transform.localPosition=new Vector3(-.4f,.65f,-.1f);
+            filterLabel.transform.localScale=Vector3.one*.55f;
+            filterLabel.localize=false;filterLabel.style=heading.style.GetCopy();
+            filterLabel.style.maskInteraction=SpriteMaskInteraction.None;
+            filterLabel.style.sortingLayer=grid[0].icon.sortingLayerID;filterLabel.style.orderInLayer=60;
+            filterLabel.Render("Filter",false,true);
+        }
+        private void ShowCategories(bool show) {
+            if(show) {
+                categoryOpenedFrame=Time.frameCount;
+                if(search.inputIsActive)search.Deactivate(false);
+            }
+            if(hoveredCategory>=0)categoryButtons[hoveredCategory].OnDeselected(false);
+            hoveredCategory=-1;
+            categoryMenu.SetActive(show);scroll.gameObject.SetActive(!show);
+            Physics.SyncTransforms();
+            if(show) {
+                emptyMessage.gameObject.SetActive(false);
+                foreach(var text in categoryMenu.GetComponentsInChildren<PugText>(true))
+                    text.Render(text.gameObject.name,false,true,true);
+            } else Draw();
+        }
+        private void BuildCategories() {
+            categoryMenu=new GameObject("Storage categories");categoryMenu.SetActive(false);categoryMenu.transform.SetParent(screen.transform,false);
+            var reference=Find("StorageFilters").GetComponentsInChildren<SpriteRenderer>(true).First(r=>r.name=="Background");
+            for(int i=0;i<Categories.Length;i++) {
+                int selected=i;
+                // Clone the working toolbar button so its input layer, collider and
+                // initialized native button fields exactly match the game's UI.
+                var go=Instantiate(Find("StorageFilters").gameObject,categoryMenu.transform,false);
+                go.name="Category "+Categories[i];
+                go.transform.localPosition=new Vector3(i%2==0?-2.8f:2.8f,2.4f-(i/2)*1.2f,-.2f);
+                go.transform.localScale=Vector3.one;
+                foreach(var t in go.GetComponentsInChildren<Transform>(true))
+                    if(t.name=="Icon" || t.name=="IconShadow" || t.name=="Toggled")t.gameObject.SetActive(false);
+                foreach(var text in go.GetComponentsInChildren<PugText>(true))Destroy(text.gameObject);
+                foreach(var sr in go.GetComponentsInChildren<SpriteRenderer>(true))
+                    if(sr.name=="Background") {sr.drawMode=SpriteDrawMode.Sliced;sr.size=new Vector2(5.2f,1);}
+                var collider=go.GetComponent<BoxCollider>();
+                collider.enabled=true;collider.isTrigger=true;collider.center=Vector3.zero;collider.size=new Vector3(5.2f,1,1);
+                var button=go.GetComponent<ButtonUIElement>();
+                button.canBeClicked=true;button.adjustSpritesToFitTextSize=false;button.showHoverTitle=false;
+                button.onLeftClick=new UnityEvent();button.onRightClick=new UnityEvent();
+                button.onSelected=new UnityEvent();button.onDeselected=new UnityEvent();
+                button.optionToSelectOnHover=null;
+                button.onLeftClick.AddListener(()=>SelectCategory(selected));
+                categoryButtons.Add(button);
+                var background=go.GetComponentsInChildren<SpriteRenderer>(true).First(r=>r.name=="Background");
+                var label=Instantiate(heading,go.transform,false);
+                label.gameObject.name=Categories[i];
+                label.transform.localPosition=new Vector3(-2.3f,.15f,-.1f);
+                label.transform.localScale=Vector3.one;
+                label.localize=false;label.maxWidth=4.6f;
+                label.style=heading.style.GetCopy();
+                label.style.maskInteraction=SpriteMaskInteraction.None;
+                label.style.sortingLayer=background.sortingLayerID;label.style.orderInLayer=60;
+                label.Render(Categories[i],false,true,true);
+            }
+            categoryMenu.SetActive(false);
+        }
+        private void SelectCategory(int selected) {
+            if(!Active || !categoryMenu.activeSelf || Time.frameCount==categoryOpenedFrame)return;
+            filter=selected;Refresh();Configure();ShowCategories(false);
+            Debug.Log("[ConnectedStorage] Category selected: "+Categories[selected]);
+        }
+        private void UpdateCategoryPointer() {
+            if(!categoryMenu.activeSelf)return;
+            int hovered=-1;
+            var pointer=Manager.ui.mouse.pointer.position;
+            for(int i=0;i<categoryButtons.Count;i++) {
+                var button=categoryButtons[i];
+                var collider=button.GetComponent<BoxCollider>();
+                var local=button.transform.InverseTransformPoint(pointer)-collider.center;
+                if(Mathf.Abs(local.x)<=collider.size.x*.5f && Mathf.Abs(local.y)<=collider.size.y*.5f) {
+                    hovered=i;break;
+                }
+            }
+            if(hovered!=hoveredCategory) {
+                if(hoveredCategory>=0)categoryButtons[hoveredCategory].OnDeselected(false);
+                hoveredCategory=hovered;
+                if(hovered>=0)categoryButtons[hovered].OnSelected();
+            }
+            if(hovered>=0 && Manager.input.singleplayerInputModule.WasButtonPressedDownThisFrame(PlayerInput.InputType.UI_INTERACT))
+                SelectCategory(hovered);
+        }
+        private void Bind(string name,Action action,string title)
+        {
+            var button=Find(name).GetComponent<ButtonUIElement>();
+            button.onLeftClick=new UnityEvent(); button.onLeftClick.AddListener(()=>action());
+            button.onRightClick=new UnityEvent();
+            button.showHoverTitle=true; button.showHoverDesc=false;
+            button.gameObject.AddComponent<StorageBrowserTooltip>().Title=title;
+        }
+        private void CreateSlots(string templateName,List<StorageBrowserItem> slots,int count)
+        {
+            var template=Find(templateName).GetComponent<SlotUIBase>();
+            for(int i=0;i<count;i++) {
+                var clone=Instantiate(template,scroll.scrollingContent.GetChild(0),false);
+                clone.gameObject.SetActive(false);
+                var item=clone.gameObject.AddComponent<StorageBrowserItem>();
+                item.icon=clone.icon; item.background=clone.background; item.darkBackground=clone.darkBackground;
+                item.hoverBorder=clone.hoverBorder; item.activeBorder=clone.activeBorder;
+                item.amountNumber=clone.amountNumber; item.amountNumberShadow=clone.amountNumberShadow;
+                item.overlayIcon=clone.overlayIcon; item.underlayIcon=clone.underlayIcon;
+                item.upgradeIcon=clone.upgradeIcon; item.upgradeSprites=clone.upgradeSprites;
+                item.Window=scroll;
+                if(item.amountNumber==null) {
+                    var native=Manager.ui.playerInventoryUI.itemSlots.FirstOrDefault(x=>x.amountNumber!=null);
+                    if(native!=null) {
+                        item.amountNumber=Instantiate(native.amountNumber,item.transform,false);
+                        item.amountNumber.transform.localPosition=new Vector3(.5f,-.4f,-.2f);
+                        item.amountNumber.gameObject.SetActive(true);
+                    }
+                }
+                item.NameText=clone.GetComponentsInChildren<PugText>(true).FirstOrDefault(t=>t.name=="NameText");
+                foreach(var t in clone.GetComponentsInChildren<Transform>(true))
+                    if(t.name=="FavoritedBorder" || t.name=="MissingIcon" || t.name=="PlusIcon" || t.name=="SortingValueText") t.gameObject.SetActive(false);
+                Destroy(clone); slots.Add(item);
+            }
+        }
+        private void Refresh()
+        {
+            var em=terminal.world.EntityManager;
+            var entries=new List<StorageBrowserModel<Address>.Entry>();
+            used=capacity=0;
+            if(cachedNetwork==null || Time.unscaledTime>=nextNetworkScan) {
+                cachedNetwork=StorageNetwork.Scan(terminal.world,terminal.entity);
+                if(expansionWorld!=terminal.world) {
+                    expansionWorld=terminal.world;
+                    expansions=new StorageExpansionTracker<int2>();
+                }
+                var memberTiles=new List<int2>();
+                foreach(var unit in cachedNetwork.Chests) memberTiles.Add(StorageNetwork.Tile(em,unit));
+                if(expansions.Observe(memberTiles)) Send("sort "+(descending?1:0));
+                nextNetworkScan=Time.unscaledTime+2f;
+            }
+            foreach(var entity in cachedNetwork.Chests) {
+                if(!em.Exists(entity) || !em.HasBuffer<ContainedObjectsBuffer>(entity)) {nextNetworkScan=0;continue;}
+                var items=em.GetBuffer<ContainedObjectsBuffer>(entity);
+                int limit=StorageCatalog.Capacity(em.GetComponentData<ObjectDataCD>(entity).objectID);
+                capacity+=limit;
+                int occupied=0;
+                for(int n=0;n<items.Length;n++)if(items[n].objectID!=ObjectID.None)occupied++;
+                int emptyBudget=Math.Max(0,limit-occupied);
+                for(int i=0;i<items.Length;i++) {
+                    var item=items[i]; bool empty=item.objectID==ObjectID.None;
+                    if(empty && (i>=limit || emptyBudget--<=0))continue;
+                    if(!empty) used++;
+                    bool stackable=PugDatabase.GetObjectInfo(item.objectID,item.variation)?.isStackable ?? false;
+                    if(filter!=0 && (empty || Category(PugDatabase.GetObjectInfo(item.objectID,item.variation).objectType)!=filter)) continue;
+                    entries.Add(new StorageBrowserModel<Address>.Entry {
+                        Address=new Address {Entity=entity,Index=i,Item=item},
+                        Name=empty ? "" : PlayerController.GetObjectName(item,true)?.text ?? item.objectID.ToString(),Amount=item.amount,Empty=empty
+                    });
+                }
+            }
+            model.SetEntries(entries); Draw();
+        }
+        private void Configure()
+        {
+            model.Configure(lastSearch,sort,descending,layout); scroll.ResetScroll(); Draw();
+        }
+        private void LateUpdate()
+        {
+            if(!Active) { StorageUIDev.Tick(screen); return; }
+            var p=Manager.main?.player; var em=terminal.world.EntityManager;
+            if(p==null || !em.Exists(terminal.entity) || Manager.menu.IsAnyMenuActive()
+                || math.distancesq(p.WorldPosition,em.GetComponentData<LocalTransform>(terminal.entity).Position)>9f)
+            { Close("player/terminal unavailable, menu opened, or out of range"); return; }
+            if(!search.inputIsActive && Input.GetKeyDown(KeyCode.Escape)) { Close("Escape"); return; }
+            var next=search.GetInputText()??"";
+            if(Manager.ui.currentSelectedUIElement==search && Input.GetMouseButtonDown(1)) {search.SetInputText("");next="";}
+            if(next!=lastSearch) {lastSearch=next;Configure();}
+            if(Time.unscaledTime>=nextScan) {Refresh();nextScan=Time.unscaledTime+0.1f;}
+            heading.Render("Storage  "+used+" / "+capacity+" slots"+(filter==0?"":" | "+Categories[filter]));
+            ApplyLayout();
+            UpdateCategoryPointer();
+            StorageUIDev.Tick(screen);
+        }
+        private void ApplyLayout()
+        {
+            RaiseCursor();
+            var camera=Manager.ui.UICamera.transform;
+            var scale=Manager.ui.CalcGameplayUITargetScaleMultiplier();
+            // A child at local z=0 sits on the camera, outside its clipping range.
+            // Use the genuine inventory's UI plane, including before the first render.
+            var bagDepth=camera.InverseTransformPoint(bagPosition).z;
+            screen.transform.localScale=scale*StorageUIDev.PanelScale;
+            heading.transform.localScale=Vector3.one*StorageUIDev.TextScale;
+            emptyMessage.transform.localScale=Vector3.one*StorageUIDev.TextScale;
+            var browser=StorageUIDev.Browser; var bag=StorageUIDev.Bag;
+            screen.transform.localPosition=new Vector3(browser.x*scale.x,browser.y*scale.y,bagDepth);
+            // Keep the player's genuine inventory, separated beside the browser.
+            Manager.ui.playerInventoryUI.transform.position=camera.TransformPoint(new Vector3(bag.x*scale.x,(bag.y+3f)*scale.y,bagDepth));
+            FitInventoryToScreen();
+            // Do not reposition the separate gameplay hotbar. Suppress it in
+            // the same frame, regardless of native Update ordering.
+            Manager.ui.itemSlotsBar.HideContainerUI();
+        }
+        private void Draw()
+        {
+            bool hasItems=model.TryGetVisible(0,out var first);
+            emptyMessage.gameObject.SetActive(!hasItems && !categoryMenu.activeSelf);
+            if(!hasItems) emptyMessage.Render(used==0 ? "Storage is empty.\nPick up an inventory stack, then click an empty slot." : "No items match this search or filter.");
+            var active=layout==BrowserLayout.Grid?grid:list;
+            foreach(var slot in layout==BrowserLayout.Grid?list:grid) slot.gameObject.SetActive(false);
+            for(int i=0;i<active.Count;i++) {
+                var slot=active[i]; bool valid=model.TryGetVisible(i,out var entry);
+                slot.gameObject.SetActive(valid); if(!valid) continue;
+                slot.Address=entry.Address; slot.visibleSlotIndex=i;
+                // Slot pool is repositioned into the scroll window's visible rows.
+                slot.transform.localPosition=new Vector3(layout==BrowserLayout.Grid?(-(model.Columns-1)*0.5f+i%model.Columns)*spread:0,
+                    -(model.FirstRow+i/model.Columns)*spread,0);
+                slot.UpdateSlot();
+            }
+        }
+        internal static float Height => Active?Instance.model.TotalRows*Instance.spread:0;
+        internal static void Scroll(float value) { if(!Active)return;Instance.model.ScrollToRow(Mathf.FloorToInt(value/Instance.spread));Instance.Draw(); }
+        internal static void Withdraw(Address a,bool one)
+        {
+            if(!Active || a==null) return;
+            var pos=StorageNetwork.Tile(Instance.terminal.world.EntityManager,a.Entity);
+            Instance.Send("take "+pos.x+" "+pos.y+" "+a.Index+" "+(int)a.Item.objectID+" "+a.Item.variation+" "+(one?1:0));
+        }
+        internal static void CursorClick(Address a,bool one)
+        {
+            if(!Active || a==null)return;
+            var pos=StorageNetwork.Tile(Instance.terminal.world.EntityManager,a.Entity);
+            var held=Manager.main.player.mouseInventoryHandler.GetObjectData(0);
+            Instance.Send("cursor "+pos.x+" "+pos.y+" "+a.Index+" "+(int)a.Item.objectID+" "+a.Item.variation+" "+(int)held.objectID+" "+held.variation+" "+(one?1:0));
+        }
+        internal static bool QuickMoveHeld => Manager.input.singleplayerInputModule.IsButtonCurrentlyDown(PlayerInput.InputType.QUICK_MOVE_ITEMS);
+        internal static bool Deposit(InventorySlotUI slot,bool quick)
+        {
+            if(!Active || !quick || !slot.isPlayerInventorySlot)return false;
+            if(Manager.main.player.mouseInventoryHandler.HasObject(0)) return false;
+            var item=slot.GetObjectData();
+            if(item.objectID!=ObjectID.None) Instance.Send("put "+(slot.GetInventoryHandler().startPosInBuffer+slot.inventorySlotIndex)+" "+(int)item.objectID+" "+item.variation);
+            return true;
+        }
+        private void Send(string command)
+        {
+            var pos=StorageNetwork.Tile(terminal.world.EntityManager,terminal.entity);
+            CommandModule.ClientCommSystem?.SendCommand("/connectedstorage "+pos.x+" "+pos.y+" "+command,CommandFlags.None);
+        }
+    }
+    public sealed class StorageBrowserScroll : UIelement,IScrollable
+    {
+        public override bool isShowing=>StorageBrowserUI.Active;
+        public void UpdateContainingElements(float value)=>StorageBrowserUI.Scroll(value);
+        public float GetCurrentWindowHeight()=>StorageBrowserUI.Height;
+        public bool IsBottomElementSelected()=>false;
+        public bool IsTopElementSelected()=>false;
+    }
+    public sealed class StorageBrowserTooltip : MonoBehaviour { public string Title; }
+    [HarmonyPatch(typeof(ButtonUIElement),nameof(ButtonUIElement.GetHoverTitle))]
+    public static class BrowserTooltipPatch
+    {
+        public static bool Prefix(ButtonUIElement __instance,ref TextAndFormatFields __result)
+        {
+            if(!StorageBrowserUI.Active || !__instance.TryGetComponent<StorageBrowserTooltip>(out var hint))return true;
+            __result=new TextAndFormatFields {text=hint.Title,dontLocalize=true};return false;
+        }
+    }
+    public sealed class StorageBrowserItem : SlotUIBase
+    {
+        public StorageBrowserUI.Address Address;
+        public UIScrollWindow Window;
+        public PugText NameText;
+        private bool hasRendered;
+        private ContainedObjectsBuffer renderedItem;
+        private void OnEnable() { hasRendered=false; }
+        protected override void Awake() { OnDeselectSlot(); if(activeBorder!=null) activeBorder.gameObject.SetActive(false); }
+        protected override void LateUpdate() { base.LateUpdate(); transform.localScale=Vector3.one; }
+        public override void OnSelected()=>OnSelectSlot();
+        public override void OnDeselected(bool playEffect=true)=>OnDeselectSlot();
+        public override float localScrollPosition=>Window==null?0:transform.localPosition.y+transform.parent.localPosition.y;
+        public override bool isVisibleOnScreen=>base.isVisibleOnScreen && (Window==null || Window.IsShowingPosition(localScrollPosition));
+        protected override ContainedObjectsBuffer GetSlotObject()=>Address?.Item ?? default;
+        public override UIScrollWindow uiScrollWindow=>Window;
+        public override void OnLeftClicked(bool mod1,bool mod2) { if(StorageBrowserUI.QuickMoveHeld)StorageBrowserUI.Withdraw(Address,false);else StorageBrowserUI.CursorClick(Address,false); }
+        public override void OnRightClicked(bool mod1,bool mod2)=>StorageBrowserUI.CursorClick(Address,true);
+        public override void UpdateSlot()
+        {
+            if(Address==null)return;
+            var item=Address.Item;
+            if(hasRendered && item.objectID==renderedItem.objectID && item.variation==renderedItem.variation
+                && item.amount==renderedItem.amount && item.auxDataIndex==renderedItem.auxDataIndex)return;
+            renderedItem=item;hasRendered=true;
+            var info=Address.Item.objectID==ObjectID.None ? null : PugDatabase.GetObjectInfo(Address.Item.objectID,Address.Item.variation);
+            icon.sprite=info?.icon; icon.enabled=icon.sprite!=null;
+            if(amountNumber!=null) {
+                amountNumber.style.sortingLayer=icon.sortingLayerID;
+                amountNumber.style.orderInLayer=60;
+                amountNumber.style.maskInteraction=SpriteMaskInteraction.None;
+                string count=info!=null && info.isStackable && Address.Item.amount>1 ? Address.Item.amount.ToString():"";
+                amountNumber.Render(count,false,true,true);
+            }
+            UpdateUpgradeIcon(Address.Item);
+            if(NameText!=null) NameText.Render(PlayerController.GetObjectName(Address.Item,true)?.text??"");
+        }
+    }
+    [HarmonyPatch(typeof(InventorySlotUI),nameof(InventorySlotUI.OnLeftClicked))]
+    public static class BrowserDepositPatch
+    { public static bool Prefix(InventorySlotUI __instance,bool mod1)=>!StorageBrowserUI.Deposit(__instance,StorageBrowserUI.QuickMoveHeld); }
+    [HarmonyPatch(typeof(InventorySlotUI),nameof(InventorySlotUI.TryToSendItemToOtherInventoryOrEquip))]
+    public static class BrowserQuickMovePatch {
+        public static bool Prefix(InventorySlotUI __instance,ref bool __result) {
+            if(!StorageBrowserUI.Deposit(__instance,true))return true;
+            __result=true;return false;
+        }
+    }
+    [HarmonyPatch(typeof(UIManager),nameof(UIManager.TryHideAllInventoryAndCraftingUI))]
+    public static class BrowserClosePatch
+    { public static void Postfix(bool __result) { if(__result) StorageBrowserUI.Close("native inventory close"); } }
+    [HarmonyPatch(typeof(SendClientInputSystem),"PlayerInteractionBlocked")]
+    public static class BrowserInteractionPatch
+    { public static void Postfix(ref bool __result) { if(StorageBrowserUI.Active) __result=true; } }
+}
+

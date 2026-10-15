@@ -1,0 +1,90 @@
+{
+  "guid": "6d6f71a04b8e4a49ba1782ac229bbd51",
+  "name": "ConnectedStorage",
+  "displayName": "Connected Storage",
+  "skipSafetyChecks": false,
+  "disableScripts": false,
+  "accessesExtraAssemblies": true,
+  "disableHarmonyPatching": false,
+  "requiredOn": 3,
+  "files": [
+    {
+      "guid": "",
+      "path": "Scripts/ConnectedStorageMod.cs"
+    },
+    {
+      "guid": "",
+      "path": "Scripts/StorageCommand.cs"
+    },
+    {
+      "guid": "",
+      "path": "Scripts/StorageCrafting.cs"
+    },
+    {
+      "guid": "",
+      "path": "Scripts/StorageNetwork.cs"
+    },
+    {
+      "guid": "",
+      "path": "Scripts/StorageRemoval.cs"
+    },
+    {
+      "guid": "",
+      "path": "Scripts/StorageTerminalUI.cs"
+    },
+    {
+      "guid": "",
+      "path": "Scripts/StorageTransfer.cs"
+    },
+    {
+      "guid": "",
+      "path": "Bundles/ConnectedStorage_Linux.assetbundle"
+    },
+    {
+      "guid": "",
+      "path": "Bundles/ConnectedStorage_Linux.assetbundle.manifest"
+    },
+    {
+      "guid": "",
+      "path": "Bundles/ConnectedStorage_Windows.assetbundle"
+    },
+    {
+      "guid": "",
+      "path": "Bundles/ConnectedStorage_Windows.assetbundle.manifest"
+    },
+    {
+      "path": "Scripts/StorageRecipeTabs.cs",
+      "guid": ""
+    },
+    {
+      "guid": "",
+      "path": "Scripts/StorageBrowserUI.cs"
+    },
+    {
+      "guid": "",
+      "path": "Scripts/StorageBrowserModel.cs"
+    },
+    {
+      "guid": "",
+      "path": "Bundles/ConnectedStorageBrowser_Windows.assetbundle"
+    },
+    {
+      "guid": "",
+      "path": "Bundles/ConnectedStorageBrowser_Linux.assetbundle"
+    },
+    {
+      "guid": "",
+      "path": "ThirdParty/ItemBrowser/LICENSE"
+    },
+    {
+      "guid": "",
+      "path": "Scripts/StorageUIDev.cs"
+    }
+  ],
+  "dependencies": [
+    {
+      "required": true,
+      "modName": "CoreLib"
+    }
+  ]
+}

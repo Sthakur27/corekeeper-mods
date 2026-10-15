@@ -120,7 +120,7 @@ namespace ConnectedStorage
                 if (!EntityManager.Exists(chest) ||
                     EntityManager.GetComponentData<HealthCD>(chest).health <= 0) continue;
                 var contents = EntityManager.GetBuffer<ContainedObjectsBuffer>(chest);
-                for (int i = 0; i < contents.Length; i++)
+                for (int i = 0; i < Math.Min(contents.Length, StorageCatalog.Capacity(EntityManager.GetComponentData<ObjectDataCD>(chest).objectID)); i++)
                     slots.Add(new Slot { Chest = chest, Index = i, Item = contents[i].objectData });
             }
             var items = new List<ObjectDataCD>();

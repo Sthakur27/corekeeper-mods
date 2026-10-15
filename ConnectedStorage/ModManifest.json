@@ -55,6 +55,30 @@
     {
       "path": "Scripts/StorageRecipeTabs.cs",
       "guid": ""
+    },
+    {
+      "guid": "",
+      "path": "Scripts/StorageBrowserUI.cs"
+    },
+    {
+      "guid": "",
+      "path": "Scripts/StorageBrowserModel.cs"
+    },
+    {
+      "guid": "",
+      "path": "Bundles/ConnectedStorageBrowser_Windows.assetbundle"
+    },
+    {
+      "guid": "",
+      "path": "Bundles/ConnectedStorageBrowser_Linux.assetbundle"
+    },
+    {
+      "guid": "",
+      "path": "ThirdParty/ItemBrowser/LICENSE"
+    },
+    {
+      "guid": "",
+      "path": "Scripts/StorageUIDev.cs"
     }
   ],
   "dependencies": [

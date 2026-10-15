@@ -12,7 +12,7 @@ namespace ConnectedStorage
 {
     public sealed class ConnectedStorageMod : IMod
     {
-        public const string Version = "0.5.0";
+        public const string Version = "0.7.17-dev";
         private GameObject ui;
         public void EarlyInit()
         {
@@ -28,7 +28,13 @@ namespace ConnectedStorage
             {
                 ui = new GameObject("Connected Storage UI");
                 UnityEngine.Object.DontDestroyOnLoad(ui);
-                ui.AddComponent<StorageTerminalUI>();
+                var mod = API.ModLoader.LoadedMods.FirstOrDefault(m => m.Handlers.Contains(this));
+                if (mod != null) foreach (var bundle in mod.AssetBundles)
+                {
+                    var prefab = bundle.LoadAsset<GameObject>("Assets/ConnectedStorageBrowser/ConnectedStorageBrowser.prefab");
+                    if (prefab != null) { StorageBrowserUI.Prefab = prefab; break; }
+                }
+                ui.AddComponent<StorageBrowserUI>();
             }
         }
         public void Update() { }
@@ -47,8 +53,27 @@ namespace ConnectedStorage
             var obj = authoring == null ? null : authoring.GetComponent<ObjectAuthoring>();
             if (obj != null && (obj.objectName == "ConnectedStorage_Terminal" || (obj.objectName.StartsWith("ConnectedStorage_") && obj.objectName.EndsWith("Chest"))) && !em.HasComponent<StorageNodeTag>(entity))
                 em.AddComponent<StorageNodeTag>(entity);
+            if(obj != null && obj.objectName.StartsWith("ConnectedStorage_") && obj.objectName.EndsWith("Chest"))
+                EnsureCraftingInventory(entity, em);
             StorageRemoval.OnObjectTypeAdded(entity, authoring, em);
             EnsureRecipes(entity, em);
+        }
+        internal static void EnsureCraftingInventory(Entity entity, EntityManager em)
+        {
+            if(!em.HasBuffer<InventoryBuffer>(entity))return;
+            // The native nearby-crafting search requires this marker on both worlds.
+            if(!em.HasComponent<InventoryAutoTransferEnabledCD>(entity))
+                em.AddComponent<InventoryAutoTransferEnabledCD>(entity);
+            int limit=em.HasComponent<ObjectDataCD>(entity)
+                ? StorageCatalog.Capacity(em.GetComponentData<ObjectDataCD>(entity).objectID):0;
+            if(limit<=0)return;
+            var inventories=em.GetBuffer<InventoryBuffer>(entity);
+            if(inventories.Length==0)return;
+            var range=inventories[0];
+            if(range.size==limit && range.maxSize==limit)return;
+            range.sizeX=2;range.sizeY=limit/2;range.extraSize=0;range.maxSize=limit;
+            inventories[0]=range;
+            // Never truncate ContainedObjectsBuffer: old overflow stays withdrawable.
         }
         internal static void EnsureRecipes(Entity entity, EntityManager em)
         {
@@ -129,19 +154,27 @@ namespace ConnectedStorage
     [UpdateAfter(typeof(PredictedSimulationSystemGroup))]
     public partial class StorageRecipeSystem : PugSimulationSystemBase
     {
-        private EntityQuery stations;
+        private EntityQuery stations, storageInventories;
         private double next;
         protected override void OnCreate()
         {
             base.OnCreate();
+            storageInventories=GetEntityQuery(ComponentType.ReadOnly<ObjectDataCD>(),ComponentType.ReadWrite<InventoryBuffer>());
             stations = GetEntityQuery(ComponentType.ReadOnly<ObjectDataCD>(), ComponentType.ReadWrite<CanCraftObjectsBuffer>());
         }
         protected override void OnUpdate()
         {
             if (World.Time.ElapsedTime < next || StorageCatalog.Terminal == ObjectID.None) return;
             next = World.Time.ElapsedTime + 1;
+            using(var units=storageInventories.ToEntityArray(Allocator.Temp))
+                foreach(var unit in units)
+                    if(StorageCatalog.IsChest(EntityManager.GetComponentData<ObjectDataCD>(unit).objectID))
+                        ConnectedStorageMod.EnsureCraftingInventory(unit,EntityManager);
             using (var entities = stations.ToEntityArray(Allocator.Temp))
                 foreach (var entity in entities) ConnectedStorageMod.EnsureRecipes(entity, EntityManager);
         }
     }
 }
+
+
+

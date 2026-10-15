@@ -3,8 +3,8 @@ from pathlib import Path
 import sys
 import UnityPy
 from PIL import Image
-CAPACITY=dict(zip(('Copper','Tin','Iron','Scarlet','Octarine','Galaxite','Solarite','Pandorium'),(40,80,120,180,240,320,400,500)))
-paths=[Path(x) for x in sys.argv[1:]] or list((Path(__file__).parents[1]/'Bundles').glob('*.assetbundle'))
+CAPACITY=dict(zip(('Copper','Tin','Iron','Scarlet','Octarine','Galaxite','Solarite','Pandorium'),(20,40,60,80,100,120,140,160)))
+paths=[Path(x) for x in sys.argv[1:]] or list((Path(__file__).parents[1]/'Bundles').glob('ConnectedStorage_*.assetbundle'))
 assert paths, 'No bundles found'
 for path in paths:
  env=UnityPy.load(str(path)); prefabs={}; vanilla=set()
@@ -36,6 +36,7 @@ for path in paths:
   assert 'DontDestroyOnZeroHealthAuthoring' in c
   assert 'DontDropContainedAuthoring' not in c
   inv=c['InventoryAuthoring']; assert inv['sizeX']*inv['sizeY']==capacity
+  assert inv['sizeX']==2, 'Storage must not match Double Chest Inventory dimensions'
   assert inv['maxExtraSize']==0 and not inv['autoTransferEnabled']
   assert c['InventoryItemAuthoring']['requiredObjectsToCraft']==([{'objectName':tier+'Bar','amount':30}] if tier=='Copper' else [])
   if tier != 'Copper':
@@ -62,3 +63,4 @@ for path in paths:
  assert t['InventoryItemAuthoring']['requiredObjectsToCraft']==[{'objectName':'CopperBar','amount':10},{'objectName':'Wood','amount':20}]
  assert 'ConnectedStorage.dll' not in vanilla
  print(path.name+': PASS - storage workbench with nine recipes, eight units, seven gems, crafting costs and native UI')
+

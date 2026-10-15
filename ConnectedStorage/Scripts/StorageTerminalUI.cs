@@ -394,6 +394,14 @@ namespace ConnectedStorage
                 var comm = CommandModule.ClientCommSystem;
                 if (player != null && comm != null)
                 {
+                    var em=player.world.EntityManager;
+                    var items=em.GetBuffer<ContainedObjectsBuffer>(player.entity);
+                    int slot=player.equippedSlotIndex;
+                    if(slot<0 || slot>=items.Length){StorageBrowserUI.Open(__instance);return false;}
+                    bool holdingGem=false;
+                    for(int tier=1;tier<StorageCatalog.Tiers.Length;tier++)
+                        if(items[slot].objectID!=ObjectID.None && items[slot].objectID==StorageCatalog.Gem(tier))holdingGem=true;
+                    if(!holdingGem){StorageBrowserUI.Open(__instance);return false;}
                     var tile = StorageNetwork.Tile(__instance.world.EntityManager, __instance.entity);
                     comm.SendCommand("/connectedstorage " + tile.x + " " + tile.y + " upgrade "
                         + player.equippedSlotIndex + " " + (int)__instance.objectData.objectID, CommandFlags.None);
@@ -401,7 +409,7 @@ namespace ConnectedStorage
                 return false;
             }
             if (!StorageCatalog.IsTerminal(__instance.objectData.objectID)) return true;
-            StorageTerminalUI.Open(__instance); return false;
+            StorageBrowserUI.Open(__instance); return false;
         }
     }
     [HarmonyPatch(typeof(Chest), nameof(Chest.OnPlayerLeftChest))]
@@ -415,6 +423,7 @@ namespace ConnectedStorage
         public static void Postfix(string text) => StorageTerminalUI.Feedback(text);
     }
 }
+
 
 
 

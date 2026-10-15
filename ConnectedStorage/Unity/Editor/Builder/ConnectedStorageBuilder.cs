@@ -40,7 +40,7 @@ public static class ConnectedStorageBuilder
         {
             ConfigureTextures();
             AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport);
-            foreach (var entry in new[] { "Workbench:-2", "Terminal:0", "CopperChest:40", "TinChest:80", "IronChest:120", "ScarletChest:180", "OctarineChest:240", "GalaxiteChest:320", "SolariteChest:400", "PandoriumChest:500", "TinGem:-1", "IronGem:-1", "ScarletGem:-1", "OctarineGem:-1", "GalaxiteGem:-1", "SolariteGem:-1", "PandoriumGem:-1" })
+            foreach (var entry in new[] { "Workbench:-2", "Terminal:0", "CopperChest:20", "TinChest:40", "IronChest:60", "ScarletChest:80", "OctarineChest:100", "GalaxiteChest:120", "SolariteChest:140", "PandoriumChest:160", "TinGem:-1", "IronGem:-1", "ScarletGem:-1", "OctarineGem:-1", "GalaxiteGem:-1", "SolariteGem:-1", "PandoriumGem:-1" })
             {
             AssetName = entry.Split(':')[0]; Capacity = int.Parse(entry.Split(':')[1]);
             var spriteAsset = AssetDatabase.LoadAssetAtPath<ScriptableObject>(Root + "/Data/SpriteAsset/" + AssetName + ".asset");
@@ -69,6 +69,21 @@ public static class ConnectedStorageBuilder
             });
 
             }
+            AssetDatabase.SaveAssets();
+            BuildMod();
+        }
+        catch (Exception e)
+        {
+            Debug.LogError("[ConnectedStorageBuilder] FAILED: " + e);
+            EditorApplication.Exit(1);
+        }
+    }
+
+    public static void ExportExisting()
+    {
+        try
+        {
+            AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport);
             AssetDatabase.SaveAssets();
             BuildMod();
         }
@@ -262,7 +277,7 @@ public static class ConnectedStorageBuilder
                     recipes.GetArrayElementAtIndex(0).FindPropertyRelative("amount").intValue = 20;
                     return;
                 }
-                recipes.arraySize = Capacity == 0 ? 2 : (Capacity > 40 ? 0 : 1);
+                recipes.arraySize = Capacity == 0 ? 2 : (AssetName != "CopperChest" && Capacity > 0 ? 0 : 1);
                 if (recipes.arraySize == 0) return;
                 var bar = recipes.GetArrayElementAtIndex(0);
                 bar.FindPropertyRelative("objectName").stringValue = Capacity != 0 ? AssetName.Replace("Chest", "Bar").Replace("Gem", "Bar") : "CopperBar";
@@ -302,7 +317,8 @@ public static class ConnectedStorageBuilder
             if (Capacity > 0) {
                 Add(go, "DontDestroyOnZeroHealthAuthoring");
                 Fill(Add(go, "InventoryAuthoring"), so => {
-                    N(so, "sizeX", 10); N(so, "sizeY", Capacity / 10);
+                    // Two authoring columns exclude these terminal-only units from Double Chest Inventory.
+                    N(so, "sizeX", 2); N(so, "sizeY", Capacity / 2);
                     N(so, "maxExtraSize", 0); B(so, "autoTransferEnabled", false);
                     so.FindProperty("slotRequirements").arraySize = 0;
                     so.FindProperty("itemsInInventory").arraySize = 0;

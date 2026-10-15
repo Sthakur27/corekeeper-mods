@@ -65,8 +65,10 @@ namespace ConnectedStorage
                     return new CommandOutput("[Connected Storage] " + feedback,
                         feedback.StartsWith("Upgraded to ") ? CommandStatus.Info : CommandStatus.Warning);
                 }
-                if (!StorageCatalog.IsTerminal(em.GetComponentData<ObjectDataCD>(terminal).objectID)) return Error("Use the storage terminal to access items.");
+                if (!StorageCatalog.IsNode(em.GetComponentData<ObjectDataCD>(terminal).objectID)) return Error("Storage object unavailable.");
                 var network = StorageNetwork.Scan(world, terminal);
+                if(args[2]=="sort" && args.Length==4)
+                    return Result(world.GetOrCreateSystemManaged<StorageTransferSystem>().SortNetwork(network.Chests,Number(args[3])!=0));
                 if (args[2] == "craft" && args.Length == 4)
                 {
                     var id = (ObjectID)Number(args[3]);
@@ -75,7 +77,7 @@ namespace ConnectedStorage
                         {
                             var system = world.GetOrCreateSystemManaged<StorageCraftingSystem>();
                             string error = system.TryCraft(player, terminal, recipe.Station, id);
-                            return error == null ? Quiet() : Error(error);
+                            return error == null || error == "No space in the destination inventory." || error == "Moved what fits; the remaining items stayed in their original slot." ? Quiet() : Error(error);
                         }
                     return Error("Recipe is no longer connected.");
                 }
@@ -84,7 +86,39 @@ namespace ConnectedStorage
                     var inventory = em.GetBuffer<InventoryBuffer>(player)[0];
                     int first = inventory.startIndex;
                     int end = first + inventory.size;
-                    if (args[2] == "take" && args.Length == 9)
+                    if (args[2] == "cursor" && args.Length == 11)
+                    {
+                        var chest=StorageNetwork.FindNode(world,Number(args[3]),Number(args[4]));
+                        int slot=Number(args[5]);
+                        if(!network.Chests.Contains(chest)||!Available(world,chest))return Error("Storage unit unavailable.");
+                        var contents=em.GetBuffer<ContainedObjectsBuffer>(chest);
+                        int cursor=em.GetComponentData<CraftingCD>(player).outputSlotIndex;
+                        var bag=em.GetBuffer<ContainedObjectsBuffer>(player);
+                        if(slot<0||slot>=contents.Length||cursor<0||cursor>=bag.Length)return Error("Invalid storage slot.");
+                        var target=contents[slot];var held=bag[cursor];
+                        int limit=StorageCatalog.Capacity(em.GetComponentData<ObjectDataCD>(chest).objectID);
+                        if(slot>=limit && held.objectID!=ObjectID.None)return Error("Legacy overflow slot: withdraw this item first.");
+                        if(held.objectID!=ObjectID.None && target.objectID==ObjectID.None) {
+                            int occupied=0;
+                            for(int n=0;n<contents.Length;n++)if(contents[n].objectID!=ObjectID.None)occupied++;
+                            if(occupied>=limit)return Quiet();
+                        }
+                        if(target.objectID!=(ObjectID)Number(args[6])||target.variation!=Number(args[7])||held.objectID!=(ObjectID)Number(args[8])||held.variation!=Number(args[9]))return Error("Items changed; click again.");
+                        if(Locked(em,chest,slot)||Locked(em,player,cursor))return Error("That item is locked.");
+                        bool one=Number(args[10])==1;
+                        if(target.objectID==ObjectID.None&&held.objectID==ObjectID.None)return Quiet();
+                        bool taking=held.objectID==ObjectID.None;
+                        bool matching=held.objectID==target.objectID&&held.variation==target.variation&&PugDatabase.GetObjectInfo(held.objectID,held.variation).isStackable;
+                        if(one&&!taking&&target.objectID!=ObjectID.None&&!matching)return Quiet();
+                        if(matching && target.amount>=9999)return Quiet();
+                        InventoryChangeData change;
+                        if(!one&&!matching)change=Inventory.Create.Swap(player,chest,cursor,slot);
+                        else change=Inventory.Create.MoveAmount(taking?chest:player,taking?slot:cursor,taking?player:chest,taking?cursor:slot,(taking?cursor:slot)+1,one?1:int.MaxValue,false);
+                        using(var query=em.CreateEntityQuery(ComponentType.ReadOnly<InventoryChangeBuffer>()))
+                            em.GetBuffer<InventoryChangeBuffer>(query.GetSingletonEntity()).Add(new InventoryChangeBuffer {playerEntity=player,inventoryChangeData=change});
+                        return Quiet();
+                    }
+                    else if (args[2] == "take" && args.Length == 9)
                     {
                         var chest = StorageNetwork.FindNode(world, Number(args[3]), Number(args[4]));
                         int slot = Number(args[5]);
@@ -141,7 +175,7 @@ namespace ConnectedStorage
             && slot < em.GetBuffer<LockedObjectsBuffer>(entity).Length && em.GetBuffer<LockedObjectsBuffer>(entity)[slot].Value;
         private static bool Available(World world, Entity chest) => !StorageRemoval.IsEvacuating(world, chest)
             && (!world.EntityManager.HasComponent<HealthCD>(chest) || world.EntityManager.GetComponentData<HealthCD>(chest).health > 0);
-        private static CommandOutput Result(string error) => error == null ? Quiet() : Error(error);
+        private static CommandOutput Result(string error) => error == null || error == "No space in the destination inventory." || error == "Moved what fits; the remaining items stayed in their original slot." ? Quiet() : Error(error);
         private static CommandOutput Error(string text) => new CommandOutput("[Connected Storage] " + text, CommandStatus.Warning);
         private static CommandOutput Quiet() => new CommandOutput("", CommandStatus.None);
     }

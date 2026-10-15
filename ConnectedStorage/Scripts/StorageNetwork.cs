@@ -11,7 +11,7 @@ namespace ConnectedStorage
     public static class StorageCatalog
     {
         public static readonly string[] Tiers = { "Copper", "Tin", "Iron", "Scarlet", "Octarine", "Galaxite", "Solarite", "Pandorium" };
-        public static readonly int[] Capacities = { 40, 80, 120, 180, 240, 320, 400, 500 };
+        public static readonly int[] Capacities = { 20, 40, 60, 80, 100, 120, 140, 160 };
         private static ObjectID terminal;
         public static ObjectID Workbench => API.Authoring.GetObjectID("ConnectedStorage_Workbench");
         private static readonly ObjectID[] chests = new ObjectID[8];
@@ -59,6 +59,11 @@ namespace ConnectedStorage
             float3 p = em.GetComponentData<LocalTransform>(entity).Position;
             return (int2)math.round(p.xz);
         }
+        private static int CompareNodes(EntityManager em, Entity a, Entity b)
+        {
+            var at=Tile(em,a);var bt=Tile(em,b);
+            return Browser.StorageNodeOrder.Compare(at.x,at.y,bt.x,bt.y);
+        }
         public static bool Adjacent(int2 a, int2 b) => math.csum(math.abs(a - b)) == 1;
         public static Snapshot Scan(World world, Entity root, Entity excluded = default(Entity))
         {
@@ -92,8 +97,8 @@ namespace ConnectedStorage
                 foreach (var offset in offsets)
                     if (candidates.TryGetValue(tile + offset, out var next) && visited.Add(next)) queue.Enqueue(next);
             }
-            result.Chests.Sort((a, b) => a.Index.CompareTo(b.Index));
-            result.Terminals.Sort((a, b) => a.Index.CompareTo(b.Index));
+            result.Chests.Sort((a, b) => CompareNodes(em,a,b));
+            result.Terminals.Sort((a, b) => CompareNodes(em,a,b));
             return result;
         }
         public static Entity FindNode(World world, int x, int z)
@@ -137,7 +142,7 @@ namespace ConnectedStorage
                         }
                     if (touches) result.Add(entity);
                 }
-            result.Sort((a, b) => a.Index.CompareTo(b.Index));
+            result.Sort((a, b) => CompareNodes(em,a,b));
             return result;
         }
     }

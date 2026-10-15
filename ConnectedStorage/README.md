@@ -12,14 +12,14 @@ A separate Core Keeper mod with physically connected storage units and one searc
 
 | Craftable item | Cost | Resulting capacity | Craft at |
 |---|---|---:|---|
-| Copper Storage Unit | 30 copper bars | 40 | Storage Workbench |
-| Tin Upgrade Gem | 30 tin bars | 80 | Storage Workbench |
-| Iron Upgrade Gem | 30 iron bars | 120 | Storage Workbench |
-| Scarlet Upgrade Gem | 30 scarlet bars | 180 | Storage Workbench |
-| Octarine Upgrade Gem | 30 octarine bars | 240 | Storage Workbench |
-| Galaxite Upgrade Gem | 30 galaxite bars | 320 | Storage Workbench |
-| Solarite Upgrade Gem | 30 solarite bars | 400 | Storage Workbench |
-| Pandorium Upgrade Gem | 30 pandorium bars | 500 | Storage Workbench |
+| Copper Storage Unit | 30 copper bars | 20 | Storage Workbench |
+| Tin Upgrade Gem | 30 tin bars | 40 | Storage Workbench |
+| Iron Upgrade Gem | 30 iron bars | 60 | Storage Workbench |
+| Scarlet Upgrade Gem | 30 scarlet bars | 80 | Storage Workbench |
+| Octarine Upgrade Gem | 30 octarine bars | 100 | Storage Workbench |
+| Galaxite Upgrade Gem | 30 galaxite bars | 120 | Storage Workbench |
+| Solarite Upgrade Gem | 30 solarite bars | 140 | Storage Workbench |
+| Pandorium Upgrade Gem | 30 pandorium bars | 160 | Storage Workbench |
 
 Follow the table in order. Only copper units are crafted directly. A wrong-tier or locked gem is not consumed. An upgraded unit can be mined and placed again at its existing tier.
 
@@ -27,15 +27,14 @@ All nine recipes are visible together at the Storage Workbench. Higher-tier gems
 
 ## Terminal controls
 
-The terminal reuses the native chest panel and the real player inventory. Left-click picks up or places a stack; right-click and modifier interactions use the game cursor. Quick transfer routes bag items into the connected network. Search filters occupied slots by name; the mouse wheel, scrollbar and arrow buttons navigate storage. Empty slots remain in physical order when search is clear. Terminal crafting is not exposed.
-
+The terminal now uses an adapted Item Browser layout: search, scrolling, grid/list views, sorting direction, and basic stackable/non-stackable filters. Its real player inventory appears alongside it. For this test build, click a stored stack to withdraw it, right-click to withdraw one, and click a player inventory stack to deposit it. Vanilla cursor dragging is not implemented in this new interface. Crafting remains deferred.
 ## Removing units
 
 Mining a unit moves what fits into units still connected to the terminal, then vanilla drops leftovers and the unit itself. An isolated unit drops all its contents. Breaking a bridge leaves the disconnected units and their contents intact. Reconnect them to restore terminal access. Breaking the terminal never removes stored items.
 
 ## Install and verification
 
-Requires CoreLib on host and clients. Run install.ps1 and restart Core Keeper. This is local test build 0.5.0, not a published release. Offline compilation, planner tests and bundle inspection are automated. The previous UI passed basic transfer/search/persistence tests. The native UI rewrite is undergoing separate live validation in Test; see Tests/NATIVE-UI-2026-10-14.md. Use a test world first.
+Requires CoreLib on host and clients. Run install.ps1 and restart Core Keeper. This is local test build 0.6.0, not a published release. Offline compilation, planner tests and bundle inspection are automated. The previous UI passed basic transfer/search/persistence tests. The native UI rewrite is undergoing separate live validation in Test; see Tests/BROWSER-UI-2026-10-14.md. Use a test world first.
 
 The terminal uses mouse/keyboard and English labels. Units and stations must be loaded; networks beyond the client's replication range are unsupported. CoreLib command security must permit connectedstorage for participating players. Empty storage before uninstalling.
 
@@ -62,3 +61,25 @@ Version 0.4.4 follows an independent art critique/revision loop using native spr
 
 Version 0.4.5 fixes terminal text clipping by keeping glyphs at native scale, uses wooden UI frames with opaque backings, and fixes node discovery after world reload using replicated object IDs. Hover labels no longer show missing localization errors. See Tests/LIVE-2026-10-14.md for verified live checks and remaining coverage.
 
+
+## UI attribution
+
+Browser layout, theme atlas, and adapted list/search logic derive from moorowl/ItemBrowser (MIT), revision 9b9df228428f212681873e875409fc33003cb3f7. See ThirdParty/ItemBrowser/LICENSE. The Item Browser mod itself is not modified or required.
+
+
+Storage tiers have fixed capacities unaffected by Double Chest Inventory. Existing excess slots are retained for withdrawal only, preserving saved items; empty excess slots are hidden. Withdraw legacy overflow before upgrading if it exceeds the new tier.
+
+### Stable terminal slots (0.7.7-dev)
+The terminal displays physical storage slots. Deposits stay where placed; pressing Sort sorts the whole connected network by name; reopening the terminal preserves the arrangement. The direction button sorts ascending/descending. Search and categories only filter the view, retaining each slot address. Empty cells beyond capacity are hidden. Existing occupied overflow remains withdrawable and prevents new stacks until space is available.
+
+Nearby native crafting stations can consume materials from storage units using the game’s normal nearby-chest crafting rules. Existing units are reconciled on both client and server; this does not add remote crafting through the terminal.
+
+Interacting with any storage unit opens its connected inventory. Holding an upgrade gem instead attempts the sequential upgrade.
+
+Core Archive art: Terminal and Copper Storage Unit use original 16-pixel rune-lectern and copper-bound stone-vault sprites, with front/side/rear views and aligned glow masks. Editable source: `Unity/make_archive_art.py`. All eight storage tiers share the stone vault silhouette with tier-specific metal bands.
+
+Connected unit order uses world tile coordinates on both client and server, so manual sorting fills the first displayed slots consistently across units and reloads.
+
+Access from a node uses that node as the proximity anchor and includes the full connected component, even without a separate terminal. Manual sort, search, categories and transfers work identically from either entry point.
+
+When a previously viewed network gains a storage node, the next terminal/node view automatically sorts once to fill from the top-left. Reopening an unchanged network does not sort. Network tracking lasts for the current world session; the first visit after loading preserves the saved layout.

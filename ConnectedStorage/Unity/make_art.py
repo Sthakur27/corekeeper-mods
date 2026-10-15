@@ -43,4 +43,5 @@ def previews():
 if __name__ == '__main__':
     runpy.run_path(str(HERE / 'make_unit_art.py'), run_name='__main__')
     runpy.run_path(str(HERE / 'make_device_art.py'), run_name='__main__')
+    runpy.run_path(str(HERE / 'make_archive_art.py'), run_name='__main__')
     previews()

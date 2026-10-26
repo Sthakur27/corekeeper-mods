@@ -184,8 +184,31 @@ namespace ModDiagnostics
                     em.GetName(entities[i], out var name);
                     int id = em.HasComponent<ObjectDataCD>(entities[i]) ? (int)em.GetComponentData<ObjectDataCD>(entities[i]).objectID : -1;
                     text.Append(i == 0 ? "" : ";").Append(name.ToString()).Append('#').Append(id).Append('@').Append(types[i].GetHashCode());
+                    text.Append(" sharedWith=").Append(SharingGhostType(em, types[i], entities[i]));
                 }
             return text.ToString();
+        }
+
+        // Every other prefab (registered or not) with the same GhostType, as object IDs: a stuck prefab
+        // means TrySetupInsideCollection found another prefab already holding that type.
+        private static string SharingGhostType(EntityManager em, Unity.NetCode.GhostType type, Entity self)
+        {
+            var desc = new EntityQueryDesc
+            {
+                All = new[] { ComponentType.ReadOnly<Unity.NetCode.GhostType>(), ComponentType.ReadOnly<Prefab>() },
+                Options = EntityQueryOptions.IncludePrefab | EntityQueryOptions.IncludeDisabledEntities
+            };
+            var text = new StringBuilder();
+            using (var query = em.CreateEntityQuery(desc))
+            using (var entities = query.ToEntityArray(Allocator.Temp))
+            using (var types = query.ToComponentDataArray<Unity.NetCode.GhostType>(Allocator.Temp))
+                for (int i = 0; i < entities.Length; i++)
+                {
+                    if (entities[i] == self || !types[i].Equals(type)) continue;
+                    int id = em.HasComponent<ObjectDataCD>(entities[i]) ? (int)em.GetComponentData<ObjectDataCD>(entities[i]).objectID : -1;
+                    text.Append(text.Length == 0 ? "" : "/").Append(id).Append(em.HasComponent<Unity.NetCode.GhostPrefabInCollection>(entities[i]) ? "(in)" : "(out)");
+                }
+            return text.Length == 0 ? "none" : text.ToString();
         }
 
         private static int CountModded(EntityManager em)

@@ -11,7 +11,16 @@ namespace MagicMirror
         public const string Version = "1.0.3";
         public const string ObjectName = "MagicMirror_Mirror";
         internal static bool Active;
-        public static ObjectID Id => API.Authoring.GetObjectID(ObjectName);
+        private static ObjectID _id;
+        // Mod object IDs are fixed once registered; cache to skip the string lookup.
+        public static ObjectID Id
+        {
+            get
+            {
+                if (_id == ObjectID.None) _id = API.Authoring.GetObjectID(ObjectName);
+                return _id;
+            }
+        }
         public void EarlyInit()
         {
             Active = true;
@@ -31,40 +40,45 @@ namespace MagicMirror
             var mirror = Id;
             if (mirror == ObjectID.None || !em.HasComponent<ObjectDataCD>(entity)
                 || !em.HasBuffer<CanCraftObjectsBuffer>(entity)) return;
-            var recipes = em.GetBuffer<CanCraftObjectsBuffer>(entity);
+            // Read-only first: a writable GetBuffer is a sync point, and nearly every
+            // station already has the recipe or is not a Solarite-tier bench.
+            int start = 0, count = -1;
             // Higher benches copy lower-tier categories. Keep the recipe in Solarite's
             // Gear category on both Solarite and higher-tier workbenches.
             if (em.HasBuffer<IncludedCraftingBuildingsBuffer>(entity))
             {
-                var included = em.GetBuffer<IncludedCraftingBuildingsBuffer>(entity);
-                int start = 0;
+                var included = em.GetBuffer<IncludedCraftingBuildingsBuffer>(entity, true);
                 for (int i = 0; i < included.Length; i++)
                 {
                     var entry = included[i];
                     if (entry.objectID == ObjectID.SolariteWorkbench)
                     {
-                        FillGearSlot(recipes, start, entry.amountOfCraftingOptions, mirror);
-                        return;
+                        count = entry.amountOfCraftingOptions;
+                        break;
                     }
                     start += entry.amountOfCraftingOptions;
                 }
             }
             else if (em.GetComponentData<ObjectDataCD>(entity).objectID == ObjectID.SolariteWorkbench)
-                FillGearSlot(recipes, 0, recipes.Length, mirror);
+                count = int.MaxValue;
+            if (count < 0) return;
+            var recipes = em.GetBuffer<CanCraftObjectsBuffer>(entity, true);
+            if (count == int.MaxValue) count = recipes.Length;
+            int slot = FindGearSlot(recipes, start, count, mirror);
+            if (slot < 0) return;
+            recipes = em.GetBuffer<CanCraftObjectsBuffer>(entity);
+            recipes[slot] = new CanCraftObjectsBuffer { objectID = mirror, amount = 1 };
+            Debug.Log("[MagicMirror] Solarite Workbench recipe registered.");
         }
-        private static void FillGearSlot(DynamicBuffer<CanCraftObjectsBuffer> recipes, int start, int count, ObjectID mirror)
+        private static int FindGearSlot(DynamicBuffer<CanCraftObjectsBuffer> recipes, int start, int count, ObjectID mirror)
         {
             int end = System.Math.Min(start + count, recipes.Length);
-            for (int i = start; i < end; i++) if (recipes[i].objectID == mirror) return;
+            for (int i = start; i < end; i++) if (recipes[i].objectID == mirror) return -1;
             // Vanilla Solarite Gear has four empty slots (2..5). Do not shift any
             // recipe indices or overwrite another mod's recipe.
             for (int i = start + 2; i < System.Math.Min(start + 6, end); i++)
-                if (recipes[i].objectID == ObjectID.None)
-                {
-                    recipes[i] = new CanCraftObjectsBuffer { objectID = mirror, amount = 1 };
-                    Debug.Log("[MagicMirror] Solarite Workbench recipe registered.");
-                    return;
-                }
+                if (recipes[i].objectID == ObjectID.None) return i;
+            return -1;
         }
     }
 
@@ -78,7 +92,7 @@ namespace MagicMirror
         protected override void OnCreate()
         {
             base.OnCreate();
-            stations = GetEntityQuery(ComponentType.ReadOnly<ObjectDataCD>(), ComponentType.ReadWrite<CanCraftObjectsBuffer>());
+            stations = GetEntityQuery(ComponentType.ReadOnly<ObjectDataCD>(), ComponentType.ReadOnly<CanCraftObjectsBuffer>());
         }
         protected override void OnUpdate()
         {

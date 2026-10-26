@@ -3,6 +3,74 @@ using HarmonyLib;
 
 namespace ConnectedStorage
 {
+    // Item tooltips use localization terms, which can retain older mod text.
+    // Keep the displayed capacity tied to the same table as storage enforcement.
+    [HarmonyPatch(typeof(SlotUIBase), nameof(SlotUIBase.GetHoverDescription))]
+    public static class StorageCapacityDescriptionPatch
+    {
+        public static void Postfix(SlotUIBase __instance, ref List<TextAndFormatFields> __result)
+        {
+            var slot = __instance.GetContainedObject();
+            int tier = StorageCatalog.Tier(slot.objectID);
+            if (tier < 0) return;
+            string text = StorageCatalog.Capacities[tier]
+                + " shared storage slots. Interact to access the connected storage inventory."
+                + (tier + 1 < StorageCatalog.Capacities.Length ? " Apply the next tier gem to upgrade." : " Maximum storage tier.");
+            if (__result == null) __result = new List<TextAndFormatFields>();
+            var description = new TextAndFormatFields { text = text, dontLocalize = true };
+            if (__result.Count == 0) __result.Add(description);
+            else __result[0] = description;
+        }
+    }
+
+    // Keep vanilla recipe handlers/indices, but give this station one shared frame.
+    [HarmonyPatch(typeof(SimpleCraftingUIContainer), nameof(SimpleCraftingUIContainer.ShowCraftingUI))]
+    public static class StorageWorkbenchSinglePanelPatch
+    {
+        private static SimpleCraftingUI first, second;
+        private static UnityEngine.Vector2 size;
+        private static UnityEngine.Vector3 position, titlePosition;
+        private static bool secondBackground, secondTitle;
+
+        public static void Prefix()
+        {
+            if (first == null) return;
+            first.background.size = size;
+            first.background.transform.localPosition = position;
+            first.title.transform.localPosition = titlePosition;
+            if (second != null) {
+                second.background.enabled = secondBackground;
+                second.title.gameObject.SetActive(secondTitle);
+            }
+            first = null; second = null;
+        }
+
+        public static void Postfix(SimpleCraftingUIContainer __instance)
+        {
+            var building = CraftingUIBase.GetCraftingBuilding();
+            if (building == null || !building.entityExist || building.objectData.objectID != StorageCatalog.Workbench
+                || __instance.amountOfWindowsShowing != 2) return;
+            first = __instance.simpleCraftingUIs[0]; second = __instance.simpleCraftingUIs[1];
+            size = first.background.size;
+            position = first.background.transform.localPosition;
+            titlePosition = first.title.transform.localPosition;
+            secondBackground = second.background.enabled;
+            secondTitle = second.title.gameObject.activeSelf;
+            // Measure in the background parent's coordinates to respect native UI scaling.
+            var parent = first.background.transform.parent;
+            var delta = parent.InverseTransformPoint(second.background.transform.position)
+                - parent.InverseTransformPoint(first.background.transform.position);
+            first.background.size = new UnityEngine.Vector2(size.x + UnityEngine.Mathf.Abs(delta.x), size.y);
+            first.background.transform.localPosition = position + delta * .5f;
+            var titleParent = first.title.transform.parent;
+            var titleDelta = titleParent.InverseTransformPoint(second.title.transform.position)
+                - titleParent.InverseTransformPoint(first.title.transform.position);
+            first.title.transform.localPosition = titlePosition + titleDelta * .5f;
+            second.background.enabled = false;
+            second.title.gameObject.SetActive(false);
+        }
+    }
+
     // Patch managed conversion, before recipes, prerequisites and included-tier counts
     // are generated together. The vanilla prerequisite system restores from this source.
     [HarmonyPatch(typeof(InventoryConverter), "SetupCanCraftBuffer")]

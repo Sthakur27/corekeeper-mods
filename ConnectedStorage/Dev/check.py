@@ -19,6 +19,7 @@ def main():
  rsp=OUT/'model-check.rsp';rsp.write_text('\n'.join(['-nologo','-target:exe',f'-out:"{OUT}/BrowserModelTests.dll"']+[f'-r:"{runtime}/{x}.dll"' for x in ['System.Private.CoreLib','System.Runtime','System.Console','System.Collections']]+[f'"{MOD}/Scripts/StorageBrowserModel.cs"',f'"{MOD}/Tests/BrowserModelTests.cs"']))
  (OUT/'BrowserModelTests.runtimeconfig.json').write_text(json.dumps({'runtimeOptions':{'tfm':'net8.0','framework':{'name':'Microsoft.NETCore.App','version':runtime.name}}}))
  run(['dotnet',csc,'@'+str(rsp)]);run(['dotnet',OUT/'BrowserModelTests.dll'])
+ run([sys.executable,MOD/'Tests/test_inventory_safety.py',csc,OUT/'safety'])
  for script in ['Dev/test_capture_ui.py','Unity/validate_art.py','Unity/verify_browser_bundle.py','Unity/verify_bundle.py']:run([sys.executable,MOD/script])
  if a.preview:
   sdk=pathlib.Path('C:/Users/Sid/CoreKeeperModSDK');import shutil

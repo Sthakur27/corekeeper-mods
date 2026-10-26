@@ -1,0 +1,12 @@
+{
+  "title": "Runic Storage — Craft, Upgrade, Expand",
+  "summary": "Build storage that grows with your adventure. Craft storage units, connect them to a terminal, and spend bars to upgrade their capacity as you discover new materials.",
+  "description": "Keep your items together in one searchable inventory. Start by crafting a Storage Workbench, a terminal, and a Copper storage unit. Place your units next to each other, then press E on any connected unit to access your items.\n\nStart small and grow as you explore. Each Copper unit holds 20 stacks and costs 30 copper bars. Craft upgrade gems using 30 bars of the next material to add another 20 slots, all the way up to 160 slots per Pandorium unit. Upgrades follow the material tiers in order and keep the items already inside.\n\nNeed more room? Add another unit or upgrade an existing one. Search, category filters, sorting, and quick transfers help you keep everything organized. Nearby crafting stations can use your stored materials too.",
+  "cover": {
+    "title": "CONNECTED STORAGE",
+    "tagline": "CRAFT • UPGRADE • EXPAND",
+    "supportingText": "8 upgrade tiers • 20–160 slots per unit"
+  },
+  "inspiration": "Inspired by the Magic Storage mod for Terraria.",
+  "testingNotice": "Currently in testing. Multiplayer has not yet been verified."
+}

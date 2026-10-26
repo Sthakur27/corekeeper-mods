@@ -37,6 +37,52 @@ namespace ConnectedStorage
                 && !StorageRemoval.IsEvacuating(World, entity)
                 && (!EntityManager.HasComponent<HealthCD>(entity) || EntityManager.GetComponentData<HealthCD>(entity).health > 0);
         }
+        // Reject commands while native inventory requests still refer to these
+        // physical slots. In particular, sorting/upgrading must not invalidate them.
+        public bool HasPendingChanges(Entity player, List<Entity> units)
+        {
+            using(var query=EntityManager.CreateEntityQuery(ComponentType.ReadOnly<InventoryChangeBuffer>())) {
+                if(query.IsEmptyIgnoreFilter)return false;
+                var pending=EntityManager.GetBuffer<InventoryChangeBuffer>(query.GetSingletonEntity());
+                for(int i=0;i<pending.Length;i++) {
+                    var c=pending[i].inventoryChangeData;
+                    if(c.inventory1==player || c.entityOrInventory2==player || c.entityOrInventory3==player
+                        || units.Contains(c.inventory1) || units.Contains(c.entityOrInventory2) || units.Contains(c.entityOrInventory3))return true;
+                }
+            }
+            return false;
+        }
+        // Execute immediately after command validation; queuing a validated slot
+        // allows a later sort/player action to change its identity before execution.
+        public string CursorTransfer(Entity player, Entity unit, int cursor, int slot, int mode)
+        {
+            if(!World.IsServer() || !Available(player) || !Available(unit))return "Inventory unavailable.";
+            var held=EntityManager.GetBuffer<ContainedObjectsBuffer>(player)[cursor];
+            var target=EntityManager.GetBuffer<ContainedObjectsBuffer>(unit)[slot];
+            bool taking=held.objectID==ObjectID.None;
+            bool matching=!taking && held.objectID==target.objectID && held.variation==target.variation
+                && held.auxDataIndex==target.auxDataIndex && PugDatabase.GetObjectInfo(held.objectID,held.variation).isStackable;
+            if(mode!=0 && !taking && target.objectID!=ObjectID.None && !matching)return null;
+            if(matching && target.amount>=9999)return null;
+            using(var ecb=new EntityCommandBuffer(Allocator.Temp)) {
+                var shared=new InventoryHandlerShared(ref CheckedStateRef,Singleton<PugDatabase.DatabaseBankCD>(),
+                    Singleton<SkillTalentsTableCD>(),Singleton<UpgradeCostsTableCD>(),Singleton<InventoryAuxDataSystemDataCD>());
+                shared.Update(ref CheckedStateRef,ecb,Singleton<NetworkTime>());
+                if(mode==0 && !matching)InventoryUtility.Swap(in shared,player,unit,cursor,slot);
+                else {
+                    int amount=mode==2?((target.objectID!=ObjectID.None?target.amount:held.amount)+1)/2:mode==3?10:mode==1?1:int.MaxValue;
+                    Entity destination=taking?player:unit;int index=taking?cursor:slot;
+                    var ranges=EntityManager.GetBuffer<InventoryBuffer>(destination);
+                    var saved=ranges[0];var exact=saved;
+                    exact.startIndex=index;exact.sizeX=1;exact.sizeY=1;exact.extraSize=0;
+                    ranges[0]=exact;
+                    try {InventoryUtility.MoveAmount(in shared,taking?unit:player,taking?slot:cursor,destination,index,-1,amount);}
+                    finally {ranges[0]=saved;}
+                }
+                ecb.Playback(EntityManager);
+            }
+            return null;
+        }
         public string SortNetwork(List<Entity> units, bool descending)
         {
             if (!World.IsServer()) return "Storage changes must run on the server.";
@@ -54,20 +100,51 @@ namespace ConnectedStorage
                     if(pass==0 ? i>=limit : i<limit || items[i].objectID==ObjectID.None)continue;
                     if(Locked(EntityManager,unit,i))continue;
                     order.Add(addresses.Count);addresses.Add((unit,i));
-                    empty.Add(items[i].objectID==ObjectID.None);
-                    names.Add(PlayerController.GetObjectName(items[i],true)?.text ?? "");
                 }
             }
+            using(var ecb=new EntityCommandBuffer(Allocator.Temp)) {
+                var shared=new InventoryHandlerShared(ref CheckedStateRef,Singleton<PugDatabase.DatabaseBankCD>(),
+                    Singleton<SkillTalentsTableCD>(),Singleton<UpgradeCostsTableCD>(),Singleton<InventoryAuxDataSystemDataCD>());
+                shared.Update(ref CheckedStateRef,ecb,Singleton<NetworkTime>());
+                // Native Sort quick-stacks before ordering. Extend that behavior across
+                // the network, remembering one partial stack per compatible item identity.
+                var partial=new Dictionary<(ObjectID id,int variation,int aux),int>();
+                for(int i=0;i<addresses.Count;i++) {
+                    var source=addresses[i];
+                    var item=EntityManager.GetBuffer<ContainedObjectsBuffer>(source.entity)[source.slot];
+                    if(item.objectID==ObjectID.None || !PugDatabase.GetEntityObjectInfo(item.objectID,shared.databaseBankCD.databaseBankBlob,item.variation).isStackable)continue;
+                    var key=(item.objectID,item.variation,item.auxDataIndex);
+                    if(partial.TryGetValue(key,out int targetIndex)) {
+                        var target=addresses[targetIndex];
+                        var to=EntityManager.GetBuffer<ContainedObjectsBuffer>(target.entity)[target.slot];
+                        int amount=Math.Min(item.amount,9999-to.amount);
+                        if(amount>0) {
+                            // Bound the native destination search to the chosen partial stack.
+                            var ranges=EntityManager.GetBuffer<InventoryBuffer>(target.entity);
+                            var saved=ranges[0];var exact=saved;
+                            exact.startIndex=target.slot;exact.sizeX=1;exact.sizeY=1;exact.extraSize=0;
+                            ranges[0]=exact;
+                            try {InventoryUtility.MoveAmount(in shared,source.entity,source.slot,target.entity,target.slot,-1,amount);}
+                            finally {ranges[0]=saved;}
+                        }
+                        to=EntityManager.GetBuffer<ContainedObjectsBuffer>(target.entity)[target.slot];
+                        if(to.amount>=9999)partial.Remove(key);
+                        item=EntityManager.GetBuffer<ContainedObjectsBuffer>(source.entity)[source.slot];
+                    }
+                    if(item.objectID!=ObjectID.None && item.amount<9999)partial[key]=i;
+                }
+                // Merging changes which slots are empty; sort the resulting state.
+                foreach(var address in addresses) {
+                    var item=EntityManager.GetBuffer<ContainedObjectsBuffer>(address.entity)[address.slot];
+                    empty.Add(item.objectID==ObjectID.None);
+                    names.Add(item.objectID==ObjectID.None?"":PlayerController.GetObjectName(item,true)?.text??"");
+                }
             order.Sort((a,b)=> {
                 if(empty[a]!=empty[b])return empty[a]?1:-1;
                 int result=StringComparer.OrdinalIgnoreCase.Compare(names[a],names[b]);
                 if(descending)result=-result;
                 return result==0?a.CompareTo(b):result;
             });
-            using(var ecb=new EntityCommandBuffer(Allocator.Temp)) {
-                var shared=new InventoryHandlerShared(ref CheckedStateRef,Singleton<PugDatabase.DatabaseBankCD>(),
-                    Singleton<SkillTalentsTableCD>(),Singleton<UpgradeCostsTableCD>(),Singleton<InventoryAuxDataSystemDataCD>());
-                shared.Update(ref CheckedStateRef,ecb,Singleton<NetworkTime>());
                 var positions=new int[order.Count];var identities=new int[order.Count];
                 for(int i=0;i<order.Count;i++)positions[i]=identities[i]=i;
                 for(int i=0;i<order.Count;i++) {
@@ -112,7 +189,8 @@ namespace ConnectedStorage
                 for (int i = 0; i < queue.Length; i++)
                 {
                     var change = queue[i].inventoryChangeData;
-                    if (change.inventory1 == unit || change.entityOrInventory2 == unit || change.entityOrInventory3 == unit)
+                    if (change.inventory1 == unit || change.entityOrInventory2 == unit || change.entityOrInventory3 == unit
+                        || change.inventory1 == player || change.entityOrInventory2 == player || change.entityOrInventory3 == player)
                         return "Storage is busy; interact again in a moment.";
                 }
             }
@@ -167,13 +245,20 @@ namespace ConnectedStorage
         // Caller validates terminal proximity, network membership and the source item
         // identity immediately before this synchronous operation. Never queue stale slots.
         public string Transfer(Entity player, Entity source, int sourceSlot, List<Entity> targets, int amount)
+            => TransferCore(player,source,sourceSlot,targets,amount,false);
+        internal string Evacuate(Entity source,int sourceSlot,List<Entity> targets)
+            => TransferCore(source,source,sourceSlot,targets,int.MaxValue,true);
+        private string TransferCore(Entity player, Entity source, int sourceSlot, List<Entity> targets, int amount, bool evacuating)
         {
             if (!World.IsServer()) return "Storage changes must run on the server.";
             EntityManager.CompleteAllTrackedJobs();
-            if (!Available(player) || !Available(source)) return "Inventory unavailable.";
+            if(evacuating) {
+                if(!StorageRemoval.IsEvacuating(World,source) || !EntityManager.Exists(source)
+                    || !EntityManager.HasBuffer<ContainedObjectsBuffer>(source))return "Inventory unavailable.";
+            } else if (!Available(player) || !Available(source)) return "Inventory unavailable.";
             var slots = EntityManager.GetBuffer<ContainedObjectsBuffer>(source);
             if (sourceSlot < 0 || sourceSlot >= slots.Length || slots[sourceSlot].objectID == ObjectID.None) return "That slot is empty.";
-            if (Locked(EntityManager, source, sourceSlot)) return "That item is locked.";
+            if (!evacuating && Locked(EntityManager, source, sourceSlot)) return "That item is locked.";
             if (amount <= 0) return "Invalid amount.";
             int remaining = amount;
             bool moved = false;
@@ -201,6 +286,9 @@ namespace ConnectedStorage
                         if (source == target && sourceSlot == destination || Locked(EntityManager, target, destination)) continue;
                         var targetContents=shared.containedObjectsBufferLookup[target];
                         var targetItem = targetContents[destination];
+                        // Native TryMove copies the source aux identity over a merged
+                        // destination. Keep distinct customized stacks separate.
+                        if(targetItem.objectID!=ObjectID.None && targetItem.auxDataIndex!=before.auxDataIndex)continue;
                         if(tierLimit>0 && targetItem.objectID==ObjectID.None) {
                             int occupied=0;
                             for(int n=0;n<targetContents.Length;n++)if(targetContents[n].objectID!=ObjectID.None)occupied++;
@@ -234,7 +322,7 @@ namespace ConnectedStorage
                 ecb.Playback(EntityManager);
             }
             if (!moved) return "No space in the destination inventory.";
-            return remaining > 0 && slots[sourceSlot].objectID != ObjectID.None
+            return remaining > 0 && EntityManager.GetBuffer<ContainedObjectsBuffer>(source)[sourceSlot].objectID != ObjectID.None
                 ? "Moved what fits; the remaining items stayed in their original slot." : null;
         }
     }

@@ -1,7 +1,7 @@
 {
   "guid": "6d6f71a04b8e4a49ba1782ac229bbd51",
   "name": "ConnectedStorage",
-  "displayName": "Connected Storage",
+  "displayName": "Runic Storage",
   "skipSafetyChecks": false,
   "disableScripts": false,
   "accessesExtraAssemblies": true,

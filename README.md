@@ -48,12 +48,13 @@ Use the Overhaul or the individual versions of its features. Installing both run
 | [Buff Duration Floor](BuffDurationFloor/README.md) | Set a minimum duration for short food and potion buffs. |
 | [Durability Multiplier](DurabilityMultiplier/README.md) | Choose how quickly equipment wears out. |
 | [Difficulty Tuning](DifficultyTuning/README.md) | Tune enemies and bosses separately for Normal and Hard worlds. |
+| [Mushroom Slayer — local preview](MushroomSlayer/README.md) | Strong hits deal 10% through gray mushroom armor; hits below 200 stay at 1. Bow fix awaiting live testing; not published. |
 | [Boss Bonus Loot](BossBonusLoot/README.md) | Add extra rewards to selected bosses and enemies. |
 | [Skill XP Multiplier](SkillXPMultiplier/README.md) | Adjust experience gains separately for each skill. |
 | [Keep Minions On Teleport](KeepMinions/README.md) | Bring summoned minions along when you teleport. |
 | [Vehicle Speed](VehicleSpeed/README.md) | Change boat and go-kart speeds. |
 | [Hit Sound Effects](StimHits/README.md) | Choose sounds for hits, kills and damage taken. |
-| [Golden Chance — WIP](GoldenChance/README.md) | Golden crop and food-rarity bonuses, with an optional rarity roll for main dishes. |
+| [Golden Chance — WIP](GoldenChance/README.md) | Golden crop and bonus-food rarity bonuses using native rolls; regular main dishes are unchanged. |
 
 ### Settings and the full package
 

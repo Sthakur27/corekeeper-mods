@@ -1,0 +1,972 @@
+{
+    "assets": [
+        {
+            "path": "Assets/ConnectedStorageBrowser/hierarchy.txt",
+            "guid": "9c4abf1fcb1ee764bb537eef0868d3d8"
+        },
+        {
+            "path": "Assets/ConnectedStorageBrowser/ConnectedStorageBrowser.prefab",
+            "guid": "9a7be0588ae0d2041bba2a0d7088859e"
+        },
+        {
+            "path": "Assets/MagicMirror/Textures/MagicMirror_icon.png",
+            "guid": "f24d9b6e721a4cc4a650c8de17923101"
+        },
+        {
+            "path": "Assets/MagicMirror/Prefabs/MagicMirror.prefab",
+            "guid": "b22f8b5dfac1c9d45871440ba142f9f6"
+        },
+        {
+            "path": "Assets/MagicMirror/Data/TextDataBlock/Items/MagicMirror_Mirror.asset",
+            "guid": "f24d9b6e721a4cc4a650c8de17923102"
+        },
+        {
+            "path": "Assets/MagicMirror/Data/EntityAuthoringDataBlock/MagicMirror.asset",
+            "guid": "f0b33ee65215cd7468ffc91cd1d099cc"
+        },
+        {
+            "path": "Assets/EnderStash/Textures/EnderChest_up_emissive.png",
+            "guid": "6e1d0a3b9c7f4e21a5b8c3d2e1f00a06"
+        },
+        {
+            "path": "Assets/EnderStash/Textures/EnderChest_up.png",
+            "guid": "6e1d0a3b9c7f4e21a5b8c3d2e1f00a03"
+        },
+        {
+            "path": "Assets/EnderStash/Textures/EnderChest_side_emissive.png",
+            "guid": "6e1d0a3b9c7f4e21a5b8c3d2e1f00a05"
+        },
+        {
+            "path": "Assets/EnderStash/Textures/EnderChest_side.png",
+            "guid": "6e1d0a3b9c7f4e21a5b8c3d2e1f00a02"
+        },
+        {
+            "path": "Assets/EnderStash/Textures/EnderChest_icon.png",
+            "guid": "6e1d0a3b9c7f4e21a5b8c3d2e1f00a07"
+        },
+        {
+            "path": "Assets/EnderStash/Textures/EnderChest_emissive.png",
+            "guid": "6e1d0a3b9c7f4e21a5b8c3d2e1f00a04"
+        },
+        {
+            "path": "Assets/EnderStash/Textures/EnderChest.png",
+            "guid": "6e1d0a3b9c7f4e21a5b8c3d2e1f00a01"
+        },
+        {
+            "path": "Assets/EnderStash/Prefabs/EnderChestGraphics.prefab",
+            "guid": "a9df7d4ed306c1b4aaf1a7125ad8d973"
+        },
+        {
+            "path": "Assets/EnderStash/Prefabs/EnderChestEntity.prefab",
+            "guid": "ae1ebfec250ade042b06f753c5df4983"
+        },
+        {
+            "path": "Assets/EnderStash/Data/TextDataBlock/Items/EnderStash_EnderChest.asset",
+            "guid": "6e1d0a3b9c7f4e21a5b8c3d2e1f00b02"
+        },
+        {
+            "path": "Assets/EnderStash/Data/SpriteAsset/EnderChest.asset",
+            "guid": "6e1d0a3b9c7f4e21a5b8c3d2e1f00b01"
+        },
+        {
+            "path": "Assets/EnderStash/Data/GraphicalObjectDataBlock/EnderChestGraphics.asset",
+            "guid": "a24c5a0031f4f0746bf376d6839165f5"
+        },
+        {
+            "path": "Assets/EnderStash/Data/EntityAuthoringDataBlock/EnderChestEntity.asset",
+            "guid": "8d2779a34fe245f4dad4d84e444b74f2"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/Workbench_up_emissive.png",
+            "guid": "dac81f52cc71b24d8c373a4a565c3024"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/Workbench_up.png",
+            "guid": "af278e23d8d684994663faa29f55ddcb"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/Workbench_side_emissive.png",
+            "guid": "5e593fccc6a9a8fdf3ca216599924aa0"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/Workbench_side.png",
+            "guid": "21e8508e0829a456d3a0c36a6686ecf0"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/Workbench_icon.png",
+            "guid": "09d6973f85259f433b95dfdc29517989"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/Workbench_emissive.png",
+            "guid": "7962c78bccb5254e2805434d5c4ae1ed"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/Workbench.png",
+            "guid": "7224061726dbddb3e5ae38b6c95bd3d8"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/TinGem_up_emissive.png",
+            "guid": "af0e22a586a18a76bafb7f340762627f"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/TinGem_up.png",
+            "guid": "60b713b33771afcaf6ab007c1bd38647"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/TinGem_side_emissive.png",
+            "guid": "eb519bf3c9029e8ef95ee17d191aedba"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/TinGem_side.png",
+            "guid": "a2a060ce52818e0dc4fd992e201d13a0"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/TinGem_icon.png",
+            "guid": "83f07956dbcb3387716334e6a8b771c7"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/TinGem_emissive.png",
+            "guid": "355b4de0bef9ac0371aa48ea5f77c4c3"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/TinGem.png",
+            "guid": "6d6298a37f08e4f11e71c959da457d51"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/TinChest_up_emissive.png",
+            "guid": "76204751ec69cda97d8841b0a5b89db5"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/TinChest_up.png",
+            "guid": "23fe7b7a0ac7c3a0556f15cfd3fef1da"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/TinChest_side_emissive.png",
+            "guid": "4dfc88155d2faa3d4d374055f477504a"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/TinChest_side.png",
+            "guid": "714443ffb92d5cd42f8dd0f064803b8b"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/TinChest_icon.png",
+            "guid": "27aa0d2042bae964d79cb2f62ddcb694"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/TinChest_emissive.png",
+            "guid": "6f919b08c484eaa3bb5ad6577280d594"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/TinChest.png",
+            "guid": "b81d6162de95d9c27e149b3ad6d55a88"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/Terminal_up_emissive.png",
+            "guid": "121ed62d40069fd7744a3e444e97e163"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/Terminal_up.png",
+            "guid": "387c81697a4b41b16ed2aa9e1318efa6"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/Terminal_side_emissive.png",
+            "guid": "5aa1184835be55b2d7dcc286484ebd9a"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/Terminal_side.png",
+            "guid": "025fa6f7affce025fec6d20a3af7f995"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/Terminal_icon.png",
+            "guid": "5ff69680165486f611808bdc40dc64d1"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/Terminal_emissive.png",
+            "guid": "2bf359bb8677470c3321025ad2cde03c"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/Terminal.png",
+            "guid": "24c49df80f8d0eddff2e0ad25440844b"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/SolariteGem_up_emissive.png",
+            "guid": "29b547a82192257227e8d07f1c1d6792"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/SolariteGem_up.png",
+            "guid": "1653f0f3871192d305130490cd530e88"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/SolariteGem_side_emissive.png",
+            "guid": "53c6c4f10f1205f0fd359e8c1213c33f"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/SolariteGem_side.png",
+            "guid": "7d1b8ba6aebe06fc3e802fe6d00a377a"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/SolariteGem_icon.png",
+            "guid": "b4dd90ed29d04e1d1d48f95daf094933"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/SolariteGem_emissive.png",
+            "guid": "11ead18b1eea7cf4d862ee15cc0b82aa"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/SolariteGem.png",
+            "guid": "185fadb044c07a3089ab2a9b294d5f80"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/SolariteChest_up_emissive.png",
+            "guid": "a6ee846a7d24b383ef60cc4a847948ca"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/SolariteChest_up.png",
+            "guid": "86fc6b7a2fac35d26f0c8c867733fdf1"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/SolariteChest_side_emissive.png",
+            "guid": "97a957b7f9bd3b62a0a3fec765b6bd51"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/SolariteChest_side.png",
+            "guid": "827cd44d0ac5658535bf74163e104e97"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/SolariteChest_icon.png",
+            "guid": "74ef3fc2fbb3ab3b59625cefe51fb9f0"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/SolariteChest_emissive.png",
+            "guid": "b0a4dda29f241e1f3744f7cf50da5108"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/SolariteChest.png",
+            "guid": "697181e165c8cdac249d542222da74bc"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/ScarletGem_up_emissive.png",
+            "guid": "dd0fff4df7cc8af3fb7673ad3b7e3a4a"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/ScarletGem_up.png",
+            "guid": "d80896d38a2053789d1008887dc8a509"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/ScarletGem_side_emissive.png",
+            "guid": "b241b857a2fad26c2813dc7d764fec71"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/ScarletGem_side.png",
+            "guid": "65f7795a45b84ed8e64006b8995b48e0"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/ScarletGem_icon.png",
+            "guid": "eca34058c8f105a68212382875298e35"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/ScarletGem_emissive.png",
+            "guid": "abda8094ed4d16d8ad3bee7d0f3a18a5"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/ScarletGem.png",
+            "guid": "3da544b349c0e1dad09e19938c96c54a"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/ScarletChest_up_emissive.png",
+            "guid": "3be4bf15b493a371a6722373ade798bd"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/ScarletChest_up.png",
+            "guid": "627591292a7398ecc600bed209d26a27"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/ScarletChest_side_emissive.png",
+            "guid": "7ba44858904c868507a53ac4e994cd33"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/ScarletChest_side.png",
+            "guid": "7905fd5a1de6db7790e4e7319b195091"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/ScarletChest_icon.png",
+            "guid": "1a94a6a1201f9005b52461119f2a6ae3"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/ScarletChest_emissive.png",
+            "guid": "55dfc7b54c25da31d67d34e780eccff5"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/ScarletChest.png",
+            "guid": "dbb2afb5adfb355269d22f8ffd43acf6"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/preview.png",
+            "guid": "60b9afb68bd99a849827cd0a81a3a118"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/PandoriumGem_up_emissive.png",
+            "guid": "5a977f74b0b803460724f11d0b122a24"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/PandoriumGem_up.png",
+            "guid": "767966add8e2b17c55bf04fe1dd6bfb1"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/PandoriumGem_side_emissive.png",
+            "guid": "fd4674e19f4e37e8eac0e859dda63af8"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/PandoriumGem_side.png",
+            "guid": "edcc122fcaba8debba90480c376cb6da"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/PandoriumGem_icon.png",
+            "guid": "956f7ea6db862043e2558ccc418424cf"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/PandoriumGem_emissive.png",
+            "guid": "a9c66a789e011cabb02ece1fdaec55f8"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/PandoriumGem.png",
+            "guid": "0858da921c8d0179083f93921a12aa4b"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/PandoriumChest_up_emissive.png",
+            "guid": "9a669d3af8640ce5f48bd3ff3ff85b26"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/PandoriumChest_up.png",
+            "guid": "492d66016d0972858cdd161750dd3d67"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/PandoriumChest_side_emissive.png",
+            "guid": "cab0c47e59d33d9832f8d5ca94f3172e"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/PandoriumChest_side.png",
+            "guid": "369c2121321504f07ad4a44e61730bbe"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/PandoriumChest_icon.png",
+            "guid": "d17a4e5d912cc0591c20d3e3a544aff6"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/PandoriumChest_emissive.png",
+            "guid": "1167a9432cbac7d1f39137c192c0349d"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/PandoriumChest.png",
+            "guid": "91f7188193dfa4310620e665e568ba60"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/OctarineGem_up_emissive.png",
+            "guid": "da0dd734075d9650b8c28b890335b72e"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/OctarineGem_up.png",
+            "guid": "0f9fb5aebee90d8cc15bb7ede34f5f20"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/OctarineGem_side_emissive.png",
+            "guid": "388bc099ddcee909c1dade609de6ce4a"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/OctarineGem_side.png",
+            "guid": "04b6ee217fe265fafdc09ca034c6812a"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/OctarineGem_icon.png",
+            "guid": "2aa21aefb50a061d3baa5853c1a86a3f"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/OctarineGem_emissive.png",
+            "guid": "20c8284ad74c73df170e589573a2ab59"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/OctarineGem.png",
+            "guid": "6cd430c157fda900d275c5d3f9adfef9"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/OctarineChest_up_emissive.png",
+            "guid": "6133b3973b747ad38d0a31127b57402f"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/OctarineChest_up.png",
+            "guid": "958636ca576f2c98a922e8edb687944b"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/OctarineChest_side_emissive.png",
+            "guid": "b169233bde510bdfbfb4fb56b0c51d18"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/OctarineChest_side.png",
+            "guid": "458d32bc211f4d8e5b8f87c9ab854372"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/OctarineChest_icon.png",
+            "guid": "dc26ef7a09e85be9b94af89748575b6d"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/OctarineChest_emissive.png",
+            "guid": "d70e84323397f26d6845f2d488fcd10f"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/OctarineChest.png",
+            "guid": "7ae95f74bb591c023ae1cf1123c58479"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/IronGem_up_emissive.png",
+            "guid": "42c25ff884207c71858aebc45f500e7c"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/IronGem_up.png",
+            "guid": "c571edd748ae4302fb0dfeff919927a0"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/IronGem_side_emissive.png",
+            "guid": "5013725d9d26221452b4bc4826f2f4d6"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/IronGem_side.png",
+            "guid": "a6c7b5e8c922f628110742e8e4ca1616"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/IronGem_icon.png",
+            "guid": "82116cb266e78ff665dea0c664cf40fe"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/IronGem_emissive.png",
+            "guid": "d719cb72f86698311eb41a05fff53c4a"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/IronGem.png",
+            "guid": "531ec8b022fcdb4c55c5c7e00307765c"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/IronChest_up_emissive.png",
+            "guid": "d5f2f1c064411a92ec4a30e9a43f0b3e"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/IronChest_up.png",
+            "guid": "7426a3c17aefe6f00d90eb08ccf58f85"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/IronChest_side_emissive.png",
+            "guid": "ebadfe034945c0773788ca0cb1b513ab"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/IronChest_side.png",
+            "guid": "39f2e2ae1ec37833fb8f51a2cb62f010"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/IronChest_icon.png",
+            "guid": "abe30912082e3a6c502908548db0da50"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/IronChest_emissive.png",
+            "guid": "65c907de3a14a5c26e550f27080f75e3"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/IronChest.png",
+            "guid": "516630ff075ab738f28274b0facd96be"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/GalaxiteGem_up_emissive.png",
+            "guid": "1d5c322341ae93e701f2307eacf19bd9"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/GalaxiteGem_up.png",
+            "guid": "f90206a3d5bc717ad8e394beb7dc614f"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/GalaxiteGem_side_emissive.png",
+            "guid": "50fca5a4ddd9d548a5f6b4e29b71a44c"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/GalaxiteGem_side.png",
+            "guid": "20164b65638be95d0e7bc13753e82b1b"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/GalaxiteGem_icon.png",
+            "guid": "ad41ded8f5e4ca7cc35ef8b786589dde"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/GalaxiteGem_emissive.png",
+            "guid": "caa2712df8ef6955b4ecd6d83dd65fba"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/GalaxiteGem.png",
+            "guid": "b6c10625bf27b5c033af73f6579b001a"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/GalaxiteChest_up_emissive.png",
+            "guid": "654f67b40febe185cfa74c92183eda6c"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/GalaxiteChest_up.png",
+            "guid": "61398ee0d9c549d797143d057022290e"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/GalaxiteChest_side_emissive.png",
+            "guid": "e9d95498f487c673776321c9cf35a6bd"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/GalaxiteChest_side.png",
+            "guid": "1247cfb582a2e88fad0f9252864c3936"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/GalaxiteChest_icon.png",
+            "guid": "1830b330fef12b21f1bf76744c68b5b8"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/GalaxiteChest_emissive.png",
+            "guid": "1f5de4f5c0d2311e320af03b4fd0708a"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/GalaxiteChest.png",
+            "guid": "618f79791103c2f5e6f957452c5742d0"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/directions.png",
+            "guid": "4d9c8ebd94288e3499ad89911da74ddb"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/CopperChest_up_emissive.png",
+            "guid": "dad66a69da93c2fce403ef5c010726c2"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/CopperChest_up.png",
+            "guid": "b5f6698db7b2c33ea3c0a94434953c9b"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/CopperChest_side_emissive.png",
+            "guid": "eec2d86d11b803fc2ad9d99eb096dfeb"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/CopperChest_side.png",
+            "guid": "bfcd1dbf61f6cf4db610a05655794b3e"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/CopperChest_icon.png",
+            "guid": "2d6dfd18f8775cecfb0234e200d4592f"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/CopperChest_emissive.png",
+            "guid": "eaa6160ede6178a40b40853466de89c9"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/CopperChest.png",
+            "guid": "5a89e31a201ee8938662b6afb3854fee"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Prefabs/WorkbenchGraphics.prefab",
+            "guid": "48b67210559185742a507c75275f56ba"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Prefabs/WorkbenchEntity.prefab",
+            "guid": "ce52e0f590ee6ed4e9bb369fc773835d"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Prefabs/TinGemGraphics.prefab",
+            "guid": "2b7b37631cd8b1f429721a5a470dfc97"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Prefabs/TinGemEntity.prefab",
+            "guid": "b68993d123e8ee84ab9a672135ef1500"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Prefabs/TinChestGraphics.prefab",
+            "guid": "2c0c3d1fc6ca3f54db3d56e2241bebaa"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Prefabs/TinChestEntity.prefab",
+            "guid": "2546d540bb8256d459667dc7d27c52be"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Prefabs/TerminalGraphics.prefab",
+            "guid": "c37355a97c5c83c40806d9a69b6f1580"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Prefabs/TerminalEntity.prefab",
+            "guid": "3ffb7d4dfbc72934a8acac5a2d58d754"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Prefabs/SolariteGemGraphics.prefab",
+            "guid": "5a7c7f06a51419943a6e327b347863df"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Prefabs/SolariteGemEntity.prefab",
+            "guid": "359aa1d77517cdd479e55db471413422"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Prefabs/SolariteChestGraphics.prefab",
+            "guid": "0bd3d9e4dbba4cc49a29fffc170ff8ce"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Prefabs/SolariteChestEntity.prefab",
+            "guid": "8c57c778b7c538542a3caee4d573fedb"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Prefabs/ScarletGemGraphics.prefab",
+            "guid": "328e396aa450d8c41ba350509e451cfb"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Prefabs/ScarletGemEntity.prefab",
+            "guid": "6b2fa5483cb2ff94eaf2b56431fb4794"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Prefabs/ScarletChestGraphics.prefab",
+            "guid": "530520fa89381fa48bca7849cf947de0"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Prefabs/ScarletChestEntity.prefab",
+            "guid": "9418cbcd7bc0e4c4093a15bb7e7a194b"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Prefabs/PandoriumGemGraphics.prefab",
+            "guid": "8dc5965512d37cc4bbb99384517d13e7"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Prefabs/PandoriumGemEntity.prefab",
+            "guid": "ec7857c135fafff4482755d09d3442e1"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Prefabs/PandoriumChestGraphics.prefab",
+            "guid": "0603b0b8f9d459b46b8dc3cb1ab6e6b5"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Prefabs/PandoriumChestEntity.prefab",
+            "guid": "31148f6866a3a9a44940ef938a7e810e"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Prefabs/OctarineGemGraphics.prefab",
+            "guid": "6c1bf0ac05a67ef4a80acb119994556b"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Prefabs/OctarineGemEntity.prefab",
+            "guid": "a8876b7f9941bd64f869fed1270ebfa7"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Prefabs/OctarineChestGraphics.prefab",
+            "guid": "e628266575f8d734f8777d3645c08232"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Prefabs/OctarineChestEntity.prefab",
+            "guid": "c448f83c7b50c6744829adf1dc904a35"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Prefabs/IronGemGraphics.prefab",
+            "guid": "145164730bb8bf34c9ed35affb3c3f38"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Prefabs/IronGemEntity.prefab",
+            "guid": "dff90a03aaf74cc40a0000f128230c12"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Prefabs/IronChestGraphics.prefab",
+            "guid": "ba20d3d9f3b6ead4692c93673221487c"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Prefabs/IronChestEntity.prefab",
+            "guid": "4ac3c132dfc3e3443bc72b29560952e2"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Prefabs/GalaxiteGemGraphics.prefab",
+            "guid": "48f5701bb3906954a92676419a27cb78"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Prefabs/GalaxiteGemEntity.prefab",
+            "guid": "4ccbc420a9a25fc46b7fac216ad63de3"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Prefabs/GalaxiteChestGraphics.prefab",
+            "guid": "11d39cd7d3a849144a347426c24551b4"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Prefabs/GalaxiteChestEntity.prefab",
+            "guid": "a533f9818f41b1246a620c78f752045f"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Prefabs/CopperChestGraphics.prefab",
+            "guid": "0b967d7ab46e5854a8bf7cb745b0e5ca"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Prefabs/CopperChestEntity.prefab",
+            "guid": "e95318fe5cf386d419dd148c388f5a42"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Data/TextDataBlock/Items/ConnectedStorage_Workbench.asset",
+            "guid": "5311aaed44db52d9ea1729ee716627a5"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Data/TextDataBlock/Items/ConnectedStorage_TinGem.asset",
+            "guid": "bb298f6f9649dfa0f37293f6560ef777"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Data/TextDataBlock/Items/ConnectedStorage_TinChest.asset",
+            "guid": "40f5aef3e9f706f05fbe3036f1793ff5"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Data/TextDataBlock/Items/ConnectedStorage_Terminal.asset",
+            "guid": "b8657c7b1fd43dd2d3c5bc93aa9b10c1"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Data/TextDataBlock/Items/ConnectedStorage_SolariteGem.asset",
+            "guid": "1e9d1f0a68baf896cd29accc11d53ff6"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Data/TextDataBlock/Items/ConnectedStorage_SolariteChest.asset",
+            "guid": "29cfc951378fa26e972fe7a3a0f52ee0"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Data/TextDataBlock/Items/ConnectedStorage_ScarletGem.asset",
+            "guid": "b45887b35c73de4d3c676705e5464744"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Data/TextDataBlock/Items/ConnectedStorage_ScarletChest.asset",
+            "guid": "3a5b29cfea0765b53edd80aea5e540a6"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Data/TextDataBlock/Items/ConnectedStorage_PandoriumGem.asset",
+            "guid": "9683b380fcc2a99c60ce860397880d7a"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Data/TextDataBlock/Items/ConnectedStorage_PandoriumChest.asset",
+            "guid": "42859a39a513a298fa0f4fc2ec7f6501"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Data/TextDataBlock/Items/ConnectedStorage_OctarineGem.asset",
+            "guid": "098b9ba4ef660a7e878cfb7272ce24d8"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Data/TextDataBlock/Items/ConnectedStorage_OctarineChest.asset",
+            "guid": "ca5eaced75f2939fd124174618db615d"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Data/TextDataBlock/Items/ConnectedStorage_IronGem.asset",
+            "guid": "e01306888c1b2fafd69a31f94a23673e"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Data/TextDataBlock/Items/ConnectedStorage_IronChest.asset",
+            "guid": "22c9bfadee935a76611d2f4abcd59157"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Data/TextDataBlock/Items/ConnectedStorage_GalaxiteGem.asset",
+            "guid": "6ec667296eabde453d45dc83f825551b"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Data/TextDataBlock/Items/ConnectedStorage_GalaxiteChest.asset",
+            "guid": "c08af845b2d109805e80497b8496cec1"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Data/TextDataBlock/Items/ConnectedStorage_CopperChest.asset",
+            "guid": "074e7304c019ace60be0d1db9010866b"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Data/SpriteAsset/Workbench.asset",
+            "guid": "12ffd26afbe82526b31b57b0d998dc09"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Data/SpriteAsset/TinGem.asset",
+            "guid": "6140988995fc38a0aaecb44809ede6fc"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Data/SpriteAsset/TinChest.asset",
+            "guid": "a896eac00cd13ef5d369220396642ba1"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Data/SpriteAsset/Terminal.asset",
+            "guid": "c51b9ce223051d5f5599457b6b17456e"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Data/SpriteAsset/SolariteGem.asset",
+            "guid": "8cc4125b3c162c35c89995670f02cbcf"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Data/SpriteAsset/SolariteChest.asset",
+            "guid": "aab250da5252329fb54b898865436946"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Data/SpriteAsset/ScarletGem.asset",
+            "guid": "ce588a194ba8c37b4cb8e9b9e41509d7"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Data/SpriteAsset/ScarletChest.asset",
+            "guid": "3e6d95f6360ec02b612df54efc73cc72"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Data/SpriteAsset/PandoriumGem.asset",
+            "guid": "b40a7c9a20d54406111ddc113483e7ed"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Data/SpriteAsset/PandoriumChest.asset",
+            "guid": "61eb8eee62d805ed8586e618d8b27fe3"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Data/SpriteAsset/OctarineGem.asset",
+            "guid": "8ca49bd1208522014a3e937067ac8e8d"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Data/SpriteAsset/OctarineChest.asset",
+            "guid": "02e77f817bcd5a472daa8030f6709d1c"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Data/SpriteAsset/IronGem.asset",
+            "guid": "a23b2bb465dcec86ea4935e69bfaffa1"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Data/SpriteAsset/IronChest.asset",
+            "guid": "9d1ac37d8bac1475c29758dbe50418f1"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Data/SpriteAsset/GalaxiteGem.asset",
+            "guid": "b3d3b634d5166aa15f294be34c26b4fb"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Data/SpriteAsset/GalaxiteChest.asset",
+            "guid": "56de36415d270fdd26ccf642f8ceb7b5"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Data/SpriteAsset/CopperChest.asset",
+            "guid": "0b0fea916243043e0ebac165cc5f713e"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Data/GraphicalObjectDataBlock/WorkbenchGraphics.asset",
+            "guid": "8587e84727060e24c9ae235e54c0e03e"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Data/GraphicalObjectDataBlock/TinGemGraphics.asset",
+            "guid": "388a699038b1977419ccc3f691c12f04"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Data/GraphicalObjectDataBlock/TinChestGraphics.asset",
+            "guid": "1093a2892561d7a42bfbae45f0ddda84"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Data/GraphicalObjectDataBlock/TerminalGraphics.asset",
+            "guid": "87b3a678570142848807671f6927d174"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Data/GraphicalObjectDataBlock/SolariteGemGraphics.asset",
+            "guid": "4a4087b911ddf004b9954f5891862a2d"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Data/GraphicalObjectDataBlock/SolariteChestGraphics.asset",
+            "guid": "3c07988a6c275b54da37742e26fa2c0d"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Data/GraphicalObjectDataBlock/ScarletGemGraphics.asset",
+            "guid": "c180e30dfe451f44bb4ec828ecb3d83a"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Data/GraphicalObjectDataBlock/ScarletChestGraphics.asset",
+            "guid": "ed23afc100ef6f44ca2fe6c3b17653cc"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Data/GraphicalObjectDataBlock/PandoriumGemGraphics.asset",
+            "guid": "0a487c8d6c8ee794c9a55a4e843e760c"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Data/GraphicalObjectDataBlock/PandoriumChestGraphics.asset",
+            "guid": "05bac7498157fe043a78ecd2bc848cee"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Data/GraphicalObjectDataBlock/OctarineGemGraphics.asset",
+            "guid": "0091ea3343e9c8e4d94d7c73df57e8ed"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Data/GraphicalObjectDataBlock/OctarineChestGraphics.asset",
+            "guid": "fc5b09e1945c559488071d102b33f3d7"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Data/GraphicalObjectDataBlock/IronGemGraphics.asset",
+            "guid": "074dbf29bddb1ff4a866d511fe9577ef"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Data/GraphicalObjectDataBlock/IronChestGraphics.asset",
+            "guid": "daf1e53696e31404eb2fe4071d40fe89"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Data/GraphicalObjectDataBlock/GalaxiteGemGraphics.asset",
+            "guid": "02ef2b33680c3ae4084d3a2cde5e20e7"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Data/GraphicalObjectDataBlock/GalaxiteChestGraphics.asset",
+            "guid": "7695be7aa26558d4a8165789f1c6e8c8"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Data/GraphicalObjectDataBlock/CopperChestGraphics.asset",
+            "guid": "1b094a7985644da44bbbce0edbeb16ae"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Data/EntityAuthoringDataBlock/WorkbenchEntity.asset",
+            "guid": "c80e688d6ee1eee4aa63b4c620ef6bf5"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Data/EntityAuthoringDataBlock/TinGemEntity.asset",
+            "guid": "622d4cc9a864f274baa4b501445bceef"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Data/EntityAuthoringDataBlock/TinChestEntity.asset",
+            "guid": "c889b4cae9442324ea5696c7ed5b189d"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Data/EntityAuthoringDataBlock/TerminalEntity.asset",
+            "guid": "4a7290d8d33c3984b8a32e8cf67a8cdd"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Data/EntityAuthoringDataBlock/SolariteGemEntity.asset",
+            "guid": "f827c481ba5510f44b11cb19c89b4f11"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Data/EntityAuthoringDataBlock/SolariteChestEntity.asset",
+            "guid": "c850372cf04cfc647a5dbf3373881d91"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Data/EntityAuthoringDataBlock/ScarletGemEntity.asset",
+            "guid": "9dae000d35b218b49be4d84bc4df291f"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Data/EntityAuthoringDataBlock/ScarletChestEntity.asset",
+            "guid": "8f0e72a7ea09d224fa2ccdf712847ceb"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Data/EntityAuthoringDataBlock/PandoriumGemEntity.asset",
+            "guid": "b9c2addeb9af5df42bf2f820f3aa259f"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Data/EntityAuthoringDataBlock/PandoriumChestEntity.asset",
+            "guid": "47334fda41750624394cdcc8e70bac99"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Data/EntityAuthoringDataBlock/OctarineGemEntity.asset",
+            "guid": "4ff0f280d2e810e489d8237234b9ebe8"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Data/EntityAuthoringDataBlock/OctarineChestEntity.asset",
+            "guid": "3e0f5b9e4b3863c4fb8310659f1a078e"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Data/EntityAuthoringDataBlock/IronGemEntity.asset",
+            "guid": "6d02089a78b382742b73fedd75081183"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Data/EntityAuthoringDataBlock/IronChestEntity.asset",
+            "guid": "5caabf2f382e9304fa155606871d32f6"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Data/EntityAuthoringDataBlock/GalaxiteGemEntity.asset",
+            "guid": "6b453d19f3002e34c8a8d406f9608daf"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Data/EntityAuthoringDataBlock/GalaxiteChestEntity.asset",
+            "guid": "473593d57cba759458c7c62b2f79550c"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Data/EntityAuthoringDataBlock/CopperChestEntity.asset",
+            "guid": "02b5f4e2252e0b54a92df75103701b32"
+        }
+    ]
+}

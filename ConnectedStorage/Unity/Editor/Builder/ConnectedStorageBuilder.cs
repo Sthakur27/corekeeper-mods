@@ -69,6 +69,7 @@ public static class ConnectedStorageBuilder
             });
 
             }
+            ConfigureApprovedArt();
             AssetDatabase.SaveAssets();
             BuildMod();
         }
@@ -79,11 +80,65 @@ public static class ConnectedStorageBuilder
         }
     }
 
+    // Keep the approved PNG pixels; compensate the game's fixed 16 pixels/unit locally.
+    static void ConfigureApprovedArt()
+    {
+        foreach (var name in new[] { "Workbench", "TinChest", "IronChest", "ScarletChest", "OctarineChest", "GalaxiteChest", "SolariteChest", "PandoriumChest", "CopperChest", "Terminal", "TinGem", "IronGem", "ScarletGem", "OctarineGem", "GalaxiteGem", "SolariteGem", "PandoriumGem" })
+        {
+            var texture = AssetDatabase.LoadAssetAtPath<Texture2D>(Root + "/Textures/" + name + ".png");
+            if (texture == null || texture.width <= 32) continue;
+            int width = texture.width, height = texture.height;
+            foreach (var suffix in new[] { "", "_side", "_up", "_emissive", "_side_emissive", "_up_emissive", "_icon" })
+            {
+                var importer = (TextureImporter)AssetImporter.GetAtPath(Root + "/Textures/" + name + suffix + ".png");
+                importer.npotScale = TextureImporterNPOTScale.None;
+                importer.maxTextureSize = 2048;
+                importer.textureCompression = TextureImporterCompression.Uncompressed;
+                importer.filterMode = FilterMode.Point;
+                importer.mipmapEnabled = false;
+                importer.spritePixelsPerUnit = width;
+                importer.SaveAndReimport();
+            }
+            var asset = AssetDatabase.LoadAssetAtPath<ScriptableObject>(Root + "/Data/SpriteAsset/" + name + ".asset");
+            var so = new SerializedObject(asset);
+            var pivot = new Vector2(.5f, Mathf.Round(width / 16f) / height);
+            so.FindProperty("m_staticSpriteData").FindPropertyRelative("pivot").vector2Value = pivot;
+            var variants = so.FindProperty("m_staticVariants");
+            for (int i = 0; i < variants.arraySize; i++)
+                variants.GetArrayElementAtIndex(i).FindPropertyRelative("pivot").vector2Value = pivot;
+            so.ApplyModifiedPropertiesWithoutUndo();
+            EditorUtility.SetDirty(asset);
+            string path = Root + "/Prefabs/" + name + "Graphics.prefab";
+            var prefab = PrefabUtility.LoadPrefabContents(path);
+            try {
+                // SpriteVariationFromEntityDirection writes +/-Vector3.one to the sprite.
+                // Keep pixel-to-world sizing on a parent outside that handler's targets.
+                var xScaler = prefab.transform.Find("XScaler");
+                var artScale = xScaler.Find("ArtScale");
+                if (artScale == null) {
+                    var sprite = xScaler.Find("Sprite Object");
+                    artScale = new GameObject("ArtScale").transform;
+                    artScale.SetParent(xScaler, false);
+                    artScale.localPosition = sprite.localPosition;
+                    artScale.localRotation = sprite.localRotation;
+                    sprite.SetParent(artScale, false);
+                    sprite.localPosition = Vector3.zero;
+                    sprite.localRotation = Quaternion.identity;
+                }
+                artScale.localScale = Vector3.one * (16f / width);
+                artScale.Find("Sprite Object").localScale = Vector3.one;
+                PrefabUtility.SaveAsPrefabAsset(prefab, path);
+            } finally { PrefabUtility.UnloadPrefabContents(prefab); }
+            Debug.Log("[ConnectedStorageBuilder] Approved PNG " + name + " " + width + "x" + height + "; one-tile canvas width");
+        }
+    }
+
     public static void ExportExisting()
     {
         try
         {
             AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport);
+            ConfigureApprovedArt();
             AssetDatabase.SaveAssets();
             BuildMod();
         }

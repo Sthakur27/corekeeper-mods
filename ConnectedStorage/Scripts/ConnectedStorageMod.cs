@@ -12,13 +12,14 @@ namespace ConnectedStorage
 {
     public sealed class ConnectedStorageMod : IMod
     {
-        public const string Version = "0.7.17-dev";
+        public const string Version = "0.7.35";
         private GameObject ui;
         public void EarlyInit()
         {
             CoreLibMod.LoadSubmodule(typeof(ControlMappingModule), typeof(CommandModule));
             var mod = API.ModLoader.LoadedMods.FirstOrDefault(m => m.Handlers.Contains(this));
-            if (mod != null) CommandModule.AddCommands(mod.ModId, "ConnectedStorage");
+            if (mod != null && !mod.Handlers.Any(h => h.GetType().Name == "SidsOverhaulMod"))
+                CommandModule.AddCommands(mod.ModId, "ConnectedStorage");
             API.Authoring.OnObjectTypeAdded += OnObjectTypeAdded;
             Debug.Log("[ConnectedStorage] v" + Version + " loaded.");
         }
@@ -67,10 +68,11 @@ namespace ConnectedStorage
             int limit=em.HasComponent<ObjectDataCD>(entity)
                 ? StorageCatalog.Capacity(em.GetComponentData<ObjectDataCD>(entity).objectID):0;
             if(limit<=0)return;
+            // Check read-only first: write access syncs jobs and marks the buffer changed.
+            var current=em.GetBuffer<InventoryBuffer>(entity,true);
+            if(current.Length==0||(current[0].size==limit && current[0].maxSize==limit))return;
             var inventories=em.GetBuffer<InventoryBuffer>(entity);
-            if(inventories.Length==0)return;
             var range=inventories[0];
-            if(range.size==limit && range.maxSize==limit)return;
             range.sizeX=2;range.sizeY=limit/2;range.extraSize=0;range.maxSize=limit;
             inventories[0]=range;
             // Never truncate ContainedObjectsBuffer: old overflow stays withdrawable.
@@ -83,6 +85,17 @@ namespace ConnectedStorage
             if (!em.HasBuffer<IncludedCraftingBuildingsBuffer>(entity) && id != ObjectID.WoodenWorkBench && id != ObjectID.CopperWorkbench && id != ObjectID.TinWorkbench
                 && id != ObjectID.IronWorkBench && id != ObjectID.ScarletWorkBench && id != ObjectID.OctarineWorkbench
                 && id != ObjectID.GalaxiteWorkbench && id != ObjectID.SolariteWorkbench && id != ObjectID.HydraWorkbench) return;
+            // Runs every second on every station: decide read-only, take write access only to change something.
+            var current = em.GetBuffer<CanCraftObjectsBuffer>(entity, true);
+            bool retire = false, hasStation = false;
+            for (int i = 0; i < current.Length; i++)
+            {
+                if (current[i].objectID == StorageCatalog.Workbench) hasStation = true;
+                else if (StorageCatalog.IsRecipe(current[i].objectID)) retire = true;
+            }
+            bool insert = StorageCatalog.Workbench != ObjectID.None && id == ObjectID.WoodenWorkBench
+                && !hasStation && !em.HasBuffer<IncludedCraftingBuildingsBuffer>(entity);
+            if (!retire && !insert) return;
             var recipes = em.GetBuffer<CanCraftObjectsBuffer>(entity);
             // Retire recipes from existing prototype workbenches without shifting vanilla indices.
             for (int i = 0; i < recipes.Length; i++)
@@ -126,17 +139,27 @@ namespace ConnectedStorage
             = new System.Collections.Generic.Dictionary<string, Pug.Sprite.SpriteAsset>();
         public static void Register(Pug.Sprite.SpriteAsset asset)
         {
+            if (asset.name == "Terminal") Assets[asset.name] = asset;
             foreach (string tier in StorageCatalog.Tiers)
                 if (asset.name == tier + "Chest") Assets[asset.name] = asset;
         }
         public static void Postfix(Chest __instance)
         {
             int tier = StorageCatalog.Tier(__instance.objectData.objectID);
-            if (tier < 0 || __instance.spriteObjects == null) return;
-            string key = StorageCatalog.Tiers[tier] + "Chest";
+            if (__instance.spriteObjects == null) return;
+            string key = tier >= 0 ? StorageCatalog.Tiers[tier] + "Chest"
+                : __instance.objectData.objectID == StorageCatalog.Terminal ? "Terminal" : null;
             foreach (var sprite in __instance.spriteObjects)
             {
                 if (sprite == null || sprite.gameObject.name != "Sprite Object") continue;
+                // Shared native pools can return a vanilla graphic without our prefab hierarchy.
+                // Conversely, a graphic we sized can later be reused for a vanilla chest.
+                var artScale = sprite.transform.parent;
+                bool hasArtScale = artScale != null && artScale.name == "ArtScale";
+                if (key == null) {
+                    if (hasArtScale) artScale.localScale = Vector3.one;
+                    continue;
+                }
                 string previous = sprite.asset == null ? "null" : sprite.asset.name;
                 string skin = sprite.currentSkin == null ? "none" : sprite.currentSkin.name;
                 if (Assets.TryGetValue(key, out var expected)) sprite.asset = expected;
@@ -144,8 +167,24 @@ namespace ConnectedStorage
                 sprite.StopAnimation();
                 sprite.ResetVariant();
                 sprite.ApplyVisualChange();
+                float width = sprite.asset == null ? 16f : sprite.asset.staticSpriteData.GetSize().x;
+                if (width > 32f) {
+                    if (!hasArtScale) {
+                        var visual = sprite.transform;
+                        artScale = new GameObject("ArtScale").transform;
+                        artScale.SetParent(visual.parent, false);
+                        artScale.localPosition = visual.localPosition;
+                        artScale.localRotation = visual.localRotation;
+                        visual.SetParent(artScale, false);
+                        visual.localPosition = Vector3.zero;
+                        visual.localRotation = Quaternion.identity;
+                    }
+                    artScale.localScale = Vector3.one * (16f / width);
+                    sprite.transform.localScale = new Vector3(Mathf.Sign(sprite.transform.localScale.x), 1f, 1f);
+                } else if (hasArtScale) artScale.localScale = Vector3.one;
                 Debug.Log("[ConnectedStorage] Unit art " + key + ": previous=" + previous
-                    + ", skin=" + skin + ", applied=" + (sprite.asset == null ? "null" : sprite.asset.name));
+                    + ", skin=" + skin + ", applied=" + (sprite.asset == null ? "null" : sprite.asset.name)
+                    + ", sourceWidth=" + width + ", artScale=" + (artScale == null ? Vector3.one : artScale.localScale));
             }
         }
     }
@@ -159,8 +198,8 @@ namespace ConnectedStorage
         protected override void OnCreate()
         {
             base.OnCreate();
-            storageInventories=GetEntityQuery(ComponentType.ReadOnly<ObjectDataCD>(),ComponentType.ReadWrite<InventoryBuffer>());
-            stations = GetEntityQuery(ComponentType.ReadOnly<ObjectDataCD>(), ComponentType.ReadWrite<CanCraftObjectsBuffer>());
+            storageInventories=GetEntityQuery(ComponentType.ReadOnly<ObjectDataCD>(),ComponentType.ReadOnly<InventoryBuffer>());
+            stations = GetEntityQuery(ComponentType.ReadOnly<ObjectDataCD>(), ComponentType.ReadOnly<CanCraftObjectsBuffer>());
         }
         protected override void OnUpdate()
         {

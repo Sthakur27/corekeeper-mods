@@ -8,14 +8,14 @@ The terminal costs 10 Copper Bars and 20 Wood; the copper unit and each upgrade 
 
 | Tier | Slots |
 |---|---:|
-| Copper | 40 |
-| Tin | 80 |
-| Iron | 120 |
-| Scarlet | 180 |
-| Octarine | 240 |
-| Galaxite | 320 |
-| Solarite | 400 |
-| Pandorium | 500 |
+| Copper | 20 |
+| Tin | 40 |
+| Iron | 60 |
+| Scarlet | 80 |
+| Octarine | 100 |
+| Galaxite | 120 |
+| Solarite | 140 |
+| Pandorium | 160 |
 
 Chests have vanilla InventoryAuthoring with ten columns, zero extra slots, and auto-transfer disabled. Every chest includes DontDestroyOnZeroHealthAuthoring from initial conversion: the server removal system must evacuate it and remove protection after queued transfers finish, allowing vanilla to drop remaining contents. Do not remove that authoring component or add DontDropContainedAuthoring. The terminal has no item inventory; it presents the connected chests through the runtime UI.
 

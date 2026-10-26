@@ -1,0 +1,11 @@
+{
+  "prompt": "Use case: illustration-story. Create one NEW SQUARE 1:1 original richly detailed pixel-fantasy cover for the Core Keeper mod MUSHROOM SLAYER. Style: fine readable pixel clusters, detailed sprites and stone cave scenery, moss, timber supports and brass lanterns, warm amber light and restrained teal accents; tactile pixel textures, no smooth glossy/vector art. The approved Mod Options cover inspected in conversation is a style reference only, NOT a composition to copy. Gameplay screenshot is environmental reference only, no copied pixels. Original three-quarter cavern encounter: an armored explorer with a modest iron bow at lower left fires a single powerful arrow toward a large squat gray stone-capped mushroom brute at center-right. Brute is mushroom-shaped with a broad low gray cap, chunky pale stem body, stubby feet and simple dark eyes, no humanoid ogre face. One precise amber impact spark and small stone chips where the arrow meets its gray cap convey strong attacks getting through armor; mushroom stays gray, intact and formidable, not exploded or defeated. Clear focal hierarchy. Rich background cave textures, small normal mushrooms, moss and lantern-lit mining timbers. Large readable exact title MUSHROOM SLAYER on a dark teal cloth banner integrated across the upper part. One short exact caption Strong hits break through on a small wooden sign beneath title. No other text, no damage numbers, no version, no compatibility claims, no official Core Keeper logo, no floating shield icons, no watermark. Polished coherent original full-bleed square illustration with title legible at thumbnail size.",
+  "method": "built-in image_gen",
+  "source": "C:\\Users\\Sid\\.codex\\generated_images\\01a13c8d-9c98-74e3-8b64-37c2718bb995\\exec-4d4f6d83-ddec-453f-95da-82d9464fd280.png",
+  "cover": "release/mushroomslayer_logo.png",
+  "style_reference": "release/modoptions_logo.png",
+  "gameplay_reference": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1621690/ss_1e162c49418038f8042c92810fe3c753449e204b.1920x1080.jpg",
+  "status": "Local review candidate. Not uploaded or approved for publication.",
+  "export": "960x960 PNG, under 1,000,000 bytes; sizing and compression only.",
+  "edit_prompt": "Replace banner title with MUSHROOM SLAYER in two lines; preserve scene and caption."
+}

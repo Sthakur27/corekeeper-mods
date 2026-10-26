@@ -22,6 +22,39 @@ for path in paths:
    assert Image.alpha_composite(backdrop, actual).tobytes() == Image.alpha_composite(backdrop, expected).tobytes(), data.m_Name + ': bundled artwork differs from source'
   texture_count += 1
  assert texture_count == 102, f'Expected 102 art textures, found {texture_count}' 
+ # Prove the approved image crop is unchanged and high-resolution meshes stay one tile wide.
+ for name,filename in [('CopperChest','RunicKilnReview/copper-node.png'),('Terminal','RunicKilnReview/terminal.png')] + [(n, 'StorageFamily/'+n+'.png') for n in ['Workbench']+[t+'Chest' for t in CAPACITY if t!='Copper']]:
+  art=Image.open(Path(__file__).parent/'Art'/(name+'.png')).convert('RGBA')
+  if art.width<=32: continue
+  original=Image.open(Path(__file__).parents[1]/'ArtConcepts'/filename).convert('RGBA')
+  bbox=original.getchannel('A').point(lambda a:255 if a>=128 else 0).getbbox()
+  crop=original.crop(bbox);pad=round(crop.width/14)
+  assert art.crop((pad,pad,pad+crop.width,pad+crop.height)).tobytes()==crop.tobytes(), name+': approved pixels changed'
+  found=False
+  for obj in env.objects:
+   if obj.type.name!='Transform':continue
+   tr=obj.read()
+   if tr.m_GameObject.read().m_Name!='Sprite Object':continue
+   parent=tr.m_Father.read()
+   if not parent.m_Father:continue
+   if parent.m_GameObject.read().m_Name!='ArtScale':continue
+   xscaler=parent.m_Father.read()
+   if not xscaler.m_Father or xscaler.m_Father.read().m_GameObject.read().m_Name!=name+'Graphics':continue
+   scale=parent.m_LocalScale
+   assert abs(tr.m_LocalScale.x-1)<0.000001 and abs(tr.m_LocalScale.y-1)<0.000001, name+': direction-controlled child must have unit scale'
+   # Runtime direction updates reset the child to (1,1,1) or (-1,1,1).
+   for facing_x in (-1,1):
+    assert abs(abs(scale.x*facing_x)*art.width/16-1)<0.0001, name+': direction reset changes rendered width'
+   assert abs(scale.x*art.width/16-1)<0.0001, name+': high-resolution world width must be one tile'
+   assert abs(scale.x-scale.y)<0.000001, name+': distorted aspect ratio'
+   found=True
+  assert found, name+': scaled visual missing'
+ for tier in ('Tin','Iron','Scarlet','Octarine','Galaxite','Solarite','Pandorium'):
+  source=Image.open(Path(__file__).parents[1]/'ArtConcepts/UpgradeGems'/(tier+'.png')).convert('RGBA')
+  crop=source.crop(source.getchannel('A').point(lambda a:255 if a>=128 else 0).getbbox())
+  art=Image.open(Path(__file__).parent/'Art'/(tier+'Gem.png')).convert('RGBA')
+  x=(art.width-crop.width)//2;y=(art.height-crop.height)//2
+  assert art.crop((x,y,x+crop.width,y+crop.height)).tobytes()==crop.tobytes(),tier+': generated gem pixels changed'
  for o in env.objects:
   if o.type.name != 'MonoBehaviour': continue
   data=o.read(); tree=o.read_typetree()

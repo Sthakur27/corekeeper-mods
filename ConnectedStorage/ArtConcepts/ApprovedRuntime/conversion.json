@@ -1,0 +1,36 @@
+{
+  "CopperChest": {
+    "source": "copper-node.png",
+    "sourceBounds": [
+      261,
+      295,
+      994,
+      972
+    ],
+    "padding": 52,
+    "size": [
+      837,
+      781
+    ],
+    "worldScale": 0.019115890083632018,
+    "pivotY": 0.06658130601792574,
+    "pixelsPreserved": true
+  },
+  "Terminal": {
+    "source": "terminal.png",
+    "sourceBounds": [
+      255,
+      283,
+      1000,
+      1048
+    ],
+    "padding": 53,
+    "size": [
+      851,
+      871
+    ],
+    "worldScale": 0.01880141010575793,
+    "pivotY": 0.060849598163030996,
+    "pixelsPreserved": true
+  }
+}

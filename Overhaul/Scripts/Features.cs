@@ -24,7 +24,7 @@ namespace SidsOverhaul
 
         /// <summary>
         /// Switchable features: mod folder (= key used by the injected guards) and the label shown in the menu.
-        /// Loadout Fallback, Five Loadouts and Ender Stash are not listed: they add inventory slots, and
+        /// Loadout Fallback, Five Loadouts, Ender Stash and Runic Storage are not listed: they add inventory slots, and
         /// a player saved without those slots loses the items in them.
         /// </summary>
         public static readonly string[,] All =
@@ -50,10 +50,12 @@ namespace SidsOverhaul
             { "InfiniteOreBoulders", "Infinite Ore Boulders" },
             { "StimHits", "Hit Sound Effects" },
             { "ArmorDye", "Armor Dye" },
+            { "MushroomSlayer", "Mushroom Slayer" },
+            { "MagicMirror", "Magic Mirror" },
         };
 
         public const string Hint = "Turn whole sub-mods on or off. Changes take effect after restarting the game. "
-            + "Loadout Fallback, Five Loadouts and Ender Stash are always on (they hold items in extra inventory slots). "
+            + "Loadout Fallback, Five Loadouts, Ender Stash and Runic Storage are always on (they hold items in extra inventory slots). "
             + "In multiplayer, use the same switches as the host.";
 
         private static Dictionary<string, bool> _snapshot;

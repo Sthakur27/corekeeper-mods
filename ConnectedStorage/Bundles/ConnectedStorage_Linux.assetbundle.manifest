@@ -225,6 +225,10 @@
             "guid": "dbb2afb5adfb355269d22f8ffd43acf6"
         },
         {
+            "path": "Assets/ConnectedStorage/Textures/preview.png",
+            "guid": "60b9afb68bd99a849827cd0a81a3a118"
+        },
+        {
             "path": "Assets/ConnectedStorage/Textures/PandoriumGem_up_emissive.png",
             "guid": "5a977f74b0b803460724f11d0b122a24"
         },
@@ -447,6 +451,10 @@
         {
             "path": "Assets/ConnectedStorage/Textures/GalaxiteChest.png",
             "guid": "618f79791103c2f5e6f957452c5742d0"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/directions.png",
+            "guid": "4d9c8ebd94288e3499ad89911da74ddb"
         },
         {
             "path": "Assets/ConnectedStorage/Textures/CopperChest_up_emissive.png",

@@ -15,7 +15,7 @@ Use a new test world and spare character. Install CoreLib and Connected Storage 
 - Multiplayer: two users deposit/withdraw/craft same item concurrently; reject stale item selection; no duplicates or wrong-player output. Guest restrictions and CoreLib security remain respected.
 - Damage: explosions use the same transfer-then-drop path without loss or duplication.
 
-- Upgrades: select Tin Gem in hotbar and interact with a copper unit; consume exactly one gem, 40 to 80 slots, all item data and positions retained. Repeat all seven transitions to 500 slots. Reject skipped tiers, downgrades, wrong items, locked gems, guests, distant requests and stale duplicate requests without consumption.
+- Upgrades: select Tin Gem in hotbar and interact with a copper unit; consume exactly one gem, 20 to 40 slots, all item data and positions retained. Repeat all seven transitions to 160 slots. Reject skipped tiers, downgrades, wrong items, locked gems, guests, distant requests and stale duplicate requests without consumption.
 - Sealed units: interacting without the correct gem never opens a chest inventory; terminal still opens shared inventory.
 - Replacement safety: upgrade an occupied unit while another client uses the terminal; save/reload, mine and replace the upgraded unit, confirm retained tier and correct item totals. Test pending transfers and broken units.
 
@@ -52,3 +52,10 @@ Use a new test world and spare character. Install CoreLib and Connected Storage 
 - Open over a bright floor: panel, buttons, search and slots must have opaque backgrounds, with legible text.
 - Inventory uses ten square slots per row; the hotbar occupies the first row. Check wheel/arrows expose all50 bag slots without duplicates or omission.
 - Change resolution and UI scale: icons retain proportions and the footer/Close button stay within the viewport.
+
+- Right click: 24 bars -> half modifier gives 12; 25 -> 13; one item -> 1. Compare modifier 1 (ten) and ordinary (one) with a native chest, including depositing from the cursor and full/locked destinations.
+- Cursor transfer: compare drop-to-cell visibility with native inventory on host and remote client; rejected/full slots must preserve cursor contents. Close/reopen during a pending transfer and verify no stale updates. Performance follow-up: benchmark three matched UI captures per build; watcher examines one slot per frame for at most one second per action, zero while closed.
+
+- Consolidation: put copper bars 12+24 in one node and another 8 in a second node. Each sort control should produce one 44 stack at the appropriate sorted position. Check total counts before/after. Check 9990+20 gives 9999+11, three partial stacks, full network, locked stacks, different variations/aux data, and nonstackable tools. Repeated ascending/descending sorts must preserve all items and metadata.
+
+- Quick actions (0.7.30): open terminal, left-click the native green quick-stack button with matching and unmatched bag stacks. Only matching types should move; right-click deposits both. Hotbar/locked items stay put. Test partial/full capacity, multiple nodes, auxiliary-data items, host and remote client; totals must be conserved with no chat spam. Inventory sort still only sorts your bag. Close terminal and verify nearby-chest quick stacking returns to vanilla behavior. Compare idle and repeated bulk-action frame times before/after; no runtime performance claim yet.

@@ -67,6 +67,8 @@ namespace ConnectedStorage
                 }
                 if (!StorageCatalog.IsNode(em.GetComponentData<ObjectDataCD>(terminal).objectID)) return Error("Storage object unavailable.");
                 var network = StorageNetwork.Scan(world, terminal);
+                var transfers = world.GetOrCreateSystemManaged<StorageTransferSystem>();
+                if(transfers.HasPendingChanges(player,network.Chests))return Quiet();
                 if(args[2]=="sort" && args.Length==4)
                     return Result(world.GetOrCreateSystemManaged<StorageTransferSystem>().SortNetwork(network.Chests,Number(args[3])!=0));
                 if (args[2] == "craft" && args.Length == 4)
@@ -81,7 +83,6 @@ namespace ConnectedStorage
                         }
                     return Error("Recipe is no longer connected.");
                 }
-                var transfers = world.GetOrCreateSystemManaged<StorageTransferSystem>();
                 {
                     var inventory = em.GetBuffer<InventoryBuffer>(player)[0];
                     int first = inventory.startIndex;
@@ -105,18 +106,10 @@ namespace ConnectedStorage
                         }
                         if(target.objectID!=(ObjectID)Number(args[6])||target.variation!=Number(args[7])||held.objectID!=(ObjectID)Number(args[8])||held.variation!=Number(args[9]))return Error("Items changed; click again.");
                         if(Locked(em,chest,slot)||Locked(em,player,cursor))return Error("That item is locked.");
-                        bool one=Number(args[10])==1;
+                        int mode=Number(args[10]);
+                        if(mode<0||mode>3)return Quiet();
                         if(target.objectID==ObjectID.None&&held.objectID==ObjectID.None)return Quiet();
-                        bool taking=held.objectID==ObjectID.None;
-                        bool matching=held.objectID==target.objectID&&held.variation==target.variation&&PugDatabase.GetObjectInfo(held.objectID,held.variation).isStackable;
-                        if(one&&!taking&&target.objectID!=ObjectID.None&&!matching)return Quiet();
-                        if(matching && target.amount>=9999)return Quiet();
-                        InventoryChangeData change;
-                        if(!one&&!matching)change=Inventory.Create.Swap(player,chest,cursor,slot);
-                        else change=Inventory.Create.MoveAmount(taking?chest:player,taking?slot:cursor,taking?player:chest,taking?cursor:slot,(taking?cursor:slot)+1,one?1:int.MaxValue,false);
-                        using(var query=em.CreateEntityQuery(ComponentType.ReadOnly<InventoryChangeBuffer>()))
-                            em.GetBuffer<InventoryChangeBuffer>(query.GetSingletonEntity()).Add(new InventoryChangeBuffer {playerEntity=player,inventoryChangeData=change});
-                        return Quiet();
+                        return Result(transfers.CursorTransfer(player,chest,cursor,slot,mode));
                     }
                     else if (args[2] == "take" && args.Length == 9)
                     {
@@ -132,7 +125,7 @@ namespace ConnectedStorage
                     {
                         int slot = Number(args[3]);
                         var items = em.GetBuffer<ContainedObjectsBuffer>(player);
-                        if (slot < first || slot >= end || items[slot].objectID != (ObjectID)Number(args[4]) || items[slot].variation != Number(args[5])) return Error("Inventory changed; select the item again.");
+                        if (slot < first || slot >= end || slot >= items.Length || items[slot].objectID != (ObjectID)Number(args[4]) || items[slot].variation != Number(args[5])) return Error("Inventory changed; select the item again.");
                         if (Locked(em, player, slot)) return Error("That item is locked.");
                         return Result(transfers.Transfer(player, player, slot, network.Chests, int.MaxValue));
                     }
@@ -142,6 +135,10 @@ namespace ConnectedStorage
                         string feedback = null;
                         for (int slot = first + 10; slot < end; slot++)
                         {
+                            // Transfer plays an ECB back; reacquire rather than
+                            // retaining a DynamicBuffer across structural changes.
+                            items = em.GetBuffer<ContainedObjectsBuffer>(player);
+                            if(slot >= items.Length)break;
                             if (items[slot].objectID == ObjectID.None || Locked(em, player, slot)) continue;
                             bool matching = args[2] == "deposit";
                             if (!matching) foreach (var chest in network.Chests)

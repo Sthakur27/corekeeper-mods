@@ -1,0 +1,35 @@
+{
+  "guid": "75ead45816444d35a4f76b987a029a32",
+  "name": "ModDiagnostics",
+  "displayName": "Sid's Mod Diagnostics (Development)",
+  "accessesExtraAssemblies": true,
+  "requiredOn": 1,
+  "files": [
+    {
+      "path": "Scripts/Metrics.cs",
+      "guid": ""
+    },
+    {
+      "path": "Scripts/Recorder.cs",
+      "guid": ""
+    },
+    {
+      "path": "Scripts/DiagnosticsMod.cs",
+      "guid": ""
+    },
+    {
+      "path": "Scripts/Report.cs",
+      "guid": ""
+    },
+    {
+      "path": "Scripts/ReportJson.cs",
+      "guid": ""
+    }
+  ],
+  "dependencies": [
+    {
+      "modName": "CoreLib",
+      "required": true
+    }
+  ]
+}

@@ -52,6 +52,8 @@ namespace ConnectedStorage
             }
         }
         private float spread, nextScan, nextNetworkScan;
+        private Address pendingCursorSlot;
+        private float pendingCursorUntil;
         private StorageNetwork.Snapshot cachedNetwork;
         private World expansionWorld;
         private StorageExpansionTracker<int2> expansions = new StorageExpansionTracker<int2>();
@@ -130,7 +132,7 @@ namespace ConnectedStorage
             var self=Instance;
             if(self==null || self.terminal==null || self.closing) return;
             Debug.Log("[ConnectedStorage] Browser closed: "+reason);
-            self.closing=true; self.terminal=null;
+            self.closing=true; self.terminal=null; self.pendingCursorSlot=null;
             self.RestoreCursor();
             self.cachedNetwork=null;
             if(self.search!=null && self.search.inputIsActive) self.search.Deactivate(false);
@@ -353,7 +355,22 @@ namespace ConnectedStorage
             var next=search.GetInputText()??"";
             if(Manager.ui.currentSelectedUIElement==search && Input.GetMouseButtonDown(1)) {search.SetInputText("");next="";}
             if(next!=lastSearch) {lastSearch=next;Configure();}
-            if(Time.unscaledTime>=nextScan) {Refresh();nextScan=Time.unscaledTime+0.1f;}
+            // Only watch the clicked slot while awaiting its server update (at most one second).
+            // Avoid waiting for the 100 ms list refresh after the mouse inventory has updated.
+            bool cursorSlotChanged=false;
+            if(pendingCursorSlot!=null) {
+                var a=pendingCursorSlot;
+                if(Time.unscaledTime>=pendingCursorUntil || !em.Exists(a.Entity) || !em.HasBuffer<ContainedObjectsBuffer>(a.Entity)) pendingCursorSlot=null;
+                else {
+                    var contents=em.GetBuffer<ContainedObjectsBuffer>(a.Entity);
+                    if(a.Index<contents.Length) {
+                        var item=contents[a.Index];
+                        cursorSlotChanged=item.objectID!=a.Item.objectID || item.variation!=a.Item.variation || item.amount!=a.Item.amount || item.auxDataIndex!=a.Item.auxDataIndex;
+                    }
+                    if(cursorSlotChanged)pendingCursorSlot=null;
+                }
+            }
+            if(cursorSlotChanged || Time.unscaledTime>=nextScan) {Refresh();nextScan=Time.unscaledTime+0.1f;}
             heading.Render("Storage  "+used+" / "+capacity+" slots"+(filter==0?"":" | "+Categories[filter]));
             ApplyLayout();
             UpdateCategoryPointer();
@@ -404,14 +421,43 @@ namespace ConnectedStorage
             var pos=StorageNetwork.Tile(Instance.terminal.world.EntityManager,a.Entity);
             Instance.Send("take "+pos.x+" "+pos.y+" "+a.Index+" "+(int)a.Item.objectID+" "+a.Item.variation+" "+(one?1:0));
         }
-        internal static void CursorClick(Address a,bool one)
+        internal static void CursorClick(Address a,bool one,int mode=0)
         {
             if(!Active || a==null)return;
             var pos=StorageNetwork.Tile(Instance.terminal.world.EntityManager,a.Entity);
             var held=Manager.main.player.mouseInventoryHandler.GetObjectData(0);
-            Instance.Send("cursor "+pos.x+" "+pos.y+" "+a.Index+" "+(int)a.Item.objectID+" "+a.Item.variation+" "+(int)held.objectID+" "+held.variation+" "+(one?1:0));
+            Instance.pendingCursorSlot=new Address {Entity=a.Entity,Index=a.Index,Item=a.Item};
+            Instance.pendingCursorUntil=Time.unscaledTime+1f;
+            Instance.Send("cursor "+pos.x+" "+pos.y+" "+a.Index+" "+(int)a.Item.objectID+" "+a.Item.variation+" "+(int)held.objectID+" "+held.variation+" "+(mode!=0?mode:one?1:0));
         }
         internal static bool QuickMoveHeld => Manager.input.singleplayerInputModule.IsButtonCurrentlyDown(PlayerInput.InputType.QUICK_MOVE_ITEMS);
+        internal static bool QuickAction(bool depositAll)
+        {
+            if(!Active)return false;
+            // One explicit click, one authoritative command. Never send the
+            // vanilla nearby-chest request as well: it bypasses network capacity.
+            Instance.Send(depositAll?"deposit":"stack");
+            return true;
+        }
+        internal static bool IsQuickActionButton(ButtonUIElement button)
+        {
+            if(!Active || button==null)return false;
+            var inventory=Manager.ui.playerInventoryUI;
+            if(inventory is InventoryUI native &&
+                (button==native.quickStackToNearbyButton || button==native.optionalQuickStackButton))return true;
+            // Some inventory layouts display a separately wired button rather
+            // than either InventoryUI field. Match its native action and owner,
+            // never its translated label or a generic button name.
+            var action=button.onLeftClick;
+            if(action==null)return false;
+            for(int i=0;i<action.GetPersistentEventCount();i++) {
+                if(action.GetPersistentTarget(i)!=inventory)continue;
+                string method=action.GetPersistentMethodName(i);
+                if(method==nameof(ItemSlotsUIContainer.QuickStackToNearbyChests) ||
+                    method==nameof(ItemSlotsUIContainer.QuickStack))return true;
+            }
+            return false;
+        }
         internal static bool Deposit(InventorySlotUI slot,bool quick)
         {
             if(!Active || !quick || !slot.isPlayerInventorySlot)return false;
@@ -440,9 +486,29 @@ namespace ConnectedStorage
     {
         public static bool Prefix(ButtonUIElement __instance,ref TextAndFormatFields __result)
         {
+            if(StorageBrowserUI.IsQuickActionButton(__instance)) {
+                __result=new TextAndFormatFields {text="Quick stack to storage (left-click) / Deposit bag (right-click)",dontLocalize=true};return false;
+            }
             if(!StorageBrowserUI.Active || !__instance.TryGetComponent<StorageBrowserTooltip>(out var hint))return true;
             __result=new TextAndFormatFields {text=hint.Title,dontLocalize=true};return false;
         }
+    }
+    [HarmonyPatch(typeof(ItemSlotsUIContainer),nameof(ItemSlotsUIContainer.QuickStackToNearbyChests))]
+    public static class BrowserQuickStackNearbyPatch
+    {
+        public static bool Prefix(ItemSlotsUIContainer __instance) =>
+            __instance!=Manager.ui.playerInventoryUI || !StorageBrowserUI.QuickAction(false);
+    }
+    [HarmonyPatch(typeof(ItemSlotsUIContainer),nameof(ItemSlotsUIContainer.QuickStack))]
+    public static class BrowserQuickStackPatch
+    {
+        public static bool Prefix() => !StorageBrowserUI.QuickAction(false);
+    }
+    [HarmonyPatch(typeof(ButtonUIElement),nameof(ButtonUIElement.OnRightClicked))]
+    public static class BrowserDepositBagPatch
+    {
+        public static bool Prefix(ButtonUIElement __instance) =>
+            !StorageBrowserUI.IsQuickActionButton(__instance) || !__instance.canBeClicked || !StorageBrowserUI.QuickAction(true);
     }
     public sealed class StorageBrowserItem : SlotUIBase
     {
@@ -461,7 +527,7 @@ namespace ConnectedStorage
         protected override ContainedObjectsBuffer GetSlotObject()=>Address?.Item ?? default;
         public override UIScrollWindow uiScrollWindow=>Window;
         public override void OnLeftClicked(bool mod1,bool mod2) { if(StorageBrowserUI.QuickMoveHeld)StorageBrowserUI.Withdraw(Address,false);else StorageBrowserUI.CursorClick(Address,false); }
-        public override void OnRightClicked(bool mod1,bool mod2)=>StorageBrowserUI.CursorClick(Address,true);
+        public override void OnRightClicked(bool mod1,bool mod2)=>StorageBrowserUI.CursorClick(Address,true,mod2?2:mod1?3:1);
         public override void UpdateSlot()
         {
             if(Address==null)return;

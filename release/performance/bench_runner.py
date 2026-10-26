@@ -32,6 +32,15 @@ MODIO_STATE = Path(r"C:\Users\Public\mod.io\5289\state.json")
 # The game prunes its unsupported-mod allow list to the mods it loaded, so a near-vanilla run would
 # silently stop "not compatible" mods from loading afterwards. Snapshot and restore it around every run.
 LOADER_CONFIG = PROFILE / "modloader" / "config.json"
+OVERHAUL_CONFIG = PROFILE / "mods" / "SidsOverhaul" / "config.cfg"
+# Switchable Overhaul features in Features.All order (labels as written in config.cfg). Setup
+# "overhaul-off=<i>-<j>" is overhaul-only with features i..j (inclusive) switched off; "=all" for every one.
+FEATURES = ["Auto Replant", "Quick Buff", "Buff Duration Floor", "Potion Seller", "Fish Seller", "Merchant Restock",
+            "Faster Mushrooms", "Bigger Watering Cans", "Fast Auto Fishing", "Better Fishing Loot", "Durability Multiplier",
+            "Vehicle Speed", "Golden Chance", "Difficulty Tuning", "Skill XP Multiplier", "Keep Minions On Teleport",
+            "Pet Editor", "Boss Bonus Loot", "Infinite Ore Boulders", "Hit Sound Effects", "Armor Dye", "Mushroom Slayer",
+            "Magic Mirror"]
+LEGACY_LABELS = {"Hit Sound Effects": ["Stim Hits"]}
 MODIO_USER = "2667367"
 # Always loaded in every setup: the recorder, its CoreLib dependency, and SkipIntro (startup only).
 KEEP_MODIO = {"3177992", "6363825"}
@@ -66,6 +75,29 @@ class Setup:
 
     def __init__(self, name):
         self.name, self.renamed, self.state_backup, self.loader_backup = name, [], None, None
+        self.overhaul_backup = None
+
+    @staticmethod
+    def feature_range(spec):
+        if spec == "all":
+            return FEATURES
+        lo, hi = (int(x) for x in spec.split("-"))
+        return FEATURES[lo:hi + 1]
+
+    def switch_features_off(self, labels):
+        self.overhaul_backup = OVERHAUL_CONFIG.read_bytes()
+        off = set(labels) | {old for label in labels for old in LEGACY_LABELS.get(label, [])}
+        lines = self.overhaul_backup.decode("utf-8").split("\n")
+        found = set()
+        for i, line in enumerate(lines):
+            key = line.split("=", 1)[0].strip()
+            if key.startswith("Feature: ") and key[len("Feature: "):] in off:
+                lines[i] = key + " = false" + ("\r" if line.endswith("\r") else "")
+                found.add(key[len("Feature: "):])
+        missing = set(labels) - found
+        if missing:
+            sys.exit("feature switches not found in config.cfg: " + ", ".join(sorted(missing)))
+        OVERHAUL_CONFIG.write_bytes("\n".join(lines).encode("utf-8"))
 
     # setup -> (turn off local side-loaded mods, turn off Workshop mods, turn off mod.io mods)
     # "Local" here is Sid's own: SidsOverhaul (plus anything else side-loaded except the recorder).
@@ -78,9 +110,13 @@ class Setup:
 
     def apply(self):
         self.loader_backup = LOADER_CONFIG.read_bytes() if LOADER_CONFIG.exists() else None
-        if self.name not in self.SETUPS:
+        base = self.name
+        if self.name.startswith("overhaul-off="):
+            base = "overhaul-only"
+            self.switch_features_off(self.feature_range(self.name.split("=", 1)[1]))
+        if base not in self.SETUPS:
             sys.exit("unknown setup: " + self.name)
-        local_off, workshop_off, modio_off = self.SETUPS[self.name]
+        local_off, workshop_off, modio_off = self.SETUPS[base]
         folders = (list(GAME_MODS.iterdir()) if local_off else []) + (list(WORKSHOP.iterdir()) if workshop_off else [])
         for folder in folders:
             manifest = folder / "ModManifest.json"
@@ -102,7 +138,9 @@ class Setup:
             MODIO_STATE.write_bytes(self.state_backup)
         if self.loader_backup is not None:
             LOADER_CONFIG.write_bytes(self.loader_backup)
-        self.renamed, self.state_backup, self.loader_backup = [], None, None
+        if self.overhaul_backup is not None:
+            OVERHAUL_CONFIG.write_bytes(self.overhaul_backup)
+        self.renamed, self.state_backup, self.loader_backup, self.overhaul_backup = [], None, None, None
 
 
 def read_status():

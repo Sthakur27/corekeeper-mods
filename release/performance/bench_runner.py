@@ -67,17 +67,28 @@ class Setup:
     def __init__(self, name):
         self.name, self.renamed, self.state_backup, self.loader_backup = name, [], None, None
 
+    # setup -> (turn off local side-loaded mods, turn off Workshop mods, turn off mod.io mods)
+    # "Local" here is Sid's own: SidsOverhaul (plus anything else side-loaded except the recorder).
+    SETUPS = {
+        "current": (False, False, False),
+        "near-vanilla": (True, True, True),
+        "overhaul-only": (False, True, True),
+        "third-party-only": (True, False, False),
+    }
+
     def apply(self):
         self.loader_backup = LOADER_CONFIG.read_bytes() if LOADER_CONFIG.exists() else None
-        if self.name == "current":
-            return
-        if self.name != "near-vanilla":
+        if self.name not in self.SETUPS:
             sys.exit("unknown setup: " + self.name)
-        for folder in list(GAME_MODS.iterdir()) + list(WORKSHOP.iterdir()):
+        local_off, workshop_off, modio_off = self.SETUPS[self.name]
+        folders = (list(GAME_MODS.iterdir()) if local_off else []) + (list(WORKSHOP.iterdir()) if workshop_off else [])
+        for folder in folders:
             manifest = folder / "ModManifest.json"
             if folder.name not in KEEP_LOCAL and manifest.exists():
                 manifest.rename(folder / "ModManifest.benchoff")
                 self.renamed.append(folder)
+        if not modio_off:
+            return
         self.state_backup = MODIO_STATE.read_bytes()
         state = json.loads(self.state_backup)
         user = state["existingUsers"][MODIO_USER]

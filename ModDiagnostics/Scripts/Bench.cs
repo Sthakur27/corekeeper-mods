@@ -41,7 +41,7 @@ namespace ModDiagnostics
             if (recording) SampleRoute(now);
             if (phase == Phase.Off) return;
             try { Step(now); }
-            catch (Exception e) { Finish("error", e.GetType().Name + ": " + e.Message); }
+            catch (Exception e) { Finish("error", e.Message); } // GetType().Name is reflection: blocked by the loader
         }
 
         private static void TryStartFromControl(double now)

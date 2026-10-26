@@ -4,6 +4,8 @@ using System.Globalization;
 using System.Text;
 using HarmonyLib;
 using PugMod;
+using Unity.Collections;
+using Unity.Entities;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -97,6 +99,7 @@ namespace ModDiagnostics
                     // Manager.Update re-applies the saved cap every frame, so BenchUncapPatch overrides it after that.
                     Uncapped = GetInt("uncap", 0) == 1;
                     if (Uncapped) { QualitySettings.vSyncCount = 0; Application.targetFrameRate = -1; }
+                    Recorder.BenchInfo += " " + Census();
                     Recorder.Start(Get("label", "bench"), GetInt("seconds", 60));
                     if (!Recorder.Active) { Finish("error", "recorder did not start: " + Recorder.LastReport); return; }
                     captureStarted = true;
@@ -114,6 +117,35 @@ namespace ModDiagnostics
                     if (now - phaseAt > 2 && GetInt("quit", 1) == 1) Application.Quit();
                     return;
             }
+        }
+
+        // What the loaded server world contains when the capture starts: objects, inventories, slots and
+        // auto-transfer markers in total and for the object types holding the most slots ("id:count/slots/auto").
+        private static string Census()
+        {
+            var world = Manager.ecs == null ? null : Manager.ecs.ServerWorld;
+            if (world == null || !world.IsCreated) return "census=none";
+            var em = world.EntityManager;
+            int objects, inventories = 0, slots = 0, auto = 0;
+            var byId = new Dictionary<int, int[]>();
+            using (var query = em.CreateEntityQuery(ComponentType.ReadOnly<ObjectDataCD>())) objects = query.CalculateEntityCount();
+            using (var query = em.CreateEntityQuery(ComponentType.ReadOnly<ObjectDataCD>(), ComponentType.ReadOnly<ContainedObjectsBuffer>()))
+            using (var entities = query.ToEntityArray(Allocator.Temp))
+                foreach (var entity in entities)
+                {
+                    int id = (int)em.GetComponentData<ObjectDataCD>(entity).objectID;
+                    int length = em.GetBuffer<ContainedObjectsBuffer>(entity, true).Length;
+                    bool marked = em.HasComponent<InventoryAutoTransferEnabledCD>(entity);
+                    inventories++; slots += length; if (marked) auto++;
+                    if (!byId.TryGetValue(id, out var row)) byId[id] = row = new int[3];
+                    row[0]++; row[1] += length; if (marked) row[2]++;
+                }
+            var top = new List<KeyValuePair<int, int[]>>(byId);
+            top.Sort((a, b) => b.Value[1].CompareTo(a.Value[1]));
+            var text = new StringBuilder("census objects=" + objects + " inventories=" + inventories + " slots=" + slots + " autoTransfer=" + auto + " top=");
+            for (int i = 0; i < top.Count && i < 12; i++)
+                text.Append(i == 0 ? "" : ",").Append(top[i].Key).Append(':').Append(top[i].Value[0]).Append('/').Append(top[i].Value[1]).Append('/').Append(top[i].Value[2]);
+            return text.ToString();
         }
 
         // Pursues the recorded points in order, back and forth, at the player's own walking speed.

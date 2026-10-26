@@ -19,12 +19,18 @@ import build_overhaul as bo  # noqa: E402  (release/build_overhaul.py)
 
 def main():
     no_bundles = "--no-bundles" in sys.argv
-    args = [a for a in sys.argv[1:] if a != "--no-bundles"]
+    # --drop-bundle=<Mod> removes just that mod's bundle (repeatable), e.g. --drop-bundle=FastAutoFishing
+    drop_bundles = [a.split("=", 1)[1] for a in sys.argv[1:] if a.startswith("--drop-bundle=")]
+    args = [a for a in sys.argv[1:] if a != "--no-bundles" and not a.startswith("--drop-bundle=")]
     if len(args) != 2:
         sys.exit(__doc__)
     name, drop = args[0], [m for m in args[1].split(",") if m]
     if no_bundles:
         bo.BUNDLE_MODS = {}
+    for mod in drop_bundles:
+        if mod not in bo.BUNDLE_MODS:
+            sys.exit("no bundle for " + mod + "; bundles: " + ", ".join(bo.BUNDLE_MODS))
+        bo.BUNDLE_MODS = {k: v for k, v in bo.BUNDLE_MODS.items() if k != mod}
     unknown = [m for m in drop if m not in bo.MODS]
     if unknown:
         sys.exit("not in build_overhaul.MODS: " + ", ".join(unknown))

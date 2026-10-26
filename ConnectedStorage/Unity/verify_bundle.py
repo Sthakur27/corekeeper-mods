@@ -78,7 +78,7 @@ for path in paths:
   prefabs.setdefault(name,{})[script.m_ClassName]=tree
   vanilla.add(script.m_AssemblyName)
  for tier,capacity in CAPACITY.items():
-  name=tier+'Chest'; c=prefabs[name+'Entity']
+  name=tier+'Chest'; c=prefabs['ConnectedStorage_'+name+'Entity']
   assert c['ObjectAuthoring']['objectName']=='ConnectedStorage_'+name
   assert 'DontDestroyOnZeroHealthAuthoring' in c
   assert 'DontDropContainedAuthoring' not in c
@@ -87,13 +87,13 @@ for path in paths:
   assert inv['maxExtraSize']==0 and not inv['autoTransferEnabled']
   assert c['InventoryItemAuthoring']['requiredObjectsToCraft']==([{'objectName':tier+'Bar','amount':30}] if tier=='Copper' else [])
   if tier != 'Copper':
-   gem=prefabs[tier+'GemEntity']
+   gem=prefabs['ConnectedStorage_'+tier+'GemEntity']
    assert gem['ObjectAuthoring']['objectName']=='ConnectedStorage_'+tier+'Gem'
    assert gem['ObjectAuthoring']['objectType']==0
    assert 'InventoryAuthoring' not in gem and 'PlaceableObjectAuthoring' not in gem
    assert gem['InventoryItemAuthoring']['requiredObjectsToCraft']==[{'objectName':tier+'Bar','amount':30}]
   assert 'Chest' in prefabs[name+'Graphics']
- w=prefabs['WorkbenchEntity']
+ w=prefabs['ConnectedStorage_WorkbenchEntity']
  assert w['ObjectAuthoring']['objectName']=='ConnectedStorage_Workbench'
  assert w['InventoryItemAuthoring']['requiredObjectsToCraft']==[{'objectName':'Wood','amount':20}]
  assert 'InventoryAuthoring' not in w
@@ -105,9 +105,13 @@ for path in paths:
  graphics=prefabs['WorkbenchGraphics']['CraftingBuilding']
  assert graphics['craftingCategoryWindowInfos']==[]
  assert [t['mTerm'] for t in graphics['defaultUISettings']['titles']]==['Storage','Upgrades']
- t=prefabs['TerminalEntity']; assert 'InventoryAuthoring' not in t
+ t=prefabs['ConnectedStorage_TerminalEntity']; assert 'InventoryAuthoring' not in t
  assert t['ObjectAuthoring']['objectName']=='ConnectedStorage_Terminal'
  assert t['InventoryItemAuthoring']['requiredObjectsToCraft']==[{'objectName':'CopperBar','amount':10},{'objectName':'Wood','amount':20}]
+ # Ghost types follow prefab names: a networked prefab named like a vanilla one (CopperChestEntity) shares
+ # its ghost type, never joins the ghost collection and keeps GhostCollectionSystem busy every frame.
+ ghosts=[n for n,c in prefabs.items() if 'GhostAuthoringComponent' in c]
+ assert ghosts and all(n.startswith('ConnectedStorage_') for n in ghosts), 'unprefixed networked prefabs: '+str([n for n in ghosts if not n.startswith('ConnectedStorage_')])
  assert 'ConnectedStorage.dll' not in vanilla
  print(path.name+': PASS - storage workbench with nine recipes, eight units, seven gems, crafting costs and native UI')
 

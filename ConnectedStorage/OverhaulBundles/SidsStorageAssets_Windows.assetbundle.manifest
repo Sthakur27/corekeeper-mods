@@ -569,136 +569,136 @@
             "guid": "48b67210559185742a507c75275f56ba"
         },
         {
-            "path": "Assets/ConnectedStorage/Prefabs/WorkbenchEntity.prefab",
-            "guid": "ce52e0f590ee6ed4e9bb369fc773835d"
-        },
-        {
             "path": "Assets/ConnectedStorage/Prefabs/TinGemGraphics.prefab",
             "guid": "2b7b37631cd8b1f429721a5a470dfc97"
-        },
-        {
-            "path": "Assets/ConnectedStorage/Prefabs/TinGemEntity.prefab",
-            "guid": "b68993d123e8ee84ab9a672135ef1500"
         },
         {
             "path": "Assets/ConnectedStorage/Prefabs/TinChestGraphics.prefab",
             "guid": "2c0c3d1fc6ca3f54db3d56e2241bebaa"
         },
         {
-            "path": "Assets/ConnectedStorage/Prefabs/TinChestEntity.prefab",
-            "guid": "2546d540bb8256d459667dc7d27c52be"
-        },
-        {
             "path": "Assets/ConnectedStorage/Prefabs/TerminalGraphics.prefab",
             "guid": "c37355a97c5c83c40806d9a69b6f1580"
-        },
-        {
-            "path": "Assets/ConnectedStorage/Prefabs/TerminalEntity.prefab",
-            "guid": "3ffb7d4dfbc72934a8acac5a2d58d754"
         },
         {
             "path": "Assets/ConnectedStorage/Prefabs/SolariteGemGraphics.prefab",
             "guid": "5a7c7f06a51419943a6e327b347863df"
         },
         {
-            "path": "Assets/ConnectedStorage/Prefabs/SolariteGemEntity.prefab",
-            "guid": "359aa1d77517cdd479e55db471413422"
-        },
-        {
             "path": "Assets/ConnectedStorage/Prefabs/SolariteChestGraphics.prefab",
             "guid": "0bd3d9e4dbba4cc49a29fffc170ff8ce"
-        },
-        {
-            "path": "Assets/ConnectedStorage/Prefabs/SolariteChestEntity.prefab",
-            "guid": "8c57c778b7c538542a3caee4d573fedb"
         },
         {
             "path": "Assets/ConnectedStorage/Prefabs/ScarletGemGraphics.prefab",
             "guid": "328e396aa450d8c41ba350509e451cfb"
         },
         {
-            "path": "Assets/ConnectedStorage/Prefabs/ScarletGemEntity.prefab",
-            "guid": "6b2fa5483cb2ff94eaf2b56431fb4794"
-        },
-        {
             "path": "Assets/ConnectedStorage/Prefabs/ScarletChestGraphics.prefab",
             "guid": "530520fa89381fa48bca7849cf947de0"
-        },
-        {
-            "path": "Assets/ConnectedStorage/Prefabs/ScarletChestEntity.prefab",
-            "guid": "9418cbcd7bc0e4c4093a15bb7e7a194b"
         },
         {
             "path": "Assets/ConnectedStorage/Prefabs/PandoriumGemGraphics.prefab",
             "guid": "8dc5965512d37cc4bbb99384517d13e7"
         },
         {
-            "path": "Assets/ConnectedStorage/Prefabs/PandoriumGemEntity.prefab",
-            "guid": "ec7857c135fafff4482755d09d3442e1"
-        },
-        {
             "path": "Assets/ConnectedStorage/Prefabs/PandoriumChestGraphics.prefab",
             "guid": "0603b0b8f9d459b46b8dc3cb1ab6e6b5"
-        },
-        {
-            "path": "Assets/ConnectedStorage/Prefabs/PandoriumChestEntity.prefab",
-            "guid": "31148f6866a3a9a44940ef938a7e810e"
         },
         {
             "path": "Assets/ConnectedStorage/Prefabs/OctarineGemGraphics.prefab",
             "guid": "6c1bf0ac05a67ef4a80acb119994556b"
         },
         {
-            "path": "Assets/ConnectedStorage/Prefabs/OctarineGemEntity.prefab",
-            "guid": "a8876b7f9941bd64f869fed1270ebfa7"
-        },
-        {
             "path": "Assets/ConnectedStorage/Prefabs/OctarineChestGraphics.prefab",
             "guid": "e628266575f8d734f8777d3645c08232"
-        },
-        {
-            "path": "Assets/ConnectedStorage/Prefabs/OctarineChestEntity.prefab",
-            "guid": "c448f83c7b50c6744829adf1dc904a35"
         },
         {
             "path": "Assets/ConnectedStorage/Prefabs/IronGemGraphics.prefab",
             "guid": "145164730bb8bf34c9ed35affb3c3f38"
         },
         {
-            "path": "Assets/ConnectedStorage/Prefabs/IronGemEntity.prefab",
-            "guid": "dff90a03aaf74cc40a0000f128230c12"
-        },
-        {
             "path": "Assets/ConnectedStorage/Prefabs/IronChestGraphics.prefab",
             "guid": "ba20d3d9f3b6ead4692c93673221487c"
-        },
-        {
-            "path": "Assets/ConnectedStorage/Prefabs/IronChestEntity.prefab",
-            "guid": "4ac3c132dfc3e3443bc72b29560952e2"
         },
         {
             "path": "Assets/ConnectedStorage/Prefabs/GalaxiteGemGraphics.prefab",
             "guid": "48f5701bb3906954a92676419a27cb78"
         },
         {
-            "path": "Assets/ConnectedStorage/Prefabs/GalaxiteGemEntity.prefab",
-            "guid": "4ccbc420a9a25fc46b7fac216ad63de3"
-        },
-        {
             "path": "Assets/ConnectedStorage/Prefabs/GalaxiteChestGraphics.prefab",
             "guid": "11d39cd7d3a849144a347426c24551b4"
-        },
-        {
-            "path": "Assets/ConnectedStorage/Prefabs/GalaxiteChestEntity.prefab",
-            "guid": "a533f9818f41b1246a620c78f752045f"
         },
         {
             "path": "Assets/ConnectedStorage/Prefabs/CopperChestGraphics.prefab",
             "guid": "0b967d7ab46e5854a8bf7cb745b0e5ca"
         },
         {
-            "path": "Assets/ConnectedStorage/Prefabs/CopperChestEntity.prefab",
-            "guid": "e95318fe5cf386d419dd148c388f5a42"
+            "path": "Assets/ConnectedStorage/Prefabs/ConnectedStorage_WorkbenchEntity.prefab",
+            "guid": "ea42aa1077f2ec04da0a07302109419c"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Prefabs/ConnectedStorage_TinGemEntity.prefab",
+            "guid": "082d8e1b7d28e134db6cdf8d0ec95ab3"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Prefabs/ConnectedStorage_TinChestEntity.prefab",
+            "guid": "1ce67121567b5a34bac2a2c0538fc204"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Prefabs/ConnectedStorage_TerminalEntity.prefab",
+            "guid": "9b18b3438b6c1534c94113dbef1631d1"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Prefabs/ConnectedStorage_SolariteGemEntity.prefab",
+            "guid": "426e91ca42418c5498a854ad6929659e"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Prefabs/ConnectedStorage_SolariteChestEntity.prefab",
+            "guid": "7d1e1e47f61223d4581de107821eb29c"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Prefabs/ConnectedStorage_ScarletGemEntity.prefab",
+            "guid": "8955d1a7152dc634f8d69af9a2f92fbb"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Prefabs/ConnectedStorage_ScarletChestEntity.prefab",
+            "guid": "5fc8db97e47a2e94d9065b9c36729116"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Prefabs/ConnectedStorage_PandoriumGemEntity.prefab",
+            "guid": "476e7c19bb2143740bf6dbe992b10a22"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Prefabs/ConnectedStorage_PandoriumChestEntity.prefab",
+            "guid": "c9fc32d4be66b4a4d88f7829ed3febd7"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Prefabs/ConnectedStorage_OctarineGemEntity.prefab",
+            "guid": "d46a4646906a7cd41b5a0e94ce96ec82"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Prefabs/ConnectedStorage_OctarineChestEntity.prefab",
+            "guid": "a1752c09097d0b145a5dfc4a2566114f"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Prefabs/ConnectedStorage_IronGemEntity.prefab",
+            "guid": "0c88a37fa8da3884b9a1a2475252ecd8"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Prefabs/ConnectedStorage_IronChestEntity.prefab",
+            "guid": "7d2cb5a1a1b75f64084c051fe4ce167c"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Prefabs/ConnectedStorage_GalaxiteGemEntity.prefab",
+            "guid": "132439ff1d2ee074aaa3869c67eb41d6"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Prefabs/ConnectedStorage_GalaxiteChestEntity.prefab",
+            "guid": "957bc52ca1bb5b14795fe16c1bc713af"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Prefabs/ConnectedStorage_CopperChestEntity.prefab",
+            "guid": "cb176fa56f34ad94f990335de40478d6"
         },
         {
             "path": "Assets/ConnectedStorage/Data/TextDataBlock/Items/ConnectedStorage_Workbench.asset",

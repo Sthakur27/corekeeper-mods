@@ -22,7 +22,13 @@ public static class ConnectedStorageBuilder
     static bool IsWorkbench => AssetName == "Workbench";
     static string ObjectName => "ConnectedStorage_" + AssetName; // Stable object/save key.
     static string GraphicsPath => Root + "/Prefabs/" + AssetName + "Graphics.prefab";
-    static string LogicPath => Root + "/Prefabs/" + AssetName + "Entity.prefab";
+    // Entity prefab names must not match a vanilla prefab: the ghost type follows the prefab name, and six
+    // tiers named like vanilla chests (CopperChestEntity...) shared a ghost type with them. Those prefabs were
+    // never added to the ghost collection, which kept GhostCollectionSystem walking every ghost each frame (~2 ms).
+    const string LogicPrefix = "ConnectedStorage_";
+    static string LogicName => LogicPrefix + AssetName + "Entity";
+    static string LogicPath => Root + "/Prefabs/" + LogicName + ".prefab";
+    static string LegacyLogicPath => Root + "/Prefabs/" + AssetName + "Entity.prefab";
     static string GraphicalBlockPath => Root + "/Data/GraphicalObjectDataBlock/" + AssetName + "Graphics.asset";
     static string AuthoringBlockPath => Root + "/Data/EntityAuthoringDataBlock/" + AssetName + "Entity.asset";
     const string SettingsPath = Root + "/ConnectedStorage.asset";
@@ -43,6 +49,8 @@ public static class ConnectedStorageBuilder
             foreach (var entry in new[] { "Workbench:-2", "Terminal:0", "CopperChest:20", "TinChest:40", "IronChest:60", "ScarletChest:80", "OctarineChest:100", "GalaxiteChest:120", "SolariteChest:140", "PandoriumChest:160", "TinGem:-1", "IronGem:-1", "ScarletGem:-1", "OctarineGem:-1", "GalaxiteGem:-1", "SolariteGem:-1", "PandoriumGem:-1" })
             {
             AssetName = entry.Split(':')[0]; Capacity = int.Parse(entry.Split(':')[1]);
+            // ModBuilder bundles everything under Root: drop the old vanilla-named prefab so it is not shipped too.
+            if (AssetDatabase.LoadAssetAtPath<GameObject>(LegacyLogicPath) != null) AssetDatabase.DeleteAsset(LegacyLogicPath);
             var spriteAsset = AssetDatabase.LoadAssetAtPath<ScriptableObject>(Root + "/Data/SpriteAsset/" + AssetName + ".asset");
             if (spriteAsset == null) throw new Exception("SpriteAsset missing (run gen_assets.py)");
             var spriteAddress = ReadAddress(spriteAsset);
@@ -294,7 +302,7 @@ public static class ConnectedStorageBuilder
 
     static GameObject BuildLogic(GameObject graphics, (long lo, long hi) graphicalAddress)
     {
-        var go = new GameObject(AssetName + "Entity");
+        var go = new GameObject(LogicName);
         try
         {
             var iconPath = Root + "/Textures/" + AssetName + "_icon.png";

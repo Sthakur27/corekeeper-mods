@@ -42,6 +42,13 @@ namespace KeepMinions.Systems
         protected override void OnUpdate()
         {
             Hidden.Clear();
+            // DisablePhysicsCD is enableable, so the query is empty unless some player has it switched on
+            // (mid-teleport); the loop below would skip every player anyway.
+            if (_players.IsEmpty)
+            {
+                base.OnUpdate();
+                return;
+            }
             var entities = _players.ToEntityArray(Allocator.Temp);
             var states = _players.ToComponentDataArray<PlayerStateCD>(Allocator.Temp);
             var healths = _players.ToComponentDataArray<HealthCD>(Allocator.Temp);
@@ -116,6 +123,11 @@ namespace KeepMinions.Systems
 
         protected override void OnUpdate()
         {
+            if (_minions.IsEmpty)
+            {
+                base.OnUpdate();
+                return;
+            }
             var entities = _minions.ToEntityArray(Allocator.Temp);
             var owners = _minions.ToComponentDataArray<OwnerReferenceCD>(Allocator.Temp);
             var transforms = _minions.ToComponentDataArray<LocalTransform>(Allocator.Temp);

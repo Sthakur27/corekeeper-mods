@@ -86,14 +86,15 @@ namespace BossBonusLoot.Systems
             }
 
             var bank = _database.GetSingleton<PugDatabase.DatabaseBankCD>().databaseBankBlob;
+            // The query matches every dying destructible (chests, plants, stations...), so only the entity and
+            // ObjectID arrays are built; health and position are read just for the few listed types.
             var entities = _deadBosses.ToEntityArray(Allocator.Temp);
             var objects = _deadBosses.ToComponentDataArray<ObjectDataCD>(Allocator.Temp);
-            var transforms = _deadBosses.ToComponentDataArray<LocalTransform>(Allocator.Temp);
-            var healths = _deadBosses.ToComponentDataArray<HealthCD>(Allocator.Temp);
             for (int i = 0; i < entities.Length; i++)
             {
-                if (healths[i].health > 0 || _handled.Contains(entities[i])) continue;
                 if (!Bonus.TryGetValue(objects[i].objectID, out var drops)) continue;
+                if (_handled.Contains(entities[i])) continue;
+                if (EntityManager.GetComponentData<HealthCD>(entities[i]).health > 0) continue;
                 _handled.Add(entities[i]);
 
                 Entity killer = Entity.Null;
@@ -102,7 +103,7 @@ namespace BossBonusLoot.Systems
                     killer = EntityManager.GetComponentData<KilledByPlayerCD>(entities[i]).playerEntity;
                 if (killer != Entity.Null && !EntityManager.Exists(killer)) killer = Entity.Null;
 
-                float3 pos = transforms[i].Position;
+                float3 pos = EntityManager.GetComponentData<LocalTransform>(entities[i]).Position;
                 foreach (var (item, amount, chance) in drops)
                 {
                     if (chance < 1f && Rng.NextDouble() >= chance) continue;
@@ -115,8 +116,6 @@ namespace BossBonusLoot.Systems
             }
             entities.Dispose();
             objects.Dispose();
-            transforms.Dispose();
-            healths.Dispose();
             base.OnUpdate();
         }
     }

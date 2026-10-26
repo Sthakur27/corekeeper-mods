@@ -19,6 +19,10 @@ namespace ArmorDye
         private static readonly int ColorReplaceTex = Shader.PropertyToID("_colorReplaceTexture");
         private static readonly int EmissiveTex = Shader.PropertyToID("_EmissiveTex");
         private static readonly HashSet<string> Logged = new HashSet<string>();
+        // Last shader probed per layer (by instance id) and previews already logged: Probe and TickPreviews run
+        // every frame, and building their log keys allocated strings every frame.
+        private static readonly Dictionary<int, Shader> Probed = new Dictionary<int, Shader>();
+        private static readonly HashSet<int> LoggedPreviews = new HashSet<int>();
 
         internal static readonly List<PlayerController> Previews = new List<PlayerController>();
         internal static readonly Dictionary<Unity.Entities.Entity, PlayerController> Players = new Dictionary<Unity.Entities.Entity, PlayerController>();
@@ -66,7 +70,8 @@ namespace ArmorDye
                     if (p != player && p.gameObject.activeInHierarchy)
                     {
                         ApplyAll(p, player);
-                        LogOnce("preview:" + p.GetInstanceID(), $"dyeing preview {p.name}", false);
+                        if (LoggedPreviews.Add(p.GetInstanceID()))
+                            LogOnce("preview:" + p.GetInstanceID(), $"dyeing preview {p.name}", false);
                     }
                 }
             }
@@ -164,6 +169,11 @@ namespace ArmorDye
 
         private static void Probe(SpriteSheetSkin layer, Material mat)
         {
+            // The log key only changes with the shader, so skip the string work while it stays the same.
+            Shader shader = mat.shader;
+            int id = layer.GetInstanceID();
+            if (shader != null && Probed.TryGetValue(id, out var last) && last == shader) return;
+            Probed[id] = shader;
             string key = layer.name + "|" + mat.shader.name;
             LogOnce(key, $"layer {layer.name}: shader {mat.shader.name}, _colorReplaceTexture={mat.HasProperty(ColorReplaceTex)}, _ReplacementTex={mat.HasProperty(ReplacementTex)}, skin {layer.skin.name} {layer.skin.width}x{layer.skin.height} {layer.skin.format}", false);
         }

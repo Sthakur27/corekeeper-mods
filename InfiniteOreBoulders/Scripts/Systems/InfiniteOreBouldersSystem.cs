@@ -31,7 +31,7 @@ namespace InfiniteOreBoulders.Systems
             _targets = GetEntityQuery(
                 ComponentType.ReadOnly<ObjectDataCD>(),
                 ComponentType.ReadOnly<DropsLootWhenDamagedCD>(),
-                ComponentType.ReadWrite<HealthCD>());
+                ComponentType.ReadOnly<HealthCD>());
             RequireForUpdate(_targets);
         }
 
@@ -50,11 +50,10 @@ namespace InfiniteOreBoulders.Systems
         {
             var entities = _targets.ToEntityArray(Allocator.Temp);
             var objects = _targets.ToComponentDataArray<ObjectDataCD>(Allocator.Temp);
-            var healths = _targets.ToComponentDataArray<HealthCD>(Allocator.Temp);
             for (int i = 0; i < entities.Length; i++)
             {
                 if (!IsBoulder(objects[i].objectID)) continue;
-                var health = healths[i];
+                var health = EntityManager.GetComponentData<HealthCD>(entities[i]);
                 if (health.maxHealth <= 1) continue;
 
                 if (health.health != health.maxHealth)
@@ -64,6 +63,9 @@ namespace InfiniteOreBoulders.Systems
                 }
 
                 if (!EntityManager.HasBuffer<HealthChangeBuffer>(entities[i])) continue;
+                // Checked read-only first: a read-write GetBuffer waits for every job using HealthChangeBuffer,
+                // and most ticks no boulder has queued damage.
+                if (!HasDamage(EntityManager.GetBuffer<HealthChangeBuffer>(entities[i], true))) continue;
                 var changes = EntityManager.GetBuffer<HealthChangeBuffer>(entities[i]);
                 int budget = health.maxHealth - 1; // damage this tick may take it down to 1, never 0
                 for (int c = 0; c < changes.Length; c++)
@@ -81,7 +83,17 @@ namespace InfiniteOreBoulders.Systems
             }
             entities.Dispose();
             objects.Dispose();
-            healths.Dispose();
+        }
+
+        /// <summary>True if the loop in OnUpdate would rewrite any entry (damage or a kill).</summary>
+        private static bool HasDamage(DynamicBuffer<HealthChangeBuffer> changes)
+        {
+            for (int c = 0; c < changes.Length; c++)
+            {
+                var hc = changes[c].healthChange;
+                if (hc.amount < 0 || hc.wasKilled) return true;
+            }
+            return false;
         }
     }
 }

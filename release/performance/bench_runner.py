@@ -33,6 +33,8 @@ MODIO_STATE = Path(r"C:\Users\Public\mod.io\5289\state.json")
 # silently stop "not compatible" mods from loading afterwards. Snapshot and restore it around every run.
 LOADER_CONFIG = PROFILE / "modloader" / "config.json"
 OVERHAUL_CONFIG = PROFILE / "mods" / "SidsOverhaul" / "config.cfg"
+# Where the installed Overhaul waits while a variant=<name> setup runs (outside Mods, so it is not loaded).
+KEPT_OVERHAUL = GAME_MODS.parent / "SidsOverhaul.benchkeep"
 # Switchable Overhaul features in Features.All order (labels as written in config.cfg). Setup
 # "overhaul-off=<i>-<j>" is overhaul-only with features i..j (inclusive) switched off; "=all" for every one.
 FEATURES = ["Auto Replant", "Quick Buff", "Buff Duration Floor", "Potion Seller", "Fish Seller", "Merchant Restock",
@@ -76,6 +78,7 @@ class Setup:
     def __init__(self, name):
         self.name, self.renamed, self.state_backup, self.loader_backup = name, [], None, None
         self.overhaul_backup = None
+        self.swapped = False
 
     @staticmethod
     def feature_range(spec):
@@ -108,12 +111,26 @@ class Setup:
         "third-party-only": (True, False, False),
     }
 
+    def swap_overhaul(self, variant):
+        """Installs build/bench/variants/<variant> as SidsOverhaul; the real one waits outside Mods."""
+        source = ROOT / "build" / "bench" / "variants" / variant
+        if not (source / "ModManifest.json").exists():
+            sys.exit("variant not built: " + str(source))
+        if KEPT_OVERHAUL.exists():
+            sys.exit("a previous swap was not restored; check " + str(KEPT_OVERHAUL))
+        shutil.move(str(GAME_MODS / "SidsOverhaul"), str(KEPT_OVERHAUL))
+        self.swapped = True
+        shutil.copytree(source, GAME_MODS / "SidsOverhaul")
+
     def apply(self):
         self.loader_backup = LOADER_CONFIG.read_bytes() if LOADER_CONFIG.exists() else None
         base = self.name
         if self.name.startswith("overhaul-off="):
             base = "overhaul-only"
             self.switch_features_off(self.feature_range(self.name.split("=", 1)[1]))
+        if self.name.startswith("variant="):
+            base = "overhaul-only"
+            self.swap_overhaul(self.name.split("=", 1)[1])
         if base not in self.SETUPS:
             sys.exit("unknown setup: " + self.name)
         local_off, workshop_off, modio_off = self.SETUPS[base]
@@ -140,6 +157,10 @@ class Setup:
             LOADER_CONFIG.write_bytes(self.loader_backup)
         if self.overhaul_backup is not None:
             OVERHAUL_CONFIG.write_bytes(self.overhaul_backup)
+        if self.swapped:
+            shutil.rmtree(GAME_MODS / "SidsOverhaul")
+            shutil.move(str(KEPT_OVERHAUL), str(GAME_MODS / "SidsOverhaul"))
+            self.swapped = False
         self.renamed, self.state_backup, self.loader_backup, self.overhaul_backup = [], None, None, None
 
 

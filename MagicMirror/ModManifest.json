@@ -1,0 +1,45 @@
+{
+    "guid": "f24d9b6e721a4cc4a650c8de17923100",
+    "name": "MagicMirror",
+    "displayName": "Magic Mirror",
+    "skipSafetyChecks": false,
+    "disableScripts": false,
+    "accessesExtraAssemblies": true,
+    "disableHarmonyPatching": false,
+    "requiredOn": 3,
+    "files": [
+        {
+            "path": "Scripts/MagicMirrorMod.cs",
+            "guid": ""
+        },
+        {
+            "path": "Scripts/MirrorCastSystem.cs",
+            "guid": ""
+        },
+        {
+            "path": "Scripts/MirrorRecipeAuthoring.cs",
+            "guid": ""
+        },
+        {
+            "path": "Scripts/OmorothMirrorDropSystem.cs",
+            "guid": ""
+        },
+        {
+            "path": "Bundles/MagicMirror_Linux.assetbundle",
+            "guid": ""
+        },
+        {
+            "path": "Bundles/MagicMirror_Linux.assetbundle.manifest",
+            "guid": ""
+        },
+        {
+            "path": "Bundles/MagicMirror_Windows.assetbundle",
+            "guid": ""
+        },
+        {
+            "path": "Bundles/MagicMirror_Windows.assetbundle.manifest",
+            "guid": ""
+        }
+    ],
+    "dependencies": []
+}

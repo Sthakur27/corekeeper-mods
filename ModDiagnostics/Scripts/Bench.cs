@@ -150,7 +150,8 @@ namespace ModDiagnostics
             int pendingServer = PendingGhostPrefabs(em), pendingClient = client != null && client.IsCreated ? PendingGhostPrefabs(client.EntityManager) : -1;
             var text = new StringBuilder("census objects=" + objects + " inventories=" + inventories + " slots=" + slots + " autoTransfer=" + auto
                 + " moddedServer=" + modded + " moddedClient=" + clientModded
-                + " pendingGhostPrefabsServer=" + pendingServer + " pendingGhostPrefabsClient=" + pendingClient + " top=");
+                + " pendingGhostPrefabsServer=" + pendingServer + " pendingGhostPrefabsClient=" + pendingClient
+                + " pending=" + (PendingDetail ?? "") + " top=");
             for (int i = 0; i < top.Count && i < 12; i++)
                 text.Append(i == 0 ? "" : ",").Append(top[i].Key).Append(':').Append(top[i].Value[0]).Append('/').Append(top[i].Value[1]).Append('/').Append(top[i].Value[2]);
             return text.ToString();
@@ -164,7 +165,27 @@ namespace ModDiagnostics
                 None = new[] { ComponentType.ReadOnly<Unity.NetCode.GhostPrefabInCollection>() },
                 Options = EntityQueryOptions.IncludePrefab
             };
-            using (var query = em.CreateEntityQuery(desc)) return query.CalculateEntityCount();
+            using (var query = em.CreateEntityQuery(desc))
+            {
+                if (PendingDetail == null) PendingDetail = Describe(em, query);
+                return query.CalculateEntityCount();
+            }
+        }
+
+        // Names, object IDs and ghost type hashes of the stuck prefabs (first world only), for the report.
+        private static string PendingDetail;
+        private static string Describe(EntityManager em, EntityQuery query)
+        {
+            var text = new StringBuilder();
+            using (var entities = query.ToEntityArray(Allocator.Temp))
+            using (var types = query.ToComponentDataArray<Unity.NetCode.GhostType>(Allocator.Temp))
+                for (int i = 0; i < entities.Length && i < 20; i++)
+                {
+                    em.GetName(entities[i], out var name);
+                    int id = em.HasComponent<ObjectDataCD>(entities[i]) ? (int)em.GetComponentData<ObjectDataCD>(entities[i]).objectID : -1;
+                    text.Append(i == 0 ? "" : ";").Append(name.ToString()).Append('#').Append(id).Append('@').Append(types[i].GetHashCode());
+                }
+            return text.ToString();
         }
 
         private static int CountModded(EntityManager em)

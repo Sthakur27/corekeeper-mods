@@ -2,9 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
-using PlayerState;
+using HarmonyLib;
 using PugMod;
-using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -12,9 +11,10 @@ namespace ModDiagnostics
 {
     // Unattended benchmark, driven by release/performance/bench_runner.py.
     // If ModDiagnostics/bench.txt exists at startup: start the given world and character from the
-    // title screen, replay a recorded route in NoClip (the same way the game's own ExploreWorld
-    // benchmark moves the player), capture with the recorder, write ModDiagnostics/bench-status.txt
-    // and quit. Without the control file nothing here runs.
+    // title screen, walk a recorded route by steering the movement stick (BenchInputPatch), capture
+    // with the recorder, write ModDiagnostics/bench-status.txt and quit. Without the control file
+    // nothing here runs. Client-side SetPlayerPosition is not used: in a real world the server
+    // snaps the player back. When stuck, the player is moved with the server-side debug command.
     public static class Bench
     {
         private const string ControlPath = "ModDiagnostics/bench.txt";
@@ -31,8 +31,15 @@ namespace ModDiagnostics
         private static string recordingName;
         private static readonly List<Vector4> recorded = new List<Vector4>();
         private static double recordStart, recordLast;
+        private static int target, step = 1, teleports;
+        private static float bestDistance;
+        private static double progressAt;
+        private const float Reached = 0.6f, StuckSeconds = 1.5f;
 
         public static bool Recording => recording;
+        // Read by BenchInputPatch: while true, the movement stick reports Steer instead of the device.
+        public static bool Steering;
+        public static Vector2 Steer;
 
         public static void Update()
         {
@@ -78,25 +85,24 @@ namespace ModDiagnostics
                     if (now - phaseAt > 300) { Finish("error", "world did not finish loading"); return; }
                     var player = Manager.main == null ? null : Manager.main.player;
                     if (player == null || Manager.load.IsLoading() || SceneManager.GetActiveScene().name != "Main") return;
-                    // NoClip and no input, exactly like BenchmarkRunner.ExploreWorld.Setup.
-                    player.playerCommandSystem.SetPlayerState(player.entity, PlayerStateEnum.NoClip, locked: true);
-                    Manager.input.DisableInput();
-                    Place(player, 0);
+                    Teleport(player, 0);
                     phase = Phase.Settle; phaseAt = now;
                     WriteStatus("settling", "");
                     return;
                 case Phase.Settle:
-                    Place(Manager.main.player, 0);
                     if (now - phaseAt < GetInt("settle", 20)) return;
                     Recorder.Start(Get("label", "bench"), GetInt("seconds", 60));
                     if (!Recorder.Active) { Finish("error", "recorder did not start: " + Recorder.LastReport); return; }
                     captureStarted = true;
+                    target = 1; step = 1; progressAt = now; bestDistance = float.MaxValue;
+                    Steering = true;
                     phase = Phase.Run; runAt = now;
                     WriteStatus("running", "");
                     return;
                 case Phase.Run:
-                    if (Recorder.Active) { Place(Manager.main.player, now - runAt); return; }
-                    Finish(string.IsNullOrEmpty(Recorder.LastReportPath) ? "error" : "done", Recorder.LastReport);
+                    if (Recorder.Active) { Walk(Manager.main.player, now); return; }
+                    Steering = false;
+                    Finish(string.IsNullOrEmpty(Recorder.LastReportPath) ? "error" : "done", Recorder.LastReport + " teleports=" + teleports);
                     return;
                 case Phase.Quit:
                     if (now - phaseAt > 2 && GetInt("quit", 1) == 1) Application.Quit();
@@ -104,31 +110,37 @@ namespace ModDiagnostics
             }
         }
 
-        // Moves along the route at the recorded pace, back and forth so the player never jumps.
-        private static void Place(PlayerController player, double seconds)
+        // Pursues the recorded points in order, back and forth, at the player's own walking speed.
+        private static void Walk(PlayerController player, double now)
         {
-            if (player == null) return;
-            double length = route[route.Count - 1].w;
-            double t = length <= 0 ? 0 : seconds % (2 * length);
-            if (t > length) t = 2 * length - t;
-            int i = 1;
-            while (i < route.Count - 1 && route[i].w < t) i++;
-            Vector4 a = route[i - 1], b = route[i];
-            float u = b.w > a.w ? (float)((t - a.w) / (b.w - a.w)) : 0f;
-            var p = Vector4.Lerp(a, b, Mathf.Clamp01(u));
-            player.SetPlayerPosition(new float3(p.x, p.y, p.z));
+            if (player == null) { Steer = Vector2.zero; return; }
+            Vector3 pos = player.WorldPosition;
+            var goal = route[target];
+            var delta = new Vector2(goal.x - pos.x, goal.z - pos.z);
+            for (int guard = 0; delta.magnitude < Reached && guard < route.Count * 2; guard++)
+            {
+                if (target + step < 0 || target + step >= route.Count) step = -step;
+                target += step; goal = route[target];
+                delta = new Vector2(goal.x - pos.x, goal.z - pos.z);
+                bestDistance = float.MaxValue; progressAt = now;
+            }
+            float distance = Mathf.Max(delta.magnitude, 0.001f);
+            if (distance < bestDistance - 0.1f) { bestDistance = distance; progressAt = now; }
+            else if (now - progressAt > StuckSeconds) { Teleport(player, target); progressAt = now; bestDistance = float.MaxValue; teleports++; }
+            Steer = delta / distance;
+        }
+
+        // Server-side move (same command as the game's debug teleport), so the server does not snap it back.
+        private static void Teleport(PlayerController player, int index)
+        {
+            var p = route[index];
+            player.playerCommandSystem.SetPlayerPosition(player.entity, new Vector3(p.x, p.y, p.z));
         }
 
         private static void Finish(string state, string detail)
         {
+            Steering = false;
             if (captureStarted && Recorder.Active) Recorder.Stop("bench-" + state);
-            try
-            {
-                var player = Manager.main == null ? null : Manager.main.player;
-                if (player != null) player.playerCommandSystem.UnlockCurrentState(player.entity);
-                if (Manager.input != null) Manager.input.EnableInput();
-            }
-            catch (Exception) { }
             WriteStatus(state, detail);
             Debug.Log("[ModDiagnostics] Bench " + state + ": " + detail);
             phase = Phase.Quit; phaseAt = Time.realtimeSinceStartupAsDouble;
@@ -222,6 +234,18 @@ namespace ModDiagnostics
             foreach (char c in name ?? "")
                 if (result.Length < 32 && (char.IsLetterOrDigit(c) || c == '-' || c == '_')) result.Append(c);
             return result.Length == 0 ? "route" : result.ToString();
+        }
+    }
+
+    // SendClientInputSystem reads the movement stick through this call every frame; while the bench
+    // walks, it gets the steering direction, so movement goes through normal client input and prediction.
+    [HarmonyPatch(typeof(PlayerInput), "GetInputAxisValue", new[] { typeof(PlayerInput.InputAxisType), typeof(PlayerInput.InputAxisType) })]
+    public static class BenchInputPatch
+    {
+        public static void Postfix(PlayerInput.InputAxisType horizontalAxisType, ref Vector2 __result)
+        {
+            if (Bench.Steering && horizontalAxisType == PlayerInput.InputAxisType.CHARACTER_MOVEMENT_HORIZONTAL)
+                __result = Bench.Steer;
         }
     }
 }

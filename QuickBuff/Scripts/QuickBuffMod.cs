@@ -5,6 +5,7 @@ using CoreLib;
 using CoreLib.Submodule.Command;
 using CoreLib.Submodule.Command.Data;
 using CoreLib.Submodule.ControlMapping;
+using CoreLib.Submodule.Localization;
 using ModOptions;
 using PugMod;
 using Rewired;
@@ -29,7 +30,7 @@ namespace QuickBuff
     public sealed class QuickBuffMod : IMod
     {
         public const string Name = "QuickBuff";
-        public const string Version = "1.4.0";
+        public const string Version = "1.4.1";
 
         /// <summary>Rewired action name registered with CoreLib's control mapping module.</summary>
         public const string UseKeyBind = "QuickBuff_Use";
@@ -94,6 +95,14 @@ namespace QuickBuff
                 ControlMappingModule.AddKeyboardBind(HealKeyBind, KeyboardKeyCode.H, categoryId: category);
                 ControlMappingModule.AddKeyboardBind(FoodKeyBind, KeyboardKeyCode.F, categoryId: category);
                 ControlMappingModule.rewiredStart += OnRewiredStart;
+
+                // Controls menu labels ("ControlMapper/" + category/action name); without them it shows "missing:".
+                CoreLibMod.LoadSubmodule(typeof(LocalizationModule));
+                LocalizationModule.AddTerm("ControlMapper/Quick BuffCategory", "Quick Buff");
+                LocalizationModule.AddTerm("ControlMapper/Quick BuffDescription", "Use buff items, heal or eat with one key.");
+                LocalizationModule.AddTerm($"ControlMapper/{UseKeyBind}", "Quick buff");
+                LocalizationModule.AddTerm($"ControlMapper/{HealKeyBind}", "Quick heal");
+                LocalizationModule.AddTerm($"ControlMapper/{FoodKeyBind}", "Quick food");
             }
             catch (Exception e)
             {

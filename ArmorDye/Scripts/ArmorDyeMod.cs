@@ -3,6 +3,7 @@ using System.Linq;
 using CoreLib;
 using CoreLib.Submodule.Command;
 using CoreLib.Submodule.ControlMapping;
+using CoreLib.Submodule.Localization;
 using ModOptions;
 using PugMod;
 using Rewired;
@@ -20,7 +21,7 @@ namespace ArmorDye
     public sealed class ArmorDyeMod : IMod
     {
         public const string Name = "ArmorDye";
-        public const string Version = "0.5.3";
+        public const string Version = "0.5.4";
 
         public void EarlyInit()
         {
@@ -39,6 +40,12 @@ namespace ArmorDye
                 int category = ControlMappingModule.AddNewCategory("Armor Dye");
                 ControlMappingModule.AddKeyboardBind(DyeUI.KeyBind, KeyboardKeyCode.P, categoryId: category);
                 ControlMappingModule.rewiredStart += DyeUI.OnRewiredStart;
+
+                // Controls menu labels ("ControlMapper/" + category/action name); without them it shows "missing:".
+                CoreLibMod.LoadSubmodule(typeof(LocalizationModule));
+                LocalizationModule.AddTerm("ControlMapper/Armor DyeCategory", "Armor Dye");
+                LocalizationModule.AddTerm("ControlMapper/Armor DyeDescription", "Open the dye palette for the hovered item.");
+                LocalizationModule.AddTerm($"ControlMapper/{DyeUI.KeyBind}", "Open dye palette");
             }
             catch (Exception e)
             {

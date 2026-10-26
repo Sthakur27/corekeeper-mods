@@ -12,7 +12,8 @@ namespace FiveLoadouts
     /// ContainedObjectsBuffer, plus a private bag, lantern and pet slot. The game's Burst copy
     /// job indexes the buffer by ActiveEquipmentPresetCD.Value and clamps the client's request to
     /// the buffer length, so five entries need no Burst patch. The character window gets two
-    /// more preset tabs (cloned at runtime) and the cycle hotkey wraps at 5.
+    /// more preset tabs (cloned at runtime), the cycle hotkey wraps at 5, and loadouts 4 and 5
+    /// get optional direct keys (CoreLib control mapping, unbound by default).
     ///
     /// LoadoutSharing (Loadout Fallback) is optional. When it is present and updated, loadouts 4 and 5 get the same fallback-to-loadout-1 rule as 2
     /// and 3. Without it they behave like vanilla 2 and 3 (own gear, shared bag/lantern/pet).
@@ -20,13 +21,14 @@ namespace FiveLoadouts
     public class FiveLoadoutsMod : IMod
     {
         public const string Name = "FiveLoadouts";
-        public const string Version = "1.0.2";
+        public const string Version = "1.1.0";
 
         public void EarlyInit()
         {
             // The loader initialises dependencies first, so when LoadoutSharing is installed its
             // handler is subscribed (and runs) before ours: our slots always land after its six.
             API.Authoring.OnObjectTypeAdded += PresetLayout.OnObjectTypeAdded;
+            PresetHotkeys.Register();
             Debug.Log($"[{Name}] v{Version} loaded. Presets: {PresetLayout.PresetCount}.");
         }
 
@@ -42,10 +44,11 @@ namespace FiveLoadouts
 
         public void ModObjectLoaded(Object obj) { }
 
-        /// <summary>Every frame on the client: make sure the character window has five tabs.</summary>
+        /// <summary>Every frame on the client: make sure the character window has five tabs; loadout IV/V keys.</summary>
         public void Update()
         {
             PresetTabsUI.EnsureExtended();
+            PresetHotkeys.Poll();
         }
     }
 }

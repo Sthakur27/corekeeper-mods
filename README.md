@@ -21,7 +21,7 @@ Use the Overhaul or the individual versions of its features. Installing both run
 | Mod | What it helps with |
 |---|---|
 | [Loadout Fallback](LoadoutSharing/README.md) | Reuse equipment in empty loadout slots and keep separate vanity outfits. |
-| [Five Loadouts](FiveLoadouts/README.md) | Add two more equipment loadouts. Requires Loadout Fallback. |
+| [Five Loadouts](FiveLoadouts/README.md) | Add two more equipment loadouts, with optional direct keys. Requires CoreLib and Loadout Fallback. |
 | [Ender Stash](EnderStash/README.md) | Access your character's personal 40-slot stash through an Ender Chest. |
 | [Armor Dye](ArmorDye/README.md) | Color individual armor pieces, weapons and tools. |
 | [Pet Editor](PetEditor/README.md) | Change a pet's level, talents and color. |

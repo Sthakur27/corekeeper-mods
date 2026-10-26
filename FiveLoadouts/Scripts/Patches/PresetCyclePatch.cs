@@ -8,8 +8,7 @@ namespace FiveLoadouts.Patches
     /// cannot change the constant, so when the cycle key was pressed this frame and the
     /// requested index is exactly what the vanilla formula produces, we replace it with
     /// (active + 1) % 5. The keys for presets 1-3 are untouched; there are no vanilla input
-    /// actions for presets 4 and 5 (Rewired actions cannot be added by a mod), so those are
-    /// reached by clicking the tabs or by cycling.
+    /// actions for presets 4 and 5, so their direct keys are CoreLib binds (PresetHotkeys).
     /// </summary>
     [HarmonyPatch(typeof(PlayerController), "SetActiveEquipmentPreset")]
     public static class PresetCyclePatch

@@ -29,6 +29,9 @@ CHARACTER, WORLD = 3, 4
 GAME_MODS = Path(r"C:\Program Files (x86)\Steam\steamapps\common\Core Keeper\CoreKeeper_Data\StreamingAssets\Mods")
 WORKSHOP = Path(r"C:\Program Files (x86)\Steam\steamapps\workshop\content\1621690")
 MODIO_STATE = Path(r"C:\Users\Public\mod.io\5289\state.json")
+# The game prunes its unsupported-mod allow list to the mods it loaded, so a near-vanilla run would
+# silently stop "not compatible" mods from loading afterwards. Snapshot and restore it around every run.
+LOADER_CONFIG = PROFILE / "modloader" / "config.json"
 MODIO_USER = "2667367"
 # Always loaded in every setup: the recorder, its CoreLib dependency, and SkipIntro (startup only).
 KEEP_MODIO = {"3177992", "6363825"}
@@ -62,9 +65,10 @@ class Setup:
     """Temporarily switches the installed mod set; restore() puts back exactly what was there."""
 
     def __init__(self, name):
-        self.name, self.renamed, self.state_backup = name, [], None
+        self.name, self.renamed, self.state_backup, self.loader_backup = name, [], None, None
 
     def apply(self):
+        self.loader_backup = LOADER_CONFIG.read_bytes() if LOADER_CONFIG.exists() else None
         if self.name == "current":
             return
         if self.name != "near-vanilla":
@@ -85,7 +89,9 @@ class Setup:
             (folder / "ModManifest.benchoff").rename(folder / "ModManifest.json")
         if self.state_backup is not None:
             MODIO_STATE.write_bytes(self.state_backup)
-        self.renamed, self.state_backup = [], None
+        if self.loader_backup is not None:
+            LOADER_CONFIG.write_bytes(self.loader_backup)
+        self.renamed, self.state_backup, self.loader_backup = [], None, None
 
 
 def read_status():

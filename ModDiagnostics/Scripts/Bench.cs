@@ -38,7 +38,7 @@ namespace ModDiagnostics
 
         public static bool Recording => recording;
         // Read by BenchInputPatch: while true, the movement stick reports Steer instead of the device.
-        public static bool Steering;
+        public static bool Steering, Uncapped;
         public static Vector2 Steer;
 
         public static void Update()
@@ -94,7 +94,9 @@ namespace ModDiagnostics
                     if (now - phaseAt < GetInt("settle", 20)) return;
                     // Uncapped runs show each setup's real frame cost instead of time spent waiting for the cap.
                     // Only the running process changes; the player's saved graphics options stay as they are.
-                    if (GetInt("uncap", 0) == 1) { QualitySettings.vSyncCount = 0; Application.targetFrameRate = -1; }
+                    // Manager.Update re-applies the saved cap every frame, so BenchUncapPatch overrides it after that.
+                    Uncapped = GetInt("uncap", 0) == 1;
+                    if (Uncapped) { QualitySettings.vSyncCount = 0; Application.targetFrameRate = -1; }
                     Recorder.Start(Get("label", "bench"), GetInt("seconds", 60));
                     if (!Recorder.Active) { Finish("error", "recorder did not start: " + Recorder.LastReport); return; }
                     captureStarted = true;
@@ -143,7 +145,7 @@ namespace ModDiagnostics
 
         private static void Finish(string state, string detail)
         {
-            Steering = false;
+            Steering = false; Uncapped = false;
             if (captureStarted && Recorder.Active) Recorder.Stop("bench-" + state);
             WriteStatus(state, detail);
             Debug.Log("[ModDiagnostics] Bench " + state + ": " + detail);
@@ -238,6 +240,19 @@ namespace ModDiagnostics
             foreach (char c in name ?? "")
                 if (result.Length < 32 && (char.IsLetterOrDigit(c) || c == '-' || c == '_')) result.Append(c);
             return result.Length == 0 ? "route" : result.ToString();
+        }
+    }
+
+    // Manager.Update sets vSyncCount and targetFrameRate from the saved prefs every frame; during an
+    // uncapped bench capture this runs right after it and lifts both, without touching the saved prefs.
+    [HarmonyPatch(typeof(Manager), "Update")]
+    public static class BenchUncapPatch
+    {
+        public static void Postfix()
+        {
+            if (!Bench.Uncapped) return;
+            if (QualitySettings.vSyncCount != 0) QualitySettings.vSyncCount = 0;
+            if (Application.targetFrameRate != -1) Application.targetFrameRate = -1;
         }
     }
 

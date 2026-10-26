@@ -95,7 +95,7 @@ public static class EnderChestBuilder
             ti.GetSourceTextureWidthAndHeight(out _, out int height);
             // World sprites: feet one pixel above the bottom, like vanilla chests. The inventory icon is
             // drawn centered on its pivot, so it gets a centered pivot (else it sits high in the slot).
-            s.spritePivot = path.EndsWith("_icon.png") ? new Vector2(0.5f, 0.5f) : new Vector2(0.5f, 1f / height);
+            s.spritePivot = path.EndsWith("_icon.png") || path.EndsWith("_small.png") ? new Vector2(0.5f, 0.5f) : new Vector2(0.5f, 1f / height);
             s.spriteMeshType = SpriteMeshType.FullRect;
             ti.SetTextureSettings(s);
             ti.SaveAndReimport();
@@ -216,6 +216,10 @@ public static class EnderChestBuilder
             Debug.Log($"[EnderChestBuilder] {iconPath}: {string.Join(", ", all.Select(a => a == null ? "null" : a.GetType().Name + ":" + a.name))}");
             var icon = all.OfType<Sprite>().FirstOrDefault() ?? AssetDatabase.LoadAssetAtPath<Sprite>(iconPath);
             if (icon == null) throw new Exception("no Sprite in " + iconPath);
+            // Carried and dropped items use smallIcon; vanilla chests draw a smaller chest there.
+            var smallPath = Root + "/Textures/EnderChest_small.png";
+            var small = AssetDatabase.LoadAllAssetsAtPath(smallPath).OfType<Sprite>().FirstOrDefault() ?? AssetDatabase.LoadAssetAtPath<Sprite>(smallPath);
+            if (small == null) throw new Exception("no Sprite in " + smallPath);
 
             Fill(Add(go, "ObjectAuthoring"), so =>
             {
@@ -236,7 +240,7 @@ public static class EnderChestBuilder
                 N(so, "sellValue", 2000);
                 N(so, "buyValueMultiplier", 0.9999f);
                 so.FindProperty("icon").objectReferenceValue = icon;
-                so.FindProperty("smallIcon").objectReferenceValue = icon;
+                so.FindProperty("smallIcon").objectReferenceValue = small;
                 B(so, "isStackable", true);
                 N(so, "craftingTime", 2f);
             });

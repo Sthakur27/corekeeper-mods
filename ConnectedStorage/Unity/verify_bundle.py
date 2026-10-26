@@ -22,14 +22,29 @@ for path in paths:
    assert Image.alpha_composite(backdrop, actual).tobytes() == Image.alpha_composite(backdrop, expected).tobytes(), data.m_Name + ': bundled artwork differs from source'
   texture_count += 1
  assert texture_count == 102, f'Expected 102 art textures, found {texture_count}' 
- # Prove the approved image crop is unchanged and high-resolution meshes stay one tile wide.
+ # Runtime art is the approved art downsampled (downscale_art.py): compare visible pixels to the
+ # approved crop resized to the same visible size, on black and white, within a small tolerance.
+ def assert_resample_of(art, crop, label):
+  box=art.getchannel('A').point(lambda a:255 if a>=128 else 0).getbbox()
+  visible=art.crop(box)
+  if visible.size==crop.size:
+   assert visible.tobytes()==crop.tobytes(), label+': approved pixels changed'
+   return
+  assert abs(visible.width/visible.height-crop.width/crop.height)<0.05, label+': aspect ratio differs from approved art'
+  expected=crop.resize(visible.size, Image.Resampling.LANCZOS, reducing_gap=3.0)
+  for color in ('black','white'):
+   a=Image.alpha_composite(Image.new('RGBA',visible.size,color),visible).convert('RGB')
+   b=Image.alpha_composite(Image.new('RGBA',visible.size,color),expected).convert('RGB')
+   diff=sum(abs(x-y) for x,y in zip(a.tobytes(),b.tobytes()))/len(a.tobytes())
+   assert diff<12, f'{label}: downsampled art differs from approved art (mean {diff:.1f}/255)'
+ # Prove the approved art is what ships and high-resolution meshes stay one tile wide.
  for name,filename in [('CopperChest','RunicKilnReview/copper-node.png'),('Terminal','RunicKilnReview/terminal.png')] + [(n, 'StorageFamily/'+n+'.png') for n in ['Workbench']+[t+'Chest' for t in CAPACITY if t!='Copper']]:
   art=Image.open(Path(__file__).parent/'Art'/(name+'.png')).convert('RGBA')
   if art.width<=32: continue
   original=Image.open(Path(__file__).parents[1]/'ArtConcepts'/filename).convert('RGBA')
   bbox=original.getchannel('A').point(lambda a:255 if a>=128 else 0).getbbox()
-  crop=original.crop(bbox);pad=round(crop.width/14)
-  assert art.crop((pad,pad,pad+crop.width,pad+crop.height)).tobytes()==crop.tobytes(), name+': approved pixels changed'
+  crop=original.crop(bbox)
+  assert_resample_of(art, crop, name)
   found=False
   for obj in env.objects:
    if obj.type.name!='Transform':continue
@@ -53,8 +68,7 @@ for path in paths:
   source=Image.open(Path(__file__).parents[1]/'ArtConcepts/UpgradeGems'/(tier+'.png')).convert('RGBA')
   crop=source.crop(source.getchannel('A').point(lambda a:255 if a>=128 else 0).getbbox())
   art=Image.open(Path(__file__).parent/'Art'/(tier+'Gem.png')).convert('RGBA')
-  x=(art.width-crop.width)//2;y=(art.height-crop.height)//2
-  assert art.crop((x,y,x+crop.width,y+crop.height)).tobytes()==crop.tobytes(),tier+': generated gem pixels changed'
+  assert_resample_of(art, crop, tier+'Gem')
  for o in env.objects:
   if o.type.name != 'MonoBehaviour': continue
   data=o.read(); tree=o.read_typetree()

@@ -9,6 +9,10 @@
             "guid": "6e1d0a3b9c7f4e21a5b8c3d2e1f00a03"
         },
         {
+            "path": "Assets/EnderStash/Textures/EnderChest_small.png",
+            "guid": "6e1d0a3b9c7f4e21a5b8c3d2e1f00a08"
+        },
+        {
             "path": "Assets/EnderStash/Textures/EnderChest_side_emissive.png",
             "guid": "6e1d0a3b9c7f4e21a5b8c3d2e1f00a05"
         },

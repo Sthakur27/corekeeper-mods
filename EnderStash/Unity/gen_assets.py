@@ -13,6 +13,7 @@ G = {
  "EnderChest_side_emissive.png": "6e1d0a3b9c7f4e21a5b8c3d2e1f00a05",
  "EnderChest_up_emissive.png": "6e1d0a3b9c7f4e21a5b8c3d2e1f00a06",
  "EnderChest_icon.png": "6e1d0a3b9c7f4e21a5b8c3d2e1f00a07",  # copy of EnderChest.png, centered pivot
+ "EnderChest_small.png": "6e1d0a3b9c7f4e21a5b8c3d2e1f00a08",  # carried/dropped sprite (10x10 chest in 16x16), centered pivot
  "SpriteAsset": "6e1d0a3b9c7f4e21a5b8c3d2e1f00b01",
  "Text": "6e1d0a3b9c7f4e21a5b8c3d2e1f00b02",
 }

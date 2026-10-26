@@ -26,6 +26,13 @@ STATUS = DIAG / "bench-status.txt"
 PRISTINE = ROOT / "build" / "bench" / "pristine"
 RESULTS = ROOT / "build" / "bench" / "results"
 CHARACTER, WORLD = 3, 4
+GAME_MODS = Path(r"C:\Program Files (x86)\Steam\steamapps\common\Core Keeper\CoreKeeper_Data\StreamingAssets\Mods")
+WORKSHOP = Path(r"C:\Program Files (x86)\Steam\steamapps\workshop\content\1621690")
+MODIO_STATE = Path(r"C:\Users\Public\mod.io\5289\state.json")
+MODIO_USER = "2667367"
+# Always loaded in every setup: the recorder, its CoreLib dependency, and SkipIntro (startup only).
+KEEP_MODIO = {"3177992", "6363825"}
+KEEP_LOCAL = {"ModDiagnostics"}
 # pristine file -> live save path
 SAVE_FILES = {
     "3.json": PROFILE / "saves" / "3.json",
@@ -51,20 +58,50 @@ def restore_save():
             backup.unlink()
 
 
+class Setup:
+    """Temporarily switches the installed mod set; restore() puts back exactly what was there."""
+
+    def __init__(self, name):
+        self.name, self.renamed, self.state_backup = name, [], None
+
+    def apply(self):
+        if self.name == "current":
+            return
+        if self.name != "near-vanilla":
+            sys.exit("unknown setup: " + self.name)
+        for folder in list(GAME_MODS.iterdir()) + list(WORKSHOP.iterdir()):
+            manifest = folder / "ModManifest.json"
+            if folder.name not in KEEP_LOCAL and manifest.exists():
+                manifest.rename(folder / "ModManifest.benchoff")
+                self.renamed.append(folder)
+        self.state_backup = MODIO_STATE.read_bytes()
+        state = json.loads(self.state_backup)
+        user = state["existingUsers"][MODIO_USER]
+        user["disabledMods"] = sorted(set(user["disabledMods"]) | (set(user["subscribedMods"]) - KEEP_MODIO))
+        MODIO_STATE.write_text(json.dumps(state, separators=(",", ":")), encoding="utf-8")
+
+    def restore(self):
+        for folder in self.renamed:
+            (folder / "ModManifest.benchoff").rename(folder / "ModManifest.json")
+        if self.state_backup is not None:
+            MODIO_STATE.write_bytes(self.state_backup)
+        self.renamed, self.state_backup = [], None
+
+
 def read_status():
     if not STATUS.exists():
         return {}
     return dict(line.split("=", 1) for line in STATUS.read_text(encoding="utf-8").splitlines() if "=" in line)
 
 
-def run_once(label, route, seconds, settle, config_name, session_dir, dry_run):
+def run_once(label, route, seconds, settle, config_name, session_dir, dry_run, uncap=False):
     if game_running():
         sys.exit("Core Keeper is running; close it first (the runner never kills the game).")
     restore_save()
     DIAG.mkdir(parents=True, exist_ok=True)
     STATUS.unlink(missing_ok=True)
     CONTROL.write_text(f"world={WORLD}\ncharacter={CHARACTER}\nroute={route}\nlabel={label}\n"
-                       f"seconds={seconds}\nsettle={settle}\nconfig={config_name}\nquit=1\n", encoding="utf-8")
+                       f"seconds={seconds}\nsettle={settle}\nconfig={config_name}\nquit=1\nuncap={int(uncap)}\n", encoding="utf-8")
     if dry_run:
         print("dry run: wrote", CONTROL)
         CONTROL.unlink()
@@ -109,13 +146,24 @@ def main():
     parser.add_argument("--seconds", type=int, default=60)
     parser.add_argument("--settle", type=int, default=20)
     parser.add_argument("--dry-run", action="store_true")
+    parser.add_argument("--uncap", action="store_true", help="no FPS cap or V-sync during the capture")
+    parser.add_argument("--setups", default="current", help="comma list run in turn, e.g. current,near-vanilla")
     args = parser.parse_args()
     if not all((PRISTINE / name).exists() for name in SAVE_FILES):
         sys.exit("Missing pristine benchmark save in " + str(PRISTINE))
     session_dir = RESULTS / datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
     session_dir.mkdir(parents=True, exist_ok=True)
-    results = [run_once(f"{args.label}-{i + 1}", args.route, args.seconds, args.settle, args.config_name, session_dir, args.dry_run)
-               for i in range(args.runs)]
+    results = []
+    # Alternate setups run by run (A B A B) so drift over the session affects both equally.
+    for i in range(args.runs):
+        for name in args.setups.split(","):
+            setup = Setup(name)
+            try:
+                setup.apply()
+                results.append(run_once(f"{args.label}-{name}-{i + 1}", args.route, args.seconds, args.settle, name,
+                                        session_dir, args.dry_run, args.uncap))
+            finally:
+                setup.restore()
     (session_dir / "runs.json").write_text(json.dumps(results, indent=2), encoding="utf-8")
     print("session:", session_dir)
 

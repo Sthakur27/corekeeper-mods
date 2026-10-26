@@ -59,7 +59,8 @@ namespace ModDiagnostics
                 config = ParseKeyValues(Encoding.UTF8.GetString(API.ConfigFilesystem.Read(ControlPath)));
                 route = LoadRoute(Get("route", "base"));
                 if (route == null || route.Count < 2) { Finish("error", "route not found or too short: " + Get("route", "base")); return; }
-                Recorder.BenchInfo = "route=" + Get("route", "base") + " world=" + Get("world", "?") + " character=" + Get("character", "?") + " config=" + Get("config", "");
+                Recorder.BenchInfo = "route=" + Get("route", "base") + " world=" + Get("world", "?") + " character=" + Get("character", "?")
+                    + " config=" + Get("config", "") + " uncap=" + Get("uncap", "0");
                 phase = Phase.WaitTitle; phaseAt = now;
                 WriteStatus("waiting-title", "");
             }
@@ -91,6 +92,9 @@ namespace ModDiagnostics
                     return;
                 case Phase.Settle:
                     if (now - phaseAt < GetInt("settle", 20)) return;
+                    // Uncapped runs show each setup's real frame cost instead of time spent waiting for the cap.
+                    // Only the running process changes; the player's saved graphics options stay as they are.
+                    if (GetInt("uncap", 0) == 1) { QualitySettings.vSyncCount = 0; Application.targetFrameRate = -1; }
                     Recorder.Start(Get("label", "bench"), GetInt("seconds", 60));
                     if (!Recorder.Active) { Finish("error", "recorder did not start: " + Recorder.LastReport); return; }
                     captureStarted = true;

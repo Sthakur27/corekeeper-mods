@@ -140,12 +140,26 @@ namespace ModDiagnostics
                     if (!byId.TryGetValue(id, out var row)) byId[id] = row = new int[3];
                     row[0]++; row[1] += length; if (marked) row[2]++;
                 }
+            // Mod-added object types get IDs above vanilla's range (>= 32768).
+            int modded = CountModded(em), clientModded = -1;
+            var client = Manager.ecs.ClientWorld;
+            if (client != null && client.IsCreated) clientModded = CountModded(client.EntityManager);
             var top = new List<KeyValuePair<int, int[]>>(byId);
             top.Sort((a, b) => b.Value[1].CompareTo(a.Value[1]));
-            var text = new StringBuilder("census objects=" + objects + " inventories=" + inventories + " slots=" + slots + " autoTransfer=" + auto + " top=");
+            var text = new StringBuilder("census objects=" + objects + " inventories=" + inventories + " slots=" + slots + " autoTransfer=" + auto
+                + " moddedServer=" + modded + " moddedClient=" + clientModded + " top=");
             for (int i = 0; i < top.Count && i < 12; i++)
                 text.Append(i == 0 ? "" : ",").Append(top[i].Key).Append(':').Append(top[i].Value[0]).Append('/').Append(top[i].Value[1]).Append('/').Append(top[i].Value[2]);
             return text.ToString();
+        }
+
+        private static int CountModded(EntityManager em)
+        {
+            int count = 0;
+            using (var query = em.CreateEntityQuery(ComponentType.ReadOnly<ObjectDataCD>()))
+            using (var data = query.ToComponentDataArray<ObjectDataCD>(Allocator.Temp))
+                foreach (var d in data) if ((int)d.objectID >= 32768) count++;
+            return count;
         }
 
         // Pursues the recorded points in order, back and forth, at the player's own walking speed.

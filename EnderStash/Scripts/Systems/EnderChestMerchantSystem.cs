@@ -52,12 +52,14 @@ namespace EnderStash.Systems
                 var od = EntityManager.GetComponentData<ObjectDataCD>(e);
                 if (od.objectID != ObjectID.FishingMerchant) continue;
 
-                var items = EntityManager.GetBuffer<MerchantItemInfoBuffer>(e);
+                // Read-only check first; write access only when the list actually needs fixing.
+                var current = EntityManager.GetBuffer<MerchantItemInfoBuffer>(e, true);
                 int idx = -1;
-                for (int i = 0; i < items.Length; i++)
-                    if (items[i].objectID == id) { idx = i; break; }
-                if (idx == 0 && items[0].amount == EnderChest.MerchantStock) continue;
+                for (int i = 0; i < current.Length; i++)
+                    if (current[i].objectID == id) { idx = i; break; }
+                if (idx == 0 && current[0].amount == EnderChest.MerchantStock) continue;
 
+                var items = EntityManager.GetBuffer<MerchantItemInfoBuffer>(e);
                 if (idx > 0) items.RemoveAt(idx);
                 var entry = new MerchantItemInfoBuffer
                 {

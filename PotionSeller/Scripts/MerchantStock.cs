@@ -59,15 +59,87 @@ namespace PotionSeller
 
             var list = PotionPrices.ForMerchant(em.GetComponentData<ObjectDataCD>(e).objectID);
             if (list == null) return false;
-            var items = em.GetBuffer<MerchantItemInfoBuffer>(e);
+            // Read-only checks first; write access is only taken for a buffer that actually changes.
+            if (ListNeedsUpdate(em.GetBuffer<MerchantItemInfoBuffer>(e, true), list, stock, isBeaten))
+                changed |= ApplyList(em.GetBuffer<MerchantItemInfoBuffer>(e), list, stock, isBeaten, out addedItems);
+
+            var inventories = em.GetBuffer<InventoryBuffer>(e, true);
+            int startIndex = 0;
+            if (inventories.Length > 0)
+            {
+                var inv = inventories[0];
+                startIndex = inv.startIndex;
+                // Columns grow only (another mod may use a wider grid); rows stay at 3 so the window never
+                // grows down over the player inventory (v1.0.0 saves had 5 rows). Fish Seller scrolls the rest.
+                if (inv.sizeX < Columns || inv.sizeY != Rows || inv.maxSize < math.max(inv.sizeX, Columns) * Rows)
+                {
+                    inv.sizeX = math.max(inv.sizeX, Columns);
+                    inv.sizeY = Rows;
+                    inv.maxSize = math.max(inv.maxSize, inv.sizeX * inv.sizeY);
+                    var writable = em.GetBuffer<InventoryBuffer>(e);
+                    writable[0] = inv;
+                    changed = true;
+                }
+            }
+
+            int want = startIndex + Slots;
+            if (em.GetBuffer<ContainedObjectsBuffer>(e, true).Length < want)
+            {
+                var contained = em.GetBuffer<ContainedObjectsBuffer>(e);
+                while (contained.Length < want) contained.Add(default);
+                changed = true;
+            }
+            if (!_warned)
+            {
+                int itemCount = em.GetBuffer<MerchantItemInfoBuffer>(e, true).Length;
+                int slotCount = em.GetBuffer<ContainedObjectsBuffer>(e, true).Length;
+                if (itemCount > slotCount - startIndex)
+                {
+                    _warned = true;
+                    Debug.LogWarning($"[{PotionSellerMod.Name}] merchant list has {itemCount} entries but only {slotCount - startIndex} slots; the last ones are not stocked (Fish Seller adds room and scrolling).");
+                }
+            }
+            return changed;
+        }
+
+        private static int IndexOf(DynamicBuffer<MerchantItemInfoBuffer> items, ObjectID id)
+        {
+            for (int i = 0; i < items.Length; i++)
+            {
+                if (items[i].objectID == id) return i;
+            }
+            return -1;
+        }
+
+        private static bool IsLocked(PotionPrices.Entry potion, System.Func<ObjectID, bool> isBeaten)
+            => potion.unlockedBy != ObjectID.None && (isBeaten == null || !isBeaten(potion.unlockedBy));
+
+        /// <summary>True if <see cref="ApplyList"/> would change anything (same tests, no writes).</summary>
+        private static bool ListNeedsUpdate(DynamicBuffer<MerchantItemInfoBuffer> items, PotionPrices.Entry[] list, int stock, System.Func<ObjectID, bool> isBeaten)
+        {
             foreach (var potion in list)
             {
-                int idx = -1;
-                for (int i = 0; i < items.Length; i++)
+                int idx = IndexOf(items, potion.id);
+                if (IsLocked(potion, isBeaten))
                 {
-                    if (items[i].objectID == potion.id) { idx = i; break; }
+                    if (idx >= 0) return true;
+                    continue;
                 }
-                bool locked = potion.unlockedBy != ObjectID.None && (isBeaten == null || !isBeaten(potion.unlockedBy));
+                int amount = potion.stock > 0 ? potion.stock : stock;
+                if (idx < 0) return true;
+                if (items[idx].amount != amount || items[idx].requirementToBeAvailable != MerchantItemRequirement.None) return true;
+            }
+            return false;
+        }
+
+        private static bool ApplyList(DynamicBuffer<MerchantItemInfoBuffer> items, PotionPrices.Entry[] list, int stock, System.Func<ObjectID, bool> isBeaten, out bool addedItems)
+        {
+            addedItems = false;
+            bool changed = false;
+            foreach (var potion in list)
+            {
+                int idx = IndexOf(items, potion.id);
+                bool locked = IsLocked(potion, isBeaten);
                 if (locked)
                 {
                     if (idx >= 0)
@@ -96,36 +168,6 @@ namespace PotionSeller
                     items[idx] = entry;
                     changed = true;
                 }
-            }
-            var inventories = em.GetBuffer<InventoryBuffer>(e);
-            int startIndex = 0;
-            if (inventories.Length > 0)
-            {
-                var inv = inventories[0];
-                startIndex = inv.startIndex;
-                // Columns grow only (another mod may use a wider grid); rows stay at 3 so the window never
-                // grows down over the player inventory (v1.0.0 saves had 5 rows). Fish Seller scrolls the rest.
-                if (inv.sizeX < Columns || inv.sizeY != Rows || inv.maxSize < math.max(inv.sizeX, Columns) * Rows)
-                {
-                    inv.sizeX = math.max(inv.sizeX, Columns);
-                    inv.sizeY = Rows;
-                    inv.maxSize = math.max(inv.maxSize, inv.sizeX * inv.sizeY);
-                    inventories[0] = inv;
-                    changed = true;
-                }
-            }
-
-            var contained = em.GetBuffer<ContainedObjectsBuffer>(e);
-            int want = startIndex + Slots;
-            while (contained.Length < want)
-            {
-                contained.Add(default);
-                changed = true;
-            }
-            if (items.Length > contained.Length - startIndex && !_warned)
-            {
-                _warned = true;
-                Debug.LogWarning($"[{PotionSellerMod.Name}] merchant list has {items.Length} entries but only {contained.Length - startIndex} slots; the last ones are not stocked (Fish Seller adds room and scrolling).");
             }
             return changed;
         }

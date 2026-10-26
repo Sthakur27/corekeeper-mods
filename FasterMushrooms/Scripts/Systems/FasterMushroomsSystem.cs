@@ -24,6 +24,12 @@ namespace FasterMushrooms.Systems
     ///
     /// All three compare against the target before writing, so a settings change takes effect on
     /// the next tick and the common case is read-only.
+    ///
+    /// The passes only have work after an entity of one of the three kinds was created or moved
+    /// (the game never rewrites the spread window, and timers rolled from a scaled window are already
+    /// under the cap) or the multiplier changed. So they run on the tick after any such change
+    /// (component order version) and otherwise only every <see cref="RescanTicks"/> ticks as a
+    /// safety net, instead of walking every root plant on every tick.
     /// </summary>
     [UpdateInGroup(typeof(SimulationSystemGroup))]
     [UpdateBefore(typeof(RootPlantGrowSystem))]
@@ -33,6 +39,8 @@ namespace FasterMushrooms.Systems
         /// <summary>Property hash the game uses for a plant's seconds-per-growth-stage (see PlantsGrowingSystem).</summary>
         private const int StageTimePropertyHash = -965595447;
         private const float Epsilon = 0.0005f;
+        /// <summary>Full pass at least this often even when nothing structural changed (~0.25 s at 60 Hz).</summary>
+        private const int RescanTicks = 15;
 
         private struct SpreadWindow
         {
@@ -50,6 +58,10 @@ namespace FasterMushrooms.Systems
         // recycled index is a different key. Cleared periodically to stay small.
         private readonly Dictionary<Entity, bool> _mushroomCache = new Dictionary<Entity, bool>();
         private int _cacheAge;
+
+        private float _lastMult = -1f;
+        private int _plantsOrder, _growersOrder, _timersOrder;
+        private int _ticksSinceScan;
 
         protected override void OnCreate()
         {
@@ -81,6 +93,19 @@ namespace FasterMushrooms.Systems
                 _cacheAge = 0;
                 _mushroomCache.Clear();
             }
+
+            // Order versions change on any create/destroy/archetype move of entities with that type.
+            int plantsOrder = EntityManager.GetComponentOrderVersion<RootPlantCD>();
+            int growersOrder = EntityManager.GetComponentOrderVersion<PugFloraGrowerCD>();
+            int timersOrder = EntityManager.GetComponentOrderVersion<GrowTimerCD>();
+            bool dirty = mult != _lastMult || plantsOrder != _plantsOrder
+                || growersOrder != _growersOrder || timersOrder != _timersOrder;
+            if (!dirty && ++_ticksSinceScan < RescanTicks) return;
+            _ticksSinceScan = 0;
+            _lastMult = mult;
+            _plantsOrder = plantsOrder;
+            _growersOrder = growersOrder;
+            _timersOrder = timersOrder;
 
             ScaleSpreadWindows(mult);
             CapRunningSpreadTimers(mult);

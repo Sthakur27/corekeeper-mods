@@ -148,7 +148,9 @@ namespace AutoReplant.Systems
 
         private void DetectHarvests(double now)
         {
-            if (_harvested.IsEmptyIgnoreFilter) return;
+            // IsEmpty honours the enable bits (EntityDestroyedCD / KilledByPlayerCD), unlike
+            // IsEmptyIgnoreFilter, which is false whenever any crop exists.
+            if (_harvested.IsEmpty) return;
             var entities = _harvested.ToEntityArray(Allocator.Temp);
             for (int i = 0; i < entities.Length; i++)
             {

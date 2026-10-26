@@ -30,7 +30,7 @@ namespace PotionSeller.Systems
 
         private bool HasAnyStocked(Entity e, PotionPrices.Entry[] list)
         {
-            var contained = EntityManager.GetBuffer<ContainedObjectsBuffer>(e);
+            var contained = EntityManager.GetBuffer<ContainedObjectsBuffer>(e, true);
             for (int i = 0; i < contained.Length; i++)
             {
                 var id = contained[i].objectID;
@@ -59,7 +59,7 @@ namespace PotionSeller.Systems
             var players = _souls.ToEntityArray(Allocator.Temp);
             foreach (var p in players)
             {
-                var souls = EntityManager.GetBuffer<CollectedSoulsBuffer>(p);
+                var souls = EntityManager.GetBuffer<CollectedSoulsBuffer>(p, true);
                 foreach (var entry in PotionPrices.TitanSummons)
                 {
                     var soul = PotionPrices.SoulFor(entry.unlockedBy);
@@ -127,7 +127,7 @@ namespace PotionSeller.Systems
                     od.amount = 0; // restock on the next MerchantBuyInventorySystem tick
                     EntityManager.SetComponentData(e, od);
                 }
-                Debug.Log($"[{PotionSellerMod.Name}] {EntityManager.GetComponentData<ObjectDataCD>(e).objectID} {(isPrefab ? "prefab" : e.ToString())}: {EntityManager.GetBuffer<MerchantItemInfoBuffer>(e).Length} items, {EntityManager.GetBuffer<ContainedObjectsBuffer>(e).Length} slots, stock {stock}{(addedItems && !isPrefab ? ", restock forced" : "")} (server).");
+                Debug.Log($"[{PotionSellerMod.Name}] {EntityManager.GetComponentData<ObjectDataCD>(e).objectID} {(isPrefab ? "prefab" : e.ToString())}: {EntityManager.GetBuffer<MerchantItemInfoBuffer>(e, true).Length} items, {EntityManager.GetBuffer<ContainedObjectsBuffer>(e, true).Length} slots, stock {stock}{(addedItems && !isPrefab ? ", restock forced" : "")} (server).");
             }
             entities.Dispose();
         }

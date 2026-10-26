@@ -88,7 +88,7 @@ namespace FishSeller.Systems
                 }
                 if (changed || restock)
                 {
-                    Debug.Log($"[{FishSellerMod.Name}] {merchant} {(isPrefab ? "prefab" : e.ToString())}: {EntityManager.GetBuffer<MerchantItemInfoBuffer>(e).Length} items, {EntityManager.GetBuffer<ContainedObjectsBuffer>(e).Length} slots, stock {ShopItems.Stock}{(reordered ? ", gated entries moved last" : "")}{(restock ? ", restock forced" : "")} (server).");
+                    Debug.Log($"[{FishSellerMod.Name}] {merchant} {(isPrefab ? "prefab" : e.ToString())}: {EntityManager.GetBuffer<MerchantItemInfoBuffer>(e, true).Length} items, {EntityManager.GetBuffer<ContainedObjectsBuffer>(e, true).Length} slots, stock {ShopItems.Stock}{(reordered ? ", gated entries moved last" : "")}{(restock ? ", restock forced" : "")} (server).");
                 }
             }
             entities.Dispose();
@@ -131,7 +131,7 @@ namespace FishSeller.Systems
 
         private bool HasAnyStocked(Entity e, ObjectID[] ours)
         {
-            var contained = EntityManager.GetBuffer<ContainedObjectsBuffer>(e);
+            var contained = EntityManager.GetBuffer<ContainedObjectsBuffer>(e, true);
             for (int i = 0; i < contained.Length; i++)
             {
                 var id = contained[i].objectID;
@@ -143,7 +143,7 @@ namespace FishSeller.Systems
 
         private void LogVanillaList(Entity e, ObjectID merchant)
         {
-            var items = EntityManager.GetBuffer<MerchantItemInfoBuffer>(e);
+            var items = EntityManager.GetBuffer<MerchantItemInfoBuffer>(e, true);
             var parts = new List<string>();
             for (int i = 0; i < items.Length; i++)
             {

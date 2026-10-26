@@ -41,6 +41,9 @@ namespace FishSeller
         public static bool ApplyItems(EntityManager em, Entity e, ObjectID[] ours, System.Func<ObjectID, int> amountFor, out bool added)
         {
             added = false;
+            // Read-only check first: the usual case is "already up to date", which then never takes write access.
+            if (!ItemsNeedUpdate(em.GetBuffer<MerchantItemInfoBuffer>(e, true), ours, amountFor)) return false;
+
             bool changed = false;
             var items = em.GetBuffer<MerchantItemInfoBuffer>(e);
             foreach (var id in ours)
@@ -69,19 +72,38 @@ namespace FishSeller
             return changed;
         }
 
+        /// <summary>True if <see cref="ApplyItems"/> would change anything (same tests, no writes).</summary>
+        private static bool ItemsNeedUpdate(DynamicBuffer<MerchantItemInfoBuffer> items, ObjectID[] ours, System.Func<ObjectID, int> amountFor)
+        {
+            foreach (var id in ours)
+            {
+                int idx = IndexOf(items, id);
+                int amount = amountFor(id);
+                if (amount <= 0)
+                {
+                    if (idx >= 0) return true;
+                    continue;
+                }
+                if (idx < 0) return true;
+                if (items[idx].amount != amount || items[idx].requirementToBeAvailable != MerchantItemRequirement.None) return true;
+            }
+            return false;
+        }
+
         /// <summary>Stable partition: always-available entries first, gated ones (requirement or amount 0) after. See the class summary.</summary>
         public static bool KeepGatedLast(EntityManager em, Entity e)
         {
-            var items = em.GetBuffer<MerchantItemInfoBuffer>(e);
+            var current = em.GetBuffer<MerchantItemInfoBuffer>(e, true);
             int firstGated = -1;
             bool needed = false;
-            for (int i = 0; i < items.Length; i++)
+            for (int i = 0; i < current.Length; i++)
             {
-                if (IsGated(items[i])) { if (firstGated < 0) firstGated = i; }
+                if (IsGated(current[i])) { if (firstGated < 0) firstGated = i; }
                 else if (firstGated >= 0) { needed = true; break; }
             }
             if (!needed) return false;
 
+            var items = em.GetBuffer<MerchantItemInfoBuffer>(e);
             var copy = items.ToNativeArray(Unity.Collections.Allocator.Temp);
             int k = 0;
             for (int i = 0; i < copy.Length; i++) if (!IsGated(copy[i])) items[k++] = copy[i];
@@ -96,13 +118,14 @@ namespace FishSeller
         /// <summary>Widens/heightens the merchant grid to at least <see cref="Columns"/> x <see cref="Rows"/> (never shrinks). Not replicated: run in every world.</summary>
         public static bool EnsureGrid(EntityManager em, Entity e)
         {
-            var inventories = em.GetBuffer<InventoryBuffer>(e);
-            if (inventories.Length == 0) return false;
-            var inv = inventories[0];
+            var current = em.GetBuffer<InventoryBuffer>(e, true);
+            if (current.Length == 0) return false;
+            var inv = current[0];
             if (inv.sizeX >= Columns && inv.sizeY >= Rows && inv.maxSize >= inv.sizeX * inv.sizeY) return false;
             inv.sizeX = math.max(inv.sizeX, Columns);
             inv.sizeY = math.max(inv.sizeY, Rows);
             inv.maxSize = math.max(inv.maxSize, inv.sizeX * inv.sizeY);
+            var inventories = em.GetBuffer<InventoryBuffer>(e);
             inventories[0] = inv;
             return true;
         }
@@ -113,16 +136,16 @@ namespace FishSeller
         /// </summary>
         public static bool EnsureRoom(EntityManager em, Entity e)
         {
-            var inventories = em.GetBuffer<InventoryBuffer>(e);
+            var inventories = em.GetBuffer<InventoryBuffer>(e, true);
             if (inventories.Length == 0) return false;
             var inv = inventories[0];
             int cols = math.max(1, inv.sizeX);
-            int entries = em.GetBuffer<MerchantItemInfoBuffer>(e).Length;
+            int entries = em.GetBuffer<MerchantItemInfoBuffer>(e, true).Length;
             int slots = math.max(inv.sizeX * inv.sizeY, (entries + cols - 1) / cols * cols);
             int want = inv.startIndex + slots;
 
+            if (em.GetBuffer<ContainedObjectsBuffer>(e, true).Length >= want) return false;
             var contained = em.GetBuffer<ContainedObjectsBuffer>(e);
-            if (contained.Length >= want) return false;
             while (contained.Length < want) contained.Add(default);
             return true;
         }

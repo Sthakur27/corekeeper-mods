@@ -12,7 +12,7 @@ matches the game (major.minor.patch).
 """
 import argparse, glob, json, os, re, shutil, struct, subprocess, sys
 
-ROOT = r"C:\Users\Sid\CoreKeeperMods"
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 REL = os.path.join(ROOT, "release")
 STAGE = os.path.join(ROOT, "build", "workshop")
 TOOL = os.path.join(ROOT, "build", "workshop_tool")
@@ -47,14 +47,14 @@ MODS = [
     ("EnderStash", "Ender Stash", "enderstash_logo.png", "Quality of Life"),
     ("VehicleSpeed", "Vehicle Speed", "vehiclespeed_logo.png", "Quality of Life"),
     ("InfiniteOreBoulders", "Infinite Ore Boulders", "infiniteore_logo.png", "Quality of Life"),
-    ("GoldenChance", "Golden Chance", "goldenchance_logo.png", "Quality of Life"),
+    ("GoldenChance", "Golden Chance — Work in Progress", "goldenchance_logo.png", "Quality of Life"),
     ("StimHits", "Hit Sound Effects", "stimhits_logo.png", "Other"),
     ("ArmorDye", "Armor Dye", "armordye_logo.png", "Quality of Life"),
     ("MerchantRestock", "Merchant Restock", "merchantrestock_logo.png", "Quality of Life"),
     ("FishSeller", "Fish Seller", "fishseller_logo.png", "Quality of Life"),
     ("MagicMirror", "Magic Mirror", "magicmirror_logo.png", "Item"),
-    ("ConnectedStorage", "Runic Storage", "runicstorage_workshop.png", "Item"),
     ("MushroomSlayer", "Mushroom Slayer", "mushroomslayer_logo.png", "Quality of Life"),
+    ("ConnectedStorage", "Runic Storage", "runicstorage_workshop.png", "Item"),
 ]
 OVERHAUL = ("SidsOverhaul", "Sid's Overhaul", "overhaul_logo.png", "Overhaul")
 
@@ -132,7 +132,8 @@ def description(key, folder, readme_path):
         note = ("[b]The features listed below in one package.[/b] Want to pick and choose instead? Use the "
                 "[url=https://steamcommunity.com/workshop/filedetails/?id={collection}]Sid's Core Keeper Mods[/url] "
                 "collection, which has every feature as its own mod. Do not subscribe to both the Overhaul and the "
-                "individual mods (each feature would run twice). Requires CoreLib. Settings: Settings > Mod Options (built in).")
+                "individual mods (each feature would run twice). Requires CoreLib. Settings: Settings > Mod Options (built in). "
+                "Golden Chance is still a work in progress.")
     elif key == "ModOptions":
         note = ("[b]Library.[/b] Subscribe to it when a mod lists it as a required item. "
                 "Works alongside Mod Settings Menu.")
@@ -140,6 +141,8 @@ def description(key, folder, readme_path):
         note = ("Part of the [url=https://steamcommunity.com/workshop/filedetails/?id={collection}]Sid's Core Keeper Mods[/url] "
                 "collection. Also bundled in the all-in-one [url=https://steamcommunity.com/workshop/filedetails/?id={overhaul}]Sid's Overhaul[/url]; "
                 "use the Overhaul or the individual mods, not both.")
+    if key == "GoldenChance":
+        note = "[b]WORK IN PROGRESS[/b] — Golden Chance is still being developed.\n\n" + note
     footer = f"\n\nCover artwork generated with AI; not an in-game screenshot.\n\nSource and full docs: [url={GITHUB}{folder}]{GITHUB}{folder}[/url]"
     body = to_bbcode(md)
     text = note + "\n\n" + body
@@ -153,6 +156,7 @@ def collection_description():
     return ("Every one of Sid's Core Keeper mods as its own Workshop item. Click [b]Subscribe to all[/b], then "
             "unsubscribe from anything you don't want; each mod updates on its own. CoreLib and Mod Options are "
             "required by many of these mods; subscribe to the required items shown on each mod page.\n\n"
+            "[b]Golden Chance is still a work in progress.[/b] Skip it if you only want finished features.\n\n"
             "Prefer a single mod? [url=https://steamcommunity.com/workshop/filedetails/?id={overhaul}]Sid's Overhaul[/url] "
             "bundles all of them. Use the Overhaul [b]or[/b] these mods, not both (each feature would run twice).\n\n"
             f"[list]{names}[/list]\n\n"

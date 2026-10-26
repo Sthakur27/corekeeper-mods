@@ -48,9 +48,10 @@ Use the Overhaul or the individual versions of its features. Installing both run
 | [Buff Duration Floor](BuffDurationFloor/README.md) | Set a minimum duration for short food and potion buffs. |
 | [Durability Multiplier](DurabilityMultiplier/README.md) | Choose how quickly equipment wears out. |
 | [Difficulty Tuning](DifficultyTuning/README.md) | Tune enemies and bosses separately for Normal and Hard worlds. |
-| [Mushroom Slayer — local preview](MushroomSlayer/README.md) | Strong hits deal 10% through gray mushroom armor; hits below 200 stay at 1. Bow fix awaiting live testing; not published. |
+| [Mushroom Slayer](MushroomSlayer/README.md) | Configurable gray mushroom armor: 1 damage below 200, 10% at or above 200; red phase unchanged. Bow fix awaiting live testing. |
 | [Boss Bonus Loot](BossBonusLoot/README.md) | Add extra rewards to selected bosses and enemies. |
 | [Skill XP Multiplier](SkillXPMultiplier/README.md) | Adjust experience gains separately for each skill. |
+| [Magic Mirror](MagicMirror/README.md) | Return to the Core without consuming the item. Craft for 50 Solarite Bars + 10 Recall Idols, or a 20% Omoroth drop. |
 | [Keep Minions On Teleport](KeepMinions/README.md) | Bring summoned minions along when you teleport. |
 | [Vehicle Speed](VehicleSpeed/README.md) | Change boat and go-kart speeds. |
 | [Hit Sound Effects](StimHits/README.md) | Choose sounds for hits, kills and damage taken. |

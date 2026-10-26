@@ -1,4 +1,4 @@
-using System.Linq;
+﻿using System.Linq;
 using CoreLib;
 using CoreLib.Submodule.Command;
 using CoreLib.Submodule.ControlMapping;
@@ -21,7 +21,7 @@ namespace SidsOverhaul
     public sealed class SidsOverhaulMod : IMod
     {
         public const string Name = "SidsOverhaul";
-        public const string Version = "1.3.7";
+        public const string Version = "1.4.0";
 
         public void EarlyInit()
         {

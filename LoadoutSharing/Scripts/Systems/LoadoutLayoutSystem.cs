@@ -24,8 +24,8 @@ namespace LoadoutSharing.Systems
             base.OnCreate();
             _players = GetEntityQuery(
                 ComponentType.ReadOnly<PlayerGhost>(),
-                ComponentType.ReadWrite<EquipmentPresetsBuffer>(),
-                ComponentType.ReadWrite<ContainedObjectsBuffer>());
+                ComponentType.ReadOnly<EquipmentPresetsBuffer>(),
+                ComponentType.ReadOnly<ContainedObjectsBuffer>());
             _isServer = World.IsServer();
             RequireForUpdate(_players);
         }
@@ -38,22 +38,33 @@ namespace LoadoutSharing.Systems
             for (int i = 0; i < entities.Length; i++)
             {
                 var entity = entities[i];
-                var presets = EntityManager.GetBuffer<EquipmentPresetsBuffer>(entity);
+                // Buffers are read read-only and only taken read-write when something changes: a read-write
+                // GetBuffer waits for every job using the buffer type (all chest inventories for contained).
+                var presets = EntityManager.GetBuffer<EquipmentPresetsBuffer>(entity, true);
                 if (presets.Length < SlotLayout.VanillaPresetCount) continue;
                 int presetCount = System.Math.Min(SlotLayout.PresetCount, presets.Length);
 
-                var contained = EntityManager.GetBuffer<ContainedObjectsBuffer>(entity);
-                if (_isServer)
+                if (_isServer && EntityManager.GetBuffer<ContainedObjectsBuffer>(entity, true).Length <= SlotLayout.MaxIndex)
                 {
-                    while (contained.Length <= SlotLayout.MaxIndex)
-                        contained.Add(default);
+                    var grow = EntityManager.GetBuffer<ContainedObjectsBuffer>(entity);
+                    while (grow.Length <= SlotLayout.MaxIndex)
+                        grow.Add(default);
                 }
+                var contained = EntityManager.GetBuffer<ContainedObjectsBuffer>(entity, true);
 
+                bool writable = false;
                 for (int p = 0; p < presetCount; p++)
                 {
                     var e = presets[p].equipment;
                     if (SlotLayout.ApplyTo(ref e, p, contained))
+                    {
+                        if (!writable)
+                        {
+                            presets = EntityManager.GetBuffer<EquipmentPresetsBuffer>(entity);
+                            writable = true;
+                        }
                         presets[p] = new EquipmentPresetsBuffer { equipment = e };
+                    }
                 }
             }
             entities.Dispose();

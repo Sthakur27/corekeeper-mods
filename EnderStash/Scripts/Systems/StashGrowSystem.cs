@@ -20,7 +20,7 @@ namespace EnderStash.Systems
             base.OnCreate();
             _players = GetEntityQuery(
                 ComponentType.ReadOnly<PlayerGhost>(),
-                ComponentType.ReadWrite<ContainedObjectsBuffer>());
+                ComponentType.ReadOnly<ContainedObjectsBuffer>());
             RequireForUpdate(_players);
         }
 
@@ -32,7 +32,9 @@ namespace EnderStash.Systems
             for (int i = 0; i < entities.Length; i++)
             {
                 // Grows buffers from older saves, moves a stash whose slots shifted (StashGuard) and keeps
-                // the layout marker after the stash.
+                // the layout marker after the stash. Checked read-only first: a read-write GetBuffer waits for
+                // every job using ContainedObjectsBuffer, and in steady state there is nothing to write.
+                if (!StashGuard.NeedsRelocate(EntityManager.GetBuffer<ContainedObjectsBuffer>(entities[i], true), ghosts[i].playerGuid)) continue;
                 StashGuard.Relocate(EntityManager.GetBuffer<ContainedObjectsBuffer>(entities[i]), ghosts[i].playerGuid);
             }
             entities.Dispose();

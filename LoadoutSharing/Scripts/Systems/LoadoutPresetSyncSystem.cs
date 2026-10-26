@@ -30,7 +30,7 @@ namespace LoadoutSharing.Systems
                 ComponentType.ReadOnly<EquipmentCD>(),
                 ComponentType.ReadOnly<ActiveEquipmentPresetCD>(),
                 ComponentType.ReadOnly<ContainedObjectsBuffer>(),
-                ComponentType.ReadWrite<InventoryBuffer>(),
+                ComponentType.ReadOnly<InventoryBuffer>(),
                 ComponentType.ReadWrite<PetOwnerCD>());
             _changeBufferQuery = GetEntityQuery(ComponentType.ReadWrite<InventoryChangeBuffer>());
             _isServer = World.IsServer();
@@ -52,9 +52,11 @@ namespace LoadoutSharing.Systems
                 // Skip the very first frame we see a player; its buffers may still be settling.
                 if (_seen.Add(entity)) continue;
 
-                var invBuffers = EntityManager.GetBuffer<InventoryBuffer>(entity);
+                // Read-only reads; a read-write GetBuffer waits for every job using the buffer type (all chest
+                // inventories), so InventoryBuffer is only taken read-write below when the bag slot changes.
+                var invBuffers = EntityManager.GetBuffer<InventoryBuffer>(entity, true);
                 if (invBuffers.Length == 0) continue;
-                var contained = EntityManager.GetBuffer<ContainedObjectsBuffer>(entity);
+                var contained = EntityManager.GetBuffer<ContainedObjectsBuffer>(entity, true);
                 int containedLength = contained.Length;
                 var equipment = EntityManager.GetComponentData<EquipmentCD>(entity);
                 int preset = EntityManager.GetComponentData<ActiveEquipmentPresetCD>(entity).Value;
@@ -68,7 +70,8 @@ namespace LoadoutSharing.Systems
                 if (wantBag >= 0 && wantBag < containedLength && mainInv.extraInventorySizeSlot != wantBag)
                 {
                     mainInv.extraInventorySizeSlot = wantBag;
-                    invBuffers[0] = mainInv;
+                    var invBuffersRW = EntityManager.GetBuffer<InventoryBuffer>(entity);
+                    invBuffersRW[0] = mainInv;
                     changed = true;
                 }
 

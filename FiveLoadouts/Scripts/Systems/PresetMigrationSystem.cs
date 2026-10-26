@@ -27,8 +27,8 @@ namespace FiveLoadouts.Systems
             base.OnCreate();
             _players = GetEntityQuery(
                 ComponentType.ReadOnly<PlayerGhost>(),
-                ComponentType.ReadWrite<EquipmentPresetsBuffer>(),
-                ComponentType.ReadWrite<ContainedObjectsBuffer>());
+                ComponentType.ReadOnly<EquipmentPresetsBuffer>(),
+                ComponentType.ReadOnly<ContainedObjectsBuffer>());
             _isServer = World.IsServer();
             RequireForUpdate(_players);
         }
@@ -42,16 +42,18 @@ namespace FiveLoadouts.Systems
             {
                 var entity = entities[i];
 
-                if (_isServer)
+                // Lengths are checked read-only; a read-write GetBuffer waits for every job using the buffer
+                // type, so it is only taken when there is something to add (once per character).
+                if (_isServer && EntityManager.GetBuffer<ContainedObjectsBuffer>(entity, true).Length <= PresetLayout.MaxIndex)
                 {
                     var contained = EntityManager.GetBuffer<ContainedObjectsBuffer>(entity);
                     while (contained.Length <= PresetLayout.MaxIndex)
                         contained.Add(default);
                 }
 
-                var presets = EntityManager.GetBuffer<EquipmentPresetsBuffer>(entity);
-                if (presets.Length == PresetLayout.VanillaPresetCount)
+                if (EntityManager.GetBuffer<EquipmentPresetsBuffer>(entity, true).Length == PresetLayout.VanillaPresetCount)
                 {
+                    var presets = EntityManager.GetBuffer<EquipmentPresetsBuffer>(entity);
                     for (int p = presets.Length; p < PresetLayout.PresetCount; p++)
                         presets.Add(new EquipmentPresetsBuffer { equipment = PresetLayout.PresetEquipment(p) });
                 }

@@ -99,6 +99,26 @@ namespace EnderStash
             Debug.Log($"[{EnderStashMod.Name}] Player slot layout changed: stash moved from slot {oldStart} to {newStart} ({moved} items) in the saved character {data.characterGuid}.");
         }
 
+        /// <summary>
+        /// Read-only check: true when <see cref="Relocate(DynamicBuffer{ContainedObjectsBuffer}, Unity.Entities.Hash128)"/>
+        /// would change the buffer. Lets the per-tick caller skip taking the buffer read-write, which waits for every
+        /// job using ContainedObjectsBuffer (all chest inventories), when there is nothing to do.
+        /// </summary>
+        public static bool NeedsRelocate(DynamicBuffer<ContainedObjectsBuffer> contained, Unity.Entities.Hash128 guid)
+        {
+            if (!StashLayout.Ready) return false;
+            if (contained.Length < StashLayout.TotalLength) return true;
+            if (_pending.ContainsKey(guid)) return true;
+            int markerIndex = StashLayout.MarkerIndex;
+            ObjectDataCD current = contained[markerIndex].objectData;
+            if (IsMarker(current) && current.variation == StashLayout.Start) return false;
+            // Relocate claims a free marker slot and clears stray markers; with an item in the slot and no strays it does nothing.
+            if (current.objectID == ObjectID.None) return true;
+            for (int i = 0; i < contained.Length; i++)
+                if (i != markerIndex && IsMarker(contained[i].objectData)) return true;
+            return false;
+        }
+
         /// <summary>Server, every tick: grows old buffers, finishes a pending move (world-save path) and keeps the marker in place.</summary>
         public static void Relocate(DynamicBuffer<ContainedObjectsBuffer> contained, Unity.Entities.Hash128 guid)
         {

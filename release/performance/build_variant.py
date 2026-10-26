@@ -21,12 +21,19 @@ def main():
     no_bundles = "--no-bundles" in sys.argv
     # --drop-bundle=<Mod> removes just that mod's bundle (repeatable), e.g. --drop-bundle=FastAutoFishing
     drop_bundles = [a.split("=", 1)[1] for a in sys.argv[1:] if a.startswith("--drop-bundle=")]
-    args = [a for a in sys.argv[1:] if a != "--no-bundles" and not a.startswith("--drop-bundle=")]
+    args = [a for a in sys.argv[1:] if a != "--no-bundles" and not a.startswith(("--drop-bundle=", "--bundle="))]
     if len(args) != 2:
         sys.exit(__doc__)
     name, drop = args[0], [m for m in args[1].split(",") if m]
     if no_bundles:
         bo.BUNDLE_MODS = {}
+    # --bundle=<Mod>:<old assembly>:<folder>:<file prefix> loads only these bundles (repeatable), e.g.
+    # --bundle=EnderStash:EnderStash:Bundles:EnderStash_ --bundle=FastAutoFishing:mikufish:Bundles:FastAutoFishing_
+    only = [a.split("=", 1)[1].split(":") for a in sys.argv[1:] if a.startswith("--bundle=")]
+    if only:
+        bo.BUNDLE_MODS = {m: asm for m, asm, _, _ in only}
+        bo.BUNDLE_DIRS = {m: folder for m, _, folder, _ in only}
+        bo.BUNDLE_PREFIX = {m: prefix for m, _, _, prefix in only}
     for mod in drop_bundles:
         if mod not in bo.BUNDLE_MODS:
             sys.exit("no bundle for " + mod + "; bundles: " + ", ".join(bo.BUNDLE_MODS))

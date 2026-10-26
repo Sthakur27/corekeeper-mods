@@ -30,6 +30,10 @@ MODS = [
 # ConnectedStorage/OverhaulBundles contains storage, EnderStash and MagicMirror data blocks in
 # one SDK-built bundle per platform. Never include their separate bundles here.
 BUNDLE_MODS = {"ConnectedStorage": "SidsStorageAssets", "FastAutoFishing": "mikufish"}
+# Folder each bundle is read from (default "Bundles"), and optional bundle filename prefixes to keep
+# (benchmark variants use these to load a single standalone bundle; the release build uses the defaults).
+BUNDLE_DIRS = {"ConnectedStorage": "OverhaulBundles"}
+BUNDLE_PREFIX = {}
 
 
 def patch_bundle(src, dst, old_assembly):
@@ -160,8 +164,10 @@ def main():
 
     os.makedirs(os.path.join(OUT, "Bundles"), exist_ok=True)
     for mod, old in BUNDLE_MODS.items():
-        bdir = os.path.join(ROOT, mod, "OverhaulBundles" if mod == "ConnectedStorage" else "Bundles")
+        bdir = os.path.join(ROOT, mod, BUNDLE_DIRS.get(mod, "Bundles"))
         for fn in sorted(os.listdir(bdir)):
+            if mod in BUNDLE_PREFIX and not fn.startswith(BUNDLE_PREFIX[mod]):
+                continue
             src = os.path.join(bdir, fn)
             dst = os.path.join(OUT, "Bundles", fn)
             if fn.endswith(".assetbundle"):

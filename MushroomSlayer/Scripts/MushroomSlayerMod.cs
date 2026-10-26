@@ -7,7 +7,7 @@ namespace MushroomSlayer
 {
     public sealed class MushroomSlayerMod : IMod
     {
-        public const string Version = "1.1.0";
+        public const string Version = "1.1.1";
         public const string SettingsHint = "Gray armor: hits below the threshold deal 1 damage; stronger hits use the damage percentage. Red phase unchanged. Match settings on host and clients.";
         private static Setting<int> _threshold;
         private static Setting<int> _percent;

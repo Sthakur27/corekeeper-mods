@@ -28,7 +28,7 @@ namespace FishSeller
     public sealed class FishSellerMod : IMod
     {
         public const string Name = "FishSeller";
-        public const string Version = "1.1.0";
+        public const string Version = "1.1.1";
 
         private static Setting<string> _price;
         private static Setting<int> _stock;

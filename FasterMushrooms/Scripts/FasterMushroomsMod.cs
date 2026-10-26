@@ -22,7 +22,7 @@ namespace FasterMushrooms
     public sealed class FasterMushroomsMod : IMod
     {
         public const string Name = "FasterMushrooms";
-        public const string Version = "1.2.0";
+        public const string Version = "1.2.1";
 
         private static Setting<string> _speed;
         private static Setting<string> _respawn;

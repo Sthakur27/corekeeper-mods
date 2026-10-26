@@ -137,6 +137,10 @@ namespace ConnectedStorage
     {
         private static readonly System.Collections.Generic.Dictionary<string, Pug.Sprite.SpriteAsset> Assets
             = new System.Collections.Generic.Dictionary<string, Pug.Sprite.SpriteAsset>();
+        // Vanilla asset+skin of pooled sprites we re-skinned; restored when the sprite is re-enabled.
+        internal static readonly System.Collections.Generic.Dictionary<Pug.Sprite.SpriteObject, (Pug.Sprite.SpriteAsset asset, Pug.Sprite.SpriteAssetSkin skin)> Originals
+            = new System.Collections.Generic.Dictionary<Pug.Sprite.SpriteObject, (Pug.Sprite.SpriteAsset, Pug.Sprite.SpriteAssetSkin)>();
+        private static readonly System.Collections.Generic.HashSet<string> Logged = new System.Collections.Generic.HashSet<string>();
         public static void Register(Pug.Sprite.SpriteAsset asset)
         {
             if (asset.name == "Terminal") Assets[asset.name] = asset;
@@ -160,9 +164,13 @@ namespace ConnectedStorage
                     if (hasArtScale) artScale.localScale = Vector3.one;
                     continue;
                 }
-                string previous = sprite.asset == null ? "null" : sprite.asset.name;
-                string skin = sprite.currentSkin == null ? "none" : sprite.currentSkin.name;
-                if (Assets.TryGetValue(key, out var expected)) sprite.asset = expected;
+                var previous = sprite.asset;
+                var skin = sprite.currentSkin;
+                if (Assets.TryGetValue(key, out var expected)) {
+                    // Keep the first (vanilla) pair; a sprite already in the map holds our asset.
+                    if (previous != expected && !Originals.ContainsKey(sprite)) Originals[sprite] = (previous, skin);
+                    sprite.asset = expected;
+                }
                 sprite.currentSkin = null;
                 sprite.StopAnimation();
                 sprite.ResetVariant();
@@ -182,10 +190,26 @@ namespace ConnectedStorage
                     artScale.localScale = Vector3.one * (16f / width);
                     sprite.transform.localScale = new Vector3(Mathf.Sign(sprite.transform.localScale.x), 1f, 1f);
                 } else if (hasArtScale) artScale.localScale = Vector3.one;
-                Debug.Log("[ConnectedStorage] Unit art " + key + ": previous=" + previous
-                    + ", skin=" + skin + ", applied=" + (sprite.asset == null ? "null" : sprite.asset.name)
-                    + ", sourceWidth=" + width + ", artScale=" + (artScale == null ? Vector3.one : artScale.localScale));
+                if (Logged.Add(key))
+                    Debug.Log("[ConnectedStorage] Unit art " + key + ": previous=" + (previous == null ? "null" : previous.name)
+                        + ", skin=" + (skin == null ? "none" : skin.name) + ", applied=" + (sprite.asset == null ? "null" : sprite.asset.name)
+                        + ", sourceWidth=" + width + ", artScale=" + (artScale == null ? Vector3.one : artScale.localScale));
             }
+        }
+    }
+    // Pools are shared with vanilla chests. OnEnable drops (and LogErrors) a skin whose target
+    // asset differs from sprite.asset, so put the vanilla pair back before that check runs;
+    // the next owner's spawn (our postfix or vanilla SpriteSkinFromEntityAndSeason) applies its art.
+    [HarmonyLib.HarmonyPatch(typeof(Pug.Sprite.SpriteObject), "OnEnable")]
+    public static class StorageUnitVisualRestorePatch
+    {
+        public static void Prefix(Pug.Sprite.SpriteObject __instance)
+        {
+            var originals = StorageUnitVisualPatch.Originals;
+            if (originals.Count == 0 || !originals.TryGetValue(__instance, out var original)) return;
+            originals.Remove(__instance);
+            __instance.skinRef = original.skin == null ? DataBlockAddress.Empty : original.skin.address;
+            __instance.asset = original.asset;
         }
     }
     [WorldSystemFilter(WorldSystemFilterFlags.ServerSimulation | WorldSystemFilterFlags.ClientSimulation)]

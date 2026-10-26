@@ -78,6 +78,8 @@ namespace ModDiagnostics
             text.Append(",\"gpuMs\":").Append(Serialize(value.gpuMs));
             text.Append(",\"allocatedKbPerFrame\":").Append(Serialize(value.allocatedKbPerFrame));
             text.Append(",\"hitches\":").Append(List(value.hitches, Serialize));
+            text.Append(",\"phases\":").Append(List(value.phases, Serialize));
+            text.Append(",\"bench\":").Append(Value(value.bench));
             text.Append(",\"mods\":").Append(List(value.mods, Serialize));
             text.Append(",\"featureSwitches\":").Append(List(value.featureSwitches, Value));
             text.Append(",\"scopes\":").Append(List(value.scopes, Serialize));
@@ -139,7 +141,13 @@ namespace ModDiagnostics
             text.Append(",\"allocatedBytes\":").Append(Value(value.allocatedBytes));
             text.Append(",\"topScope\":").Append(Value(value.topScope));
             text.Append(",\"topScopeMs\":").Append(Value(value.topScopeMs));
+            text.Append(",\"phases\":").Append(Value(value.phases));
             return text.Append('}').ToString();
+        }
+        public static string Serialize(PhaseSummary value)
+        {
+            if (value == null) return "null";
+            return "{\"name\":" + Value(value.name) + ",\"ms\":" + Serialize(value.ms) + "}";
         }
         public static string Serialize(ModStamp value)
         {

@@ -80,7 +80,8 @@ internal static class MetricsTests
         report.markers.Add(new Marker { seconds = 2.5, label = "marker" });
         report.repeatedLogs.Add(new LogCount { level = "Warning", message = "tab\tcontrol\u0001", count = 2 });
         report.featureSwitches.Add("Feature: example = true");
-        report.hitches.Add(new Hitch { seconds = 1.5, ms = 80, gc = true, allocatedBytes = 2048, topScope = "Update", topScopeMs = 5 });
+        report.hitches.Add(new Hitch { seconds = 1.5, ms = 80, gc = true, allocatedBytes = 2048, topScope = "Update", topScopeMs = 5, phases = "total=80.0" });
+        report.phases.Add(new PhaseSummary { name = "total", ms = Distribution.From(new[] { 4.0 }, 1) });
         report.hitchesWithGc = 1;
         report.cpuMainMs = Distribution.From(new[] { 4.0 }, 1);
         Console.WriteLine(ReportJson.Serialize(report));

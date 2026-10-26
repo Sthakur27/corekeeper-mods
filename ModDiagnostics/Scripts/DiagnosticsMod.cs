@@ -17,7 +17,11 @@ namespace ModDiagnostics
             if (owner != null) CommandModule.AddCommands(owner.ModId, "Mod Diagnostics");
         }
         public void Init() { }
-        public void Update() { if (Recorder.Active) Recorder.SampleFrame(); }
+        public void Update()
+        {
+            if (Recorder.Active) Recorder.SampleFrame();
+            Bench.Update();
+        }
         public void Shutdown() { if (Recorder.Active) Recorder.Stop("shutdown"); }
         public void ModObjectLoaded(UnityEngine.Object obj) { }
     }
@@ -25,13 +29,15 @@ namespace ModDiagnostics
     public sealed class PerfCommand : IClientCommandHandler
     {
         public string[] GetTriggerNames() => new[] { "modperf" };
-        public string GetDescription() => "Local diagnostics: /modperf start label [seconds 5-300], stop, status, export, or mark label.";
+        public string GetDescription() => "Local diagnostics: /modperf start label [seconds 5-300], stop, status, export, mark label, route record name, or route stop.";
         public CommandOutput Execute(string[] args)
         {
             if (args.Length == 0 || args[0] == "status")
                 return new CommandOutput(Recorder.Active ? "Recording: " + Recorder.Label : "Recorder is off. " + Recorder.LastReport);
             if (args[0] == "stop") return new CommandOutput(Recorder.Stop("manual"));
             if (args[0] == "export") return new CommandOutput(Recorder.Export());
+            if (args[0] == "route" && args.Length == 3 && args[1] == "record") return new CommandOutput(Bench.StartRecording(args[2]));
+            if (args[0] == "route" && args.Length == 2 && args[1] == "stop") return new CommandOutput(Bench.StopRecording());
             if (args[0] == "mark" && args.Length == 2) { Recorder.Mark(args[1]); return new CommandOutput("Marker added if recording."); }
             if (args[0] == "start" && (args.Length == 2 || args.Length == 3))
             {

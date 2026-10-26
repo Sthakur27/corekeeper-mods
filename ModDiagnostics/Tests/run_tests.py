@@ -38,7 +38,8 @@ assert report["repeatedLogs"][0]["message"] == "tab\tcontrol\x01"
 assert report["label"] == 'quote" slash\\ newline\n snow\u2603'
 assert report["sampledSeconds"] == 60.25 and report["featureSwitches"] == ["Feature: example = true"]
 assert report["sampleCapacityReached"] is False
-assert report["hitches"] == [{"seconds": 1.5, "ms": 80, "gc": True, "allocatedBytes": 2048, "topScope": "Update", "topScopeMs": 5}]
+assert report["hitches"] == [{"seconds": 1.5, "ms": 80, "gc": True, "allocatedBytes": 2048, "topScope": "Update", "topScopeMs": 5, "phases": "total=80.0"}]
+assert report["phases"] == [{"name": "total", "ms": {"count": 1, "mean": 4, "median": 4, "p95": 4, "p99": 4, "max": 4}}]
 assert report["hitchesWithGc"] == 1 and report["cpuMainMs"]["p99"] == 4 and report["gpuMs"] is None
 assert report["scopes"][0]["hitchTop"] == 0 and report["frameTimingAvailable"] is False
 print("11 JSON export round-trip checks passed (nested fields, escaping, non-English locale, hitches).")

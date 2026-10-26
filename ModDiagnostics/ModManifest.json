@@ -24,6 +24,14 @@
     {
       "path": "Scripts/ReportJson.cs",
       "guid": ""
+    },
+    {
+      "path": "Scripts/Probes.cs",
+      "guid": ""
+    },
+    {
+      "path": "Scripts/Bench.cs",
+      "guid": ""
     }
   ],
   "dependencies": [

@@ -74,7 +74,7 @@ namespace ModDiagnostics
         public double seconds, ms, topScopeMs;
         public bool gc;
         public long allocatedBytes;
-        public string topScope;
+        public string topScope, phases;
     }
 
     [Serializable]
@@ -128,12 +128,12 @@ namespace ModDiagnostics
             touched.Clear();
             return top;
         }
-        public void AddHitch(double seconds, double milliseconds, bool gc, long allocatedBytes, ScopeSummary top, double topMs)
+        public void AddHitch(double seconds, double milliseconds, bool gc, long allocatedBytes, ScopeSummary top, double topMs, string phases = "")
         {
             if (top != null) { top.hitchTop++; top.hitchTopMs += topMs; }
             if (Hitches.Count == hitchLimit) { DroppedHitches++; return; }
             Hitches.Add(new Hitch { seconds = seconds, ms = milliseconds, gc = gc, allocatedBytes = allocatedBytes,
-                topScope = top == null ? "" : top.name, topScopeMs = topMs });
+                topScope = top == null ? "" : top.name, topScopeMs = topMs, phases = phases });
         }
         public void AddTiming(double cpuMainMs, double gpuMs)
         {

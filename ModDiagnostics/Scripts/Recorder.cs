@@ -14,6 +14,10 @@ namespace ModDiagnostics
         public static bool Active { get; private set; }
         public static string Label => report == null ? "" : report.label;
         public static string LastReport { get; private set; } = "No capture yet.";
+        // Config-filesystem path of the last report written; empty until an export succeeds.
+        public static string LastReportPath { get; private set; } = "";
+        public static string BenchInfo;
+        private static Probes probes;
         private static Measurements data;
         private static CaptureReport report;
         private static double started, deadline, readyAt, bookkeeping;
@@ -69,6 +73,8 @@ namespace ModDiagnostics
             // Needs the player's frame timing stats; without them only frame spacing is reported.
             report.frameTimingAvailable = FrameTimingManager.IsFeatureEnabled();
             lastAllocated = GC.GetAllocatedBytesForCurrentThread();
+            report.bench = BenchInfo;
+            probes = new Probes(data.Frames.Length);
             bookkeeping = 0; measuring = false; frameWindow = new FrameWindow();
             lock (logLock) logs.Clear();
             generation++;
@@ -100,9 +106,10 @@ namespace ModDiagnostics
             if (!measuring) { data.IgnoredFrames++; return; }
             if (report.frameTimingAvailable && FrameTimingManager.GetLatestTimings(1, timings) > 0)
                 data.AddTiming(timings[0].cpuMainThreadFrameTime, timings[0].gpuFrameTime);
+            probes.Sample();
             if (milliseconds > Measurements.HitchMs)
             {
-                data.AddHitch(now - readyAt, milliseconds, gc, allocated, top, topMs);
+                data.AddHitch(now - readyAt, milliseconds, gc, allocated, top, topMs, probes.Describe());
                 if (gc) report.hitchesWithGc++;
             }
             if (!data.AddFrame(milliseconds, allocated / 1024.0))
@@ -194,6 +201,8 @@ namespace ModDiagnostics
             if (data.GpuCount > 0) report.gpuMs = Distribution.From(data.Gpu, data.GpuCount);
             report.hitches.AddRange(data.Hitches);
             report.droppedHitches = data.DroppedHitches;
+            report.phases = probes.Summaries();
+            probes.Dispose(); probes = null;
             report.sampledSeconds = report.frames.meanMs * report.frames.count / 1000;
             report.excludedFrames = data.IgnoredFrames; report.droppedScopes = data.DroppedScopes;
             report.instrumentationBookkeepingMs = bookkeeping;
@@ -215,6 +224,7 @@ namespace ModDiagnostics
                 API.ConfigFilesystem.CreateDirectory("ModDiagnostics/reports");
                 API.ConfigFilesystem.Write(pendingPath, Encoding.UTF8.GetBytes(pendingJson));
                 LastReport = "Saved " + pendingPath + " (" + report.frames.count + " frames, p95 " + report.frames.p95Ms.ToString("F2") + "ms).";
+                LastReportPath = pendingPath;
                 pendingJson = null;
                 return LastReport;
             }

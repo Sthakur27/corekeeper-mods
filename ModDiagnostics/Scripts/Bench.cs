@@ -146,11 +146,25 @@ namespace ModDiagnostics
             if (client != null && client.IsCreated) clientModded = CountModded(client.EntityManager);
             var top = new List<KeyValuePair<int, int[]>>(byId);
             top.Sort((a, b) => b.Value[1].CompareTo(a.Value[1]));
+            // GhostCollectionSystem keeps running every frame while any ghost prefab lacks GhostPrefabInCollection.
+            int pendingServer = PendingGhostPrefabs(em), pendingClient = client != null && client.IsCreated ? PendingGhostPrefabs(client.EntityManager) : -1;
             var text = new StringBuilder("census objects=" + objects + " inventories=" + inventories + " slots=" + slots + " autoTransfer=" + auto
-                + " moddedServer=" + modded + " moddedClient=" + clientModded + " top=");
+                + " moddedServer=" + modded + " moddedClient=" + clientModded
+                + " pendingGhostPrefabsServer=" + pendingServer + " pendingGhostPrefabsClient=" + pendingClient + " top=");
             for (int i = 0; i < top.Count && i < 12; i++)
                 text.Append(i == 0 ? "" : ",").Append(top[i].Key).Append(':').Append(top[i].Value[0]).Append('/').Append(top[i].Value[1]).Append('/').Append(top[i].Value[2]);
             return text.ToString();
+        }
+
+        private static int PendingGhostPrefabs(EntityManager em)
+        {
+            var desc = new EntityQueryDesc
+            {
+                All = new[] { ComponentType.ReadOnly<Unity.NetCode.GhostType>(), ComponentType.ReadOnly<Prefab>() },
+                None = new[] { ComponentType.ReadOnly<Unity.NetCode.GhostPrefabInCollection>() },
+                Options = EntityQueryOptions.IncludePrefab
+            };
+            using (var query = em.CreateEntityQuery(desc)) return query.CalculateEntityCount();
         }
 
         private static int CountModded(EntityManager em)

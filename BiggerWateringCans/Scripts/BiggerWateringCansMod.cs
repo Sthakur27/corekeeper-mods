@@ -19,7 +19,7 @@ namespace BiggerWateringCans
     public class BiggerWateringCansMod : IMod
     {
         public const string Name = "BiggerWateringCans";
-        public const string Version = "1.0.0";
+        public const string Version = "1.0.1";
 
         private static bool _appliedViaDatabase;
 

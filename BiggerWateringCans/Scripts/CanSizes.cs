@@ -27,13 +27,16 @@ namespace BiggerWateringCans
             }
         }
 
+        // Both Apply overloads only ever grow the size. Brush mods (Placement Plus, Tool Resizer) raise
+        // prefabTileSize to their own max as a size ceiling; shrinking it back made the server and client
+        // disagree (whichever world patched last won), so the aim preview flickered between the two sizes.
+
         /// <summary>Applies the mod size to a managed ObjectInfo. Returns true if it changed anything.</summary>
         public static bool Apply(ObjectInfo info)
         {
             if (info == null || !TryGet(info.objectID, out int size)) return false;
-            var want = new Vector2Int(size, size);
-            if (info.prefabTileSize == want) return false;
-            info.prefabTileSize = want;
+            if (info.prefabTileSize.x >= size && info.prefabTileSize.y >= size) return false;
+            info.prefabTileSize = new Vector2Int(size, size);
             return true;
         }
 
@@ -41,9 +44,8 @@ namespace BiggerWateringCans
         public static bool Apply(ref PugDatabase.EntityObjectInfo info, ObjectID expected)
         {
             if (info.objectID != expected || !TryGet(expected, out int size)) return false;
-            var want = new int2(size, size);
-            if (math.all(info.prefabTileSize == want)) return false;
-            info.prefabTileSize = want;
+            if (math.all(info.prefabTileSize >= size)) return false;
+            info.prefabTileSize = new int2(size, size);
             return true;
         }
     }

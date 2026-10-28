@@ -51,6 +51,10 @@
         {
             "path": "Scripts/fastfish.cs",
             "guid": "dd2b67bd1da643beb2f80d69f0f62fc5"
+        },
+        {
+            "path": "Scripts/exit.cs",
+            "guid": "b16328561bab40efb4db01fa584d7f72"
         }
     ],
     "dependencies": []

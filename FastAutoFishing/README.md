@@ -8,6 +8,8 @@ Spend less time waiting for bites. Automatically respond to fish nibbles and sho
 
 Open your inventory and use the auto-fishing toggle, then equip a fishing rod and cast. Automatic nibble responses start enabled on a fresh configuration. The helper turns off the fishing minigame while enabled and pauses its automatic input while menus or inventory are open.
 
+With auto-fishing on, it keeps catching and recasting by itself. To stop, right-click once or start walking. The mod reels in the current line (landing the fish if one is biting) and doesn't cast again.
+
 The inventory toggle controls automatic nibble responses. The faster timing stays active while the mod is installed; there is no speed setting.
 
 ## What changes

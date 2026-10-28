@@ -19,7 +19,20 @@
         {
             "path": "Scripts/Systems/HydraGemSystem.cs",
             "guid": "5b0e8c3f71a94d2e9c6a2f48d1e7b305"
+        },
+        {
+            "path": "Scripts/Systems/LarvaMeatSystem.cs",
+            "guid": "c4d92e7a1b6f4e83a0f5d2b9e8c71a46"
         }
     ],
-    "dependencies": []
+    "dependencies": [
+        {
+            "modName": "CoreLib",
+            "required": true
+        },
+        {
+            "modName": "ModOptions",
+            "required": true
+        }
+    ]
 }

@@ -21,7 +21,7 @@ namespace SidsOverhaul
     public sealed class SidsOverhaulMod : IMod
     {
         public const string Name = "SidsOverhaul";
-        public const string Version = "1.4.4";
+        public const string Version = "1.4.5";
 
         public void EarlyInit()
         {
@@ -49,6 +49,7 @@ namespace SidsOverhaul
             Page("FishSeller", "Fish Seller", "Fish Seller: ", FishSeller.FishSellerMod.SettingsHint, FishSeller.FishSellerMod.RegisterSettings);
             Page("MerchantRestock", "Merchant Restock", "Merchant Restock: ", MerchantRestock.MerchantRestockMod.SettingsHint, MerchantRestock.MerchantRestockMod.RegisterSettings);
             Page("FasterMushrooms", "Faster Mushrooms", "Mushrooms: ", FasterMushrooms.FasterMushroomsMod.SettingsHint, FasterMushrooms.FasterMushroomsMod.RegisterSettings);
+            Page("BossBonusLoot", "Boss Bonus Loot", "Boss Bonus Loot: ", BossBonusLoot.BossBonusLootMod.SettingsHint, BossBonusLoot.BossBonusLootMod.RegisterSettings);
             Page("BetterFishingLoot", "Better Fishing Loot", "Fishing Loot: ", BetterFishingLoot.BetterFishingLootMod.SettingsHint, BetterFishingLoot.BetterFishingLootMod.RegisterSettings);
             Page("DurabilityMultiplier", "Durability", "Durability: ", DurabilityMultiplier.DurabilityMultiplierMod.SettingsHint, DurabilityMultiplier.DurabilityMultiplierMod.RegisterSettings);
             Page("VehicleSpeed", "Vehicle Speed", "Vehicles: ", VehicleSpeed.VehicleSpeedMod.SettingsHint, VehicleSpeed.VehicleSpeedMod.RegisterSettings);

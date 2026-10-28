@@ -20,8 +20,12 @@ Boss bonuses drop at the defeated boss in addition to its normal loot chest. Eac
 
 Mimites and Orbital Turrets each roll a **10% chance per gemstone** for a Jungle Emerald, Ocean Sapphire and Desert Ruby. Void Larvae have a **20% chance** to drop an Oblivion Fragment. These rolls replace the corresponding ordinary random loot-table entries.
 
+## Larva Meat
+
+Every monster that drops Larva Meat drops **3x as much** by default. Change it under **Settings > Mod Options > Boss Bonus Loot > Larva Meat drops** (1x = vanilla, up to 10x); it applies right away. Ghorm's fixed bonus above is not scaled.
+
 ## How to use and requirements
 
-Install and play: **there are no settings**. No library dependencies. Install on the host/server and every client; the host decides the rolls.
+Requires **CoreLib** and **Mod Options**. Install on the host/server and every client; the host decides the rolls.
 
 Only the listed enemies and loot entries change. A chance-based reward is not guaranteed, and this does not multiply all boss loot. Also included in **Sid's Overhaul**; use one version of this feature.

@@ -21,7 +21,7 @@ namespace FiveLoadouts
     public class FiveLoadoutsMod : IMod
     {
         public const string Name = "FiveLoadouts";
-        public const string Version = "1.1.0";
+        public const string Version = "1.1.1";
 
         public void EarlyInit()
         {

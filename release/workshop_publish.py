@@ -57,6 +57,10 @@ MODS = [
     ("ConnectedStorage", "Runic Storage", "runicstorage_workshop.png", "Item"),
 ]
 OVERHAUL = ("SidsOverhaul", "Sid's Overhaul", "overhaul_logo.png", "Overhaul")
+# Cover disclosure per item; everything else keeps the AI-artwork note.
+COVER_NOTES = {
+    "ConnectedStorage": "Cover built from the mod's own in-game sprites, arranged in an illustrated scene; not a gameplay screenshot.",
+}
 
 # Steam collection with every individual mod (+ CoreLib); processed first so other descriptions can link it.
 COLLECTION = ("Collection", "Sid's Core Keeper Mods", "collection_logo.png")
@@ -143,7 +147,8 @@ def description(key, folder, readme_path):
                 "use the Overhaul or the individual mods, not both.")
     if key == "GoldenChance":
         note = "[b]WORK IN PROGRESS[/b] — Golden Chance is still being developed.\n\n" + note
-    footer = f"\n\nCover artwork generated with AI; not an in-game screenshot.\n\nSource and full docs: [url={GITHUB}{folder}]{GITHUB}{folder}[/url]"
+    cover_note = COVER_NOTES.get(key, "Cover artwork generated with AI; not an in-game screenshot.")
+    footer = f"\n\n{cover_note}\n\nSource and full docs: [url={GITHUB}{folder}]{GITHUB}{folder}[/url]"
     body = to_bbcode(md)
     text = note + "\n\n" + body
     if len(text) + len(footer) > 7900:

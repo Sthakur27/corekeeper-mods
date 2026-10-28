@@ -1,6 +1,7 @@
 """Generate SDK source assets for every storage object, with stable GUIDs."""
 from pathlib import Path
 import hashlib, re
+from PIL import Image
 HERE=Path(__file__).parent
 source=(HERE/'asset_template.py.txt').read_text()
 for name,capacity in [('Workbench',-2),('Terminal',0),('CopperChest',20),('TinChest',40),('IronChest',60),('ScarletChest',80),('OctarineChest',100),('GalaxiteChest',120),('SolariteChest',140),('PandoriumChest',160)]+[(tier+'Gem',-1) for tier in ('Tin','Iron','Scarlet','Octarine','Galaxite','Solarite','Pandorium')]:
@@ -13,5 +14,9 @@ for name,capacity in [('Workbench',-2),('Terminal',0),('CopperChest',20),('TinCh
   title='Storage Workbench'; desc='Craft the Storage Terminal, Copper Storage Unit and every sequential upgrade gem here. Costs 20 wood.'
  s=re.sub(r'TITLE = .*',lambda m:'TITLE = '+repr(title),s)
  s=re.sub(r'DESC = .*',lambda m:'DESC = '+repr(desc),s)
- s=s.replace('0.0625, 4)', '(1 / 20 if '+repr(name)+' == "Terminal" else 0.0625), 4)').replace('1 / 19, 4)', '(1 / 20 if '+repr(name)+' == "Terminal" else 0.0625), 4)')
+ # Pivot one pixel above each view's own bottom; like vanilla, the taller side view does not inherit the front pivot.
+ heights={v:Image.open(HERE/'Art'/(name+v+'.png')).height for v in ('','_side','_up')}
+ s=s.replace('_emissive.png", 0.0625, 4)\nsprite_asset += "  m_staticVariants', '_emissive.png", 1 / %d, 4)\nsprite_asset += "  m_staticVariants' % heights[''])
+ s=s.replace('_side_emissive.png", 1 / 19, 4)', '_side_emissive.png", 1 / %d, 4).replace("inheritPivot: 1", "inheritPivot: 0")' % heights['_side'])
+ s=s.replace('_up_emissive.png", 0.0625, 4)', '_up_emissive.png", 1 / %d, 4)' % heights['_up'])
  exec(compile(s,str(HERE/'asset_template.py.txt'),'exec'),{'__file__':str(HERE/'gen_assets.py')})

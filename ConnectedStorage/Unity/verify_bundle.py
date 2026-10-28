@@ -40,7 +40,21 @@ for path in paths:
  # Prove the approved art is what ships and high-resolution meshes stay one tile wide.
  for name,filename in [('CopperChest','RunicKilnReview/copper-node.png'),('Terminal','RunicKilnReview/terminal.png')] + [(n, 'StorageFamily/'+n+'.png') for n in ['Workbench']+[t+'Chest' for t in CAPACITY if t!='Copper']]:
   art=Image.open(Path(__file__).parent/'Art'/(name+'.png')).convert('RGBA')
-  if art.width<=32: continue
+  if art.width<=32:
+   # Native art: one texel per game pixel, so nothing between XScaler and the sprite may scale it.
+   found=False
+   for obj in env.objects:
+    if obj.type.name!='Transform':continue
+    tr=obj.read()
+    if tr.m_GameObject.read().m_Name!='Sprite Object':continue
+    chain=[tr]
+    while chain[-1].m_Father: chain.append(chain[-1].m_Father.read())
+    if chain[-1].m_GameObject.read().m_Name!=name+'Graphics':continue
+    for node in chain[:-1]:
+     assert abs(abs(node.m_LocalScale.x)-1)<1e-6 and abs(node.m_LocalScale.y-1)<1e-6, name+': native art must not be rescaled'
+    found=True
+   assert found, name+': sprite missing'
+   continue
   original=Image.open(Path(__file__).parents[1]/'ArtConcepts'/filename).convert('RGBA')
   bbox=original.getchannel('A').point(lambda a:255 if a>=128 else 0).getbbox()
   crop=original.crop(bbox)

@@ -59,11 +59,14 @@ namespace ConnectedStorage
             if(!World.IsServer() || !Available(player) || !Available(unit))return "Inventory unavailable.";
             var held=EntityManager.GetBuffer<ContainedObjectsBuffer>(player)[cursor];
             var target=EntityManager.GetBuffer<ContainedObjectsBuffer>(unit)[slot];
-            bool taking=held.objectID==ObjectID.None;
-            bool matching=!taking && held.objectID==target.objectID && held.variation==target.variation
+            bool holding=held.objectID!=ObjectID.None;
+            bool matching=holding && held.objectID==target.objectID && held.variation==target.variation
                 && held.auxDataIndex==target.auxDataIndex && PugDatabase.GetObjectInfo(held.objectID,held.variation).isStackable;
+            // Right-click modes on the held item's own stack take more into the hand
+            // (one, half or ten), so a stack can be split by repeated right-clicks.
+            bool taking=!holding || (mode!=0 && matching);
             if(mode!=0 && !taking && target.objectID!=ObjectID.None && !matching)return null;
-            if(matching && target.amount>=9999)return null;
+            if(matching && (taking?held.amount:target.amount)>=9999)return null;
             using(var ecb=new EntityCommandBuffer(Allocator.Temp)) {
                 var shared=new InventoryHandlerShared(ref CheckedStateRef,Singleton<PugDatabase.DatabaseBankCD>(),
                     Singleton<SkillTalentsTableCD>(),Singleton<UpgradeCostsTableCD>(),Singleton<InventoryAuxDataSystemDataCD>());

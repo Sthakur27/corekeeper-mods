@@ -11,12 +11,12 @@ Need more room? Add another unit or upgrade one you already have. Search, catego
 1. At any workbench, select its wooden tier and craft a **Storage Workbench** from **Base** for 20 wood.
 2. Use it to craft a **Storage Terminal** (10 copper bars + 20 wood) and **Copper Storage Units** (30 copper bars each).
 3. Place units edge-to-edge. Diagonals and gaps do not connect.
-4. Press **E** on the terminal or any unit to open that connected inventory. Access is local; there is no remote access.
+4. Press **E** on the terminal or any unit connected to it to open that inventory. A network needs a terminal: units with no terminal connected cannot be opened. Access is local; there is no remote access.
 
 ## Storage controls
 
 - Pick up and place items with the cursor, or Shift-left-click to transfer a stack.
-- Right-click takes one item; native modifiers support ten items or half a stack, rounded up.
+- Right-click takes one item; right-click the same stack again while holding it to take one more. Native modifiers take ten items or half a stack, rounded up.
 - Search and category filters narrow the visible items. Scroll through larger networks or switch between grid and list views.
 - Sort consolidates compatible stacks, then orders them by name. The direction control switches ascending/descending order.
 - Slots remain stable while moving items. Reopening preserves your arrangement. Adding a node to a previously viewed network triggers one sort on the next view.

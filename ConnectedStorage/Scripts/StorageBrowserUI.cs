@@ -165,14 +165,17 @@ namespace ConnectedStorage
             var scrollable=scroll.gameObject.AddComponent<StorageBrowserScroll>();
             scroll.scrollable=scrollable;
             scroll.cursorMustBeInsideWindowToScroll=true;
-            heading=Instantiate(search.hintText,screen.transform,false);
-            heading.transform.localPosition=new Vector3(-5.4f,5,0);
-            heading.style.maskInteraction=SpriteMaskInteraction.None;
-            heading.localize=false; heading.maxWidth=11;
-            heading.gameObject.SetActive(true);
-            emptyMessage=Instantiate(heading,screen.transform,false);
+            emptyMessage=Instantiate(search.hintText,screen.transform,false);
+            emptyMessage.style.maskInteraction=SpriteMaskInteraction.None;
+            emptyMessage.localize=false;
             emptyMessage.transform.localPosition=new Vector3(-5.4f,2.5f,0);
             emptyMessage.maxWidth=10;
+            // Slot count sits right-aligned inside the search bar, clear of the HUD bars above the panel.
+            heading=Instantiate(emptyMessage,screen.transform,false);
+            heading.transform.localPosition=new Vector3(1.9f,3.88f,0);
+            heading.style.horizontalAlignment=PugTextStyle.HorizontalAlignment.right;
+            heading.maxWidth=4;
+            heading.gameObject.SetActive(true);
             emptyMessage.gameObject.SetActive(false);
             CreateSlots("StorageGridSlot",grid,model.GridColumns*model.ViewportRows);
             CreateSlots("StorageListSlot",list,model.ViewportRows);
@@ -184,7 +187,7 @@ namespace ConnectedStorage
             var filterLabel=Instantiate(search.hintText,Find("StorageFilters"),false);
             filterLabel.transform.localPosition=new Vector3(-.4f,.65f,-.1f);
             filterLabel.transform.localScale=Vector3.one*.55f;
-            filterLabel.localize=false;filterLabel.style=heading.style.GetCopy();
+            filterLabel.localize=false;filterLabel.style=emptyMessage.style.GetCopy();
             filterLabel.style.maskInteraction=SpriteMaskInteraction.None;
             filterLabel.style.sortingLayer=grid[0].icon.sortingLayerID;filterLabel.style.orderInLayer=60;
             filterLabel.Render("Filter",false,true);
@@ -230,12 +233,12 @@ namespace ConnectedStorage
                 button.onLeftClick.AddListener(()=>SelectCategory(selected));
                 categoryButtons.Add(button);
                 var background=go.GetComponentsInChildren<SpriteRenderer>(true).First(r=>r.name=="Background");
-                var label=Instantiate(heading,go.transform,false);
+                var label=Instantiate(emptyMessage,go.transform,false);
                 label.gameObject.name=Categories[i];
                 label.transform.localPosition=new Vector3(-2.3f,.15f,-.1f);
                 label.transform.localScale=Vector3.one;
                 label.localize=false;label.maxWidth=4.6f;
-                label.style=heading.style.GetCopy();
+                label.style=emptyMessage.style.GetCopy();
                 label.style.maskInteraction=SpriteMaskInteraction.None;
                 label.style.sortingLayer=background.sortingLayerID;label.style.orderInLayer=60;
                 label.Render(Categories[i],false,true,true);
@@ -245,6 +248,8 @@ namespace ConnectedStorage
         private void SelectCategory(int selected) {
             if(!Active || !categoryMenu.activeSelf || Time.frameCount==categoryOpenedFrame)return;
             filter=selected;Refresh();Configure();ShowCategories(false);
+            search.hintString=filter==0?"Search":"Search "+Categories[filter];
+            if(search.GetInputText()=="")search.hintText.Render(search.hintString,false,true);
             Debug.Log("[ConnectedStorage] Category selected: "+Categories[selected]);
         }
         private void UpdateCategoryPointer() {
@@ -351,6 +356,7 @@ namespace ConnectedStorage
             if(p==null || !em.Exists(terminal.entity) || Manager.menu.IsAnyMenuActive()
                 || math.distancesq(p.WorldPosition,em.GetComponentData<LocalTransform>(terminal.entity).Position)>9f)
             { Close("player/terminal unavailable, menu opened, or out of range"); return; }
+            if(cachedNetwork!=null && cachedNetwork.Terminals.Count==0) { Close("network has no terminal"); return; }
             if(!search.inputIsActive && Input.GetKeyDown(KeyCode.Escape)) { Close("Escape"); return; }
             var next=search.GetInputText()??"";
             if(Manager.ui.currentSelectedUIElement==search && Input.GetMouseButtonDown(1)) {search.SetInputText("");next="";}
@@ -371,7 +377,9 @@ namespace ConnectedStorage
                 }
             }
             if(cursorSlotChanged || Time.unscaledTime>=nextScan) {Refresh();nextScan=Time.unscaledTime+0.1f;}
-            heading.Render("Storage  "+used+" / "+capacity+" slots"+(filter==0?"":" | "+Categories[filter]));
+            // Hide the count once a long search would run into it.
+            heading.gameObject.SetActive(lastSearch.Length<=12);
+            if(lastSearch.Length<=12) heading.Render(used+" / "+capacity);
             ApplyLayout();
             UpdateCategoryPointer();
             StorageUIDev.Tick(screen);

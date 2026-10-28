@@ -67,6 +67,8 @@ namespace ConnectedStorage
                 }
                 if (!StorageCatalog.IsNode(em.GetComponentData<ObjectDataCD>(terminal).objectID)) return Error("Storage object unavailable.");
                 var network = StorageNetwork.Scan(world, terminal);
+                if (network.Terminals.Count == 0) return Error("Connect this storage unit to a Storage Terminal to access it.");
+                if (args[2] == "open") return Quiet();
                 var transfers = world.GetOrCreateSystemManaged<StorageTransferSystem>();
                 if(transfers.HasPendingChanges(player,network.Chests))return Quiet();
                 if(args[2]=="sort" && args.Length==4)

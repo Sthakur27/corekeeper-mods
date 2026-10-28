@@ -41,10 +41,8 @@ def previews():
     directions.save(OUT / 'directions.png')
 
 if __name__ == '__main__':
-    runpy.run_path(str(HERE / 'make_unit_art.py'), run_name='__main__')
-    runpy.run_path(str(HERE / 'make_device_art.py'), run_name='__main__')
-    runpy.run_path(str(HERE / 'make_kiln_art.py'), run_name='__main__')
-    runpy.run_path(str(HERE / 'import_approved_art.py'), run_name='__main__')
+    # Placed objects are native 16 px art (make_gem_art.py); gems are still the approved PNGs, downsampled.
     runpy.run_path(str(HERE / 'import_gem_art.py'), run_name='__main__')
-    runpy.run_path(str(HERE / 'import_family_art.py'), run_name='__main__')
+    runpy.run_path(str(HERE / 'downscale_art.py'), run_name='__main__')
+    runpy.run_path(str(HERE / 'make_gem_art.py'), run_name='__main__')
     previews()

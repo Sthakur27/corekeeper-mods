@@ -12,7 +12,9 @@ for name in NAMES:
         image = Image.open(path)
         glow = Image.open(ROOT / (name + suffix + '_emissive.png'))
         approved = image.width > 32
-        expected = image.size if approved else (16, 20 if name == 'Terminal' else 16)
+        # Vanilla sizes: chest 16x16 front/back, 16x19 side; 1x1 bench 16x16 down/up, 16x20 side.
+        side = 19 if name.endswith('Chest') else 20 if name in ('Terminal', 'Workbench') else 16
+        expected = image.size if approved else (16, side if suffix == '_side' else 16)
         assert image.mode == glow.mode == 'RGBA', str(path) + ': RGBA required'
         assert image.size == glow.size == expected, str(path) + ': unexpected size'
         alpha = image.getchannel('A')

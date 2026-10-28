@@ -94,8 +94,9 @@ public static class ConnectedStorageBuilder
         foreach (var name in new[] { "Workbench", "TinChest", "IronChest", "ScarletChest", "OctarineChest", "GalaxiteChest", "SolariteChest", "PandoriumChest", "CopperChest", "Terminal", "TinGem", "IronGem", "ScarletGem", "OctarineGem", "GalaxiteGem", "SolariteGem", "PandoriumGem" })
         {
             var texture = AssetDatabase.LoadAssetAtPath<Texture2D>(Root + "/Textures/" + name + ".png");
-            if (texture == null || texture.width <= 32) continue;
+            if (texture == null) continue;
             int width = texture.width, height = texture.height;
+            if (width <= 32) { ConfigureNativeArt(name); continue; }
             foreach (var suffix in new[] { "", "_side", "_up", "_emissive", "_side_emissive", "_up_emissive", "_icon" })
             {
                 var importer = (TextureImporter)AssetImporter.GetAtPath(Root + "/Textures/" + name + suffix + ".png");
@@ -139,6 +140,54 @@ public static class ConnectedStorageBuilder
             } finally { PrefabUtility.UnloadPrefabContents(prefab); }
             Debug.Log("[ConnectedStorageBuilder] Approved PNG " + name + " " + width + "x" + height + "; one-tile canvas width");
         }
+    }
+
+    // Native-size art (16 px per tile, like vanilla): 16 pixels/unit, pivot one pixel above each view's
+    // bottom, side view keeps its own pivot (vanilla inheritPivot=0), and no ArtScale compensation.
+    static void ConfigureNativeArt(string name)
+    {
+        string[] views = { "", "_side", "_up" };
+        var pivots = new float[views.Length];
+        for (int v = 0; v < views.Length; v++)
+            foreach (var suffix in new[] { views[v], views[v] + "_emissive" })
+            {
+                var importer = (TextureImporter)AssetImporter.GetAtPath(Root + "/Textures/" + name + suffix + ".png");
+                importer.GetSourceTextureWidthAndHeight(out _, out int h);
+                pivots[v] = 1f / h;
+                importer.npotScale = TextureImporterNPOTScale.None;
+                importer.textureCompression = TextureImporterCompression.Uncompressed;
+                importer.filterMode = FilterMode.Point;
+                importer.mipmapEnabled = false;
+                importer.spritePixelsPerUnit = 16;
+                var s = new TextureImporterSettings();
+                importer.ReadTextureSettings(s);
+                s.spriteAlignment = (int)SpriteAlignment.Custom;
+                s.spritePivot = new Vector2(.5f, pivots[v]);
+                importer.SetTextureSettings(s);
+                importer.SaveAndReimport();
+            }
+        var icon = (TextureImporter)AssetImporter.GetAtPath(Root + "/Textures/" + name + "_icon.png");
+        if (icon != null) { icon.spritePixelsPerUnit = 16; icon.SaveAndReimport(); }
+        var asset = AssetDatabase.LoadAssetAtPath<ScriptableObject>(Root + "/Data/SpriteAsset/" + name + ".asset");
+        var so = new SerializedObject(asset);
+        so.FindProperty("m_staticSpriteData").FindPropertyRelative("pivot").vector2Value = new Vector2(.5f, pivots[0]);
+        var variants = so.FindProperty("m_staticVariants");
+        // Variants are [_side, _up] (gen_assets.py, which also writes the side's inheritPivot: 0).
+        for (int i = 0; i < variants.arraySize && i + 1 < views.Length; i++)
+            variants.GetArrayElementAtIndex(i).FindPropertyRelative("pivot").vector2Value = new Vector2(.5f, pivots[i + 1]);
+        so.ApplyModifiedPropertiesWithoutUndo();
+        EditorUtility.SetDirty(asset);
+        string path = Root + "/Prefabs/" + name + "Graphics.prefab";
+        var prefab = PrefabUtility.LoadPrefabContents(path);
+        try {
+            var artScale = prefab.transform.Find("XScaler/ArtScale");
+            if (artScale != null) {
+                artScale.localScale = Vector3.one;
+                artScale.Find("Sprite Object").localScale = Vector3.one;
+            }
+            PrefabUtility.SaveAsPrefabAsset(prefab, path);
+        } finally { PrefabUtility.UnloadPrefabContents(prefab); }
+        Debug.Log("[ConnectedStorageBuilder] Native art " + name + " 16 px/unit; pivots " + string.Join(",", pivots));
     }
 
     public static void ExportExisting()

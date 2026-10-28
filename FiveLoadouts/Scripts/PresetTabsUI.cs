@@ -266,34 +266,34 @@ namespace FiveLoadouts
         // ------------------------------------------------------------------ numeral sprites
 
         // Hand-drawn IV and V in the style of the vanilla gearset_icons I, II, III (10x10 at
-        // 16 ppu): a cap row (A), outline (B), top highlight (C) and stems (D, lighter E on
-        // the lower half), rows listed top to bottom. The V is open between its arms. IV is
-        // two pixels wider than the vanilla canvas so its V matches the standalone V.
+        // 16 ppu): a cap row (A), outline (B), top highlight (C), 1px stems sharing outlines
+        // (D, lighter E on the lower half) and a base serif, rows listed top to bottom. Both
+        // stay inside III's 9px footprint so the tab column reads as one set.
         private static readonly string[] GlyphIV =
         {
-            "AAAAAAAAAAAA",
-            "BCCCCCCCCCCB",
-            "BDBBDB...BDB",
-            "BDBBDB...BDB",
-            "BDB.BDB.BDB.",
-            "BEB.BEB.BEB.",
-            "BEB..BEBEB..",
-            "BDB...BDB...",
-            "BBB...BBB...",
-            "............",
+            "AAAAAAAAA.",
+            "BCCCCCCCB.",
+            "BDBDB.BDB.",
+            "BDBDB.BDB.",
+            "BDBBDBDB..",
+            "BEBBEBEB..",
+            "BEB.BEB...",
+            "BDDDDDDDB.",
+            "BBBBBBBBB.",
+            "..........",
         };
 
         private static readonly string[] GlyphV =
         {
             "AAAAAAAAA.",
             "BCCCCCCCB.",
-            "BDB...BDB.",
-            "BDB...BDB.",
             ".BDB.BDB..",
-            ".BEB.BEB..",
+            ".BDB.BDB..",
+            "..BDBDB...",
             "..BEBEB...",
-            "...BDB....",
-            "...BBB....",
+            "...BEB....",
+            "..BDDDB...",
+            "..BBBBB...",
             "..........",
         };
 

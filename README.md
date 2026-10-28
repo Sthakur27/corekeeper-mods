@@ -44,7 +44,7 @@ Use the Overhaul or the individual versions of its features. Installing both run
 
 | Mod | What it helps with |
 |---|---|
-| [Quick Buff](QuickBuff/README.md) | Use shortcuts for buff food, potions and healing. |
+| [Quick Buff](QuickBuff/README.md) | Use shortcuts for buff food, potions, healing and mana. |
 | [Buff Duration Floor](BuffDurationFloor/README.md) | Set a minimum duration for short food and potion buffs. |
 | [Durability Multiplier](DurabilityMultiplier/README.md) | Choose how quickly equipment wears out. |
 | [Difficulty Tuning](DifficultyTuning/README.md) | Tune enemies and bosses separately for Normal and Hard worlds. |

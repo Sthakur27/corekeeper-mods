@@ -10,12 +10,14 @@ using UnityEngine;
 
 namespace QuickBuff.Systems
 {
-    /// <summary>What a request consumes: buff foods and potions (B), the first healing potion (H) or buff foods only (F).</summary>
+    /// <summary>What a request consumes: buff foods and potions (B), the first healing potion (H), buff foods only (F)
+    /// or the first mana potion (J).</summary>
     public enum ConsumeMode
     {
         Buff,
         Heal,
-        Food
+        Food,
+        Mana
     }
 
     public struct QuickBuffResult
@@ -32,7 +34,9 @@ namespace QuickBuff.Systems
         public string error;
         /// <summary>Quick heal only: the player was already at full health, nothing consumed.</summary>
         public bool fullHealth;
-        /// <summary>Quick heal only: the potion that was drunk.</summary>
+        /// <summary>Quick mana only: the player's mana was already full, nothing consumed.</summary>
+        public bool fullMana;
+        /// <summary>Quick heal / quick mana: the potion that was drunk.</summary>
         public ObjectID healItem;
     }
 
@@ -72,6 +76,7 @@ namespace QuickBuff.Systems
         private readonly Dictionary<Entity, NetworkTick> _lastRequestTick = new Dictionary<Entity, NetworkTick>();
         private readonly Dictionary<Entity, NetworkTick> _lastHealTick = new Dictionary<Entity, NetworkTick>();
         private readonly Dictionary<Entity, NetworkTick> _lastFoodTick = new Dictionary<Entity, NetworkTick>();
+        private readonly Dictionary<Entity, NetworkTick> _lastManaTick = new Dictionary<Entity, NetworkTick>();
 
         /// <summary>Buff drinks that are not meals; quick food leaves them alone.</summary>
         private static readonly HashSet<ObjectID> NotFood = new HashSet<ObjectID> { ObjectID.CavelingCoffee };
@@ -96,7 +101,8 @@ namespace QuickBuff.Systems
         /// <summary>
         /// Buff: one of every distinct buff food / potion. Heal: the first healing potion (a PotionCD item whose
         /// consume effects include an instant health gain); nothing at full health. Food: like Buff but only
-        /// food (no potions, no Caveling Coffee); hunger is ignored. Slot order is hotbar, bag, then pouches.
+        /// food (no potions, no Caveling Coffee); hunger is ignored. Mana: the first mana potion (a PotionCD item whose
+        /// consume effects include an instant mana gain); nothing at full mana. Slot order is hotbar, bag, then pouches.
         /// </summary>
         /// <param name="cookedOnly">Food mode: skip raw food (anything without CookedFoodCD).</param>
         /// <param name="skipFish">Food mode: skip fish and dishes with a fish ingredient.</param>
@@ -105,6 +111,8 @@ namespace QuickBuff.Systems
         {
             bool healOnly = mode == ConsumeMode.Heal;
             bool foodOnly = mode == ConsumeMode.Food;
+            bool manaOnly = mode == ConsumeMode.Mana;
+            bool singlePotion = healOnly || manaOnly;
             var result = new QuickBuffResult();
             var em = EntityManager;
 
@@ -140,7 +148,7 @@ namespace QuickBuff.Systems
             if (tickRate == 0) tickRate = 60;
             NetworkTick currentTick = GetServerTick();
 
-            var lastTicks = healOnly ? _lastHealTick : foodOnly ? _lastFoodTick : _lastRequestTick;
+            var lastTicks = healOnly ? _lastHealTick : foodOnly ? _lastFoodTick : manaOnly ? _lastManaTick : _lastRequestTick;
             if (lastTicks.TryGetValue(player, out NetworkTick lastTick) && lastTick.IsValid && currentTick.IsValid
                 && currentTick.TicksSince(lastTick) < (int)(RequestCooldownSeconds * tickRate))
             {
@@ -155,6 +163,15 @@ namespace QuickBuff.Systems
                 if (hp.health >= hp.GetMaxHealthWithConditions(em.GetBuffer<SummarizedConditionEffectsBuffer>(player, true)))
                 {
                     result.fullHealth = true;
+                    return result;
+                }
+            }
+            if (manaOnly)
+            {
+                ManaCD mp = em.GetComponentData<ManaCD>(player);
+                if (mp.mana >= mp.maxMana)
+                {
+                    result.fullMana = true;
                     return result;
                 }
             }
@@ -240,6 +257,10 @@ namespace QuickBuff.Systems
                     {
                         if (!isPotion || !GivesInstantHeal(conditions)) continue;
                     }
+                    else if (manaOnly)
+                    {
+                        if (!isPotion || !GivesInstantMana(conditions)) continue;
+                    }
                     else if (foodOnly)
                     {
                         if (isPotion || NotFood.Contains(item.objectID) || !GivesBuff(conditions, conditionsTable)) continue;
@@ -247,7 +268,7 @@ namespace QuickBuff.Systems
                     else if (!GivesBuff(conditions, conditionsTable)) continue; // hunger-only food, no-effect items, bombs, seeds...
                     result.candidates++;
 
-                    if (!healOnly && skipActive && AllBuffsActive(conditions, conditionsTable, em.GetBuffer<ConditionsBuffer>(player, true), currentTick, tickRate, skipSeconds))
+                    if (!singlePotion && skipActive && AllBuffsActive(conditions, conditionsTable, em.GetBuffer<ConditionsBuffer>(player, true), currentTick, tickRate, skipSeconds))
                     {
                         result.skippedActive++;
                         continue;
@@ -268,7 +289,7 @@ namespace QuickBuff.Systems
                     PlayEffect(player, item.objectID, isPotion, position, currentTick);
 
                     result.consumed++;
-                    if (healOnly)
+                    if (singlePotion)
                     {
                         result.healItem = item.objectID;
                         break;
@@ -319,6 +340,13 @@ namespace QuickBuff.Systems
                 var id = conditions[i].conditionID;
                 if ((id == ConditionID.HealthAddition || id == ConditionID.HealthAdditionPercentage) && conditions[i].value > 0) return true;
             }
+            return false;
+        }
+
+        private static bool GivesInstantMana(NativeArray<ConditionData> conditions)
+        {
+            for (int i = 0; i < conditions.Length; i++)
+                if (conditions[i].conditionID == ConditionID.ManaAdditionPercentage && conditions[i].value > 0) return true;
             return false;
         }
 

@@ -30,7 +30,7 @@ namespace QuickBuff
     public sealed class QuickBuffMod : IMod
     {
         public const string Name = "QuickBuff";
-        public const string Version = "1.4.1";
+        public const string Version = "1.5.0";
 
         /// <summary>Rewired action name registered with CoreLib's control mapping module.</summary>
         public const string UseKeyBind = "QuickBuff_Use";
@@ -38,6 +38,8 @@ namespace QuickBuff
         public const string HealKeyBind = "QuickBuff_Heal";
         /// <summary>Quick food: eat until full (default F).</summary>
         public const string FoodKeyBind = "QuickBuff_Food";
+        /// <summary>Quick mana: drink the first mana potion (default J).</summary>
+        public const string ManaKeyBind = "QuickBuff_Mana";
 
         /// <summary>Client-side guard between presses (matches the game's default eat cooldown).</summary>
         private const float PressCooldownSeconds = 0.4f;
@@ -56,6 +58,7 @@ namespace QuickBuff
         private float _nextPressAllowed;
         private float _nextHealAllowed;
         private float _nextFoodAllowed;
+        private float _nextManaAllowed;
         private LoadedMod _modInfo;
 
         public static bool SkipActive => _skipActive?.Value ?? DefaultSkipActive;
@@ -94,15 +97,17 @@ namespace QuickBuff
                 ControlMappingModule.AddKeyboardBind(UseKeyBind, KeyboardKeyCode.B, categoryId: category);
                 ControlMappingModule.AddKeyboardBind(HealKeyBind, KeyboardKeyCode.H, categoryId: category);
                 ControlMappingModule.AddKeyboardBind(FoodKeyBind, KeyboardKeyCode.F, categoryId: category);
+                ControlMappingModule.AddKeyboardBind(ManaKeyBind, KeyboardKeyCode.J, categoryId: category);
                 ControlMappingModule.rewiredStart += OnRewiredStart;
 
                 // Controls menu labels ("ControlMapper/" + category/action name); without them it shows "missing:".
                 CoreLibMod.LoadSubmodule(typeof(LocalizationModule));
                 LocalizationModule.AddTerm("ControlMapper/Quick BuffCategory", "Quick Buff");
-                LocalizationModule.AddTerm("ControlMapper/Quick BuffDescription", "Use buff items, heal or eat with one key.");
+                LocalizationModule.AddTerm("ControlMapper/Quick BuffDescription", "Use buff items, heal, restore mana or eat with one key.");
                 LocalizationModule.AddTerm($"ControlMapper/{UseKeyBind}", "Quick buff");
                 LocalizationModule.AddTerm($"ControlMapper/{HealKeyBind}", "Quick heal");
                 LocalizationModule.AddTerm($"ControlMapper/{FoodKeyBind}", "Quick food");
+                LocalizationModule.AddTerm($"ControlMapper/{ManaKeyBind}", "Quick mana");
             }
             catch (Exception e)
             {
@@ -160,7 +165,8 @@ namespace QuickBuff
 
             bool heal = _rewiredPlayer.GetButtonDown(HealKeyBind);
             bool food = !heal && _rewiredPlayer.GetButtonDown(FoodKeyBind);
-            if (!heal && !food && !_rewiredPlayer.GetButtonDown(UseKeyBind)) return;
+            bool mana = !heal && !food && _rewiredPlayer.GetButtonDown(ManaKeyBind);
+            if (!heal && !food && !mana && !_rewiredPlayer.GetButtonDown(UseKeyBind)) return;
             if (heal)
             {
                 if (Time.unscaledTime < _nextHealAllowed) return;
@@ -170,6 +176,11 @@ namespace QuickBuff
             {
                 if (Time.unscaledTime < _nextFoodAllowed) return;
                 _nextFoodAllowed = Time.unscaledTime + PressCooldownSeconds;
+            }
+            else if (mana)
+            {
+                if (Time.unscaledTime < _nextManaAllowed) return;
+                _nextManaAllowed = Time.unscaledTime + PressCooldownSeconds;
             }
             else
             {
@@ -185,6 +196,7 @@ namespace QuickBuff
             }
 
             string command = heal ? "/quickheal"
+                : mana ? "/quickmana"
                 : food ? string.Format(CultureInfo.InvariantCulture, "/quickfood {0} {1:0.#} {2} {3}", SkipActive ? 1 : 0, SkipSeconds, FoodCookedOnly ? 1 : 0, FoodSkipFish ? 1 : 0)
                 : string.Format(CultureInfo.InvariantCulture, "/quickbuff {0} {1:0.#}", SkipActive ? 1 : 0, SkipSeconds);
             comm.SendCommand(command, CommandFlags.None);

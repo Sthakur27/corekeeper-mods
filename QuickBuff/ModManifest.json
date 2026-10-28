@@ -25,6 +25,10 @@
             "guid": "4b7e2d19c6a04f3b8e5d1c2a9f7b6e45"
         },
         {
+            "path": "Scripts/QuickManaCommand.cs",
+            "guid": "4b7e2d19c6a04f3b8e5d1c2a9f7b6e46"
+        },
+        {
             "path": "Scripts/Systems/QuickBuffServerSystem.cs",
             "guid": "4b7e2d19c6a04f3b8e5d1c2a9f7b6e43"
         }

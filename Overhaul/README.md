@@ -39,7 +39,7 @@ Prefer to pick individual mods? Use [Sid's Core Keeper Mods collection](https://
 | Fish Seller | Buy fish and Shiny Larva Meat, and scroll through expanded shops. |
 | Merchant Restock | Choose a restock interval for all merchants or individual merchant types. |
 | Infinite Ore Boulders | Keep drilling ore boulders without depleting them. |
-| Quick Buff | Shortcuts for buffs (B), food only (F), and a healing potion (H), including items in pouches. |
+| Quick Buff | Shortcuts for buffs (B), food only (F), a healing potion (H) and a mana potion (J), including items in pouches. |
 | Buff Duration Floor | Set minimum durations for food and potion buffs. |
 | Durability Multiplier | Choose how fast equipment wears out. |
 | Difficulty Tuning | Separate enemy and boss settings for Hard and Normal worlds. |

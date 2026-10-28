@@ -13,17 +13,19 @@ Put your everyday gear in loadout 1, then add only the items you want to change 
 - To change or remove a borrowed item, go to the loadout that owns it.
 - Armor, jewelry, off-hand, bag, lantern and pet follow this rule. Bag capacity and appearance update with your active gear.
 
-With **Five Loadouts**, the same rule continues through loadouts 4 and 5. There are no settings.
+With **Five Loadouts**, the same rule continues through loadouts 4 and 5.
 
 ## A different outfit for each loadout
 
-Three vanity slots beside your armor let you choose a cosmetic helmet, chest and pants for each loadout. Empty vanity slots show the real armor; clicking an empty slot toggles hiding that piece. Vanity furniture also edits your current outfit, which other players can see.
+Three vanity slots beside your armor let you choose a cosmetic helmet, chest and pants for each loadout. Vanity furniture also edits your current outfit, which other players can see.
+
+**Vanity fallback** (Mod Options, on by default) applies the same borrowing rule to vanity: an empty vanity slot shows the nearest earlier loadout's vanity piece, dimmed. Click a borrowed piece to hide it in this loadout instead; click again to borrow it back. Hiding a piece only affects that loadout. With the option off, empty vanity slots show the real armor and clicking one toggles hiding that piece. The option changes what you see, so other players see your outfits according to their own setting.
 
 The in-window slot idea was inspired by **Vanity Slots**; this is a separate implementation. If that mod adds its slots first, Loadout Fallback reuses them.
 
 ## Requirements and limits
 
-Install on the host/server and all clients, then restart the game. No library dependency is required. Keep **Loadout Plus** disabled because this mod replaces its equipment behavior.
+Requires **CoreLib** and **Mod Options**. Install on the host/server and all clients, then restart the game. Keep **Loadout Plus** disabled because this mod replaces its equipment behavior.
 
 **Use drag-and-drop or inventory shift-click for borrowed slots.** Right-clicking gear on the hotbar can replace the earlier loadout's original item instead of creating an override in your current loadout.
 

@@ -41,6 +41,7 @@ namespace SidsOverhaul
             Page(null, Features.PageTitle, Features.KeyPrefix, Features.Hint, Features.RegisterSettings);
             // One page per feature in the Mod Options menu (none for switched-off features). Key prefixes keep the values saved by
             // earlier versions (one long section with prefixed labels) in SidsOverhaul/config.cfg.
+            Page("LoadoutSharing", "Loadout Fallback", "Loadout Fallback: ", LoadoutSharing.LoadoutSharingMod.SettingsHint, LoadoutSharing.LoadoutSharingMod.RegisterSettings);
             Page("AutoReplant", "Auto Replant", "Auto Replant: ", AutoReplant.AutoReplantMod.SettingsHint, AutoReplant.AutoReplantMod.RegisterSettings);
             Page("QuickBuff", "Quick Buff", "Quick Buff: ", QuickBuff.QuickBuffMod.SettingsHint, QuickBuff.QuickBuffMod.RegisterSettings);
             Page("BuffDurationFloor", "Buff Duration Floor", "Buff Floor: ", BuffDurationFloor.BuffDurationFloorMod.SettingsHint, BuffDurationFloor.BuffDurationFloorMod.RegisterSettings);

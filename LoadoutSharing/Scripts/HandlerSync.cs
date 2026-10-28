@@ -108,11 +108,19 @@ namespace LoadoutSharing
             }
         }
 
-        /// <summary>Point every equipment handler at the active loadout's own slot (used around clicks).</summary>
+        /// <summary>Back to the effective slots after a click: equipment and vanity.</summary>
+        public static void RestoreEffective()
+        {
+            SyncToEffective();
+            VanitySync.SyncAll();
+        }
+
+        /// <summary>Point every equipment and vanity handler at the active loadout's own slot (used around clicks).</summary>
         public static void RedirectToPrivate()
         {
             try
             {
+                VanitySync.RedirectLocalToPrivate();
                 if (!TryGetContext(out var player, out int preset, out var contained)) return;
                 var eh = player.equipmentHandler;
                 for (int k = 0; k < SlotLayout.KindCount; k++)

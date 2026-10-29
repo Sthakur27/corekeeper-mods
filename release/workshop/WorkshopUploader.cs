@@ -5,13 +5,14 @@
 //
 //   dotnet WorkshopUploader.dll <items.json> <ids.json>
 //
-// items.json: [{ "key", "title", "description", "content", "preview", "tags": [...], "changelog",
+// items.json: [{ "key", "title", "description", "content", "preview", "gallery": [...], "tags": [...], "changelog",
 //               "dependencies": ["<workshop id>" or "<key of another item in ids.json>"] }]
 // "{overhaul}" in a description is replaced with the SidsOverhaul item id.
 // ids.json:   { "<key>": <published file id> }  (read and updated; existing ids are updated in place)
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Steamworks;
@@ -37,6 +38,55 @@ public static class WorkshopUploader
         public bool collection { get; set; }
         /// <summary>Update an existing item's cover without changing its metadata or gameplay files.</summary>
         public bool previewOnly { get; set; }
+        /// <summary>Extra images under the cover; replaces the item's whole gallery. Null = leave it alone.</summary>
+        public string[] gallery { get; set; }
+    }
+
+    /// <summary>
+    /// Replaces an item's additional preview images. Facepunch's Editor has no API for these, so this
+    /// drives the same internal ISteamUGC calls it uses (StartItemUpdate, RemoveItemPreview,
+    /// AddItemPreviewFile, SubmitItemUpdate) through reflection.
+    /// </summary>
+    private static async Task<bool> SetGallery(PublishedFileId fileId, string[] files)
+    {
+        int existing = 0;
+        ResultPage? page = await Query.All.WithFileId(fileId).WithAdditionalPreviews(true).GetPageAsync(1);
+        if (page.HasValue)
+        {
+            foreach (Item entry in page.Value.Entries) existing = entry.AdditionalPreviews?.Length ?? 0;
+            page.Value.Dispose();
+        }
+
+        const BindingFlags Any = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static;
+        object ugc = typeof(SteamUGC).GetProperty("Internal", Any).GetValue(null);
+        Type t = ugc.GetType();
+        AppId app = CoreKeeperAppId;
+        object handle = t.GetMethod("StartItemUpdate", Any).Invoke(ugc, new object[] { app, fileId });
+        MethodInfo remove = t.GetMethod("RemoveItemPreview", Any);
+        for (uint i = (uint)existing; i-- > 0;)
+            remove.Invoke(ugc, new object[] { handle, i });
+        MethodInfo add = t.GetMethod("AddItemPreviewFile", Any);
+        foreach (string f in files)
+        {
+            if (!(bool)add.Invoke(ugc, new object[] { handle, Path.GetFullPath(f), ItemPreviewType.Image }))
+            {
+                Console.WriteLine($"  gallery: Steam refused {f}");
+                return false;
+            }
+        }
+        object call = t.GetMethod("SubmitItemUpdate", Any).Invoke(ugc, new object[] { handle, "Gallery images" });
+        Type ct = call.GetType();
+        var deadline = DateTime.UtcNow.AddMinutes(5);
+        while (!(bool)ct.GetProperty("IsCompleted", Any).GetValue(call))
+        {
+            if (DateTime.UtcNow > deadline) return false;
+            await Task.Delay(200);
+        }
+        object res = ct.GetMethod("GetResult", Any).Invoke(call, null);
+        if (res == null) return false;
+        var r = (Result)res.GetType().GetField("Result", Any).GetValue(res);
+        if (r != Result.OK) Console.WriteLine($"  gallery submit: {r}");
+        return r == Result.OK;
     }
 
     public static int Main(string[] args)
@@ -117,6 +167,12 @@ public static class WorkshopUploader
                 ids[item.key] = result.FileId.Value;
                 File.WriteAllText(idsPath, JsonSerializer.Serialize(ids, new JsonSerializerOptions { WriteIndented = true }));
                 Console.WriteLine($"  OK https://steamcommunity.com/sharedfiles/filedetails/?id={result.FileId.Value}");
+                if (item.gallery != null)
+                {
+                    bool ok = await SetGallery(result.FileId, item.gallery);
+                    Console.WriteLine($"  gallery ({item.gallery.Length} images): {(ok ? "ok" : "FAILED")}");
+                    if (!ok) failures++;
+                }
                 if (item.previewOnly) continue;
                 foreach (string old in item.removeDependencies ?? Array.Empty<string>())
                 {

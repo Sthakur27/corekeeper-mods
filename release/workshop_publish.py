@@ -71,6 +71,7 @@ COVER_NOTES = {
     "ArmorDye": "Cover is an in-game screenshot of the dye palette; title banner and highlight added.",
     "ModOptions": "Cover is made from in-game screenshots of the Mod Options menu; title banner added.",
     "GoldenChance": "Cover is an in-game screenshot of a farm with golden crops; close-ups, title banner and WIP tag added.",
+    "EnderStash": "Cover is made from in-game screenshots (HDR captures tone-mapped); title banner and highlights added.",
 }
 
 # Steam collection with every individual mod (+ CoreLib); processed first so other descriptions can link it.
@@ -209,6 +210,12 @@ def stage_overhaul():
     return dst, man
 
 
+def gallery(key):
+    # Extra Workshop images from release/gallery/<key>_<n>.jpg (make_gallery.py); None leaves the item's gallery alone.
+    files = sorted(glob.glob(os.path.join(REL, "gallery", f"{key}_*.jpg")))
+    return files or None
+
+
 def side_tags(man):
     # Application Type tags from the manifest's requiredOn flags (1 client, 2 server, 3 both).
     side = man.get("requiredOn", 3)
@@ -336,6 +343,7 @@ def main():
             "key": key, "title": title, "description": desc, "content": dst, "preview": preview,
             "tags": [category, GAME_VERSION] + side_tags(man) + [access_tag(man)],
             "changelog": a.changelog, "dependencies": deps, "removeDependencies": STALE_DEPS,
+            "gallery": gallery(key),
         })
         files = sum(len(fs) for _, _, fs in os.walk(dst)) if dst else 0
         print(f"staged {key}: {files if dst else 'description only'}{' files' if dst else ''}, {len(desc)} chars, deps {deps}")

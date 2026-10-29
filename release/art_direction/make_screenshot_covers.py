@@ -18,7 +18,14 @@ NVIDIA = Path.home() / 'Videos/NVIDIA/Desktop'
 W, H, TOP = 1280, 720, 176          # canvas; content area starts below the banner
 
 
+# HDR captures (NVIDIA "Core Keeper" folder, .jxr scRGB float) are tone-mapped to PNG first:
+# value / 10 (game UI white ~9.5), clamp, sRGB curve. Converted copies live in HDR_DIR.
+HDR_DIR = REPO / 'build/artwork-review/2026-10-28/hdr'
+
+
 def shot(stamp):
+    if stamp.startswith('hdr:'):
+        return HDR_DIR / f'{stamp[4:]}.png'
     return NVIDIA / f'Desktop Screenshot 2026.10.28 - {stamp}.png'
 
 
@@ -56,13 +63,20 @@ COVERS = {
         marks=[(662, 242), (577, 370)],
         panels=[('20.01.09.34', (538, 78, 618, 152), (40, 392, 330, H - 22), [(538, 78, 618, 152)]),
                 ('20.01.09.34', (626, 206, 706, 280), (W - 330, 392, W - 40, H - 22), [(626, 206, 706, 280)])]),
+    # Ender Chest placed in the desert base (bg), its stash window, and the merchant's price tooltip.
+    'EnderStash': dict(
+        title='ENDER STASH', caption='YOUR PERSONAL STASH IN EVERY ENDER CHEST',
+        bg=('hdr:17.51.28.10', (291, 160, 851, 475), 0),
+        marks=[(676, 322, 70)],
+        panels=[('hdr:17.51.45.25', (340, 85, 950, 345), (24, 420, 640, H - 18), [(340, 85, 950, 345)]),
+                ('hdr:17.51.19.80', (1045, 625, 1256, 705), (W - 360, H - 150, W - 24, H - 22), [])]),
 }
 
 
 def crop(stamp, box):
     """Full-resolution crop for a 1280x720 preview box, cached in the repo."""
     CACHE.mkdir(parents=True, exist_ok=True)
-    name = CACHE / f"{stamp.replace('.', '')}_{'_'.join(map(str, box))}.png"
+    name = CACHE / f"{stamp.replace('.', '').replace(':', '_')}_{'_'.join(map(str, box))}.png"
     if not name.exists():
         full = Image.open(shot(stamp)).convert('RGB')
         k = full.width / 1280
@@ -149,14 +163,14 @@ def build(key, out_dir):
         k = W / (box[2] - box[0])
         ring = Image.new('L', (W, H), 0)
         rd = ImageDraw.Draw(ring)
-        pts = [(round((px - box[0]) * k), round((py - box[1]) * k)) for px, py in c['marks']]
-        for px, py in pts:
-            rd.ellipse((px - 40, py - 40, px + 40, py + 40), outline=255, width=8)
+        pts = [(round((m[0] - box[0]) * k), round((m[1] - box[1]) * k), m[2] if len(m) > 2 else 40) for m in c['marks']]
+        for px, py, r in pts:
+            rd.ellipse((px - r, py - r, px + r, py + r), outline=255, width=8)
         ring = ring.filter(ImageFilter.GaussianBlur(7))
         canvas = Image.composite(Image.new('RGB', (W, H), '#ffcf5a'), canvas, ring.point(lambda v: v // 2))
         d = ImageDraw.Draw(canvas)
-        for px, py in pts:
-            d.ellipse((px - 36, py - 36, px + 36, py + 36), outline='#e8b85a', width=2)
+        for px, py, r in pts:
+            d.ellipse((px - r + 4, py - r + 4, px + r - 4, py + r - 4), outline='#e8b85a', width=2)
 
     frames = []
     for stamp, box, target, highlights in c['panels']:

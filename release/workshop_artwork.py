@@ -34,7 +34,7 @@ def main():
             im.verify()
         if preview.stat().st_size >= 1_000_000:
             parser.error(f'{preview} exceeds the preview size budget')
-        items.append({'key': key, 'preview': str(preview), 'previewOnly': True})
+        items.append({'key': key, 'preview': str(preview), 'previewOnly': True, 'gallery': workshop.gallery(key)})
     dest = Path(workshop.STAGE) / 'artwork-items.json'
     dest.parent.mkdir(parents=True, exist_ok=True)
     dest.write_text(json.dumps(items, indent=2), encoding='utf-8')

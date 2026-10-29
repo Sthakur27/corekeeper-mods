@@ -20,7 +20,6 @@ MODS = [
     "ModOptions", "LoadoutSharing", "FiveLoadouts", "SkillXPMultiplier", "FastAutoFishing", "MagicMirror", "ConnectedStorage",
     "DurabilityMultiplier", "BuffDurationFloor", "FasterMushrooms", "BiggerWateringCans",
     "BetterFishingLoot", "AutoReplant", "QuickBuff", "PotionSeller", "FishSeller", "MerchantRestock", "DifficultyTuning", "KeepMinions", "PetEditor", "BossBonusLoot", "EnderStash", "VehicleSpeed", "GoldenChance", "InfiniteOreBoulders", "StimHits", "ArmorDye", "MushroomSlayer",
-    "SlotOrganizer",
 ]
 # Bundles whose MonoScripts bind to the old assembly name.
 # MasterPetPlus is NOT included: it is a fork of Parcew's Master Pet and mod.io took it down;
@@ -196,7 +195,9 @@ def main():
 
     manifest = {
         "guid": GUID, "name": NAME, "displayName": "Sid's Overhaul",
-        "skipSafetyChecks": True,  # Slot Organizer uses the game's file system (Pug.Platform) "disableScripts": False, "accessesExtraAssemblies": True,
+        # Must stay False: with skipSafetyChecks the loader compiles without the extra game assemblies
+        # (Rewired, I2, Pug.Properties...) and the Overhaul fails to compile (seen in 1.4.7). Slot Organizer stays separate.
+        "skipSafetyChecks": False, "disableScripts": False, "accessesExtraAssemblies": True,
         "disableHarmonyPatching": False, "requiredOn": 3,
         "files": files,
         "dependencies": [{"modName": "CoreLib", "required": True}],

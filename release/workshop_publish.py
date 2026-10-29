@@ -58,9 +58,10 @@ MODS = [
     ("SlotOrganizer", "Slot Organizer", "slotorganizer_logo.png", "Quality of Life"),
 ]
 OVERHAUL = ("SidsOverhaul", "Sid's Overhaul", "overhaul_logo.png", "Overhaul")
-# Standalone-only items (none right now). Slot Organizer joined the Overhaul in 1.4.7, which now runs with
-# skipSafetyChecks (Elevated Access tag) for it.
-NOT_IN_OVERHAUL = set()
+# Standalone-only items: a mod that needs skipSafetyChecks (Slot Organizer uses the game's file system) cannot be
+# bundled. Overhaul 1.4.7 tried it: with skipSafetyChecks the loader drops the extra game assemblies and the
+# Overhaul failed to compile; 1.4.8 took it back out.
+NOT_IN_OVERHAUL = {"SlotOrganizer"}
 # Cover disclosure per item; everything else keeps the AI-artwork note.
 COVER_NOTES = {
     "ConnectedStorage": "Cover is made from in-game screenshots (storage network and browser); title banner added.",

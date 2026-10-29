@@ -52,7 +52,6 @@ namespace SidsOverhaul
             { "ArmorDye", "Armor Dye" },
             { "MushroomSlayer", "Mushroom Slayer" },
             { "MagicMirror", "Magic Mirror" },
-            { "SlotOrganizer", "Slot Organizer" },
         };
 
         public const string Hint = "Turn whole sub-mods on or off. Changes take effect after restarting the game. "

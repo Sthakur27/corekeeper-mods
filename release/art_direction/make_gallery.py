@@ -29,7 +29,11 @@ GALLERY = {
     'GoldenChance': ['20.01.09.34'],
     'ConnectedStorage': ['20.05.30.46', '20.12.13.42', '20.12.29.01'],
     'EnderStash': ['hdr:17.51.45.25', 'hdr:17.51.19.80', 'hdr:17.51.28.10'],
+    'MagicMirror': ['hdr:00.23.31.80', 'hdr:00.23.58.85'],
 }
+
+# HDR captures that still show the NVIDIA performance overlay (the Ender Stash ones do not).
+HDR_WITH_OVERLAY = {'hdr:00.23.31.80', 'hdr:00.23.58.85'}
 
 # NVIDIA "Screenshot saved" toasts caught in a capture (4K pixel boxes), painted over like the overlay.
 TOASTS = {'19.57.17.40': [(3200, 190, 3840, 400)]}
@@ -37,7 +41,7 @@ TOASTS = {'19.57.17.40': [(3200, 190, 3840, 400)]}
 
 def clean(stamp):
     im = Image.open(shot(stamp)).convert('RGB')
-    if not stamp.startswith('hdr:'):
+    if not stamp.startswith('hdr:') or stamp in HDR_WITH_OVERLAY:
         # NVIDIA overlay: "FPS / GPU / CPU / LAT" text in the top-right corner.
         # Fill it by stretching the strip of game pixels just below, softened a little.
         x0, h = im.width - 360, 130

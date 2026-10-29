@@ -18,14 +18,16 @@ NVIDIA = Path.home() / 'Videos/NVIDIA/Desktop'
 W, H, TOP = 1280, 720, 176          # canvas; content area starts below the banner
 
 
-# HDR captures (NVIDIA "Core Keeper" folder, .jxr scRGB float) are tone-mapped to PNG first:
-# value / 10 (game UI white ~9.5), clamp, sRGB curve. Converted copies live in HDR_DIR.
-HDR_DIR = REPO / 'build/artwork-review/2026-10-28/hdr'
+# HDR captures (.jxr scRGB float) are tone-mapped to PNG first with hdr_to_png.py:
+# value / 10 (game UI white ~9.5), clamp, sRGB curve. Converted copies live in HDR_DIRS.
+HDR_DIRS = [REPO / 'build/artwork-review/hdr', REPO / 'build/artwork-review/2026-10-28/hdr',
+            REPO / 'build/artwork-review/2026-10-29/hdr']
 
 
 def shot(stamp):
     if stamp.startswith('hdr:'):
-        return HDR_DIR / f'{stamp[4:]}.png'
+        hits = [d / f'{stamp[4:]}.png' for d in HDR_DIRS if (d / f'{stamp[4:]}.png').exists()]
+        return hits[0] if hits else HDR_DIRS[0] / f'{stamp[4:]}.png'
     return NVIDIA / f'Desktop Screenshot 2026.10.28 - {stamp}.png'
 
 
@@ -70,6 +72,11 @@ COVERS = {
         marks=[(676, 322, 70)],
         panels=[('hdr:17.51.45.25', (340, 85, 950, 345), (24, 420, 640, H - 18), [(340, 85, 950, 345)]),
                 ('hdr:17.51.19.80', (1045, 625, 1256, 705), (W - 360, H - 150, W - 24, H - 22), [])]),
+    # Mid-cast with the mirror (blue teleport ring) as background, and its crafting tooltip.
+    'MagicMirror': dict(
+        title='MAGIC MIRROR', caption='A RECALL IDOL YOU NEVER USE UP',
+        bg=('hdr:00.23.31.80', (330, 150, 970, 510), 0),
+        panels=[('hdr:00.23.58.85', (858, 423, 1262, 705), (W - 470, TOP + 120, W - 24, H - 18), [])]),
 }
 
 

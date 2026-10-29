@@ -1,6 +1,6 @@
 # Magic Mirror
 
-![Magic Mirror — illustrated cover](../release/magicmirror_logo.png)
+![Magic Mirror — cover made from in-game screenshots](../release/magicmirror_logo.png)
 
 Craft a permanent way home: **50 Solarite Bars + 10 Recall Idols → 1 Magic Mirror** at the **Solarite Workbench**, in its Gear category. Higher-tier benches that include Solarite recipes can craft it too.
 
@@ -31,7 +31,7 @@ The recipe uses an empty Solarite Gear slot without replacing other recipes. If 
 
 Remove mirrors from inventories and storage before uninstalling the mod. In Sid's Overhaul, its feature switch stops crafting and use; existing mirrors remain items and can be used again when the feature is re-enabled after a restart.
 
-Cover artwork generated with AI; not an in-game screenshot.
+Cover is made from in-game screenshots (mirror cast and crafting tooltip); title banner added.
 
 ## Development
 

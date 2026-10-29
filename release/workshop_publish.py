@@ -73,6 +73,7 @@ COVER_NOTES = {
     "ModOptions": "Cover is made from in-game screenshots of the Mod Options menu; title banner added.",
     "GoldenChance": "Cover is an in-game screenshot of a farm with golden crops; close-ups, title banner and WIP tag added.",
     "EnderStash": "Cover is made from in-game screenshots (HDR captures tone-mapped); title banner and highlights added.",
+    "MagicMirror": "Cover is made from in-game screenshots (mirror cast and crafting tooltip, HDR captures tone-mapped); title banner added.",
 }
 
 # Steam collection with every individual mod (+ CoreLib); processed first so other descriptions can link it.

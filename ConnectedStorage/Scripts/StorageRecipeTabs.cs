@@ -24,6 +24,10 @@ namespace ConnectedStorage
     }
 
     // Keep vanilla recipe handlers/indices, but give this station one shared frame.
+    // Vanilla frame values are captured once, before any widening, and every show
+    // rebuilds from them. Capturing after the fact let a second copy of this patch
+    // (standalone + overhaul installed together) save the widened frame as "vanilla",
+    // which then stuck to every other crafting window.
     [HarmonyPatch(typeof(SimpleCraftingUIContainer), nameof(SimpleCraftingUIContainer.ShowCraftingUI))]
     public static class StorageWorkbenchSinglePanelPatch
     {
@@ -32,39 +36,40 @@ namespace ConnectedStorage
         private static UnityEngine.Vector3 position, titlePosition;
         private static bool secondBackground, secondTitle;
 
-        public static void Prefix()
+        public static void Prefix(SimpleCraftingUIContainer __instance)
         {
-            if (first == null) return;
+            if (__instance.simpleCraftingUIs == null || __instance.simpleCraftingUIs.Count < 2) return;
+            if (first != __instance.simpleCraftingUIs[0])
+            {
+                first = __instance.simpleCraftingUIs[0]; second = __instance.simpleCraftingUIs[1];
+                size = first.background.size;
+                position = first.background.transform.localPosition;
+                titlePosition = first.title.transform.localPosition;
+                secondBackground = second.background.enabled;
+                secondTitle = second.title.gameObject.activeSelf;
+                return;
+            }
             first.background.size = size;
             first.background.transform.localPosition = position;
             first.title.transform.localPosition = titlePosition;
-            if (second != null) {
-                second.background.enabled = secondBackground;
-                second.title.gameObject.SetActive(secondTitle);
-            }
-            first = null; second = null;
+            second.background.enabled = secondBackground;
+            second.title.gameObject.SetActive(secondTitle);
         }
 
         public static void Postfix(SimpleCraftingUIContainer __instance)
         {
             var building = CraftingUIBase.GetCraftingBuilding();
-            if (building == null || !building.entityExist || building.objectData.objectID != StorageCatalog.Workbench
+            if (first == null || building == null || !building.entityExist || building.objectData.objectID != StorageCatalog.Workbench
                 || __instance.amountOfWindowsShowing != 2) return;
-            first = __instance.simpleCraftingUIs[0]; second = __instance.simpleCraftingUIs[1];
-            size = first.background.size;
-            position = first.background.transform.localPosition;
-            titlePosition = first.title.transform.localPosition;
-            secondBackground = second.background.enabled;
-            secondTitle = second.title.gameObject.activeSelf;
             // Measure in the background parent's coordinates to respect native UI scaling.
             var parent = first.background.transform.parent;
-            var delta = parent.InverseTransformPoint(second.background.transform.position)
-                - parent.InverseTransformPoint(first.background.transform.position);
+            var delta = parent.InverseTransformPoint(second.transform.position)
+                - parent.InverseTransformPoint(first.transform.position);
             first.background.size = new UnityEngine.Vector2(size.x + UnityEngine.Mathf.Abs(delta.x), size.y);
             first.background.transform.localPosition = position + delta * .5f;
             var titleParent = first.title.transform.parent;
-            var titleDelta = titleParent.InverseTransformPoint(second.title.transform.position)
-                - titleParent.InverseTransformPoint(first.title.transform.position);
+            var titleDelta = titleParent.InverseTransformPoint(second.transform.position)
+                - titleParent.InverseTransformPoint(first.transform.position);
             first.title.transform.localPosition = titlePosition + titleDelta * .5f;
             second.background.enabled = false;
             second.title.gameObject.SetActive(false);

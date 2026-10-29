@@ -28,7 +28,7 @@ STALE_DEPS = ["3791299348"]
 # key (= mod folder), title, logo in release/, category tag
 MODS = [
     ("ModOptions", "Mod Options", "modoptions_logo.png", "Library"),  # first: other mods require it
-    ("LoadoutSharing", "Loadout Fallback", "loadout_logo.png", "Quality of Life"),
+    ("LoadoutSharing", "Shared Loadout Gear & Vanity", "loadout_logo.png", "Quality of Life"),
     ("FiveLoadouts", "Five Loadouts", "fiveloadouts_logo.png", "Quality of Life"),
     ("SkillXPMultiplier", "Skill XP Multiplier", "skillxp-logo.png", "Quality of Life"),
     ("FastAutoFishing", "Fast Auto Fishing", "fastfish_logo.png", "Quality of Life"),
@@ -55,11 +55,22 @@ MODS = [
     ("MagicMirror", "Magic Mirror", "magicmirror_logo.png", "Item"),
     ("MushroomSlayer", "Mushroom Slayer", "mushroomslayer_logo.png", "Quality of Life"),
     ("ConnectedStorage", "Runic Storage", "runicstorage_workshop.png", "Item"),
+    ("SlotOrganizer", "Slot Organizer", "slotorganizer_logo.png", "Quality of Life"),
 ]
 OVERHAUL = ("SidsOverhaul", "Sid's Overhaul", "overhaul_logo.png", "Overhaul")
+# Standalone-only items: the Overhaul runs with the loader's safety check on, so a mod that needs
+# skipSafetyChecks (Slot Organizer uses the game's file system) cannot be bundled into it.
+NOT_IN_OVERHAUL = {"SlotOrganizer"}
 # Cover disclosure per item; everything else keeps the AI-artwork note.
 COVER_NOTES = {
-    "ConnectedStorage": "Cover built from the mod's own in-game sprites, arranged in an illustrated scene; not a gameplay screenshot.",
+    "ConnectedStorage": "Cover is made from in-game screenshots (storage network and browser); title banner added.",
+    "SlotOrganizer": "Cover is an in-game screenshot of the Select World menu with the mod's buttons; title banner and highlight added.",
+    "FiveLoadouts": "Cover is an in-game screenshot of the equipment panel; title banner and highlight added.",
+    "LoadoutSharing": "Cover is an in-game screenshot of the equipment panel; title banner and highlight added.",
+    "PetEditor": "Cover is an in-game screenshot of the pet panel; title banner and highlight added.",
+    "ArmorDye": "Cover is an in-game screenshot of the dye palette; title banner and highlight added.",
+    "ModOptions": "Cover is made from in-game screenshots of the Mod Options menu; title banner added.",
+    "GoldenChance": "Cover is an in-game screenshot of a farm with golden crops; close-ups, title banner and WIP tag added.",
 }
 
 # Steam collection with every individual mod (+ CoreLib); processed first so other descriptions can link it.
@@ -141,6 +152,10 @@ def description(key, folder, readme_path):
     elif key == "ModOptions":
         note = ("[b]Library.[/b] Subscribe to it when a mod lists it as a required item. "
                 "Works alongside Mod Settings Menu.")
+    elif key in NOT_IN_OVERHAUL:
+        note = ("Part of the [url=https://steamcommunity.com/workshop/filedetails/?id={collection}]Sid's Core Keeper Mods[/url] "
+                "collection. Not included in [url=https://steamcommunity.com/workshop/filedetails/?id={overhaul}]Sid's Overhaul[/url]; "
+                "subscribe to it separately (it works alongside the Overhaul).")
     else:
         note = ("Part of the [url=https://steamcommunity.com/workshop/filedetails/?id={collection}]Sid's Core Keeper Mods[/url] "
                 "collection. Also bundled in the all-in-one [url=https://steamcommunity.com/workshop/filedetails/?id={overhaul}]Sid's Overhaul[/url]; "
@@ -192,6 +207,17 @@ def stage_overhaul():
     shutil.copytree(os.path.join(ROOT, "build", "SidsOverhaul"), dst)
     man = json.load(open(os.path.join(dst, "ModManifest.json"), encoding="utf-8-sig"))
     return dst, man
+
+
+def side_tags(man):
+    # Application Type tags from the manifest's requiredOn flags (1 client, 2 server, 3 both).
+    side = man.get("requiredOn", 3)
+    return [t for bit, t in ((1, "Client"), (2, "Server")) if side & bit] or ["Client", "Server"]
+
+
+def access_tag(man):
+    # The Workshop loader forces skipSafetyChecks off unless the item has this tag (SteamWorkshopLoader).
+    return "Script (Elevated Access)" if man.get("skipSafetyChecks") else "Script"
 
 
 # ------------------------------------------------------------------ uploader build
@@ -308,7 +334,7 @@ def main():
             preview = ""
         items.append({
             "key": key, "title": title, "description": desc, "content": dst, "preview": preview,
-            "tags": [category, GAME_VERSION, "Client", "Server", "Script"],
+            "tags": [category, GAME_VERSION] + side_tags(man) + [access_tag(man)],
             "changelog": a.changelog, "dependencies": deps, "removeDependencies": STALE_DEPS,
         })
         files = sum(len(fs) for _, _, fs in os.walk(dst)) if dst else 0

@@ -1,0 +1,21 @@
+{
+    "guid": "5e7a0c1f2b9d4c6e8a31f04d7b2c9e15",
+    "name": "SlotOrganizer",
+    "displayName": "Slot Organizer",
+    "skipSafetyChecks": true,
+    "disableScripts": false,
+    "accessesExtraAssemblies": true,
+    "disableHarmonyPatching": false,
+    "requiredOn": 1,
+    "files": [
+        {
+            "path": "Scripts/SlotOrganizerMod.cs",
+            "guid": "a83d5f0e6c2b47d19e4f7b3a0c8d2e61"
+        },
+        {
+            "path": "Scripts/SlotArrows.cs",
+            "guid": "c4f19b7e2a6d48e5b0d3a91f6e7c2b84"
+        }
+    ],
+    "dependencies": []
+}

@@ -15,7 +15,7 @@ namespace LoadoutSharing
     public class LoadoutSharingMod : IMod
     {
         public const string Name = "LoadoutSharing";
-        public const string Version = "2.4.0";
+        public const string Version = "2.4.1";
 
         public void EarlyInit()
         {
@@ -30,7 +30,7 @@ namespace LoadoutSharing
             API.Authoring.OnObjectTypeAdded += VanityLayout.OnObjectTypeAdded;
 
             if (InOverhaul(this)) return; // the overhaul builds one page per feature
-            var section = SettingsPages.Create(this, "Loadout Fallback").Hint(SettingsHint);
+            var section = SettingsPages.Create(this, "Shared Loadout Gear & Vanity").Hint(SettingsHint);
             RegisterSettings(section);
             section.Build();
         }

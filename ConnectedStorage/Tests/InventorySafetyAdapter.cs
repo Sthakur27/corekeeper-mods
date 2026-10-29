@@ -26,10 +26,12 @@ class EntityCommandBuffer:IDisposable { public EntityCommandBuffer(Allocator a){
 struct SkillTalentsTableCD {} struct UpgradeCostsTableCD {} struct InventoryAuxDataSystemDataCD {} struct NetworkTime {}
 static class PugDatabase {
  public struct DatabaseBankCD { public object databaseBankBlob; }
- public class Info {public bool isStackable;}
- public static Info GetObjectInfo(ObjectID id,int v=0)=>new(){isStackable=id==ObjectID.Bar};
+ public class Info {public bool isStackable;public ObjectType objectType;}
+ public static Info GetObjectInfo(ObjectID id,int v=0)=>new(){isStackable=id==ObjectID.Bar,objectType=id==ObjectID.Sword?ObjectType.MeleeWeapon:ObjectType.NonUsable};
  public static Info GetEntityObjectInfo(ObjectID id,object b,int v=0)=>GetObjectInfo(id,v);
 }
+enum ObjectType { NonUsable, MeleeWeapon }
+static class StorageBrowserUI {public static int Category(PugDatabase.Info info)=>info.objectType==ObjectType.MeleeWeapon?1:8;}
 static class PlayerController { public class Name{public string text;} public static Name GetObjectName(ContainedObjectsBuffer i,bool b)=>new(){text=i.objectID.ToString()}; }
 static class StorageCatalog {public static int Capacity(ObjectID id)=>id==ObjectID.Copper?20:id==ObjectID.Tin?40:0;}
 class InventoryHandlerShared {
@@ -82,6 +84,7 @@ class Test {
    s.SortNetwork(units,trial%2!=0);Check(Totals(em)==before,"repeat sort conservation");
   }
   {var s=Setup();var em=s.EntityManager;em.items[new(1)][0]=Item(9990);em.items[new(2)][3]=Item(20);s.SortNetwork(units,false);Check(em.items[new(1)][0].amount==9999&&em.items[new(1)][1].amount==11,"merge overflow");}
+  {var s=Setup();var em=s.EntityManager;em.items[new(1)][0]=Item(5);em.items[new(2)][3]=Item(1,0,ObjectID.Sword);s.SortNetwork(units,false);Check(em.items[new(1)][0].objectID==ObjectID.Sword&&em.items[new(1)][1].objectID==ObjectID.Bar,"category order");}
   for(int mode=0;mode<4;mode++){
    var s=Setup();var em=s.EntityManager;em.items[new(1)][0]=Item(25,7);string before=Totals(em);s.CursorTransfer(new(3),new(1),30,0,mode);Check(Totals(em)==before,"cursor conservation");Check(em.items[new(3)][30].amount==(mode==0?25:mode==1?1:mode==2?13:10),"cursor amount");Check(em.ranges[new(3)][0].size==31,"range not restored");
   }

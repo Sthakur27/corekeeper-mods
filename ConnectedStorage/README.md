@@ -17,8 +17,9 @@ Need more room? Add another unit or upgrade one you already have. Search, catego
 
 - Pick up and place items with the cursor, or Shift-left-click to transfer a stack.
 - Right-click takes one item; right-click the same stack again while holding it to take one more. Native modifiers take ten items or half a stack, rounded up.
-- Search and category filters narrow the visible items. Scroll through larger networks or switch between grid and list views.
-- Sort consolidates compatible stacks, then orders them by name. The direction control switches ascending/descending order.
+- Category tabs run down the left edge of the storage panel: All, Materials, Weapons, Tools, Armor, Accessories, Food, Blocks, Furniture, Pets, Valuables and Other. Each tab shows a familiar item; the active tab is lit and the others are dimmed. One click shows only that category; click it again (or All) to see everything. Blocks are anything that places a tile (walls, floors, ground, bridges, fences, rugs, rails); Furniture is every other placeable, such as stations, chests, lights and decorations. Seeds count as Materials and pet eggs as Pets.
+- Search narrows the visible items further. Scroll through larger networks or switch between grid and list views.
+- Sort consolidates compatible stacks, then arranges them in tab order (materials first, other items last) and by name within each category. The direction control switches ascending/descending order.
 - Slots remain stable while moving items. Reopening preserves your arrangement. Adding a node to a previously viewed network triggers one sort on the next view.
 - The native quick-stack action transfers matching bag contents into the network. Bulk actions skip the hotbar and locked items.
 

@@ -30,7 +30,7 @@ Upgrading from 1.x? Your items are kept, but the old purple button is gone. Buy 
   references of its own and works inside Sid's Overhaul too. Price: sellValue 2000 x 5 x 0.9999 = 9999.
 - `StashLayout`: 40 slots appended to the player prefab's `ContainedObjectsBuffer`
   (`API.Authoring.OnObjectTypeAdded`, subscribed on the first `Update` so they always come after
-  Loadout Fallback / Five Loadouts / vanity slots). The character save stores the whole buffer.
+  Shared Loadout Gear & Vanity / Five Loadouts / vanity slots). The character save stores the whole buffer.
   Death drops only slots 10..maxSize of `InventoryBuffer[0]`, so the stash is safe.
 - `StashGrowSystem` (server) grows older characters' buffers to include the stash and runs `StashGuard`.
 - `StashGuard` keeps the stash in place when a mod that also appends player slots (Pouch Lite, Five

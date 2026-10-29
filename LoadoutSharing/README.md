@@ -1,8 +1,10 @@
-# Loadout Fallback
+# Shared Loadout Gear & Vanity
 
-![Loadout Fallback — illustrated mod cover](../release/loadout_logo.png)
+![Shared Loadout Gear & Vanity — mod cover](../release/loadout_logo.png)
 
-Share your best gear across loadouts without moving it back and forth. Empty equipment slots borrow the nearest earlier loadout's item automatically.
+*Formerly called **Loadout Fallback**. Same mod, same settings, just a clearer name.*
+
+Share your best gear and your vanity outfit across loadouts without moving them back and forth. Empty equipment and vanity slots borrow the nearest earlier loadout's item automatically.
 
 ## How to use it
 
@@ -21,7 +23,7 @@ Three vanity slots beside your armor let you choose a cosmetic helmet, chest and
 
 **Vanity fallback** (Mod Options, on by default) applies the same borrowing rule to vanity: an empty vanity slot shows the nearest earlier loadout's vanity piece, dimmed. Click a borrowed piece to hide it in this loadout instead; click again to borrow it back. Hiding a piece only affects that loadout. With the option off, empty vanity slots show the real armor and clicking one toggles hiding that piece. The option changes what you see, so other players see your outfits according to their own setting.
 
-The in-window slot idea was inspired by **Vanity Slots**; this is a separate implementation. If that mod adds its slots first, Loadout Fallback reuses them.
+The in-window slot idea was inspired by **Vanity Slots**; this is a separate implementation. If that mod adds its slots first, this mod reuses them.
 
 ## Requirements and limits
 

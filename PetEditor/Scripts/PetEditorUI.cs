@@ -44,6 +44,10 @@ namespace PetEditor
         private static readonly List<PetInfosTable.PetTalentInfo> _pickInfos = new List<PetInfosTable.PetTalentInfo>();
         private static float _pickStep;
         private static Vector3 _pickOrigin;
+        private static float _pickShift; // the picker grows the window to the right only (see FitPicker)
+        private static float _pickDx = 1.25f; // vanilla talent spacing
+        private static Vector3 _pickP0, _pickTemplateScale;
+        private static float _pickScale = -1f;
         private static float _baseWidth = -1f;
 
         /// <summary>Talent slot being edited, or -1 when the picker is closed.</summary>
@@ -73,7 +77,11 @@ namespace PetEditor
                 y = UIManager.PositionElementBeneath(w.textInputField.transform, y, w.textInputFieldBackground.size.y, 0.25f);
                 y = UIManager.PositionElementBeneath(w.pointsText.transform, y, w.pointsText.dimensions.size.y, 0f);
                 float talentsHeight = -w.talentsBotPos.localPosition.y;
-                if (EditingSlot >= 0) talentsHeight = PickerHeight();
+                if (EditingSlot >= 0)
+                {
+                    FitPicker(_baseWidth, PickerScaleForScreen(w));
+                    talentsHeight = PickerHeight();
+                }
                 y = UIManager.PositionElementBeneath(w.talentsContainer, y, talentsHeight, 0.0625f, moveDownHalfOfHeight: false);
                 y = UIManager.PositionElementBeneath(w.resetButtonText.transform, y, w.resetButtonText.dimensions.size.y, 0.0625f);
                 y = UIManager.PositionElementBeneath(w.resetButton.transform, y, w.resetButtonBackground.size.y, 0.0625f);
@@ -84,10 +92,16 @@ namespace PetEditor
 
                 float height = w.topEdge.localPosition.y - y + 0.25f;
                 float width = EditingSlot >= 0 ? Mathf.Max(_baseWidth, PickerColumns * _pickStep + 0.5f) : _baseWidth;
+                float shiftX = EditingSlot >= 0 ? (width - _baseWidth) / 2f : 0f;
                 w.background.size = new Vector2(width, height);
                 float offset = (height % 0.0625f > 0f) ? (0.0625f - height % 0.0625f) : 0f;
-                w.background.transform.localPosition = new Vector3(0f, -height / 2f - offset, 0f);
+                w.background.transform.localPosition = new Vector3(shiftX, -height / 2f - offset, 0f);
                 w.backgroundCollider.size = new Vector3(width, height, 0.1f);
+                if (w.backgroundCollider.transform != w.background.transform)
+                {
+                    Vector3 c = w.backgroundCollider.center;
+                    w.backgroundCollider.center = new Vector3(shiftX, c.y, c.z);
+                }
                 return true;
             }
             catch (Exception ex)
@@ -338,23 +352,54 @@ namespace PetEditor
             var table = Manager.ui != null ? Manager.ui.petInfosTable : null;
             if (table == null || table.petTalents == null || w.petTalentUIElements.Count < 4) return;
             var template = w.petTalentUIElements[0];
-            Vector3 p0 = template.transform.localPosition;
-            float dx = Mathf.Abs(w.petTalentUIElements[1].transform.localPosition.x - p0.x);
-            if (dx < 0.01f) dx = 1.25f;
-            _pickStep = dx * PickerScale;
-            _pickOrigin = new Vector3(-(PickerColumns - 1) * _pickStep / 2f, p0.y, p0.z);
+            _pickP0 = template.transform.localPosition;
+            _pickTemplateScale = template.transform.localScale;
+            float dx = Mathf.Abs(w.petTalentUIElements[1].transform.localPosition.x - _pickP0.x);
+            if (dx >= 0.01f) _pickDx = dx;
 
             for (int i = 0; i < table.petTalents.Count; i++)
             {
                 var go = UnityEngine.Object.Instantiate(template.gameObject, template.transform.parent);
                 go.name = "PetEditorPick_" + table.petTalents[i].petTalentID;
-                int r = i / PickerColumns, c = i % PickerColumns;
-                go.transform.localPosition = _pickOrigin + new Vector3(c * _pickStep, -r * _pickStep, 0f);
-                go.transform.localScale = template.transform.localScale * PickerScale;
                 go.SetActive(false);
                 _pickItems.Add(go.GetComponent<PetTalentUIElement>());
                 _pickInfos.Add(table.petTalents[i]);
             }
+            FitPicker(w.background.size.x, PickerScale);
+        }
+
+        /// <summary>
+        /// Lays the picker grid out at <paramref name="scale"/>. The window keeps its left edge where vanilla
+        /// has it and grows to the right only: growing to the left puts the first column over the equipment
+        /// panel's visibility toggles, which then take the clicks.
+        /// </summary>
+        private static void FitPicker(float baseWidth, float scale)
+        {
+            if (Mathf.Approximately(scale, _pickScale)) return;
+            _pickScale = scale;
+            _pickStep = _pickDx * scale;
+            _pickShift = Mathf.Max(0f, (PickerColumns * _pickStep + 0.5f - baseWidth) / 2f);
+            _pickOrigin = new Vector3(_pickShift - (PickerColumns - 1) * _pickStep / 2f, _pickP0.y, _pickP0.z);
+            for (int i = 0; i < _pickItems.Count; i++)
+            {
+                int r = i / PickerColumns, c = i % PickerColumns;
+                _pickItems[i].transform.localPosition = _pickOrigin + new Vector3(c * _pickStep, -r * _pickStep, 0f);
+                _pickItems[i].transform.localScale = _pickTemplateScale * scale;
+            }
+        }
+
+        /// <summary>PickerScale, shrunk when the screen ends before the widened window would (small screens, big UI scale).</summary>
+        private static float PickerScaleForScreen(PetTalentsWindow w)
+        {
+            Camera cam = Manager.camera != null ? Manager.camera.uiCamera : null;
+            Transform parent = w.background.transform.parent;
+            if (cam == null || parent == null || parent.lossyScale.x <= 0f) return PickerScale;
+
+            float leftWorld = parent.TransformPoint(new Vector3(-_baseWidth / 2f, 0f, 0f)).x;
+            float rightWorld = cam.ViewportToWorldPoint(new Vector3(1f, 0.5f, 0f)).x;
+            float available = (rightWorld - leftWorld) / parent.lossyScale.x - 0.25f;
+            float fit = (available - 0.5f) / (PickerColumns * _pickDx);
+            return Mathf.Clamp(fit, 0.5f, PickerScale);
         }
 
         private static float PickerHeight()

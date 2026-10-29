@@ -1,0 +1,203 @@
+"""Workshop covers built from Sid's in-game screenshots (NVIDIA captures, 3840x2160, 2026-10-28).
+
+    python release/art_direction/make_screenshot_covers.py [Key ...] [--out DIR]
+
+Each cover: a darkened background (blurred unless it is itself the subject), one or more screenshot
+crops in front with feathered edges, optional gold highlight frames, and the pixel title banner used
+by the other covers. Game UI is never repainted. Crops are cached as PNGs in
+release/art_direction/screens/ (cut from the NVIDIA folder on first run), so the script is
+reproducible without the original captures. Crop/highlight boxes are in 1280x720 preview pixels.
+"""
+from pathlib import Path
+import sys
+from PIL import Image, ImageChops, ImageDraw, ImageEnhance, ImageFilter, ImageFont
+
+REPO = Path(__file__).resolve().parents[2]
+CACHE = REPO / 'release/art_direction/screens'
+NVIDIA = Path.home() / 'Videos/NVIDIA/Desktop'
+W, H, TOP = 1280, 720, 176          # canvas; content area starts below the banner
+
+
+def shot(stamp):
+    return NVIDIA / f'Desktop Screenshot 2026.10.28 - {stamp}.png'
+
+
+# key -> title, caption, background (stamp, crop, blur), panels [(stamp, crop, target box, highlights)]
+COVERS = {
+    'FiveLoadouts': dict(
+        title='FIVE LOADOUTS', caption='FIVE EQUIPMENT LOADOUTS, TABS I TO V',
+        bg=('19.57.12.56', (300, 40, 1280, 600), 6),
+        panels=[('19.57.12.56', (655, 58, 1002, 354), (40, TOP + 4, W - 40, H - 14), [(664, 148, 708, 340)])]),
+    'LoadoutSharing': dict(
+        title='SHARED LOADOUT GEAR & VANITY', caption='EMPTY SLOTS BORROW FROM EARLIER LOADOUTS',
+        bg=('19.57.23.85', (300, 40, 1280, 600), 6),
+        panels=[('19.57.23.85', (655, 58, 1002, 354), (40, TOP + 4, W - 40, H - 14), [(710, 105, 970, 342)])]),
+    'PetEditor': dict(
+        title='PET EDITOR', caption='CHOOSE TALENTS, LEVEL AND COLOR',
+        bg=('19.57.42.05', (0, 40, 1280, 720), 6),
+        panels=[('19.57.42.05', (690, 55, 1272, 596), (40, TOP + 4, W - 40, H - 14), [(1008, 188, 1264, 406)])]),
+    'ArmorDye': dict(
+        title='ARMOR DYE', caption='RECOLOR ANY ARMOR, WEAPON OR TOOL',
+        bg=('19.59.16.75', (0, 40, 1280, 720), 6),
+        panels=[('19.59.16.75', (335, 55, 1000, 426), (40, TOP + 4, W - 40, H - 14), [(424, 166, 769, 403)])]),
+    'ModOptions': dict(
+        title='MOD OPTIONS', caption="EVERY MOD'S SETTINGS IN ONE MENU",
+        bg=('19.58.40.45', (0, 0, 1280, 720), 4),
+        panels=[('19.58.40.45', (300, 40, 1100, 615), (24, TOP + 4, 640, H - 14), []),
+                ('19.58.32.13', (230, 40, 1050, 600), (640, TOP + 4, W - 24, H - 14), [])]),
+    'ConnectedStorage': dict(
+        title='RUNIC STORAGE', caption='SEARCH EVERY CONNECTED CHEST',
+        bg=('20.12.13.42', (260, 130, 1000, 546), 0),
+        panels=[('20.05.30.46', (68, 148, 572, 632), (28, TOP + 8, 560, H - 16), [])]),
+    # Farm shot: golden Glow Tulips among blue ones, a golden Heart Berry among red ones.
+    'GoldenChance': dict(
+        title='GOLDEN CHANCE', caption='YOUR TALENTS GROW MORE GOLDEN CROPS', wip=True,
+        bg=('20.01.09.34', (180, 100, 820, 460), 0),
+        marks=[(662, 242), (577, 370)],
+        panels=[('20.01.09.34', (538, 78, 618, 152), (40, 392, 330, H - 22), [(538, 78, 618, 152)]),
+                ('20.01.09.34', (626, 206, 706, 280), (W - 330, 392, W - 40, H - 22), [(626, 206, 706, 280)])]),
+}
+
+
+def crop(stamp, box):
+    """Full-resolution crop for a 1280x720 preview box, cached in the repo."""
+    CACHE.mkdir(parents=True, exist_ok=True)
+    name = CACHE / f"{stamp.replace('.', '')}_{'_'.join(map(str, box))}.png"
+    if not name.exists():
+        full = Image.open(shot(stamp)).convert('RGB')
+        k = full.width / 1280
+        full.crop(tuple(round(v * k) for v in box)).save(name, optimize=True)
+    return Image.open(name).convert('RGB')
+
+
+def fit(img, box):
+    bw, bh = box[2] - box[0], box[3] - box[1]
+    s = min(bw / img.width, bh / img.height)
+    img = img.resize((round(img.width * s), round(img.height * s)), Image.LANCZOS)
+    return img, box[0] + (bw - img.width) // 2, box[1] + (bh - img.height) // 2, s
+
+
+def banner(canvas, title, caption):
+    P = 4
+    bw, bh = W // P, 46
+    ban = Image.new('RGBA', (bw, bh), (0, 0, 0, 0))
+    b = ImageDraw.Draw(ban)
+    bx0, bx1 = 34, bw - 34
+    b.line((bx0 - 6, 2, bx1 + 6, 2), fill='#b8863a')
+    b.line((bx0 - 6, 3, bx1 + 6, 3), fill='#7a5520')
+    poly = [(bx0, 4), (bx1, 4), (bx1, 42), (bx1 - 8, 38), (bx0 + 8, 38), (bx0, 42)]
+    b.polygon(poly, fill='#164a46')
+    b.polygon(poly, outline='#2a8a80')
+    for x in range(bx0 + 4, bx1 - 3, 6):
+        b.point((x, 6), fill='#1d6a64')
+
+    def text(s, size, y, fill, font):
+        layer = Image.new('L', (bw, bh))
+        ld = ImageDraw.Draw(layer)
+        ld.fontmode = '1'
+        while True:   # shrink long titles until they fit inside the cloth
+            f = ImageFont.truetype('C:/Windows/Fonts/' + font, size)
+            if ld.textlength(s, font=f) <= bx1 - bx0 - 14 or size <= 6:
+                break
+            size -= 1
+        ld.text(((bw - ld.textlength(s, font=f)) / 2, y + (21 - size) // 2 if font == 'impact.ttf' else y), s, font=f, fill=255)
+        ban.paste('#1a0f08', (0, 0), layer.filter(ImageFilter.MaxFilter(3)))
+        ban.paste(fill, (0, 0), layer)
+        return layer
+
+    t = text(title, 21, 7, '#ffd36a', 'impact.ttf')
+    band = Image.new('L', (bw, bh))
+    band.paste(255, (0, 0, bw, 17))
+    ban.paste('#fff0b8', (0, 0), ImageChops.multiply(t, band))
+    text(caption.replace(' ', '   '), 8, 30, '#94f7dd', 'segoeuib.ttf')   # 1 px spaces vanish at this size
+    ban = ban.resize((bw * P, bh * P), Image.NEAREST)
+    canvas.paste(ban, (0, 0), ban)
+
+
+def wip_tag(canvas):
+    """Red 'WORK IN PROGRESS' plaque under the banner, drawn at quarter scale like the banner."""
+    P = 4
+    tag = Image.new('RGBA', (92, 14), (0, 0, 0, 0))
+    t = ImageDraw.Draw(tag)
+    t.rectangle((0, 0, 91, 13), fill='#7a1c1c', outline='#e05a4a')
+    t.line((1, 1, 90, 1), fill='#a83a30')
+    f = ImageFont.truetype('C:/Windows/Fonts/segoeuib.ttf', 8)
+    layer = Image.new('L', tag.size)
+    ld = ImageDraw.Draw(layer)
+    ld.fontmode = '1'
+    s = 'WORK   IN   PROGRESS'
+    ld.text(((92 - ld.textlength(s, font=f)) / 2, 1), s, font=f, fill=255)
+    tag.paste('#ffe8c8', (0, 0), layer)
+    tag = tag.resize((tag.width * P, tag.height * P), Image.NEAREST)
+    canvas.paste(tag, ((W - tag.width) // 2, 186), tag)
+
+
+def build(key, out_dir):
+    c = COVERS[key]
+    stamp, box, blur = c['bg']
+    bg = crop(stamp, box)
+    bg = bg.resize((W, round(bg.height * W / bg.width)), Image.LANCZOS)
+    if bg.height < H:
+        bg = bg.resize((round(bg.width * H / bg.height), H), Image.LANCZOS)
+    bg = bg.crop(((bg.width - W) // 2, (bg.height - H) // 2, (bg.width - W) // 2 + W, (bg.height - H) // 2 + H))
+    if blur:
+        bg = bg.filter(ImageFilter.GaussianBlur(blur))
+    canvas = ImageEnhance.Brightness(bg).enhance(0.45 if blur else 0.8)
+
+    # Rings around points of interest in the background (preview coords; bg crop must be 16:9).
+    if c.get('marks'):
+        k = W / (box[2] - box[0])
+        ring = Image.new('L', (W, H), 0)
+        rd = ImageDraw.Draw(ring)
+        pts = [(round((px - box[0]) * k), round((py - box[1]) * k)) for px, py in c['marks']]
+        for px, py in pts:
+            rd.ellipse((px - 40, py - 40, px + 40, py + 40), outline=255, width=8)
+        ring = ring.filter(ImageFilter.GaussianBlur(7))
+        canvas = Image.composite(Image.new('RGB', (W, H), '#ffcf5a'), canvas, ring.point(lambda v: v // 2))
+        d = ImageDraw.Draw(canvas)
+        for px, py in pts:
+            d.ellipse((px - 36, py - 36, px + 36, py + 36), outline='#e8b85a', width=2)
+
+    frames = []
+    for stamp, box, target, highlights in c['panels']:
+        src = crop(stamp, box)
+        img, x, y, s = fit(src, target)
+        s *= src.width / (box[2] - box[0])        # preview pixels -> canvas pixels
+        shadow = Image.new('L', (W, H), 0)
+        ImageDraw.Draw(shadow).rectangle((x + 8, y + 10, x + img.width + 8, y + img.height + 10), fill=170)
+        canvas.paste('#000000', (0, 0), shadow.filter(ImageFilter.GaussianBlur(12)))
+        fade = Image.new('L', img.size, 0)
+        ImageDraw.Draw(fade).rectangle((6, 6, img.width - 7, img.height - 7), fill=255)
+        canvas.paste(img, (x, y), fade.filter(ImageFilter.GaussianBlur(4)))
+        for hx0, hy0, hx1, hy1 in highlights:
+            frames.append((x + round((hx0 - box[0]) * s), y + round((hy0 - box[1]) * s),
+                           x + round((hx1 - box[0]) * s), y + round((hy1 - box[1]) * s)))
+
+    if frames:
+        glow = Image.new('L', (W, H), 0)
+        for f in frames:
+            ImageDraw.Draw(glow).rounded_rectangle(f, 12, outline=255, width=10)
+        glow = glow.filter(ImageFilter.GaussianBlur(10))
+        canvas = Image.composite(Image.new('RGB', (W, H), '#ffb347'), canvas, glow.point(lambda v: v // 3))
+        d = ImageDraw.Draw(canvas)
+        for f in frames:
+            d.rounded_rectangle(f, 10, outline='#e8b85a', width=3)
+
+    banner(canvas, c['title'], c['caption'])
+    if c.get('wip'):
+        wip_tag(canvas)
+    out = out_dir / f'{key}.png'
+    canvas.save(out, optimize=True)
+    print(out, canvas.size, out.stat().st_size)
+
+
+if __name__ == '__main__':
+    args = sys.argv[1:]
+    out_dir = REPO / 'build/artwork-review/2026-10-28/screens'
+    if '--out' in args:
+        i = args.index('--out')
+        out_dir = Path(args[i + 1])
+        del args[i:i + 2]
+    out_dir.mkdir(parents=True, exist_ok=True)
+    for key in args or COVERS:
+        build(key, out_dir)

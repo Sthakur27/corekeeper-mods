@@ -33,22 +33,49 @@ namespace ConnectedStorage
         private BrowserSort sort = BrowserSort.Physical;
         private bool descending;
         private int filter;
-        private GameObject categoryMenu;
-        private readonly List<ButtonUIElement> categoryButtons=new List<ButtonUIElement>();
-        private int categoryOpenedFrame, hoveredCategory=-1;
-        private static readonly string[] Categories={"All","Weapons","Tools","Armor","Accessories","Food","Building","Materials","Pets","Valuables","Other"};
-        private static int Category(ObjectType type) {
-            switch(type) {
-                case ObjectType.MeleeWeapon: case ObjectType.RangeWeapon: case ObjectType.SummoningWeapon: case ObjectType.ThrowingWeapon: case ObjectType.BeamWeapon:return 1;
-                case ObjectType.Shovel: case ObjectType.Hoe: case ObjectType.MiningPick: case ObjectType.PaintTool: case ObjectType.FishingRod: case ObjectType.BugNet: case ObjectType.Sledge: case ObjectType.RoofingTool: case ObjectType.DrillTool: case ObjectType.WaterCan: case ObjectType.Bucket: case ObjectType.Seeder:return 2;
-                case ObjectType.Helm: case ObjectType.BreastArmor: case ObjectType.PantsArmor:return 3;
-                case ObjectType.Necklace: case ObjectType.Ring: case ObjectType.Offhand: case ObjectType.Bag: case ObjectType.Lantern: case ObjectType.Pouch:return 4;
-                case ObjectType.Eatable:return 5;
-                case ObjectType.PlaceablePrefab: case ObjectType.TrainingDummy:return 6;
-                case ObjectType.NonUsable: case ObjectType.UniqueCraftingComponent:return 7;
-                case ObjectType.Pet: case ObjectType.Critter:return 8;
-                case ObjectType.Valuable:return 9;
-                default:return 10;
+        private GameObject tabColumn;
+        private readonly List<ButtonUIElement> tabButtons=new List<ButtonUIElement>();
+        private readonly List<GameObject> tabToggles=new List<GameObject>();
+        private readonly List<List<SpriteRenderer>> tabIcons=new List<List<SpriteRenderer>>();
+        private readonly List<GameObject> tabHighlights=new List<GameObject>();
+        private static readonly Color Gold=new Color(1f,.8f,.25f,1);
+        // The chest's art fills its whole canvas, unlike most item sprites.
+        private static float IconScale(int category)=>category==0?.6f:1f;
+        private int hoveredTab=-1, tabSelectedFrame=-1;
+        private bool tabsPlaced;
+        // Index order is also the physical sort order (StorageTransfer.SortNetwork).
+        private static readonly string[] Categories={"All","Materials","Weapons","Tools","Armor","Accessories","Food","Blocks","Furniture","Pets","Valuables","Other"};
+        // Each tab borrows a familiar item as its icon.
+        private static readonly ObjectID[] CategoryIcons={ObjectID.InventoryChest,ObjectID.CopperBar,ObjectID.CopperSword,ObjectID.CopperMiningPick,
+            ObjectID.CopperHelm,ObjectID.CopperCrossNecklace,ObjectID.HeartBerry,ObjectID.GroundDirtBlock,ObjectID.WoodenWorkBench,
+            ObjectID.PetCatEgg,ObjectID.AncientCoin,ObjectID.CopperKey};
+        private const int Materials=1,Weapons=2,Tools=3,Armor=4,Accessories=5,Food=6,Blocks=7,Furniture=8,Pets=9,Valuables=10,Other=11;
+        private static bool PlacesTile(PugTilemap.TileType tile) {
+            switch(tile) {
+                case PugTilemap.TileType.wall: case PugTilemap.TileType.thinWall: case PugTilemap.TileType.greatWall:
+                case PugTilemap.TileType.ground: case PugTilemap.TileType.floor: case PugTilemap.TileType.litFloor: case PugTilemap.TileType.looseFlooring:
+                case PugTilemap.TileType.bridge: case PugTilemap.TileType.fence: case PugTilemap.TileType.rug: case PugTilemap.TileType.rail:
+                case PugTilemap.TileType.circuitPlate: case PugTilemap.TileType.ancientCircuitPlate: case PugTilemap.TileType.roofHole:return true;
+                default:return false;
+            }
+        }
+        internal static int Category(ObjectInfo info) {
+            if(info==null)return Other;
+            bool Tagged(ObjectCategoryTag tag)=>info.tags!=null && info.tags.Contains(tag);
+            switch(info.objectType) {
+                case ObjectType.MeleeWeapon: case ObjectType.RangeWeapon: case ObjectType.SummoningWeapon: case ObjectType.ThrowingWeapon: case ObjectType.BeamWeapon: case ObjectType.CastingItem:return Weapons;
+                case ObjectType.Shovel: case ObjectType.Hoe: case ObjectType.MiningPick: case ObjectType.PaintTool: case ObjectType.FishingRod: case ObjectType.BugNet: case ObjectType.Sledge: case ObjectType.RoofingTool: case ObjectType.DrillTool: case ObjectType.WaterCan: case ObjectType.Bucket: case ObjectType.Seeder:return Tools;
+                case ObjectType.Helm: case ObjectType.BreastArmor: case ObjectType.PantsArmor:return Armor;
+                case ObjectType.Necklace: case ObjectType.Ring: case ObjectType.Offhand: case ObjectType.Bag: case ObjectType.Lantern: case ObjectType.Pouch:return Accessories;
+                case ObjectType.Eatable:return Food;
+                case ObjectType.Pet: case ObjectType.Critter:return Pets;
+                case ObjectType.Valuable:return Valuables;
+                case ObjectType.PlaceablePrefab: case ObjectType.TrainingDummy: case ObjectType.NonUsable: case ObjectType.UniqueCraftingComponent:
+                    if(PlacesTile(info.tileType))return Blocks;
+                    if(Tagged(ObjectCategoryTag.PetEgg))return Pets;
+                    if(Tagged(ObjectCategoryTag.Seed))return Materials;
+                    return info.objectType==ObjectType.PlaceablePrefab || info.objectType==ObjectType.TrainingDummy ? Furniture : Materials;
+                default:return Other;
             }
         }
         private float spread, nextScan, nextNetworkScan;
@@ -121,7 +148,7 @@ namespace ConnectedStorage
                 self.ApplyLayout();
                 self.screen.SetActive(true);
                 self.search.SetInputText(""); self.lastSearch="";
-                self.categoryMenu.SetActive(false);self.scroll.gameObject.SetActive(true);
+                if(!self.tabsPlaced)self.PlaceTabs();
                 self.Refresh(); self.Configure(); self.nextScan=Time.unscaledTime+0.1f;
                 StorageUIDev.Opened();
                 Debug.Log("[ConnectedStorage] Browser opened; camera depth="+Manager.ui.UICamera.transform.position.z+", panel depth="+self.screen.transform.position.z);
@@ -180,97 +207,143 @@ namespace ConnectedStorage
             CreateSlots("StorageGridSlot",grid,model.GridColumns*model.ViewportRows);
             CreateSlots("StorageListSlot",list,model.ViewportRows);
             Bind("StorageLayout",()=>{layout=layout==BrowserLayout.Grid?BrowserLayout.List:BrowserLayout.Grid;Configure();},"Grid / list");
-            Bind("StorageSort",()=>Send("sort "+(descending?1:0)),"Sort storage by name");
+            Bind("StorageSort",()=>Send("sort "+(descending?1:0)),"Sort storage by category, then name");
             Bind("StorageOrder",()=>{descending=!descending;Send("sort "+(descending?1:0));},"Sort ascending / descending");
-            Bind("StorageFilters",()=>ShowCategories(!categoryMenu.activeSelf),"Item categories");
-            BuildCategories();
-            var filterLabel=Instantiate(search.hintText,Find("StorageFilters"),false);
-            filterLabel.transform.localPosition=new Vector3(-.4f,.65f,-.1f);
-            filterLabel.transform.localScale=Vector3.one*.55f;
-            filterLabel.localize=false;filterLabel.style=emptyMessage.style.GetCopy();
-            filterLabel.style.maskInteraction=SpriteMaskInteraction.None;
-            filterLabel.style.sortingLayer=grid[0].icon.sortingLayerID;filterLabel.style.orderInLayer=60;
-            filterLabel.Render("Filter",false,true);
+            // Category tabs replace the old Filter popup: one click per category.
+            Find("StorageFilters").gameObject.SetActive(false);
+            BuildTabs();
         }
-        private void ShowCategories(bool show) {
-            if(show) {
-                categoryOpenedFrame=Time.frameCount;
-                if(search.inputIsActive)search.Deactivate(false);
-            }
-            if(hoveredCategory>=0)categoryButtons[hoveredCategory].OnDeselected(false);
-            hoveredCategory=-1;
-            categoryMenu.SetActive(show);scroll.gameObject.SetActive(!show);
-            Physics.SyncTransforms();
-            if(show) {
-                emptyMessage.gameObject.SetActive(false);
-                foreach(var text in categoryMenu.GetComponentsInChildren<PugText>(true))
-                    text.Render(text.gameObject.name,false,true,true);
-            } else Draw();
-        }
-        private void BuildCategories() {
-            categoryMenu=new GameObject("Storage categories");categoryMenu.SetActive(false);categoryMenu.transform.SetParent(screen.transform,false);
-            var reference=Find("StorageFilters").GetComponentsInChildren<SpriteRenderer>(true).First(r=>r.name=="Background");
+        private const float TabSize=.9f;
+        private void BuildTabs() {
+            tabColumn=new GameObject("Storage category tabs");tabColumn.transform.SetParent(screen.transform,false);
+            var template=Find("StorageFilters").gameObject;
             for(int i=0;i<Categories.Length;i++) {
                 int selected=i;
                 // Clone the working toolbar button so its input layer, collider and
                 // initialized native button fields exactly match the game's UI.
-                var go=Instantiate(Find("StorageFilters").gameObject,categoryMenu.transform,false);
+                var go=Instantiate(template,tabColumn.transform,false);
+                go.SetActive(true);
                 go.name="Category "+Categories[i];
-                go.transform.localPosition=new Vector3(i%2==0?-2.8f:2.8f,2.4f-(i/2)*1.2f,-.2f);
                 go.transform.localScale=Vector3.one;
-                foreach(var t in go.GetComponentsInChildren<Transform>(true))
-                    if(t.name=="Icon" || t.name=="IconShadow" || t.name=="Toggled")t.gameObject.SetActive(false);
                 foreach(var text in go.GetComponentsInChildren<PugText>(true))Destroy(text.gameObject);
-                foreach(var sr in go.GetComponentsInChildren<SpriteRenderer>(true))
-                    if(sr.name=="Background") {sr.drawMode=SpriteDrawMode.Sliced;sr.size=new Vector2(5.2f,1);}
+                // The button has an Icon in its normal state and another inside
+                // Toggled (its selected state); both get the category's item.
+                GameObject toggled=null;var icons=new List<SpriteRenderer>();
+                foreach(var t in go.GetComponentsInChildren<Transform>(true)) {
+                    if(t.name=="IconShadow")t.gameObject.SetActive(false);
+                    if(t.name=="Toggled"){toggled=t.gameObject;toggled.SetActive(false);}
+                    if(t.name=="Icon" && t.TryGetComponent<SpriteRenderer>(out var r))icons.Add(r);
+                }
+                tabToggles.Add(toggled);tabIcons.Add(icons);
                 var collider=go.GetComponent<BoxCollider>();
-                collider.enabled=true;collider.isTrigger=true;collider.center=Vector3.zero;collider.size=new Vector3(5.2f,1,1);
+                collider.enabled=true;collider.isTrigger=true;collider.center=Vector3.zero;collider.size=new Vector3(TabSize,TabSize,1);
                 var button=go.GetComponent<ButtonUIElement>();
-                button.canBeClicked=true;button.adjustSpritesToFitTextSize=false;button.showHoverTitle=false;
+                button.canBeClicked=true;button.adjustSpritesToFitTextSize=false;
                 button.onLeftClick=new UnityEvent();button.onRightClick=new UnityEvent();
                 button.onSelected=new UnityEvent();button.onDeselected=new UnityEvent();
                 button.optionToSelectOnHover=null;
                 button.onLeftClick.AddListener(()=>SelectCategory(selected));
-                categoryButtons.Add(button);
-                var background=go.GetComponentsInChildren<SpriteRenderer>(true).First(r=>r.name=="Background");
-                var label=Instantiate(emptyMessage,go.transform,false);
-                label.gameObject.name=Categories[i];
-                label.transform.localPosition=new Vector3(-2.3f,.15f,-.1f);
-                label.transform.localScale=Vector3.one;
-                label.localize=false;label.maxWidth=4.6f;
-                label.style=emptyMessage.style.GetCopy();
-                label.style.maskInteraction=SpriteMaskInteraction.None;
-                label.style.sortingLayer=background.sortingLayerID;label.style.orderInLayer=60;
-                label.Render(Categories[i],false,true,true);
+                button.showHoverTitle=true;button.showHoverDesc=false;
+                go.AddComponent<StorageBrowserTooltip>().Title=Categories[i];
+                tabButtons.Add(button);
+                // Active tab: a gold frame drawn over the brown one. It copies the
+                // tab's own frame renderer (known to draw here) and swaps in the
+                // item slot's light hover border, which tints cleanly to gold.
+                var background=go.GetComponentsInChildren<SpriteRenderer>(true).FirstOrDefault(r=>r.name=="Background");
+                var border=grid[0].hoverBorder!=null?grid[0].hoverBorder.sprite:null;
+                GameObject highlight=null;
+                if(background!=null && border!=null) {
+                    highlight=Instantiate(background.gameObject,background.transform.parent,false);
+                    highlight.name="Active highlight";
+                    foreach(Transform child in highlight.transform)Destroy(child.gameObject);
+                    var frame=highlight.GetComponent<SpriteRenderer>();
+                    var size=background.drawMode==SpriteDrawMode.Simple?(Vector2)background.sprite.bounds.size:background.size;
+                    frame.sprite=border;frame.color=Gold;frame.sortingOrder=background.sortingOrder+1;
+                    if(border.border!=Vector4.zero){frame.drawMode=SpriteDrawMode.Sliced;frame.size=size;}
+                    else {
+                        frame.drawMode=SpriteDrawMode.Simple;
+                        var native=(Vector2)border.bounds.size;var scale=background.transform.localScale;
+                        highlight.transform.localScale=new Vector3(scale.x*size.x/native.x,scale.y*size.y/native.y,scale.z);
+                    }
+                    foreach(var icon in icons)if(icon.sortingOrder<=frame.sortingOrder)icon.sortingOrder=frame.sortingOrder+1;
+                    highlight.SetActive(false);
+                }
+                tabHighlights.Add(highlight);
+                if(i==0)Debug.Log("[ConnectedStorage] Tab highlight: "+(highlight!=null?"gold frame, sliced="+(border.border!=Vector4.zero):"unavailable (background="+(background!=null)+", border="+(border!=null)+")"));
+                // If an item icon fails to load, the tab keeps the native filter icon.
+                // Sizing happens in PlaceTabs, matched to the grid's item icons.
+                var sprite=PugDatabase.GetObjectInfo(CategoryIcons[i])?.icon;
+                if(sprite==null)continue;
+                foreach(var icon in icons) {
+                    icon.sprite=sprite;
+                    icon.transform.localPosition=new Vector3(0,0,icon.transform.localPosition.z);
+                }
             }
-            categoryMenu.SetActive(false);
+            UpdateTabs();
+        }
+        // Runs on the first open, when the panel's renderers have real bounds:
+        // a column hugging the panel's left edge, spread over its height.
+        private void PlaceTabs() {
+            bool first=true;var bounds=new Bounds();
+            foreach(var sr in screen.GetComponentsInChildren<SpriteRenderer>()) {
+                if(!sr.enabled || sr.sprite==null || sr.transform.IsChildOf(tabColumn.transform))continue;
+                if(first){bounds=sr.bounds;first=false;}else bounds.Encapsulate(sr.bounds);
+            }
+            if(first)return;
+            var low=screen.transform.InverseTransformPoint(bounds.min);var high=screen.transform.InverseTransformPoint(bounds.max);
+            float step=Mathf.Min(1.05f,(high.y-low.y)/Categories.Length);
+            for(int i=0;i<tabButtons.Count;i++)
+                tabButtons[i].transform.localPosition=new Vector3(low.x-TabSize*.5f-.1f,high.y-step*(i+.5f),-.2f);
+            // Item sprites have uneven padding (tools and weapons are mostly empty
+            // canvas), so match the grid's icon scale instead of the sprite bounds.
+            float slotScale=grid[0].icon.transform.lossyScale.x*.72f;
+            for(int i=0;i<tabIcons.Count;i++)
+                foreach(var icon in tabIcons[i])
+                    if(icon.sprite==PugDatabase.GetObjectInfo(CategoryIcons[i])?.icon && icon.transform.parent.lossyScale.x>0)
+                        icon.transform.localScale=Vector3.one*(slotScale*IconScale(i)/icon.transform.parent.lossyScale.x);
+            Physics.SyncTransforms();
+            tabsPlaced=true;
+        }
+        // Inactive tabs are dimmed; the active one is full brightness on the
+        // native selected background. Re-applied each frame in case the button
+        // tints its sprites on hover.
+        private static readonly Color DimTab=new Color(.5f,.5f,.5f,1);
+        private void UpdateTabs() {
+            for(int i=0;i<tabToggles.Count;i++) {
+                // The native Toggled state (an underline) stays off; the gold frame replaces it.
+                if(tabToggles[i]!=null && tabToggles[i].activeSelf)tabToggles[i].SetActive(false);
+                if(tabHighlights[i]!=null && tabHighlights[i].activeSelf!=(i==filter))tabHighlights[i].SetActive(i==filter);
+                var tint=i==filter||i==hoveredTab?Color.white:DimTab;
+                foreach(var icon in tabIcons[i])if(icon.color!=tint)icon.color=tint;
+            }
         }
         private void SelectCategory(int selected) {
-            if(!Active || !categoryMenu.activeSelf || Time.frameCount==categoryOpenedFrame)return;
-            filter=selected;Refresh();Configure();ShowCategories(false);
-            search.hintString=filter==0?"Search":"Search "+Categories[filter];
-            if(search.GetInputText()=="")search.hintText.Render(search.hintString,false,true);
-            Debug.Log("[ConnectedStorage] Category selected: "+Categories[selected]);
+            // The button's own click and the pointer fallback can both fire in one frame.
+            if(!Active || Time.frameCount==tabSelectedFrame)return;
+            tabSelectedFrame=Time.frameCount;
+            // Clicking the active tab again goes back to everything.
+            filter=selected==filter?0:selected;
+            Refresh();Configure();UpdateTabs();
         }
-        private void UpdateCategoryPointer() {
-            if(!categoryMenu.activeSelf)return;
+        private void UpdateTabPointer() {
             int hovered=-1;
             var pointer=Manager.ui.mouse.pointer.position;
-            for(int i=0;i<categoryButtons.Count;i++) {
-                var button=categoryButtons[i];
+            for(int i=0;i<tabButtons.Count;i++) {
+                var button=tabButtons[i];
                 var collider=button.GetComponent<BoxCollider>();
                 var local=button.transform.InverseTransformPoint(pointer)-collider.center;
                 if(Mathf.Abs(local.x)<=collider.size.x*.5f && Mathf.Abs(local.y)<=collider.size.y*.5f) {
                     hovered=i;break;
                 }
             }
-            if(hovered!=hoveredCategory) {
-                if(hoveredCategory>=0)categoryButtons[hoveredCategory].OnDeselected(false);
-                hoveredCategory=hovered;
-                if(hovered>=0)categoryButtons[hovered].OnSelected();
+            if(hovered!=hoveredTab) {
+                if(hoveredTab>=0)tabButtons[hoveredTab].OnDeselected(false);
+                hoveredTab=hovered;
+                if(hovered>=0)tabButtons[hovered].OnSelected();
             }
             if(hovered>=0 && Manager.input.singleplayerInputModule.WasButtonPressedDownThisFrame(PlayerInput.InputType.UI_INTERACT))
                 SelectCategory(hovered);
+            UpdateTabs();
         }
         private void Bind(string name,Action action,string title)
         {
@@ -335,8 +408,7 @@ namespace ConnectedStorage
                     var item=items[i]; bool empty=item.objectID==ObjectID.None;
                     if(empty && (i>=limit || emptyBudget--<=0))continue;
                     if(!empty) used++;
-                    bool stackable=PugDatabase.GetObjectInfo(item.objectID,item.variation)?.isStackable ?? false;
-                    if(filter!=0 && (empty || Category(PugDatabase.GetObjectInfo(item.objectID,item.variation).objectType)!=filter)) continue;
+                    if(filter!=0 && (empty || Category(PugDatabase.GetObjectInfo(item.objectID,item.variation))!=filter)) continue;
                     entries.Add(new StorageBrowserModel<Address>.Entry {
                         Address=new Address {Entity=entity,Index=i,Item=item},
                         Name=empty ? "" : PlayerController.GetObjectName(item,true)?.text ?? item.objectID.ToString(),Amount=item.amount,Empty=empty
@@ -381,7 +453,7 @@ namespace ConnectedStorage
             heading.gameObject.SetActive(lastSearch.Length<=12);
             if(lastSearch.Length<=12) heading.Render(used+" / "+capacity);
             ApplyLayout();
-            UpdateCategoryPointer();
+            UpdateTabPointer();
             StorageUIDev.Tick(screen);
         }
         private void ApplyLayout()
@@ -407,7 +479,7 @@ namespace ConnectedStorage
         private void Draw()
         {
             bool hasItems=model.TryGetVisible(0,out var first);
-            emptyMessage.gameObject.SetActive(!hasItems && !categoryMenu.activeSelf);
+            emptyMessage.gameObject.SetActive(!hasItems);
             if(!hasItems) emptyMessage.Render(used==0 ? "Storage is empty.\nPick up an inventory stack, then click an empty slot." : "No items match this search or filter.");
             var active=layout==BrowserLayout.Grid?grid:list;
             foreach(var slot in layout==BrowserLayout.Grid?list:grid) slot.gameObject.SetActive(false);

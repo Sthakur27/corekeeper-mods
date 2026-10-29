@@ -55,7 +55,7 @@ namespace SidsOverhaul
         };
 
         public const string Hint = "Turn whole sub-mods on or off. Changes take effect after restarting the game. "
-            + "Loadout Fallback, Five Loadouts, Ender Stash and Runic Storage are always on (they hold items in extra inventory slots). "
+            + "Shared Loadout Gear & Vanity, Five Loadouts, Ender Stash and Runic Storage are always on (they hold items in extra inventory slots). "
             + "In multiplayer, use the same switches as the host.";
 
         private static Dictionary<string, bool> _snapshot;

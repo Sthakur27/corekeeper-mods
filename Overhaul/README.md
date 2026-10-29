@@ -24,9 +24,9 @@ Prefer to pick individual mods? Use [Sid's Core Keeper Mods collection](https://
 
 | Feature | What it does |
 |---|---|
-| Loadout Fallback + Five Loadouts | Fill empty equipment slots from lower loadouts, use separate vanity outfits, and add two loadout tabs. |
+| Shared Loadout Gear & Vanity + Five Loadouts | Fill empty equipment slots from lower loadouts, use separate vanity outfits, and add two loadout tabs. |
 | Ender Stash | A personal 40-slot stash accessed through an Ender Chest bought from the Fishing Merchant; travels with your character and stays safe on death. |
-| Runic Storage | Craft a storage workbench, connect storage units, and upgrade them through eight tiers from 20 to 160 slots per unit. Search, filter and sort the shared inventory from a terminal or connected unit. Inspired by Magic Storage for Terraria. |
+| Runic Storage | Craft a storage workbench, connect storage units, and upgrade them through eight tiers from 20 to 160 slots per unit. One-click category tabs (Materials, Weapons, Tools, Armor, Blocks, Furniture and more) filter the shared inventory, and Sort groups it by category. Inspired by Magic Storage for Terraria. |
 | Magic Mirror | Reusable three-second return to the Core. Craft for 50 Solarite Bars + 10 Recall Idols at a Solarite Workbench, or get one from Omoroth with a 20% chance per defeat. |
 | Armor Dye | Color individual armor, weapons and tools with an inventory palette. |
 | Pet Editor | Change pet levels, talents and colors through the pet window. |
@@ -65,7 +65,7 @@ Version 1.3.6 includes Golden Chance 2.2.0: native inventory processing keeps Bu
 
 Version 1.3.5 fixed repeated Buff Duration Floor scans caused by live items loading and unloading. Duration updates now target item templates only. This update does not change the game's automation or sound-pool behavior.
 
-The **Turn Sub-Mods On/Off** page disables whole features after a restart. Loadout Fallback, Five Loadouts, Ender Stash and Runic Storage stay enabled because they hold items in added inventory slots. Empty the stash and extra equipment slots before removing mods that provide them.
+The **Turn Sub-Mods On/Off** page disables whole features after a restart. Shared Loadout Gear & Vanity, Five Loadouts, Ender Stash and Runic Storage stay enabled because they hold items in added inventory slots. Empty the stash and extra equipment slots before removing mods that provide them.
 
 ## Credits and license
 

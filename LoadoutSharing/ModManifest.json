@@ -1,7 +1,7 @@
 {
     "guid": "3c9f1b7a52e04d8fa6b2c0d4e9f17a55",
     "name": "LoadoutSharing",
-    "displayName": "Loadout Fallback",
+    "displayName": "Shared Loadout Gear & Vanity",
     "skipSafetyChecks": false,
     "disableScripts": false,
     "accessesExtraAssemblies": true,

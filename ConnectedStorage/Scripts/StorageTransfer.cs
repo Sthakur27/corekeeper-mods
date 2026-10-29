@@ -93,6 +93,7 @@ namespace ConnectedStorage
             var addresses = new List<(Entity entity, int slot)>();
             var order = new List<int>();
             var names = new List<string>();
+            var categories = new List<int>();
             var empty = new List<bool>();
             // Real slots first; occupied legacy overflow remains recoverable at the end.
             for(int pass=0;pass<2;pass++) foreach(var unit in units) {
@@ -141,10 +142,13 @@ namespace ConnectedStorage
                     var item=EntityManager.GetBuffer<ContainedObjectsBuffer>(address.entity)[address.slot];
                     empty.Add(item.objectID==ObjectID.None);
                     names.Add(item.objectID==ObjectID.None?"":PlayerController.GetObjectName(item,true)?.text??"");
+                    categories.Add(item.objectID==ObjectID.None?0:StorageBrowserUI.Category(PugDatabase.GetObjectInfo(item.objectID,item.variation)));
                 }
+            // Group in the browser's tab order (Weapons, Tools, Armor...), then by name.
             order.Sort((a,b)=> {
                 if(empty[a]!=empty[b])return empty[a]?1:-1;
-                int result=StringComparer.OrdinalIgnoreCase.Compare(names[a],names[b]);
+                int result=categories[a].CompareTo(categories[b]);
+                if(result==0)result=StringComparer.OrdinalIgnoreCase.Compare(names[a],names[b]);
                 if(descending)result=-result;
                 return result==0?a.CompareTo(b):result;
             });

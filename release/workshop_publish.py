@@ -58,9 +58,9 @@ MODS = [
     ("SlotOrganizer", "Slot Organizer", "slotorganizer_logo.png", "Quality of Life"),
 ]
 OVERHAUL = ("SidsOverhaul", "Sid's Overhaul", "overhaul_logo.png", "Overhaul")
-# Standalone-only items: the Overhaul runs with the loader's safety check on, so a mod that needs
-# skipSafetyChecks (Slot Organizer uses the game's file system) cannot be bundled into it.
-NOT_IN_OVERHAUL = {"SlotOrganizer"}
+# Standalone-only items (none right now). Slot Organizer joined the Overhaul in 1.4.7, which now runs with
+# skipSafetyChecks (Elevated Access tag) for it.
+NOT_IN_OVERHAUL = set()
 # Cover disclosure per item; everything else keeps the AI-artwork note.
 COVER_NOTES = {
     "ConnectedStorage": "Cover is made from in-game screenshots (storage network and browser); title banner added.",
@@ -217,9 +217,10 @@ def gallery(key):
 
 
 def side_tags(man):
-    # Application Type tags from the manifest's requiredOn flags (1 client, 2 server, 3 both).
+    # Application Type tags from the manifest's requiredOn flags: which sides must have the mod (1 client, 2 server,
+    # 3 both). 0 = nobody else needs it (e.g. a main-menu tool); tag it Client, where it runs.
     side = man.get("requiredOn", 3)
-    return [t for bit, t in ((1, "Client"), (2, "Server")) if side & bit] or ["Client", "Server"]
+    return [t for bit, t in ((1, "Client"), (2, "Server")) if side & bit] or ["Client"]
 
 
 def access_tag(man):

@@ -20,9 +20,9 @@ Keyboard: select (or hover) a slot and press **Ctrl+Up / Page Up** or **Ctrl+Dow
 ## Requirements and multiplayer
 
 - No other mods needed. No settings.
-- Client-only: it only reorders the saves on your own PC and does nothing in game, so it doesn't matter
-  what other players or servers run.
-- Not part of Sid's Overhaul; subscribe to it on its own (works fine next to the Overhaul).
+- Only you need it: it reorders the saves on your own PC and does nothing in game, so players joining you
+  don't need it (1.0.1 fixes 1.0.0, which made the game ask joining players for it).
+- Also included in Sid's Overhaul from 1.4.7; use the Overhaul or this mod, not both.
 - Uses **elevated script access** ("Script (Elevated Access)" on the Workshop): the game's mod sandbox
   blocks the save-file functions this mod needs, so it runs without the sandbox.
 

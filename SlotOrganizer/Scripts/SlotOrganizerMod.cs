@@ -16,7 +16,7 @@ namespace SlotOrganizer
     public sealed class SlotOrganizerMod : IMod
     {
         public const string Name = "SlotOrganizer";
-        public const string Version = "1.0.0";
+        public const string Version = "1.0.1";
 
         // Selection as of the previous frame. The menu also reads the arrow keys, so by the time
         // Update runs it may already have moved the selection; the last frame's slot is the one meant.

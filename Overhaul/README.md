@@ -4,6 +4,8 @@
 
 Spend less time repeating chores and more time exploring. Sid's Overhaul brings the individual mods in this repository into one package: easier farming and fishing, equipment tools, merchant supplies, and adjustable combat and progression.
 
+**New in 1.4.7: Slot Organizer.** Reorder worlds and characters on the main menu with the arrow buttons, Ctrl+Up/Down or Page Up/Down. Unsubscribe from the standalone Slot Organizer when using this bundle. The Overhaul now needs the Workshop's Elevated Access permission because Slot Organizer moves save files.
+
 **New in 1.4.0: Runic Storage and smoother bases.** Craft its workbench from the Base section of a workbench. Storage units and sequential upgrade gems cost 30 bars of their tier. Empty its units before removing the mod, and disable the standalone Runic Storage mod when using this bundle. This release also removes per-tick inventory, merchant and farm work that grew with base size, and fixes a chest-skin mix-up that caused about 80 ms hitches near storage.
 
 **From 1.3.9:** Magic Mirror crafting now also requires 10 Recall Idols, in addition to 50 Solarite Bars. Existing mirrors and the 20% Omoroth drop are unchanged.
@@ -49,6 +51,7 @@ Prefer to pick individual mods? Use [Sid's Core Keeper Mods collection](https://
 | Keep Minions On Teleport | Bring summoned minions with you through teleports. |
 | Vehicle Speed | Adjust boat and go-kart speeds. |
 | Hit Sound Effects | Pick hit, kill and hurt sounds, including custom audio. |
+| Slot Organizer | Reorder world and character slots on the main menu. |
 | Golden Chance — WIP | Additive golden-plant and bonus-food rarity bonuses using native rolls. Regular main dishes are unchanged. |
 
 The individual mod folders on [GitHub](https://github.com/Sthakur27/corekeeper-mods) explain controls, defaults and limits in more detail. Features change game balance in different ways; check their settings before starting a new playthrough.

@@ -6,7 +6,7 @@
     "disableScripts": false,
     "accessesExtraAssemblies": true,
     "disableHarmonyPatching": false,
-    "requiredOn": 1,
+    "requiredOn": 0,
     "files": [
         {
             "path": "Scripts/SlotOrganizerMod.cs",

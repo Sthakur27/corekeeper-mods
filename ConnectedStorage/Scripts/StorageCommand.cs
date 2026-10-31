@@ -127,7 +127,7 @@ namespace ConnectedStorage
                     {
                         int slot = Number(args[3]);
                         var items = em.GetBuffer<ContainedObjectsBuffer>(player);
-                        if (slot < first || slot >= end || slot >= items.Length || items[slot].objectID != (ObjectID)Number(args[4]) || items[slot].variation != Number(args[5])) return Error("Inventory changed; select the item again.");
+                        if (!CarriedSlot(em, player, slot) || slot >= items.Length || items[slot].objectID != (ObjectID)Number(args[4]) || items[slot].variation != Number(args[5])) return Error("Inventory changed; select the item again.");
                         if (Locked(em, player, slot)) return Error("That item is locked.");
                         return Result(transfers.Transfer(player, player, slot, network.Chests, int.MaxValue));
                     }
@@ -169,6 +169,24 @@ namespace ConnectedStorage
             }
             catch (FormatException) { return Error("Invalid storage request."); }
             catch (OverflowException) { return Error("Invalid storage request."); }
+        }
+        // The main inventory (InventoryBuffer[0]) or an equipped pouch's contents. Vanilla pouches are
+        // InventoryBuffer[1..4]; mods that add pouch slots append entries whose extraInventorySizeSlot
+        // holds the pouch. Equipment and other appended ranges are excluded.
+        private static bool CarriedSlot(EntityManager em, Entity player, int slot)
+        {
+            var inventories = em.GetBuffer<InventoryBuffer>(player);
+            var items = em.GetBuffer<ContainedObjectsBuffer>(player);
+            for (int n = 0; n < inventories.Length; n++)
+            {
+                var inventory = inventories[n];
+                if (slot < inventory.startIndex || slot >= inventory.startIndex + inventory.size) continue;
+                if (n <= 4) return true;
+                int pouch = inventory.extraInventorySizeSlot;
+                if (pouch < 0 || pouch >= items.Length || items[pouch].objectID == ObjectID.None) continue;
+                if (PugDatabase.GetObjectInfo(items[pouch].objectID, items[pouch].variation)?.objectType == ObjectType.Pouch) return true;
+            }
+            return false;
         }
         private static bool Locked(EntityManager em, Entity entity, int slot) => em.HasBuffer<LockedObjectsBuffer>(entity)
             && slot < em.GetBuffer<LockedObjectsBuffer>(entity).Length && em.GetBuffer<LockedObjectsBuffer>(entity)[slot].Value;

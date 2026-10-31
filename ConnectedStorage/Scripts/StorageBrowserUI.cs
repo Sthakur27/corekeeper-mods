@@ -90,6 +90,10 @@ namespace ConnectedStorage
             bool first=true;var bounds=new Bounds();
             foreach(var slot in Manager.ui.playerInventoryUI.itemSlots) {
                 if(slot==null || !slot.gameObject.activeInHierarchy || slot.background==null)continue;
+                // Rows scrolled out of the inventory's window (bag rows above, pouches below) stay
+                // active; measuring them would drag the whole panel along with the scroll.
+                var window=slot.uiScrollWindow;
+                if(window!=null && !window.IsShowingPosition(slot.localScrollPosition))continue;
                 if(first){bounds=slot.background.bounds;first=false;}else bounds.Encapsulate(slot.background.bounds);
             }
             if(first)return;
@@ -540,7 +544,7 @@ namespace ConnectedStorage
         }
         internal static bool Deposit(InventorySlotUI slot,bool quick)
         {
-            if(!Active || !quick || !slot.isPlayerInventorySlot)return false;
+            if(!Active || !quick || (!slot.isPlayerInventorySlot && !slot.isPlayerPouchSlot))return false;
             if(Manager.main.player.mouseInventoryHandler.HasObject(0)) return false;
             var item=slot.GetObjectData();
             if(item.objectID!=ObjectID.None) Instance.Send("put "+(slot.GetInventoryHandler().startPosInBuffer+slot.inventorySlotIndex)+" "+(int)item.objectID+" "+item.variation);

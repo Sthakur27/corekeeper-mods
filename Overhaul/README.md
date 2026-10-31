@@ -4,6 +4,8 @@
 
 Spend less time repeating chores and more time exploring. Sid's Overhaul brings the individual mods in this repository into one package: easier farming and fishing, equipment tools, merchant supplies, and adjustable combat and progression.
 
+**New in 1.5.0: Faster Machines and no more intro logos.** Faster Machines speeds up furnaces, kilns, the glass smelter, fury forge, cooking pot, table saw, egg incubator and drills, each with its own setting (default 5x; Instant available). The studio logos at startup are skipped. Disable Fast Smelter and Skip Intro if you use them.
+
 **1.4.8:** Fixes 1.4.7, which failed to load. Slot Organizer is a separate mod again; subscribe to it on its own if you want it.
 
 **New in 1.4.0: Runic Storage and smoother bases.** Craft its workbench from the Base section of a workbench. Storage units and sequential upgrade gems cost 30 bars of their tier. Empty its units before removing the mod, and disable the standalone Runic Storage mod when using this bundle. This release also removes per-tick inventory, merchant and farm work that grew with base size, and fixes a chest-skin mix-up that caused about 80 ms hitches near storage.
@@ -41,6 +43,8 @@ Prefer to pick individual mods? Use [Sid's Core Keeper Mods collection](https://
 | Fish Seller | Buy fish and Shiny Larva Meat, and scroll through expanded shops. |
 | Merchant Restock | Choose a restock interval for all merchants or individual merchant types. |
 | Infinite Ore Boulders | Keep drilling ore boulders without depleting them. |
+| Faster Machines | Per-machine speed for furnaces, kilns, glass smelter, fury forge, cooking pot, table saw, egg incubator and drills (default 5x, up to 100x or Instant). |
+| Skip Intro | Skips the studio logos when the game starts. Always on. |
 | Quick Buff | Shortcuts for buffs (B), food only (F), a healing potion (H) and a mana potion (J), including items in pouches. |
 | Buff Duration Floor | Set minimum durations for food and potion buffs. |
 | Durability Multiplier | Choose how fast equipment wears out. |

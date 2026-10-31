@@ -1,0 +1,42 @@
+{
+    "guid": "7b2f9c4e1a6d4e8b9f3c5a1d2e7b4c90",
+    "name": "FasterMachines",
+    "displayName": "Faster Machines",
+    "skipSafetyChecks": false,
+    "disableScripts": false,
+    "accessesExtraAssemblies": true,
+    "disableHarmonyPatching": false,
+    "requiredOn": 3,
+    "files": [
+        {
+            "path": "Scripts/FasterMachinesMod.cs",
+            "guid": "7b2f9c4e1a6d4e8b9f3c5a1d2e7b4c91"
+        },
+        {
+            "path": "Scripts/MachineSpeeds.cs",
+            "guid": "7b2f9c4e1a6d4e8b9f3c5a1d2e7b4c92"
+        },
+        {
+            "path": "Scripts/Systems/CraftTimerSpeedSystem.cs",
+            "guid": "7b2f9c4e1a6d4e8b9f3c5a1d2e7b4c93"
+        },
+        {
+            "path": "Scripts/Systems/DrillSpeedSystem.cs",
+            "guid": "7b2f9c4e1a6d4e8b9f3c5a1d2e7b4c94"
+        },
+        {
+            "path": "Scripts/Patches/CraftProgressPatch.cs",
+            "guid": "7b2f9c4e1a6d4e8b9f3c5a1d2e7b4c95"
+        }
+    ],
+    "dependencies": [
+        {
+            "modName": "CoreLib",
+            "required": true
+        },
+        {
+            "modName": "ModOptions",
+            "required": true
+        }
+    ]
+}

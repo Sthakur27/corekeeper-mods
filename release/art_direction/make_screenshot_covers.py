@@ -77,6 +77,12 @@ COVERS = {
         title='MAGIC MIRROR', caption='A RECALL IDOL YOU NEVER USE UP',
         bg=('hdr:00.23.31.80', (330, 150, 970, 510), 0),
         panels=[('hdr:00.23.58.85', (858, 423, 1262, 705), (W - 470, TOP + 120, W - 24, H - 18), [])]),
+    # Five machines lined up on a grass platform, each framed.
+    'FasterMachines': dict(
+        title='FASTER MACHINES', caption='',
+        bg=('hdr:13.32.08.61', (300, 100, 1060, 527), 6),
+        panels=[('hdr:13.32.08.61', (350, 150, 1010, 380), (40, TOP + 4, W - 40, H - 14),
+                 [(434, 229, 489, 284), (519, 219, 574, 284), (606, 197, 659, 286), (691, 224, 744, 278), (776, 226, 831, 281)])]),
 }
 
 
@@ -126,11 +132,13 @@ def banner(canvas, title, caption):
         ban.paste(fill, (0, 0), layer)
         return layer
 
-    t = text(title, 21, 7, '#ffd36a', 'impact.ttf')
+    ty = 7 if caption else 12   # no caption: centre the title on the cloth
+    t = text(title, 21, ty, '#ffd36a', 'impact.ttf')
     band = Image.new('L', (bw, bh))
-    band.paste(255, (0, 0, bw, 17))
+    band.paste(255, (0, 0, bw, ty + 10))
     ban.paste('#fff0b8', (0, 0), ImageChops.multiply(t, band))
-    text(caption.replace(' ', '   '), 8, 30, '#94f7dd', 'segoeuib.ttf')   # 1 px spaces vanish at this size
+    if caption:
+        text(caption.replace(' ', '   '), 8, 30, '#94f7dd', 'segoeuib.ttf')   # 1 px spaces vanish at this size
     ban = ban.resize((bw * P, bh * P), Image.NEAREST)
     canvas.paste(ban, (0, 0), ban)
 
@@ -154,6 +162,14 @@ def wip_tag(canvas):
 
 
 def build(key, out_dir):
+    canvas = compose(key)
+    out = out_dir / f'{key}.png'
+    canvas.save(out, optimize=True)
+    print(out, canvas.size, out.stat().st_size)
+
+
+def compose(key):
+    """The finished cover as an RGB image (also used by scripts that add their own overlay)."""
     c = COVERS[key]
     stamp, box, blur = c['bg']
     bg = crop(stamp, box)
@@ -207,9 +223,7 @@ def build(key, out_dir):
     banner(canvas, c['title'], c['caption'])
     if c.get('wip'):
         wip_tag(canvas)
-    out = out_dir / f'{key}.png'
-    canvas.save(out, optimize=True)
-    print(out, canvas.size, out.stat().st_size)
+    return canvas
 
 
 if __name__ == '__main__':

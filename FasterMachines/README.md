@@ -27,5 +27,3 @@ Changes apply while you play. An item that is already in progress finishes at th
 ## Requirements and limits
 
 Requires **CoreLib and Mod Options** on the host and every client. The host's settings decide the speed; clients with different values only see a different progress bar.
-
-Disable **Fast Smelter** or other mods that also change machine timers so they don't fight over the same timers.

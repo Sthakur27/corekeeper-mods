@@ -8,8 +8,7 @@ namespace FasterMachines
 {
     /// <summary>
     /// Per-machine speed multipliers: furnace, smelter kiln, glass smelter, fury forge, cooking pot, table saw,
-    /// egg incubator, drills and every other timed machine. Replaces the third-party Fast Smelter mod (disable
-    /// that one: both rewrite the same timers).
+    /// egg incubator, drills and every other timed machine.
     /// See <see cref="Systems.CraftTimerSpeedSystem"/> (timed machines) and <see cref="Systems.DrillSpeedSystem"/>.
     /// </summary>
     public sealed class FasterMachinesMod : IMod

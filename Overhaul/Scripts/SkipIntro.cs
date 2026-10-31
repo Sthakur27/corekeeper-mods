@@ -5,7 +5,7 @@ using UnityEngine;
 namespace SidsOverhaul
 {
     /// <summary>
-    /// Skips the studio logos at game start (replaces the mod.io "Skip Intro" mod; disable that one).
+    /// Skips the studio logos at game start.
     /// LoadingScene.ShowLogo is the coroutine that fades each logo in and out; we hide the logo and hand back
     /// an empty coroutine so loading carries straight on. Always on.
     /// </summary>

@@ -6,7 +6,7 @@ Spend less time repeating chores and more time exploring. Sid's Overhaul brings 
 
 **New in 1.6.0: Build Tools.** Bigger shovel, hoe, roofing gadget and paint tool areas (up to 10x10 by default), each tool type and block category remembers its own size even after you quit, a block brush (Keypad + / -, shape on Keypad *), block modes auto / floor only / walls only and roofing modes flip / close roof / open roof (Keypad /), and Swap on Left Alt to exchange blocks. Watering cans keep Bigger Watering Cans' sizes. Inspired by Placement Plus and Roofing Gadget Plus; disable both if you use them.
 
-**1.5.0: Faster Machines and no more intro logos.** Faster Machines speeds up furnaces, kilns, the glass smelter, fury forge, cooking pot, table saw, egg incubator and drills, each with its own setting (default 5x; Instant available). The studio logos at startup are skipped. Disable Fast Smelter and Skip Intro if you use them.
+**1.5.0: Faster Machines and no more intro logos.** Faster Machines speeds up furnaces, kilns, the glass smelter, fury forge, cooking pot, table saw, egg incubator and drills, each with its own setting (default 5x; Instant available). The studio logos at startup are skipped.
 
 **1.4.8:** Fixes 1.4.7, which failed to load. Slot Organizer is a separate mod again; subscribe to it on its own if you want it.
 
@@ -47,7 +47,7 @@ Prefer to pick individual mods? Use [Sid's Core Keeper Mods collection](https://
 | Infinite Ore Boulders | Keep drilling ore boulders without depleting them. |
 | Build Tools | Bigger tool areas remembered per tool, a block brush with floor/wall modes and Swap, and roofing gadget modes. Inspired by Placement Plus and Roofing Gadget Plus. |
 | Faster Machines | Per-machine speed for furnaces, kilns, glass smelter, fury forge, cooking pot, table saw, egg incubator and drills (default 5x, up to 100x or Instant). |
-| Skip Intro | Skips the studio logos when the game starts. Always on. |
+| No intro logos | Skips the studio logos when the game starts. Always on. |
 | Quick Buff | Shortcuts for buffs (B), food only (F), a healing potion (H) and a mana potion (J), including items in pouches. |
 | Buff Duration Floor | Set minimum durations for food and potion buffs. |
 | Durability Multiplier | Choose how fast equipment wears out. |

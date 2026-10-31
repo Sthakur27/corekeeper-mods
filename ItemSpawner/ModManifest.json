@@ -1,0 +1,34 @@
+{
+    "guid": "e3a91c5f7d2b4086b1f4c8a6d09e5b72",
+    "name": "ItemSpawner",
+    "displayName": "Item Spawner",
+    "skipSafetyChecks": false,
+    "disableScripts": false,
+    "accessesExtraAssemblies": true,
+    "disableHarmonyPatching": false,
+    "requiredOn": 0,
+    "files": [
+        {
+            "path": "Scripts/ItemSpawnerMod.cs",
+            "guid": ""
+        },
+        {
+            "path": "Scripts/SpawnerUI.cs",
+            "guid": ""
+        },
+        {
+            "path": "Scripts/GlyphIcons.cs",
+            "guid": ""
+        }
+    ],
+    "dependencies": [
+        {
+            "modName": "CoreLib",
+            "required": true
+        },
+        {
+            "modName": "ConnectedStorage",
+            "required": true
+        }
+    ]
+}

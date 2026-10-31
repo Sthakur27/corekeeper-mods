@@ -93,6 +93,17 @@ COVERS = {
         panels=[('hdr:14.21.30.03', (405, 120, 865, 580), (24, TOP + 40, 424, H - 24), []),
                 ('hdr:14.21.35.01', (405, 120, 865, 580), (440, TOP + 40, 840, H - 24), []),
                 ('hdr:14.21.40.31', (405, 120, 865, 580), (856, TOP + 40, 1256, H - 24), [])]),
+    # Left: "gem" search with a 9999 stack on the cursor. Right: the Rune search at Lv +11 with the -/+
+    # buttons, and Rune Song's tooltip showing Item level 20 (base 9 + 11).
+    'ItemSpawner': dict(
+        title='ITEM SPAWNER', caption='SEARCH ANY ITEM, FULL STACKS, LEVEL UP GEAR', gain=1.7,
+        bg=('hdr:14.41.05.93', (300, 100, 1060, 527), 6),
+        panels=[('hdr:14.41.28.59', (75, 150, 570, 470), (24, TOP + 20, 570, H - 20),
+                 [(364, 398, 452, 456)]),
+                ('hdr:14.41.49.61', (75, 150, 570, 262), (592, TOP + 22, W - 24, TOP + 200),
+                 [(308, 156, 528, 192)]),
+                ('hdr:14.41.49.61', (826, 216, 1262, 496), (680, TOP + 216, W - 24, H - 24),
+                 [(830, 256, 1004, 288)])]),
 }
 
 

@@ -59,7 +59,8 @@ namespace ConnectedStorage
                 default:return false;
             }
         }
-        internal static int Category(ObjectInfo info) {
+        // Public so Item Spawner shares the same tabs.
+        public static int Category(ObjectInfo info) {
             if(info==null)return Other;
             bool Tagged(ObjectCategoryTag tag)=>info.tags!=null && info.tags.Contains(tag);
             switch(info.objectType) {

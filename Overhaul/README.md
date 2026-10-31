@@ -4,6 +4,8 @@
 
 Spend less time repeating chores and more time exploring. Sid's Overhaul brings the individual mods in this repository into one package: easier farming and fishing, equipment tools, merchant supplies, and adjustable combat and progression.
 
+**New in 1.7.0: Item Spawner.** Press Z (rebindable under Controls) to search every item in the game, modded ones included. Left-click puts one on your cursor (Ctrl: a full stack), right-click puts one in your bag (Shift or Ctrl: a full stack), and the - / + buttons spawn gear and tools up to the max level above their base. Host and admins only. Replaces Item Browser's spawning; unsubscribe Item Browser, since both use Z.
+
 **1.6.1:** Build Tools 0.6.0: watering cans go from 1x1 up to Max tool size and remember their size when the Bigger Watering Cans switch is off; with it on, its 2x2 / 4x4 stay the limit unless you turn on "Override Bigger Watering Cans sizes".
 
 **New in 1.6.0: Build Tools.** Bigger shovel, hoe, roofing gadget and paint tool areas (up to 10x10 by default), each tool type and block category remembers its own size even after you quit, a block brush (Keypad + / -, shape on Keypad *), block modes auto / floor only / walls only and roofing modes flip / close roof / open roof (Keypad /), and Swap on Left Alt to exchange blocks. Watering cans keep Bigger Watering Cans' sizes. Inspired by Placement Plus and Roofing Gadget Plus; disable both if you use them.
@@ -38,6 +40,7 @@ Prefer to pick individual mods? Use [Sid's Core Keeper Mods collection](https://
 | Magic Mirror | Reusable three-second return to the Core. Craft for 50 Solarite Bars + 10 Recall Idols at a Solarite Workbench, or get one from Omoroth with a 20% chance per defeat. |
 | Armor Dye | Color individual armor, weapons and tools with an inventory palette. |
 | Pet Editor | Change pet levels, talents and colors through the pet window. |
+| Item Spawner | Host/admin spawn browser (Z): search every item, one or a full stack to your cursor or bag, gear and tools spawned above their base level. |
 | Auto Replant | Replant player-harvested crops on suitable planting ground using a matching nearby dropped seed or one you carry. |
 | Bigger Watering Cans | Water a 2x2 or 4x4 patch with supported cans. |
 | Faster Mushrooms | Tune spread and mushroom regrowth near players. |

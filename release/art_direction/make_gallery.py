@@ -31,13 +31,16 @@ GALLERY = {
     'EnderStash': ['hdr:17.51.45.25', 'hdr:17.51.19.80', 'hdr:17.51.28.10'],
     'MagicMirror': ['hdr:00.23.31.80', 'hdr:00.23.58.85'],
     'BuildTools': ['hdr:14.21.40.31', 'hdr:14.21.54.44'],
+    'ItemSpawner': ['hdr:14.41.28.59', 'hdr:14.41.05.93', 'hdr:14.41.49.61'],
 }
 
 # HDR captures that still show the NVIDIA performance overlay (the Ender Stash ones do not).
-HDR_WITH_OVERLAY = {'hdr:00.23.31.80', 'hdr:00.23.58.85', 'hdr:14.21.40.31', 'hdr:14.21.54.44'}
+HDR_WITH_OVERLAY = {'hdr:00.23.31.80', 'hdr:00.23.58.85', 'hdr:14.21.40.31', 'hdr:14.21.54.44',
+                    'hdr:14.32.51.61', 'hdr:14.41.28.59', 'hdr:14.41.49.61', 'hdr:14.41.05.93'}
 
 # Dark HDR captures shown brighter in the gallery (same factor as their cover).
-GAIN = {'hdr:14.21.40.31': 1.7, 'hdr:14.21.54.44': 1.7}
+GAIN = {'hdr:14.21.40.31': 1.7, 'hdr:14.21.54.44': 1.7, 'hdr:14.32.51.61': 1.7, 'hdr:14.41.28.59': 1.7,
+        'hdr:14.41.49.61': 1.7, 'hdr:14.41.05.93': 1.7}
 
 # NVIDIA "Screenshot saved" toasts caught in a capture (4K pixel boxes), painted over like the overlay.
 TOASTS = {'19.57.17.40': [(3200, 190, 3840, 400)]}

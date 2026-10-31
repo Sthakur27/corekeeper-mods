@@ -54,6 +54,7 @@ namespace SidsOverhaul
             { "MagicMirror", "Magic Mirror" },
             { "BuildTools", "Build Tools" },
             { "FasterMachines", "Faster Machines" },
+            { "ItemSpawner", "Item Spawner" },
         };
 
         public const string Hint = "Turn whole sub-mods on or off. Changes take effect after restarting the game. "

@@ -25,6 +25,8 @@ HDR_DIRS = [REPO / 'build/artwork-review/hdr', REPO / 'build/artwork-review/2026
 
 
 def shot(stamp):
+    if stamp.startswith('src:'):  # a source image kept next to this script (e.g. one Sid pasted in chat)
+        return Path(__file__).parent / stamp[4:]
     if stamp.startswith('hdr:'):
         hits = [d / f'{stamp[4:]}.png' for d in HDR_DIRS if (d / f'{stamp[4:]}.png').exists()]
         return hits[0] if hits else HDR_DIRS[0] / f'{stamp[4:]}.png'
@@ -83,6 +85,12 @@ COVERS = {
         bg=('hdr:13.32.08.61', (300, 100, 1060, 527), 6),
         panels=[('hdr:13.32.08.61', (350, 150, 1010, 380), (40, TOP + 4, W - 40, H - 14),
                  [(434, 229, 489, 284), (519, 219, 574, 284), (606, 197, 659, 286), (691, 224, 744, 278), (776, 226, 831, 281)])]),
+    # Sid's own capture while testing: a 6-wide line brush preview over a block wall, player on the left.
+    'BuildTools': dict(
+        title='BUILD TOOLS', caption='BRUSH, FLOOR AND WALL MODES, SWAP, SIZES PER TOOL',
+        bg=('src:buildtools_source.png', (0, 0, 1280, 638), 6),
+        panels=[('src:buildtools_source.png', (130, 95, 1150, 470), (40, TOP + 4, W - 40, H - 14),
+                 [(546, 126, 1124, 230)])]),
 }
 
 

@@ -39,6 +39,7 @@ Use the Overhaul or the individual versions of its features. Installing both run
 | [Fish Seller](FishSeller/README.md) | Buy fish and Shiny Larva Meat; scroll through expanded shops. |
 | [Merchant Restock](MerchantRestock/README.md) | Choose how quickly merchants refill their stock. |
 | [Infinite Ore Boulders](InfiniteOreBoulders/README.md) | Keep drilling ore boulders without using them up. |
+| [Build Tools](BuildTools/README.md) | Bigger tool areas remembered per tool, a block brush with floor/wall modes and Swap, and roofing gadget modes. |
 | [Faster Machines](FasterMachines/README.md) | Set the speed of each machine: furnaces, kilns, cooking pot, table saw, egg incubator and drills. |
 
 ### Combat, travel and progression

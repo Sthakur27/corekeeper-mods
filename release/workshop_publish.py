@@ -57,6 +57,7 @@ MODS = [
     ("ConnectedStorage", "Runic Storage", "runicstorage_workshop.png", "Item"),
     ("SlotOrganizer", "Slot Organizer", "slotorganizer_logo.png", "Quality of Life"),
     ("FasterMachines", "Faster Machines", "fastermachines_logo.gif", "Quality of Life"),
+    ("BuildTools", "Build Tools", "buildtools_logo.png", "Quality of Life"),
 ]
 OVERHAUL = ("SidsOverhaul", "Sid's Overhaul", "overhaul_logo.png", "Overhaul")
 # Standalone-only items: a mod that needs skipSafetyChecks (Slot Organizer uses the game's file system) cannot be
@@ -76,6 +77,7 @@ COVER_NOTES = {
     "EnderStash": "Cover is made from in-game screenshots (HDR captures tone-mapped); title banner and highlights added.",
     "MagicMirror": "Cover is made from in-game screenshots (mirror cast and crafting tooltip, HDR captures tone-mapped); title banner added.",
     "FasterMachines": "Cover is an in-game screenshot of the machines (HDR capture tone-mapped); title banner, highlights and an animated speed dial added.",
+    "BuildTools": "Cover is an in-game screenshot of a line brush preview over a block wall; title banner and highlight added.",
 }
 
 # Steam collection with every individual mod (+ CoreLib); processed first so other descriptions can link it.

@@ -122,8 +122,8 @@ namespace BuildTools
             if (!IsOn(shape, edge)) return "brush off";
             switch (shape)
             {
-                case BrushShape.Row: return $"row of {edge}";
-                case BrushShape.Column: return $"column of {edge}";
+                case BrushShape.Row: return $"line across, {edge}";
+                case BrushShape.Column: return $"line down, {edge}";
                 default: return $"{edge}x{edge}";
             }
         }
@@ -132,9 +132,9 @@ namespace BuildTools
         {
             switch (mode)
             {
-                case BlockMode.Ground: return "ground only";
+                case BlockMode.Ground: return "floor only";
                 case BlockMode.Wall: return "walls only";
-                default: return "toggle (vanilla)";
+                default: return "auto (floor first, then walls)";
             }
         }
 
@@ -142,9 +142,9 @@ namespace BuildTools
         {
             switch (mode)
             {
-                case RoofMode.AddRoof: return "add roof only";
-                case RoofMode.ClearRoof: return "remove roof only";
-                default: return "toggle (vanilla)";
+                case RoofMode.AddRoof: return "close roof";
+                case RoofMode.ClearRoof: return "open roof";
+                default: return "flip (vanilla)";
             }
         }
     }

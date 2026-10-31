@@ -29,7 +29,7 @@ namespace BuildTools
     public sealed class BuildToolsMod : IMod
     {
         public const string Name = "BuildTools";
-        public const string Version = "0.4.1";
+        public const string Version = "0.5.0";
 
         public const string IncreaseKeyBind = "BuildTools_IncreaseSize";
         public const string DecreaseKeyBind = "BuildTools_DecreaseSize";
@@ -43,11 +43,17 @@ namespace BuildTools
         private const string RoofModeKey = "RoofMode";
         private const string BlockModeKey = "BlockMode";
 
-        public const string SettingsHint = "Keypad + / - change the size of the held tool or block brush (down to 1x1), C changes the brush shape, V switches blocks between toggle / ground only / walls only and the roofing gadget between toggle / add roof / remove roof, hold Left Alt to replace blocks (rebind under Controls). Every tool type and block category remembers its own size.";
+        public const string SettingsHint = "Keypad + / - change the size of the held tool or block brush (down to 1x1), Keypad * changes the brush shape, Keypad / switches blocks between auto / floor only / walls only and the roofing gadget between flip / close roof / open roof, Left Alt turns Swap on or off (rebind under Controls). Every tool type and block category remembers its own size.";
+
+        private static readonly string[] SwapKeyModes = { "Toggle", "Hold" };
 
         private static Setting<int> _ceiling;
         private static Setting<bool> _remember;
         private static Setting<bool> _roofingNeverWears;
+        private static Setting<string> _swapKey;
+
+        /// <summary>True: the Swap key turns Swap on and off. False: Swap is on while the key is held.</summary>
+        public static bool SwapKeyToggles => _swapKey == null || _swapKey.Value != SwapKeyModes[1];
 
         public static bool RememberSizes => _remember?.Value ?? true;
         public static bool RoofingNeverWears => _roofingNeverWears?.Value ?? true;
@@ -63,6 +69,7 @@ namespace BuildTools
 
         private static Player _rewiredPlayer;
         private float _plusHeld, _minusHeld;
+        private bool _swapOn;
 
         public void EarlyInit()
         {
@@ -75,19 +82,19 @@ namespace BuildTools
                 int category = ControlMappingModule.AddNewCategory("Build Tools");
                 ControlMappingModule.AddKeyboardBind(IncreaseKeyBind, KeyboardKeyCode.KeypadPlus, categoryId: category);
                 ControlMappingModule.AddKeyboardBind(DecreaseKeyBind, KeyboardKeyCode.KeypadMinus, categoryId: category);
-                ControlMappingModule.AddKeyboardBind(ShapeKeyBind, KeyboardKeyCode.C, categoryId: category);
-                ControlMappingModule.AddKeyboardBind(ModeKeyBind, KeyboardKeyCode.V, categoryId: category);
+                ControlMappingModule.AddKeyboardBind(ShapeKeyBind, KeyboardKeyCode.KeypadMultiply, categoryId: category);
+                ControlMappingModule.AddKeyboardBind(ModeKeyBind, KeyboardKeyCode.KeypadDivide, categoryId: category);
                 ControlMappingModule.AddKeyboardBind(ReplaceKeyBind, KeyboardKeyCode.LeftAlt, categoryId: category);
                 ControlMappingModule.rewiredStart += OnRewiredStart;
 
                 CoreLibMod.LoadSubmodule(typeof(LocalizationModule));
                 LocalizationModule.AddTerm("ControlMapper/Build ToolsCategory", "Build Tools");
-                LocalizationModule.AddTerm("ControlMapper/Build ToolsDescription", "Tool and brush size, brush shape, block / roofing mode and replace.");
+                LocalizationModule.AddTerm("ControlMapper/Build ToolsDescription", "Tool and brush size, brush shape, block / roofing mode and Swap.");
                 LocalizationModule.AddTerm($"ControlMapper/{IncreaseKeyBind}", "Tool / brush size +");
                 LocalizationModule.AddTerm($"ControlMapper/{DecreaseKeyBind}", "Tool / brush size -");
                 LocalizationModule.AddTerm($"ControlMapper/{ShapeKeyBind}", "Brush shape");
                 LocalizationModule.AddTerm($"ControlMapper/{ModeKeyBind}", "Block / roofing mode");
-                LocalizationModule.AddTerm($"ControlMapper/{ReplaceKeyBind}", "Replace blocks (hold)");
+                LocalizationModule.AddTerm($"ControlMapper/{ReplaceKeyBind}", "Swap blocks");
             }
             catch (Exception e)
             {
@@ -114,6 +121,7 @@ namespace BuildTools
             section
                 .Stepper(out _ceiling, "Max tool size (shovel, hoe, roofing, paint)", ToolSizes.MinCeiling, ToolSizes.MaxCeiling, ToolSizes.DefaultCeiling)
                 .Toggle(out _remember, "Remember sizes per tool and block type", true)
+                .Choice(out _swapKey, "Swap key (Left Alt)", SwapKeyModes, SwapKeyModes[0])
                 .Toggle(out _roofingNeverWears, "Roofing gadget never wears out", true);
 
             SizeMemory.Persist = RememberSizes;
@@ -164,7 +172,19 @@ namespace BuildTools
                 if (Pressed(DecreaseKeyBind, ref _minusHeld)) delta--;
                 shapeKey = _rewiredPlayer.GetButtonDown(ShapeKeyBind);
                 modeKey = _rewiredPlayer.GetButtonDown(ModeKeyBind);
-                replace = _rewiredPlayer.GetButton(ReplaceKeyBind);
+                if (SwapKeyToggles)
+                {
+                    if (_rewiredPlayer.GetButtonDown(ReplaceKeyBind))
+                    {
+                        _swapOn = !_swapOn;
+                        ChatNote.Show(_swapOn ? "Swap mode on: blocks under the brush get swapped for the one you hold." : "Swap mode off.");
+                    }
+                    replace = _swapOn;
+                }
+                else
+                {
+                    replace = _rewiredPlayer.GetButton(ReplaceKeyBind);
+                }
                 rotate = manager.player.inputModule != null && manager.player.inputModule.WasButtonPressedDownThisFrame(PlayerInput.InputType.ROTATE);
             }
 
@@ -267,7 +287,7 @@ namespace BuildTools
                 {
                     block = (BlockMode)(((int)block + 1) % ((int)BlockMode.Wall + 1));
                     SizeMemory.Set(BlockModeKey, (int)block);
-                    ChatNote.Show($"Blocks: {Brush.Label(block)}");
+                    ChatNote.Show($"Block mode: {Brush.Label(block)}");
                 }
                 bits.Block = block;
             }

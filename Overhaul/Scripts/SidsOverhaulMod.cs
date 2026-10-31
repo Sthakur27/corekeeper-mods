@@ -60,6 +60,7 @@ namespace SidsOverhaul
             Page("SkillXPMultiplier", "Skill XP Multiplier", "Skill XP: ", SkillXPMultiplier.SkillXPMultiplierMod.SettingsHint, SkillXPMultiplier.SkillXPMultiplierMod.RegisterSettings);
             Page("StimHits", "Hit Sound Effects", "Stim Hits: ", StimHits.StimHitsMod.SettingsHint, StimHits.StimHitsMod.RegisterSettings);
             Page("ArmorDye", "Armor Dye", "Armor Dye: ", ArmorDye.DyeSettings.SettingsHint, ArmorDye.DyeSettings.RegisterSettings);
+            Page("BuildTools", "Build Tools", "Build Tools: ", BuildTools.BuildToolsMod.SettingsHint, BuildTools.BuildToolsMod.RegisterSettings);
             Page("MushroomSlayer", "Mushroom Slayer", "Mushroom Slayer: ", MushroomSlayer.MushroomSlayerMod.SettingsHint, MushroomSlayer.MushroomSlayerMod.RegisterSettings);
             Debug.Log($"[{Name}] Loaded all features.");
         }

@@ -1,0 +1,74 @@
+{
+    "guid": "b7d41e6a2c9f4a0e8d3b5c1f7e9a2d60",
+    "name": "BuildTools",
+    "displayName": "Build Tools",
+    "skipSafetyChecks": false,
+    "disableScripts": false,
+    "accessesExtraAssemblies": true,
+    "disableHarmonyPatching": false,
+    "requiredOn": 3,
+    "files": [
+        {
+            "path": "Scripts/Brush.cs",
+            "guid": "b7d41e6a2c9f4a0e8d3b5c1f7e9a2d61"
+        },
+        {
+            "path": "Scripts/BuildToolsMod.cs",
+            "guid": "b7d41e6a2c9f4a0e8d3b5c1f7e9a2d62"
+        },
+        {
+            "path": "Scripts/ChatNote.cs",
+            "guid": "b7d41e6a2c9f4a0e8d3b5c1f7e9a2d63"
+        },
+        {
+            "path": "Scripts/InputBits.cs",
+            "guid": "b7d41e6a2c9f4a0e8d3b5c1f7e9a2d64"
+        },
+        {
+            "path": "Scripts/Patches/BrushPreviewPatch.cs",
+            "guid": "b7d41e6a2c9f4a0e8d3b5c1f7e9a2d65"
+        },
+        {
+            "path": "Scripts/Patches/SendInputPatch.cs",
+            "guid": "b7d41e6a2c9f4a0e8d3b5c1f7e9a2d66"
+        },
+        {
+            "path": "Scripts/SizeMemory.cs",
+            "guid": "b7d41e6a2c9f4a0e8d3b5c1f7e9a2d67"
+        },
+        {
+            "path": "Scripts/Systems/BrushPlaceSystem.cs",
+            "guid": "b7d41e6a2c9f4a0e8d3b5c1f7e9a2d68"
+        },
+        {
+            "path": "Scripts/Systems/RoofModeSystem.cs",
+            "guid": "b7d41e6a2c9f4a0e8d3b5c1f7e9a2d69"
+        },
+        {
+            "path": "Scripts/Systems/RoofingDurabilitySystem.cs",
+            "guid": "b7d41e6a2c9f4a0e8d3b5c1f7e9a2d6a"
+        },
+        {
+            "path": "Scripts/Systems/ToolCeilingSystem.cs",
+            "guid": "b7d41e6a2c9f4a0e8d3b5c1f7e9a2d6b"
+        },
+        {
+            "path": "Scripts/Systems/ToolSizeSystem.cs",
+            "guid": "b7d41e6a2c9f4a0e8d3b5c1f7e9a2d6c"
+        },
+        {
+            "path": "Scripts/ToolSizes.cs",
+            "guid": "b7d41e6a2c9f4a0e8d3b5c1f7e9a2d6d"
+        }
+    ],
+    "dependencies": [
+        {
+            "modName": "CoreLib",
+            "required": true
+        },
+        {
+            "modName": "ModOptions",
+            "required": true
+        }
+    ]
+}

@@ -52,6 +52,7 @@ namespace SidsOverhaul
             { "ArmorDye", "Armor Dye" },
             { "MushroomSlayer", "Mushroom Slayer" },
             { "MagicMirror", "Magic Mirror" },
+            { "BuildTools", "Build Tools" },
             { "FasterMachines", "Faster Machines" },
         };
 

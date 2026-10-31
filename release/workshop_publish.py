@@ -47,7 +47,7 @@ MODS = [
     ("EnderStash", "Ender Stash", "enderstash_logo.png", "Quality of Life"),
     ("VehicleSpeed", "Vehicle Speed", "vehiclespeed_logo.png", "Quality of Life"),
     ("InfiniteOreBoulders", "Infinite Ore Boulders", "infiniteore_logo.png", "Quality of Life"),
-    ("GoldenChance", "Golden Chance — Work in Progress", "goldenchance_logo.png", "Quality of Life"),
+    ("GoldenChance", "Golden Chance", "goldenchance_logo.png", "Quality of Life"),
     ("StimHits", "Hit Sound Effects", "stimhits_logo.png", "Other"),
     ("ArmorDye", "Armor Dye", "armordye_logo.png", "Quality of Life"),
     ("MerchantRestock", "Merchant Restock", "merchantrestock_logo.png", "Quality of Life"),
@@ -74,7 +74,7 @@ COVER_NOTES = {
     "PetEditor": "Cover is an in-game screenshot of the pet panel; title banner and highlight added.",
     "ArmorDye": "Cover is an in-game screenshot of the dye palette; title banner and highlight added.",
     "ModOptions": "Cover is made from in-game screenshots of the Mod Options menu; title banner added.",
-    "GoldenChance": "Cover is an in-game screenshot of a farm with golden crops; close-ups, title banner and WIP tag added.",
+    "GoldenChance": "Cover is an in-game screenshot of a farm with golden crops; close-ups and title banner added.",
     "EnderStash": "Cover is made from in-game screenshots (HDR captures tone-mapped); title banner and highlights added.",
     "MagicMirror": "Cover is made from in-game screenshots (mirror cast and crafting tooltip, HDR captures tone-mapped); title banner added.",
     "FasterMachines": "Cover is an in-game screenshot of the machines (HDR capture tone-mapped); title banner, highlights and an animated speed dial added.",
@@ -156,8 +156,7 @@ def description(key, folder, readme_path):
         note = ("[b]The features listed below in one package.[/b] Want to pick and choose instead? Use the "
                 "[url=https://steamcommunity.com/workshop/filedetails/?id={collection}]Sid's Core Keeper Mods[/url] "
                 "collection, which has every feature as its own mod. Do not subscribe to both the Overhaul and the "
-                "individual mods (each feature would run twice). Requires CoreLib. Settings: Settings > Mod Options (built in). "
-                "Golden Chance is still a work in progress.")
+                "individual mods (each feature would run twice). Requires CoreLib. Settings: Settings > Mod Options (built in).")
     elif key == "ModOptions":
         note = ("[b]Library.[/b] Subscribe to it when a mod lists it as a required item. "
                 "Works alongside Mod Settings Menu.")
@@ -169,8 +168,6 @@ def description(key, folder, readme_path):
         note = ("Part of the [url=https://steamcommunity.com/workshop/filedetails/?id={collection}]Sid's Core Keeper Mods[/url] "
                 "collection. Also bundled in the all-in-one [url=https://steamcommunity.com/workshop/filedetails/?id={overhaul}]Sid's Overhaul[/url]; "
                 "use the Overhaul or the individual mods, not both.")
-    if key == "GoldenChance":
-        note = "[b]WORK IN PROGRESS[/b] — Golden Chance is still being developed.\n\n" + note
     cover_note = COVER_NOTES.get(key, "Cover artwork generated with AI; not an in-game screenshot.")
     footer = f"\n\n{cover_note}\n\nSource and full docs: [url={GITHUB}{folder}]{GITHUB}{folder}[/url]"
     body = to_bbcode(md)
@@ -185,7 +182,6 @@ def collection_description():
     return ("Every one of Sid's Core Keeper mods as its own Workshop item. Click [b]Subscribe to all[/b], then "
             "unsubscribe from anything you don't want; each mod updates on its own. CoreLib and Mod Options are "
             "required by many of these mods; subscribe to the required items shown on each mod page.\n\n"
-            "[b]Golden Chance is still a work in progress.[/b] Skip it if you only want finished features.\n\n"
             "Prefer a single mod? [url=https://steamcommunity.com/workshop/filedetails/?id={overhaul}]Sid's Overhaul[/url] "
             "bundles all of them. Use the Overhaul [b]or[/b] these mods, not both (each feature would run twice).\n\n"
             f"[list]{names}[/list]\n\n"

@@ -62,7 +62,7 @@ COVERS = {
         panels=[('20.05.30.46', (68, 148, 572, 632), (28, TOP + 8, 560, H - 16), [])]),
     # Farm shot: golden Glow Tulips among blue ones, a golden Heart Berry among red ones.
     'GoldenChance': dict(
-        title='GOLDEN CHANCE', caption='YOUR TALENTS GROW MORE GOLDEN CROPS', wip=True,
+        title='GOLDEN CHANCE', caption='YOUR TALENTS GROW MORE GOLDEN CROPS',
         bg=('20.01.09.34', (180, 100, 820, 460), 0),
         marks=[(662, 242), (577, 370)],
         panels=[('20.01.09.34', (538, 78, 618, 152), (40, 392, 330, H - 22), [(538, 78, 618, 152)]),

@@ -12,8 +12,6 @@ Make Core Keeper fit the way you like to play: spend less time on chores, custom
 
 Use the Overhaul or the individual versions of its features. Installing both runs the same features twice. Restart Core Keeper after installing or updating mods. For multiplayer, check each mod's requirements and use matching versions on the host and clients.
 
-**Golden Chance is still a work in progress.** Its artwork and documentation are marked WIP; they do not mean the feature is finished. It is also included in the Overhaul. You can switch it off under **Settings > Mod Options > Turn Sub-Mods On/Off**, then restart.
-
 ## Find a mod
 
 ### Inventory and appearance
@@ -58,7 +56,7 @@ Use the Overhaul or the individual versions of its features. Installing both run
 | [Keep Minions On Teleport](KeepMinions/README.md) | Bring summoned minions along when you teleport. |
 | [Vehicle Speed](VehicleSpeed/README.md) | Change boat and go-kart speeds. |
 | [Hit Sound Effects](StimHits/README.md) | Choose sounds for hits, kills and damage taken. |
-| [Golden Chance — WIP](GoldenChance/README.md) | Golden crop and bonus-food rarity bonuses using native rolls; regular main dishes are unchanged. |
+| [Golden Chance](GoldenChance/README.md) | Golden crop and bonus-food rarity bonuses using native rolls; regular main dishes are unchanged. |
 
 ### Settings and the full package
 

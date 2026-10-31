@@ -16,8 +16,9 @@ namespace BuildTools
     /// <summary>
     /// Build Tools: bigger, resizable tool areas remembered per tool type, a block brush (size remembered
     /// per category), ground/wall mode and replace for blocks, and roofing gadget modes. A clean-room
-    /// replacement for Placement Plus + Roofing Gadget Plus that leaves watering can sizes to Bigger
-    /// Watering Cans (or vanilla): the size keys can only shrink a can.
+    /// replacement for Placement Plus + Roofing Gadget Plus. Watering cans get the same max tool size,
+    /// except while Bigger Watering Cans is running (<see cref="WateringCanMod"/>): then its sizes stay the
+    /// cap and the size keys can only shrink a can, unless "Override Bigger Watering Cans sizes" is on.
     ///
     /// The client (<see cref="Update"/>) turns keys and saved choices into <see cref="InputBits"/>, which
     /// <see cref="Patches.SendInputPatch"/> adds to the player's own network input every frame. The
@@ -29,7 +30,7 @@ namespace BuildTools
     public sealed class BuildToolsMod : IMod
     {
         public const string Name = "BuildTools";
-        public const string Version = "0.5.0";
+        public const string Version = "0.6.0";
 
         public const string IncreaseKeyBind = "BuildTools_IncreaseSize";
         public const string DecreaseKeyBind = "BuildTools_DecreaseSize";
@@ -43,13 +44,14 @@ namespace BuildTools
         private const string RoofModeKey = "RoofMode";
         private const string BlockModeKey = "BlockMode";
 
-        public const string SettingsHint = "Keypad + / - change the size of the held tool or block brush (down to 1x1), Keypad * changes the brush shape, Keypad / switches blocks between auto / floor only / walls only and the roofing gadget between flip / close roof / open roof, Left Alt turns Swap on or off (rebind under Controls). Every tool type and block category remembers its own size.";
+        public const string SettingsHint = "Keypad + / - change the size of the held tool or block brush (down to 1x1), Keypad * changes the brush shape, Keypad / switches blocks between auto / floor only / walls only and the roofing gadget between flip / close roof / open roof, Left Alt turns Swap on or off (rebind under Controls). Every tool type and block category remembers its own size. Watering cans use the max tool size too, unless Bigger Watering Cans is running (override below).";
 
         private static readonly string[] SwapKeyModes = { "Toggle", "Hold" };
 
         private static Setting<int> _ceiling;
         private static Setting<bool> _remember;
         private static Setting<bool> _roofingNeverWears;
+        private static Setting<bool> _overrideCans;
         private static Setting<string> _swapKey;
 
         /// <summary>True: the Swap key turns Swap on and off. False: Swap is on while the key is held.</summary>
@@ -122,19 +124,23 @@ namespace BuildTools
                 .Stepper(out _ceiling, "Max tool size (shovel, hoe, roofing, paint)", ToolSizes.MinCeiling, ToolSizes.MaxCeiling, ToolSizes.DefaultCeiling)
                 .Toggle(out _remember, "Remember sizes per tool and block type", true)
                 .Choice(out _swapKey, "Swap key (Left Alt)", SwapKeyModes, SwapKeyModes[0])
+                .Toggle(out _overrideCans, "Override Bigger Watering Cans sizes (cans up to max tool size)", false)
                 .Toggle(out _roofingNeverWears, "Roofing gadget never wears out", true);
 
             SizeMemory.Persist = RememberSizes;
             _remember.OnChanged += v => SizeMemory.Persist = v;
             ApplyCeiling();
             _ceiling.OnChanged += _ => ApplyCeiling();
+            _overrideCans.OnChanged += _ => ApplyCeiling();
         }
 
         private static void ApplyCeiling()
         {
             ToolSizes.Ceiling = _ceiling?.Value ?? ToolSizes.DefaultCeiling;
+            // Cans follow the Build Tools max unless Bigger Watering Cans runs and is not overridden.
+            ToolSizes.RaiseWateringCans = !WateringCanMod.Active || (_overrideCans?.Value ?? false);
             ToolSizes.Version++;
-            Debug.Log($"[{Name}] Max tool size {ToolSizes.Ceiling}x{ToolSizes.Ceiling}, remember sizes {RememberSizes}, roofing never wears {RoofingNeverWears}.");
+            Debug.Log($"[{Name}] Max tool size {ToolSizes.Ceiling}x{ToolSizes.Ceiling}, watering cans {(ToolSizes.RaiseWateringCans ? "raised" : "kept at Bigger Watering Cans sizes")}, remember sizes {RememberSizes}, roofing never wears {RoofingNeverWears}.");
         }
 
         /// <summary>True when this feature is running inside Sid's Overhaul (one combined mod).</summary>

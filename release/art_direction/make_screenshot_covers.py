@@ -85,12 +85,14 @@ COVERS = {
         bg=('hdr:13.32.08.61', (300, 100, 1060, 527), 6),
         panels=[('hdr:13.32.08.61', (350, 150, 1010, 380), (40, TOP + 4, W - 40, H - 14),
                  [(434, 229, 489, 284), (519, 219, 574, 284), (606, 197, 659, 286), (691, 224, 744, 278), (776, 226, 831, 281)])]),
-    # Sid's own capture while testing: a 6-wide line brush preview over a block wall, player on the left.
+    # 10x10 in three steps on the same patch of sand: the tool preview, the tilled ground, a seed brush
+    # planting all of it. Darker HDR captures, so brightened ('gain').
     'BuildTools': dict(
-        title='BUILD TOOLS', caption='BRUSH, FLOOR AND WALL MODES, SWAP, SIZES PER TOOL',
-        bg=('src:buildtools_source.png', (0, 0, 1280, 638), 6),
-        panels=[('src:buildtools_source.png', (130, 95, 1150, 470), (40, TOP + 4, W - 40, H - 14),
-                 [(546, 126, 1124, 230)])]),
+        title='BUILD TOOLS', caption='BIGGER TOOLS, BLOCK AND SEED BRUSH, SIZES PER TOOL', gain=1.7,
+        bg=('hdr:14.21.40.31', (300, 100, 980, 483), 6),
+        panels=[('hdr:14.21.30.03', (405, 120, 865, 580), (24, TOP + 40, 424, H - 24), []),
+                ('hdr:14.21.35.01', (405, 120, 865, 580), (440, TOP + 40, 840, H - 24), []),
+                ('hdr:14.21.40.31', (405, 120, 865, 580), (856, TOP + 40, 1256, H - 24), [])]),
 }
 
 
@@ -187,7 +189,8 @@ def compose(key):
     bg = bg.crop(((bg.width - W) // 2, (bg.height - H) // 2, (bg.width - W) // 2 + W, (bg.height - H) // 2 + H))
     if blur:
         bg = bg.filter(ImageFilter.GaussianBlur(blur))
-    canvas = ImageEnhance.Brightness(bg).enhance(0.45 if blur else 0.8)
+    gain = c.get('gain', 1.0)  # for dark (HDR tone-mapped) captures
+    canvas = ImageEnhance.Brightness(bg).enhance((0.45 if blur else 0.8) * gain)
 
     # Rings around points of interest in the background (preview coords; bg crop must be 16:9).
     if c.get('marks'):
@@ -206,6 +209,8 @@ def compose(key):
     frames = []
     for stamp, box, target, highlights in c['panels']:
         src = crop(stamp, box)
+        if gain != 1.0:
+            src = ImageEnhance.Brightness(src).enhance(gain)
         img, x, y, s = fit(src, target)
         s *= src.width / (box[2] - box[0])        # preview pixels -> canvas pixels
         shadow = Image.new('L', (W, H), 0)

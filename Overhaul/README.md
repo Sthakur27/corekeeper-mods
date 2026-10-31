@@ -4,6 +4,8 @@
 
 Spend less time repeating chores and more time exploring. Sid's Overhaul brings the individual mods in this repository into one package: easier farming and fishing, equipment tools, merchant supplies, and adjustable combat and progression.
 
+**1.6.1:** Build Tools 0.6.0: watering cans go from 1x1 up to Max tool size and remember their size when the Bigger Watering Cans switch is off; with it on, its 2x2 / 4x4 stay the limit unless you turn on "Override Bigger Watering Cans sizes".
+
 **New in 1.6.0: Build Tools.** Bigger shovel, hoe, roofing gadget and paint tool areas (up to 10x10 by default), each tool type and block category remembers its own size even after you quit, a block brush (Keypad + / -, shape on Keypad *), block modes auto / floor only / walls only and roofing modes flip / close roof / open roof (Keypad /), and Swap on Left Alt to exchange blocks. Watering cans keep Bigger Watering Cans' sizes. Inspired by Placement Plus and Roofing Gadget Plus; disable both if you use them.
 
 **1.5.0: Faster Machines and no more intro logos.** Faster Machines speeds up furnaces, kilns, the glass smelter, fury forge, cooking pot, table saw, egg incubator and drills, each with its own setting (default 5x; Instant available). The studio logos at startup are skipped.

@@ -9,7 +9,7 @@ workshop_publish.py attaches every release/gallery/<Key>_*.jpg to that item, in 
 """
 from pathlib import Path
 import sys
-from PIL import Image, ImageFilter
+from PIL import Image, ImageEnhance, ImageFilter
 
 REPO = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(Path(__file__).parent))
@@ -30,10 +30,14 @@ GALLERY = {
     'ConnectedStorage': ['20.05.30.46', '20.12.13.42', '20.12.29.01'],
     'EnderStash': ['hdr:17.51.45.25', 'hdr:17.51.19.80', 'hdr:17.51.28.10'],
     'MagicMirror': ['hdr:00.23.31.80', 'hdr:00.23.58.85'],
+    'BuildTools': ['hdr:14.21.40.31', 'hdr:14.21.54.44'],
 }
 
 # HDR captures that still show the NVIDIA performance overlay (the Ender Stash ones do not).
-HDR_WITH_OVERLAY = {'hdr:00.23.31.80', 'hdr:00.23.58.85'}
+HDR_WITH_OVERLAY = {'hdr:00.23.31.80', 'hdr:00.23.58.85', 'hdr:14.21.40.31', 'hdr:14.21.54.44'}
+
+# Dark HDR captures shown brighter in the gallery (same factor as their cover).
+GAIN = {'hdr:14.21.40.31': 1.7, 'hdr:14.21.54.44': 1.7}
 
 # NVIDIA "Screenshot saved" toasts caught in a capture (4K pixel boxes), painted over like the overlay.
 TOASTS = {'19.57.17.40': [(3200, 190, 3840, 400)]}
@@ -50,6 +54,8 @@ def clean(stamp):
     for x0, y0, x1, y1 in TOASTS.get(stamp, []):
         strip = im.crop((x0, y1, x1, y1 + 24)).resize((x1 - x0, y1 - y0), Image.BILINEAR)
         im.paste(strip.filter(ImageFilter.GaussianBlur(3)), (x0, y0))
+    if stamp in GAIN:
+        im = ImageEnhance.Brightness(im).enhance(GAIN[stamp])
     return im.resize((1920, 1080), Image.LANCZOS)
 
 

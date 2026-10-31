@@ -16,9 +16,9 @@ Inspired by **Placement Plus** and **Roofing Gadget Plus**. Build Tools is a sep
 
 ## Tool sizes
 
-- Shovels, hoes, the roofing gadget and paint tools can be resized up to **Max tool size** (default 10x10, range 3 to 15).
+- Shovels, hoes, watering cans, the roofing gadget and paint tools can be resized up to **Max tool size** (default 10x10, range 3 to 15).
 - Each tool type keeps its own size: shovel, hoe, watering can, roofing gadget, seeder and paint tool. Sizes are saved and come back after you quit and rejoin. All tiers of one tool share one size, capped at what each tier allows.
-- **Watering cans** keep their own maximum (2x2 / 4x4 with Bigger Watering Cans, vanilla otherwise). The size keys can only make them smaller.
+- **Watering cans** go from 1x1 up to Max tool size like the other tools, and their size is remembered. While Bigger Watering Cans is running (on its own or switched on in Sid's Overhaul), its 2x2 / 4x4 stay the maximum and the size keys can only make a can smaller; turn on **Override Bigger Watering Cans sizes** to use Max tool size anyway.
 
 ## Block brush
 
@@ -38,7 +38,7 @@ Inspired by **Placement Plus** and **Roofing Gadget Plus**. Build Tools is a sep
 
 ## Settings
 
-Mod Options > Build Tools: Max tool size, Remember sizes per tool and block type, Swap key (Toggle or Hold, default Toggle), Roofing gadget never wears out.
+Mod Options > Build Tools: Max tool size, Remember sizes per tool and block type, Swap key (Toggle or Hold, default Toggle), Override Bigger Watering Cans sizes (default off), Roofing gadget never wears out.
 
 ## Requirements
 

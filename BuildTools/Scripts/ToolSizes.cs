@@ -28,15 +28,26 @@ namespace BuildTools
         public static int Version;
 
         /// <summary>
-        /// Object types whose ceiling we raise. Watering cans are deliberately absent: Bigger Watering
-        /// Cans (or vanilla) owns their size, so the size keys can only shrink them.
+        /// True when watering cans get the Build Tools ceiling too: Bigger Watering Cans is not running,
+        /// or its sizes are overridden in the settings. Otherwise its 2x2 / 4x4 stay the cap and the size
+        /// keys can only shrink a can. Set from BuildToolsMod; changes bump <see cref="Version"/>.
         /// </summary>
-        public static bool IsRaisedType(ObjectType type)
+        public static bool RaiseWateringCans;
+
+        /// <summary>Object types Build Tools may resize (raised or put back to their own size).</summary>
+        public static bool IsToolType(ObjectType type)
         {
             return type == ObjectType.Shovel ||
                    type == ObjectType.Hoe ||
                    type == ObjectType.RoofingTool ||
-                   type == ObjectType.PaintTool;
+                   type == ObjectType.PaintTool ||
+                   type == ObjectType.WaterCan;
+        }
+
+        /// <summary>Object types whose ceiling is raised right now.</summary>
+        public static bool IsRaisedType(ObjectType type)
+        {
+            return IsToolType(type) && (type != ObjectType.WaterCan || RaiseWateringCans);
         }
 
         /// <summary>Tool slots that have a size (same list as the game's HasSizeVariationForEquipment).</summary>

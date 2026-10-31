@@ -59,6 +59,10 @@
         {
             "path": "Scripts/ToolSizes.cs",
             "guid": "b7d41e6a2c9f4a0e8d3b5c1f7e9a2d6d"
+        },
+        {
+            "path": "Scripts/WateringCanMod.cs",
+            "guid": "b7d41e6a2c9f4a0e8d3b5c1f7e9a2d6e"
         }
     ],
     "dependencies": [

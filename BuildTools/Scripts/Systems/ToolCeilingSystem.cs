@@ -10,7 +10,8 @@ namespace BuildTools.Systems
     /// Raises the area ceiling (database prefabTileSize) of shovels, hoes, the roofing gadget and
     /// paint tools to the "Max tool size" setting, in both worlds, and re-applies when the setting
     /// changes. A tool's vanilla size is kept as a floor, so lowering the setting never makes a tool
-    /// smaller than the game made it. Watering cans are left alone (see <see cref="ToolSizes.IsRaisedType"/>).
+    /// smaller than the game made it. Watering cans are raised only when Bigger Watering Cans is not
+    /// running or is overridden (<see cref="ToolSizes.RaiseWateringCans"/>); turning that off puts them back.
     ///
     /// Tools without a ResizableTileSizeCD would use the whole ceiling as their fixed area
     /// (PlacementHandler.GetCurrentSize), so the component is added to their prefab; from then on
@@ -49,21 +50,26 @@ namespace BuildTools.Systems
             for (int i = 0; i < infos.Length; i++)
             {
                 ref var info = ref infos[i];
-                if (!ToolSizes.IsRaisedType(info.objectType)) continue;
+                if (!ToolSizes.IsToolType(info.objectType)) continue;
+                bool raised = ToolSizes.IsRaisedType(info.objectType);
 
+                // The size before Build Tools first raised it (for cans with Bigger Watering Cans running,
+                // that is its 2x2 / 4x4, since it applies at conversion). Never-raised entries are left alone.
                 long key = ((long)(int)info.objectID << 16) | (uint)(info.variation & 0xFFFF);
                 if (!VanillaEdge.TryGetValue(key, out int vanilla))
                 {
+                    if (!raised) continue;
                     vanilla = math.max(1, info.prefabTileSize.x);
                     VanillaEdge[key] = vanilla;
                 }
 
-                int edge = math.max(vanilla, ceiling);
+                int edge = raised ? math.max(vanilla, ceiling) : vanilla;
                 if (info.prefabTileSize.x != edge || info.prefabTileSize.y != edge)
                 {
                     info.prefabTileSize = new int2(edge, edge);
                     changed++;
                 }
+                if (!raised) continue;
 
                 for (int p = 0; p < info.prefabEntities.Length; p++)
                 {

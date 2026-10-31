@@ -58,6 +58,21 @@ namespace ItemSpawner
         private static int bonus;
         private float nextStackSpawn;
 
+        // Cooking mode: [A] + [B] = [dish] above an ingredient grid; activeRole is the box the grid fills.
+        private bool cooking;
+        private static bool gourmet;
+        private SpawnEntry cookA, cookB;
+        private int activeRole;
+        private List<SpawnEntry> ingredients;
+        private BrowserLayout savedLayout;
+        private ButtonUIElement potButton, gourmetButton;
+        private readonly List<SpriteRenderer> potIcons=new List<SpriteRenderer>();
+        private readonly List<(SpriteRenderer renderer,Sprite box,Sprite ticked)> gourmetIcons=new List<(SpriteRenderer,Sprite,Sprite)>();
+        private GameObject equationRoot;
+        private SpawnerSlot slotA, slotB, slotResult;
+        private int potFrame=-1, gourmetFrame=-1;
+        private float equationUnit;
+
         private GameObject tabColumn;
         private readonly List<ButtonUIElement> tabButtons=new List<ButtonUIElement>();
         private readonly List<GameObject> tabToggles=new List<GameObject>();
@@ -260,8 +275,211 @@ namespace ItemSpawner
             Bind("StorageOrder",()=>ChangeLevel(1),null,"Gear and tool level: +1 (Shift: +5). Stops at the max level. Key ]");
             GlyphIcons.Apply(Find("StorageSort").gameObject,false);
             GlyphIcons.Apply(Find("StorageOrder").gameObject,true);
+            BuildPotButton();
+            UpdateModeTexts();
             Find("StorageFilters").gameObject.SetActive(false);
             BuildTabs();
+        }
+
+        // Cooking pot button right of +: a clone of the grid/list button, one button-step further along.
+        private void BuildPotButton()
+        {
+            var layoutButton=Find("StorageLayout"); var minus=Find("StorageSort"); var plus=Find("StorageOrder");
+            var go=Instantiate(layoutButton.gameObject,layoutButton.parent,false);
+            go.name="SpawnerCook";
+            go.transform.localPosition=plus.localPosition+(plus.localPosition-minus.localPosition);
+            potButton=go.GetComponent<ButtonUIElement>();
+            potButton.onLeftClick=new UnityEvent(); potButton.onLeftClick.AddListener(ToggleCooking);
+            potButton.onRightClick=new UnityEvent();
+            potButton.showHoverTitle=true; potButton.showHoverDesc=false;
+            go.GetComponent<SpawnerTooltip>().Title="Cooking: pick two ingredients and spawn the dish. Click again to go back to items.";
+            var sprite=PugDatabase.GetObjectInfo(ObjectID.CookingPot)?.icon;
+            foreach(var r in go.GetComponentsInChildren<SpriteRenderer>(true)) {
+                if(r.name!="Icon" || sprite==null) continue;
+                r.sprite=sprite; r.transform.localPosition=new Vector3(0,0,r.transform.localPosition.z);
+                potIcons.Add(r);
+            }
+        }
+
+        private void ToggleCooking()
+        {
+            if(!Active || Time.frameCount==potFrame) return;
+            potFrame=Time.frameCount;
+            cooking=!cooking;
+            if(cooking) {
+                if(ingredients==null) ingredients=catalogue.Where(Cooking.IsIngredient).ToList();
+                savedLayout=layout; layout=BrowserLayout.Grid;
+                scroll.ResetScroll();
+                if(equationRoot==null) BuildEquation();
+            } else layout=savedLayout;
+            tabColumn.SetActive(!cooking);
+            equationRoot.SetActive(cooking);
+            ClipBelowEquation(cooking);
+            foreach(var name in new[]{"StorageLayout","StorageSort","StorageOrder"}) Find(name).gameObject.SetActive(!cooking);
+            search.SetInputText(""); lastSearch="";
+            UpdateModeTexts();
+            UpdateEquation();
+            Refresh();
+        }
+
+        private void UpdateModeTexts()
+        {
+            string hint=cooking ? "Search ingredients" : "Search items";
+            search.hintString=hint;
+            if(string.IsNullOrEmpty(search.GetInputText())) search.hintText.Render(hint,false,true);
+            foreach(var icon in potIcons) icon.color=cooking ? Color.white : DimTab;
+        }
+
+        // ---------------------------------------------------------------- cooking equation
+
+        // [A] + [B] = [dish]  [x] Gourmet, drawn over the grid's first row (the ingredient list starts one
+        // row lower). It sits beside the toolbar, outside the scrolling content, on a panel-coloured
+        // backdrop so rows scrolling up pass underneath it.
+        private static readonly Color PanelBrown=new Color32(145,91,38,255);
+        private void BuildEquation()
+        {
+            var toolbar=Find("StorageLayout").parent;
+            // Objects made here must sit on the UI layer the UI camera draws (new GameObjects start on Default).
+            int uiLayer=grid[0].gameObject.layer;
+            equationRoot=new GameObject("Cooking equation"){layer=uiLayer};
+            equationRoot.transform.SetParent(toolbar,false);
+            var content=scroll.scrollingContent.GetChild(0);
+            Vector3 Cell(float col)=>content.TransformPoint(new Vector3((-(model.GridColumns-1)*0.5f+col)*spread,0,0));
+            int top=grid[0].GetComponentsInChildren<SpriteRenderer>(true).Max(r=>r.sortingOrder);
+            int layer=grid[0].icon.sortingLayerID;
+
+            var white=new Texture2D(1,1); white.SetPixel(0,0,Color.white); white.Apply();
+            var backdrop=new GameObject("Backdrop"){layer=uiLayer}.AddComponent<SpriteRenderer>();
+            backdrop.transform.SetParent(equationRoot.transform,false);
+            backdrop.sprite=Sprite.Create(white,new Rect(0,0,1,1),new Vector2(.5f,.5f),1);
+            // New SpriteRenderers have no usable default material in the game's pipeline (they draw nothing),
+            // so every drawn piece borrows the material of the slot background.
+            var spriteMaterial=grid[0].background.sharedMaterial;
+            backdrop.sharedMaterial=spriteMaterial;
+            backdrop.color=PanelBrown; backdrop.sortingLayerID=layer; backdrop.sortingOrder=top+5;
+            backdrop.transform.position=(Cell(0)+Cell(model.GridColumns-1))*.5f;
+            var unit=content.TransformVector(Vector3.right*spread).magnitude;
+            backdrop.transform.localScale=Vector3.one;
+            backdrop.transform.localScale=new Vector3(unit*(model.GridColumns+.3f)/backdrop.transform.lossyScale.x,unit/backdrop.transform.lossyScale.y,1);
+
+            var template=Find("StorageGridSlot").GetComponent<SlotUIBase>();
+            SpawnerSlot Box(int role,float col) {
+                var slot=MakeSlot(template,equationRoot.transform);
+                slot.Role=role; slot.Window=null;
+                slot.transform.position=Cell(col);
+                slot.transform.localScale=Vector3.one;
+                slot.transform.localScale=new Vector3(grid[0].transform.lossyScale.x/slot.transform.lossyScale.x,grid[0].transform.lossyScale.y/slot.transform.lossyScale.y,1);
+                slot.BaseScale=slot.transform.localScale;
+                foreach(var r in slot.GetComponentsInChildren<SpriteRenderer>(true)) { r.sortingOrder+=top+10; r.maskInteraction=SpriteMaskInteraction.None; }
+                // White frame on the box the grid fills (the slot's light hover border, recoloured).
+                if(slot.hoverBorder!=null && role<2) {
+                    var frame=Instantiate(slot.hoverBorder.gameObject,slot.hoverBorder.transform.parent,false);
+                    frame.name="Active frame";
+                    var sr=frame.GetComponent<SpriteRenderer>();
+                    sr.color=Color.white; sr.sortingOrder+=2;
+                    slot.ActiveFrame=frame; frame.SetActive(false);
+                }
+                slot.gameObject.SetActive(true);
+                return slot;
+            }
+            // "+" and "=": pixel glyphs drawn on the - button's canvas, at that button icon's pixel size.
+            var glyphSource=Find("StorageSort").GetComponentsInChildren<SpriteRenderer>(true).First(r=>r.name=="Icon");
+            void Glyph(GlyphIcons.Shape shape,float col) {
+                var sr=new GameObject(shape.ToString()){layer=uiLayer}.AddComponent<SpriteRenderer>();
+                sr.transform.SetParent(equationRoot.transform,false);
+                sr.sprite=GlyphIcons.Make(glyphSource.sprite,shape,new Color32(240,220,170,255));
+                sr.sharedMaterial=glyphSource.sharedMaterial;
+                sr.sortingLayerID=layer; sr.sortingOrder=top+30;
+                sr.transform.position=Cell(col);
+                sr.transform.localScale=Vector3.one;
+                sr.transform.localScale=new Vector3(glyphSource.transform.lossyScale.x/sr.transform.lossyScale.x,glyphSource.transform.lossyScale.y/sr.transform.lossyScale.y,1);
+            }
+            slotA=Box(0,0); Glyph(GlyphIcons.Shape.Plus,1); slotB=Box(1,2); Glyph(GlyphIcons.Shape.Equals,3); slotResult=Box(2,4);
+
+            // Divider between the equation and the ingredient table, in the colour of the line under the search bar.
+            var divider=new GameObject("Divider"){layer=uiLayer}.AddComponent<SpriteRenderer>();
+            divider.transform.SetParent(equationRoot.transform,false);
+            divider.sprite=backdrop.sprite; divider.sharedMaterial=spriteMaterial; divider.color=new Color32(56,53,28,255);
+            divider.sortingLayerID=layer; divider.sortingOrder=top+31;
+            divider.transform.position=backdrop.transform.position+Vector3.down*unit*.5f;
+            divider.transform.localScale=Vector3.one;
+            divider.transform.localScale=new Vector3(unit*(model.GridColumns+.3f)/divider.transform.lossyScale.x,unit*.06f/divider.transform.lossyScale.y,1);
+            equationUnit=unit;
+
+            // Gourmet checkbox: a clone of a toolbar button with a drawn box / ticked box.
+            var buttonSource=Find("StorageLayout").gameObject;
+            var toggle=Instantiate(buttonSource,equationRoot.transform,true);
+            toggle.name="Gourmet toggle"; toggle.SetActive(true);
+            toggle.transform.position=Cell(5);
+            gourmetButton=toggle.GetComponent<ButtonUIElement>();
+            gourmetButton.onLeftClick=new UnityEvent(); gourmetButton.onLeftClick.AddListener(ToggleGourmet);
+            gourmetButton.onRightClick=new UnityEvent();
+            toggle.GetComponent<SpawnerTooltip>().Title="Gourmet: the cooking talent's extra roll. Raises the dish one tier: Normal to Rare, or Rare to Epic with a golden flower or legendary ingredient.";
+            foreach(var r in toggle.GetComponentsInChildren<SpriteRenderer>(true)) {
+                r.sortingOrder+=top+10;
+                if(r.name=="Icon" && r.sprite!=null) gourmetIcons.Add((r,GlyphIcons.Make(r.sprite,GlyphIcons.Shape.Box),GlyphIcons.Make(r.sprite,GlyphIcons.Shape.CheckedBox)));
+            }
+            equationRoot.SetActive(false);
+        }
+
+        // The grid's clip mask normally reaches the top row; in cooking mode its top edge moves down one row
+        // so ingredients scrolling up disappear under the divider instead of over the equation.
+        private readonly List<(Transform t,Vector3 position,Vector3 scale)> maskSaved=new List<(Transform,Vector3,Vector3)>();
+        private void ClipBelowEquation(bool clip)
+        {
+            foreach(var (t,position,scale) in maskSaved) { if(t!=null) { t.localScale=scale; t.localPosition=position; } }
+            maskSaved.Clear();
+            if(!clip) return;
+            foreach(var mask in scroll.GetComponentsInChildren<SpriteMask>(true)) {
+                var b=mask.bounds; if(b.size.y<=equationUnit*1.5f) continue;
+                var t=mask.transform;
+                maskSaved.Add((t,t.localPosition,t.localScale));
+                t.localScale=new Vector3(t.localScale.x,t.localScale.y*(b.size.y-equationUnit)/b.size.y,t.localScale.z);
+                t.position+=Vector3.up*(b.min.y-mask.bounds.min.y); // keep the bottom edge where it was
+            }
+            if(maskSaved.Count==0) Debug.LogWarning($"[{ItemSpawnerMod.Name}] No grid mask found; scrolled rows may show under the cooking row.");
+        }
+
+        private void ToggleGourmet()
+        {
+            if(Time.frameCount==gourmetFrame) return;
+            gourmetFrame=Time.frameCount;
+            gourmet=!gourmet;
+            UpdateEquation();
+        }
+
+        private void UpdateEquation()
+        {
+            if(equationRoot==null) return;
+            slotA.Entry=cookA; slotB.Entry=cookB;
+            slotResult.Entry=cookA!=null && cookB!=null ? Cooking.Dish(cookA.Id,cookB.Id,gourmet) : null;
+            foreach(var slot in new[]{slotA,slotB,slotResult}) {
+                slot.UpdateSlot();
+                if(slot.ActiveFrame!=null) slot.ActiveFrame.SetActive(slot.Role==activeRole);
+            }
+            foreach(var (r,box,ticked) in gourmetIcons) r.sprite=gourmet ? ticked : box;
+        }
+
+        internal static void SlotClicked(SpawnerSlot slot,bool right)
+        {
+            if(!Active || slot==null) return;
+            var self=Instance;
+            if(slot.Role==0 || slot.Role==1) {
+                // Pick which ingredient the grid fills; right-click empties it.
+                self.activeRole=slot.Role;
+                if(right) { if(slot.Role==0) self.cookA=null; else self.cookB=null; }
+                self.UpdateEquation();
+                return;
+            }
+            if(slot.Role==2) { if(slot.Entry!=null) Click(slot.Entry,right); return; }
+            if(self.cooking) {
+                if(slot.Entry==null || slot.Entry.Id==ObjectID.None) return;
+                if(self.activeRole==0) { self.cookA=slot.Entry; if(self.cookB==null) self.activeRole=1; }
+                else self.cookB=slot.Entry;
+                self.UpdateEquation();
+                return;
+            }
+            Click(slot.Entry,right);
         }
 
         private SpawnerTooltip Bind(string name,Action left,Action right,string title)
@@ -274,24 +492,44 @@ namespace ItemSpawner
             return tip;
         }
 
+        // Cooked dishes are tinted with their ingredients' colours, like inventory slots: the icon gets the exact
+        // material of the inventory's colour-replacing renderer (a merely similar material shifted the colours)
+        // plus a ColorReplacer.
+        private static ColorReplacer ColorReplacerFor(SpriteRenderer icon)
+        {
+            if(icon==null) return null;
+            try {
+                var native=Manager.ui.playerInventoryUI.itemSlots.OfType<InventorySlotUI>().FirstOrDefault(s=>s.colorReplacer!=null);
+                var nativeRenderer=native!=null ? native.colorReplacer.GetComponent<SpriteRenderer>() : null;
+                if(nativeRenderer!=null) icon.sharedMaterial=nativeRenderer.sharedMaterial;
+                return icon.TryGetComponent<ColorReplacer>(out var existing) ? existing : icon.gameObject.AddComponent<ColorReplacer>();
+            } catch(Exception e) { Debug.LogWarning($"[{ItemSpawnerMod.Name}] No dish colours: {e.Message}"); return null; }
+        }
+
         private void CreateSlots(string templateName,List<SpawnerSlot> slots,int count)
         {
             var template=Find(templateName).GetComponent<SlotUIBase>();
-            for(int i=0;i<count;i++) {
-                var clone=Instantiate(template,scroll.scrollingContent.GetChild(0),false);
-                clone.gameObject.SetActive(false);
-                var item=clone.gameObject.AddComponent<SpawnerSlot>();
-                item.icon=clone.icon; item.background=clone.background; item.darkBackground=clone.darkBackground;
-                item.hoverBorder=clone.hoverBorder; item.activeBorder=clone.activeBorder;
-                item.amountNumber=clone.amountNumber; item.amountNumberShadow=clone.amountNumberShadow;
-                item.overlayIcon=clone.overlayIcon; item.underlayIcon=clone.underlayIcon;
-                item.upgradeIcon=clone.upgradeIcon; item.upgradeSprites=clone.upgradeSprites;
-                item.Window=scroll;
-                item.NameText=clone.GetComponentsInChildren<PugText>(true).FirstOrDefault(t=>t.name=="NameText");
-                foreach(var t in clone.GetComponentsInChildren<Transform>(true))
-                    if(t.name=="FavoritedBorder" || t.name=="MissingIcon" || t.name=="PlusIcon" || t.name=="SortingValueText") t.gameObject.SetActive(false);
-                Destroy(clone); slots.Add(item);
-            }
+            for(int i=0;i<count;i++) slots.Add(MakeSlot(template,scroll.scrollingContent.GetChild(0)));
+        }
+
+        // A browser slot clone driven by SpawnerSlot instead of the template's own slot behaviour.
+        private SpawnerSlot MakeSlot(SlotUIBase template,Transform parent)
+        {
+            var clone=Instantiate(template,parent,false);
+            clone.gameObject.SetActive(false);
+            var item=clone.gameObject.AddComponent<SpawnerSlot>();
+            item.icon=clone.icon; item.background=clone.background; item.darkBackground=clone.darkBackground;
+            item.hoverBorder=clone.hoverBorder; item.activeBorder=clone.activeBorder;
+            item.amountNumber=clone.amountNumber; item.amountNumberShadow=clone.amountNumberShadow;
+            item.overlayIcon=clone.overlayIcon; item.underlayIcon=clone.underlayIcon;
+            item.upgradeIcon=clone.upgradeIcon; item.upgradeSprites=clone.upgradeSprites;
+            item.Window=scroll;
+            item.Recolor=ColorReplacerFor(item.icon);
+            item.NameText=clone.GetComponentsInChildren<PugText>(true).FirstOrDefault(t=>t.name=="NameText");
+            foreach(var t in clone.GetComponentsInChildren<Transform>(true))
+                if(t.name=="FavoritedBorder" || t.name=="MissingIcon" || t.name=="PlusIcon" || t.name=="SortingValueText") t.gameObject.SetActive(false);
+            Destroy(clone);
+            return item;
         }
 
         private void BuildTabs()
@@ -371,6 +609,9 @@ namespace ItemSpawner
                 foreach(var icon in tabIcons[i])
                     if(icon.sprite==PugDatabase.GetObjectInfo(CategoryIcons[i])?.icon && icon.transform.parent.lossyScale.x>0)
                         icon.transform.localScale=Vector3.one*(slotScale*(i==0?.6f:1f)/icon.transform.parent.lossyScale.x);
+            // The pot fills its canvas like the chest does, so it gets the same smaller scale.
+            foreach(var icon in potIcons)
+                if(icon.transform.parent.lossyScale.x>0) icon.transform.localScale=Vector3.one*(slotScale*.6f/icon.transform.parent.lossyScale.x);
             Physics.SyncTransforms();
             tabsPlaced=true;
         }
@@ -415,11 +656,19 @@ namespace ItemSpawner
 
         private void Refresh()
         {
-            model.SetEntries(catalogue.Where(e=>filter==0 || e.Category==filter).Select(e=>new StorageBrowserModel<SpawnEntry>.Entry {
+            var entries=(cooking ? ingredients : catalogue.Where(e=>filter==0 || e.Category==filter)).Select(e=>new StorageBrowserModel<SpawnEntry>.Entry {
                 Address=e, Name=names[e], Amount=1, Empty=false
+            });
+            // The equation covers the first visible row, so one blank row at the end keeps the last real
+            // row reachable by scrolling (Draw hides blanks; a search filters them out).
+            if(cooking) entries=entries.Concat(Enumerable.Range(0,model.GridColumns).Select(_=>new StorageBrowserModel<SpawnEntry>.Entry {
+                Address=Blank, Name="￿", Amount=1, Empty=false
             }));
+            model.SetEntries(entries);
             Configure();
         }
+
+        private static readonly SpawnEntry Blank=new SpawnEntry { Id=ObjectID.None };
 
         private void Configure() { model.Configure(lastSearch,BrowserSort.Name,false,layout); scroll.ResetScroll(); Draw(); }
 
@@ -430,17 +679,18 @@ namespace ItemSpawner
             if(p==null || Manager.menu.IsAnyMenuActive()) { Close("player unavailable or menu opened"); return; }
             if(!search.inputIsActive) {
                 if(Input.GetKeyDown(KeyCode.Escape)) { Close("Escape"); return; }
-                if(Input.GetKeyDown(KeyCode.RightBracket)) ChangeLevel(1);
-                if(Input.GetKeyDown(KeyCode.LeftBracket)) ChangeLevel(-1);
+                if(!cooking && Input.GetKeyDown(KeyCode.RightBracket)) ChangeLevel(1);
+                if(!cooking && Input.GetKeyDown(KeyCode.LeftBracket)) ChangeLevel(-1);
             }
             var next=search.GetInputText()??"";
             if(Manager.ui.currentSelectedUIElement==search && Input.GetMouseButtonDown(1)) {search.SetInputText("");next="";}
             if(next!=lastSearch) {lastSearch=next;Configure();}
-            heading.gameObject.SetActive(lastSearch.Length<=12);
-            if(lastSearch.Length<=12) heading.Render(CanSpawn ? LevelLabel : "View only");
+            bool showHeading=lastSearch.Length<=12 && (!cooking || !CanSpawn);
+            heading.gameObject.SetActive(showHeading);
+            if(showHeading) heading.Render(!CanSpawn ? "View only" : LevelLabel);
             if(flashUntil>0 && Time.unscaledTime>=flashUntil) { flashUntil=0; Draw(); }
             ApplyLayout();
-            UpdateTabPointer();
+            if(!cooking) UpdateTabPointer();
         }
 
         private void ApplyLayout()
@@ -508,12 +758,15 @@ namespace ItemSpawner
             }
             var active=layout==BrowserLayout.Grid?grid:list;
             foreach(var slot in layout==BrowserLayout.Grid?list:grid) slot.gameObject.SetActive(false);
+            // Cooking: the equation takes the first row, so the grid starts one row down and shows one row less.
+            int shift=cooking?1:0, limit=cooking?model.Columns*(model.ViewportRows-1):active.Count;
             for(int i=0;i<active.Count;i++) {
-                var slot=active[i]; bool valid=model.TryGetVisible(i,out var entry);
+                var slot=active[i]; bool valid=i<limit && model.TryGetVisible(i,out var entry) && entry.Address.Id!=ObjectID.None;
                 slot.gameObject.SetActive(valid); if(!valid) continue;
+                model.TryGetVisible(i,out entry);
                 slot.Entry=entry.Address; slot.visibleSlotIndex=i;
                 slot.transform.localPosition=new Vector3(layout==BrowserLayout.Grid?(-(model.Columns-1)*0.5f+i%model.Columns)*spread:0,
-                    -(model.FirstRow+i/model.Columns)*spread,0);
+                    -(model.FirstRow+i/model.Columns+shift)*spread,0);
                 slot.UpdateSlot();
             }
         }
@@ -538,27 +791,41 @@ namespace ItemSpawner
         public SpawnEntry Entry;
         public UIScrollWindow Window;
         public PugText NameText;
+        public ColorReplacer Recolor;
+        // Cooking equation box: 0 first ingredient, 1 second ingredient, 2 dish; -1 for grid slots.
+        public int Role=-1;
+        public GameObject ActiveFrame;
         private bool hasRendered;
         private ContainedObjectsBuffer renderedItem;
         private void OnEnable() { hasRendered=false; }
         protected override void Awake() { OnDeselectSlot(); if(activeBorder!=null) activeBorder.gameObject.SetActive(false); }
-        protected override void LateUpdate() { base.LateUpdate(); transform.localScale=Vector3.one; }
+        // Equation boxes live outside the grid and keep the scale that matches grid slots.
+        public Vector3 BaseScale=Vector3.one;
+        protected override void LateUpdate() { base.LateUpdate(); transform.localScale=BaseScale; }
         public override void OnSelected()=>OnSelectSlot();
         public override void OnDeselected(bool playEffect=true)=>OnDeselectSlot();
         public override float localScrollPosition=>Window==null?0:transform.localPosition.y+transform.parent.localPosition.y;
         public override bool isVisibleOnScreen=>base.isVisibleOnScreen && (Window==null || Window.IsShowingPosition(localScrollPosition));
         protected override ContainedObjectsBuffer GetSlotObject()=>Entry==null ? default : SpawnerUI.ItemFor(Entry);
         public override UIScrollWindow uiScrollWindow=>Window;
-        public override void OnLeftClicked(bool mod1,bool mod2)=>SpawnerUI.Click(Entry,false);
-        public override void OnRightClicked(bool mod1,bool mod2)=>SpawnerUI.Click(Entry,true);
+        public override void OnLeftClicked(bool mod1,bool mod2)=>SpawnerUI.SlotClicked(this,false);
+        public override void OnRightClicked(bool mod1,bool mod2)=>SpawnerUI.SlotClicked(this,true);
         public override void UpdateSlot()
         {
-            if(Entry==null)return;
+            if(Entry==null) {
+                // Empty cooking box.
+                hasRendered=false;
+                icon.sprite=null; icon.enabled=false;
+                if(upgradeIcon!=null) upgradeIcon.gameObject.SetActive(false);
+                return;
+            }
             var item=SpawnerUI.ItemFor(Entry);
             if(hasRendered && item.objectID==renderedItem.objectID && item.variation==renderedItem.variation)return;
             renderedItem=item;hasRendered=true;
-            var info=PugDatabase.GetObjectInfo(Entry.Id,Entry.Variation);
+            // Cooked dishes encode their ingredients in the variation; their icon is the base dish's.
+            var info=PugDatabase.GetObjectInfo(Entry.Id,Entry.Variation) ?? PugDatabase.GetObjectInfo(Entry.Id);
             icon.sprite=info?.icon; icon.enabled=icon.sprite!=null;
+            if(Recolor!=null) Recolor.UpdateColorReplacerFromObjectData(item);
             if(amountNumber!=null) amountNumber.Render("",false,true,true);
             UpdateUpgradeIcon(item);
             if(NameText!=null) NameText.Render(PlayerController.GetObjectName(item,true)?.text??"");

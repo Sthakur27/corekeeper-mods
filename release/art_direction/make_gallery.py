@@ -13,7 +13,7 @@ from PIL import Image, ImageEnhance, ImageFilter
 
 REPO = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(Path(__file__).parent))
-from make_screenshot_covers import shot  # noqa: E402
+from make_screenshot_covers import compose, shot  # noqa: E402
 
 OUT = REPO / 'release/gallery'
 MAX_BYTES = 1_000_000
@@ -31,22 +31,25 @@ GALLERY = {
     'EnderStash': ['hdr:17.51.45.25', 'hdr:17.51.19.80', 'hdr:17.51.28.10'],
     'MagicMirror': ['hdr:00.23.31.80', 'hdr:00.23.58.85'],
     'BuildTools': ['hdr:14.21.40.31', 'hdr:14.21.54.44'],
-    'ItemSpawner': ['hdr:14.41.28.59', 'hdr:14.41.05.93', 'hdr:14.41.49.61'],
+    # "cover:<Key>" = a stylised showcase from make_screenshot_covers.py instead of a raw capture.
+    'ItemSpawner': ['cover:ItemSpawnerCooking', 'hdr:15.53.04.82', 'hdr:14.41.28.59', 'hdr:14.41.05.93', 'hdr:14.41.49.61'],
 }
 
 # HDR captures that still show the NVIDIA performance overlay (the Ender Stash ones do not).
 HDR_WITH_OVERLAY = {'hdr:00.23.31.80', 'hdr:00.23.58.85', 'hdr:14.21.40.31', 'hdr:14.21.54.44',
-                    'hdr:14.32.51.61', 'hdr:14.41.28.59', 'hdr:14.41.49.61', 'hdr:14.41.05.93'}
+                    'hdr:14.32.51.61', 'hdr:14.41.28.59', 'hdr:14.41.49.61', 'hdr:14.41.05.93', 'hdr:15.53.04.82'}
 
 # Dark HDR captures shown brighter in the gallery (same factor as their cover).
 GAIN = {'hdr:14.21.40.31': 1.7, 'hdr:14.21.54.44': 1.7, 'hdr:14.32.51.61': 1.7, 'hdr:14.41.28.59': 1.7,
-        'hdr:14.41.49.61': 1.7, 'hdr:14.41.05.93': 1.7}
+        'hdr:14.41.49.61': 1.7, 'hdr:14.41.05.93': 1.7, 'hdr:15.53.04.82': 1.7}
 
 # NVIDIA "Screenshot saved" toasts caught in a capture (4K pixel boxes), painted over like the overlay.
 TOASTS = {'19.57.17.40': [(3200, 190, 3840, 400)]}
 
 
 def clean(stamp):
+    if stamp.startswith('cover:'):
+        return compose(stamp[6:]).resize((1920, 1080), Image.LANCZOS)
     im = Image.open(shot(stamp)).convert('RGB')
     if not stamp.startswith('hdr:') or stamp in HDR_WITH_OVERLAY:
         # NVIDIA overlay: "FPS / GPU / CPU / LAT" text in the top-right corner.
@@ -65,7 +68,8 @@ def clean(stamp):
 def build(key):
     OUT.mkdir(parents=True, exist_ok=True)
     for old in OUT.glob(f'{key}_*.jpg'):
-        old.unlink()
+        if old.stem != f'{key}_0':  # <Key>_0.jpg is the cover, repeated as the first gallery image
+            old.unlink()
     for n, stamp in enumerate(GALLERY[key], 1):
         im, path = clean(stamp), OUT / f'{key}_{n}.jpg'
         for q in (90, 85, 80, 75):

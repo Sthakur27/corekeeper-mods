@@ -13,18 +13,31 @@ namespace ItemSpawner
     public static class GlyphIcons
     {
         private static readonly Color32 FallbackMain=new Color32(102,64,27,255), FallbackShade=new Color32(76,47,18,255);
+        private static readonly Color32 Tick=new Color32(255,211,106,255);
         private const int Size=8, Stroke=2;
 
-        public static void Apply(GameObject button,bool plus)
+        public enum Shape { Minus, Plus, Equals, Box, CheckedBox }
+
+        public static void Apply(GameObject button,bool plus) => Apply(button,plus ? Shape.Plus : Shape.Minus);
+
+        public static void Apply(GameObject button,Shape shape)
         {
             foreach(var renderer in button.GetComponentsInChildren<SpriteRenderer>(true)) {
                 if(renderer.name!="Icon" || renderer.sprite==null) continue;
-                try { renderer.sprite=Draw(renderer.sprite,plus); }
-                catch(Exception e) { Debug.LogWarning($"[{ItemSpawnerMod.Name}] Could not draw level icon: {e.Message}"); }
+                try { renderer.sprite=Draw(renderer.sprite,shape); }
+                catch(Exception e) { Debug.LogWarning($"[{ItemSpawnerMod.Name}] Could not draw icon: {e.Message}"); }
             }
         }
 
-        private static Sprite Draw(Sprite original,bool plus)
+        /// <summary>A glyph drawn over <paramref name="original"/>'s canvas (for icons that switch, e.g. a checkbox).</summary>
+        /// <param name="colour">Overrides the sampled colour (the shade is derived from it).</param>
+        public static Sprite Make(Sprite original,Shape shape,Color32? colour=null)
+        {
+            try { return Draw(original,shape,colour); }
+            catch(Exception e) { Debug.LogWarning($"[{ItemSpawnerMod.Name}] Could not draw icon: {e.Message}"); return original; }
+        }
+
+        private static Sprite Draw(Sprite original,Shape shape,Color32? colour=null)
         {
             int w=(int)original.rect.width, h=(int)original.rect.height;
             var pixels=ReadPixels(original,w,h);
@@ -42,15 +55,34 @@ namespace ItemSpawner
                     cx=(minX+maxX+1)/2; cy=(minY+maxY+1)/2;
                 }
             }
-            var glyph=new bool[w*h];
-            void Fill(int x0,int y0,int x1,int y1) {
-                for(int y=y0;y<y1;y++) for(int x=x0;x<x1;x++) if(x>=0 && y>=0 && x<w && y<h) glyph[y*w+x]=true;
+            if(colour.HasValue) {
+                main=colour.Value;
+                shade=new Color32((byte)(main.r*.6f),(byte)(main.g*.6f),(byte)(main.b*.6f),main.a);
             }
-            Fill(cx-Size/2,cy-Stroke/2,cx+Size/2,cy+Stroke/2);
-            if(plus) Fill(cx-Stroke/2,cy-Size/2,cx+Stroke/2,cy+Size/2);
+            var glyph=new bool[w*h]; var tick=new bool[w*h];
+            void Fill(bool[] into,int x0,int y0,int x1,int y1) {
+                for(int y=y0;y<y1;y++) for(int x=x0;x<x1;x++) if(x>=0 && y>=0 && x<w && y<h) into[y*w+x]=true;
+            }
+            int l=cx-Size/2, b=cy-Size/2, r=cx+Size/2, t=cy+Size/2;
+            switch(shape) {
+                case Shape.Minus: case Shape.Plus:
+                    Fill(glyph,l,cy-Stroke/2,r,cy+Stroke/2);
+                    if(shape==Shape.Plus) Fill(glyph,cx-Stroke/2,b,cx+Stroke/2,t);
+                    break;
+                case Shape.Equals:
+                    Fill(glyph,l,cy+1,r,cy+1+Stroke); Fill(glyph,l,cy-1-Stroke,r,cy-1);
+                    break;
+                default:
+                    // 1-pixel square outline; the checked state adds a gold tick inside (rows run bottom-up).
+                    Fill(glyph,l,b,r,b+1); Fill(glyph,l,t-1,r,t); Fill(glyph,l,b,l+1,t); Fill(glyph,r-1,b,r,t);
+                    if(shape==Shape.CheckedBox)
+                        foreach(var (x,y) in new[]{(1,4),(2,3),(3,2),(4,3),(5,4),(6,5)}) Fill(tick,l+x,b+y-1,l+x+1,b+y+1);
+                    break;
+            }
             var output=new Color32[w*h];
             for(int i=0;i<output.Length;i++) {
-                if(glyph[i]) output[i]=main;
+                if(tick[i]) output[i]=Tick;
+                else if(glyph[i]) output[i]=main;
                 else if(i+w<output.Length && glyph[i+w]) output[i]=shade; // texture rows run bottom-up: shade below
                 else output[i]=new Color32(0,0,0,0);
             }

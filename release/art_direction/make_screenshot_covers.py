@@ -93,17 +93,30 @@ COVERS = {
         panels=[('hdr:14.21.30.03', (405, 120, 865, 580), (24, TOP + 40, 424, H - 24), []),
                 ('hdr:14.21.35.01', (405, 120, 865, 580), (440, TOP + 40, 840, H - 24), []),
                 ('hdr:14.21.40.31', (405, 120, 865, 580), (856, TOP + 40, 1256, H - 24), [])]),
-    # Left: "gem" search with a 9999 stack on the cursor. Right: the Rune search at Lv +11 with the -/+
-    # buttons, and Rune Song's tooltip showing Item level 20 (base 9 + 11).
+    # 1.1 cover: the 1.0 panels made smaller, plus the cooking equation (golden ingredients + Gourmet = epic
+    # dish, 9999 on the cursor) along the bottom.
     'ItemSpawner': dict(
-        title='ITEM SPAWNER', caption='SEARCH ANY ITEM, FULL STACKS, LEVEL UP GEAR', gain=1.7,
+        title='ITEM SPAWNER', caption='ANY ITEM, FULL STACKS, LEVEL UP GEAR, COOKING', gain=1.7,
         bg=('hdr:14.41.05.93', (300, 100, 1060, 527), 6),
-        panels=[('hdr:14.41.28.59', (75, 150, 570, 470), (24, TOP + 20, 570, H - 20),
+        panels=[('hdr:14.41.28.59', (75, 150, 570, 470), (24, TOP + 10, 540, H - 150),
                  [(364, 398, 452, 456)]),
-                ('hdr:14.41.49.61', (75, 150, 570, 262), (592, TOP + 22, W - 24, TOP + 200),
+                ('hdr:14.41.49.61', (75, 150, 570, 262), (560, TOP + 10, W - 24, TOP + 150),
                  [(308, 156, 528, 192)]),
-                ('hdr:14.41.49.61', (826, 216, 1262, 496), (680, TOP + 216, W - 24, H - 24),
-                 [(830, 256, 1004, 288)])]),
+                ('hdr:14.41.49.61', (826, 216, 1262, 382), (640, TOP + 160, W - 24, H - 150),
+                 [(830, 256, 1004, 288)]),
+                ('hdr:15.53.04.82', (70, 196, 515, 262), (24, H - 140, W - 24, H - 14),
+                 [(312, 202, 370, 259), (382, 210, 418, 250)])]),
+    # Gallery showcase for cooking: the equation (golden + golden = epic dish, 9999 on the cursor) blown up,
+    # the Royal Starlight Sushi equation, and the spawned stacks in the bag.
+    'ItemSpawnerCooking': dict(
+        title='COOK ANY DISH', caption='PICK TWO INGREDIENTS, GET THE DISH', gain=1.7,
+        bg=('hdr:15.53.04.82', (300, 100, 1060, 527), 6),
+        panels=[('hdr:15.53.04.82', (70, 196, 515, 262), (24, TOP + 14, W - 24, TOP + 175),
+                 [(312, 202, 370, 259), (382, 210, 418, 250)]),
+                ('hdr:15.53.31.63', (75, 150, 570, 320), (24, TOP + 195, 620, H - 14),
+                 [(312, 202, 370, 259)]),
+                ('hdr:15.53.04.82', (630, 318, 1228, 430), (640, TOP + 195, W - 24, H - 14),
+                 [(1048, 328, 1170, 380)])]),
 }
 
 

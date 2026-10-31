@@ -23,7 +23,7 @@ namespace ItemSpawner
     public sealed class ItemSpawnerMod : IMod
     {
         public const string Name = "ItemSpawner";
-        public const string Version = "1.0.0";
+        public const string Version = "1.1.0";
         public const string ToggleKeyBind = "ItemSpawner_Toggle";
         private const string PrefabPath = "Assets/ConnectedStorageBrowser/ConnectedStorageBrowser.prefab";
 

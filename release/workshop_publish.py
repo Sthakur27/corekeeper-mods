@@ -79,7 +79,7 @@ COVER_NOTES = {
     "MagicMirror": "Cover is made from in-game screenshots (mirror cast and crafting tooltip, HDR captures tone-mapped); title banner added.",
     "FasterMachines": "Cover is an in-game screenshot of the machines (HDR capture tone-mapped); title banner, highlights and an animated speed dial added.",
     "BuildTools": "Cover is an in-game screenshot of a line brush preview over a block wall; title banner and highlight added.",
-    "ItemSpawner": "Cover is made from in-game screenshots of the spawn browser (HDR captures tone-mapped); title banner and highlights added.",
+    "ItemSpawner": "Cover and the first gallery image are made from in-game screenshots of the spawn browser and its cooking mode (HDR captures tone-mapped); title banners and highlights added.",
 }
 
 # Steam collection with every individual mod (+ CoreLib); processed first so other descriptions can link it.

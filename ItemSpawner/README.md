@@ -21,6 +21,6 @@ CoreLib, and Runic Storage (the browser uses its panel layout). Included in Sid'
 
 ## Notes
 
-Replaces Item Browser's spawn feature. Unsubscribe Item Browser, since both use Z by default.
+If another mod also uses Z, rebind one of them under Controls.
 
-Spawning uses the game's own create-item request (the one that hands out starter items). The admin check runs on the spawning player's game, like Item Browser's.
+Spawning uses the game's own create-item request (the one that hands out starter items). The admin check runs on the spawning player's game.

@@ -4,7 +4,7 @@
 
 Spend less time repeating chores and more time exploring. Sid's Overhaul brings the individual mods in this repository into one package: easier farming and fishing, equipment tools, merchant supplies, and adjustable combat and progression.
 
-**New in 1.7.0: Item Spawner.** Press Z (rebindable under Controls) to search every item in the game, modded ones included. Left-click puts one on your cursor (Ctrl: a full stack), right-click puts one in your bag (Shift or Ctrl: a full stack), and the - / + buttons spawn gear and tools up to the max level above their base. Host and admins only. Replaces Item Browser's spawning; unsubscribe Item Browser, since both use Z.
+**New in 1.7.0: Item Spawner.** Press Z (rebindable under Controls) to search every item in the game, modded ones included. Left-click puts one on your cursor (Ctrl: a full stack), right-click puts one in your bag (Shift or Ctrl: a full stack), and the - / + buttons spawn gear and tools up to the max level above their base. Host and admins only.
 
 **1.6.1:** Build Tools 0.6.0: watering cans go from 1x1 up to Max tool size and remember their size when the Bigger Watering Cans switch is off; with it on, its 2x2 / 4x4 stay the limit unless you turn on "Override Bigger Watering Cans sizes".
 

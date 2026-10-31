@@ -65,14 +65,16 @@ def readme_parts(folder):
     lines = md.splitlines()
     title = re.sub(r"\s*\(.*?\)\s*$", "", lines[0].lstrip("# ").strip())
     body = "\n".join(lines[1:]).strip()
-    paras = [p.strip() for p in re.split(r"\n\s*\n", body) if p.strip()]
+    # Hero images are skipped: mod.io shows the logo instead.
+    paras = [p.strip() for p in re.split(r"\n\s*\n", body) if p.strip() and not p.strip().startswith("![")]
     first = re.sub(r"\s+", " ", re.sub(r"[*`_#]", "", paras[0]))
     summary = first if len(first) <= 250 else first[:247].rsplit(" ", 1)[0] + "..."
     out = []
     for p in paras:
         if p.startswith("#"):
             out.append(f"<h3>{html.escape(p.lstrip('# ').strip())}</h3>"); continue
-        if all(l.lstrip().startswith(("-", "*")) for l in p.splitlines()):
+        # "- " / "* " bullets only: a paragraph opening with **bold** is not a list.
+        if all(l.lstrip().startswith(("- ", "* ")) for l in p.splitlines()):
             items = "".join(f"<li>{inline(l.lstrip()[1:].strip())}</li>" for l in p.splitlines())
             out.append(f"<ul>{items}</ul>"); continue
         out.append("<p>" + inline(p).replace("\n", "<br>") + "</p>")

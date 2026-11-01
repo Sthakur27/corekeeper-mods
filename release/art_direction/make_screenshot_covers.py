@@ -142,6 +142,12 @@ COVERS = {
         title='INFINITE ORE BOULDERS', caption='ORE BOULDERS THAT NEVER RUN OUT', gain=1.9,
         bg=('hdr:11.27.00.69', (480, 150, 1120, 510), 6),
         panels=[('hdr:11.27.00.69', (560, 210, 1060, 500), (180, TOP + 12, W - 180, H - 14), [])]),
+    # Tester at level 100 in every skill (all twelve starred) and a completely filled Gardening tree.
+    'SkillXPMultiplier': dict(
+        title='SKILL XP & TALENT POINTS', caption='FILL WHOLE TALENT TREES, LEVEL AT YOUR PACE', gain=1.9,
+        bg=('hdr:12.03.21.27', (0, 0, 1280, 720), 6),
+        panels=[('hdr:12.03.21.27', (706, 98, 972, 350), (40, TOP + 16, 660, H - 16), []),
+                ('hdr:12.03.21.27', (975, 98, 1194, 498), (680, TOP + 4, W - 40, H - 8), [])]),
     # A bite on the line ("!" over the player, strong ripple) and the log of automatic catches.
     'FastAutoFishing': dict(
         title='FAST AUTO FISHING', caption='CATCHES AND RECASTS BY ITSELF', gain=1.9,
@@ -153,6 +159,26 @@ COVERS = {
         title='POTION SELLER', caption='POTIONS AND MORE FROM FAMILIAR MERCHANTS', gain=1.9,
         bg=('hdr:11.20.19.34', (0, 0, 1280, 720), 6),
         panels=[('hdr:11.20.19.34', (140, 166, 630, 345), (236, TOP + 30, W - 24, H - 14), [])]),
+    # Racing across dark water in a boat, a long wake behind.
+    'VehicleSpeed': dict(
+        title='VEHICLE SPEED', caption='FASTER BOATS AND GO-KARTS', gain=2.4,
+        bg=('hdr:11.25.20.10', (160, 150, 1000, 622), 6),
+        panels=[('hdr:11.25.20.10', (230, 230, 1050, 520), (24, TOP + 8, W - 24, H - 14), [])]),
+    # Arriving at the Core teleporter with a fire minion still beside you.
+    'KeepMinions': dict(
+        title='KEEP MINIONS ON TELEPORT', caption='YOUR MINIONS COME ALONG', gain=1.9,
+        bg=('hdr:11.20.08.45', (300, 100, 1000, 494), 6),
+        panels=[('hdr:11.20.08.45', (430, 100, 790, 430), (170, TOP + 8, W - 170, H - 14), [])]),
+    # The buff bar (food and potion buffs) in the top-left of the HUD.
+    'BuffDurationFloor': dict(
+        title='BUFF DURATION FLOOR', caption='SHORT FOOD AND POTION BUFFS LAST LONGER', gain=1.9,
+        bg=('hdr:11.28.55.84', (0, 0, 1280, 720), 6),
+        panels=[('hdr:11.28.55.84', (35, 105, 258, 146), (40, TOP + 150, 900, TOP + 330), [])]),
+    # Hotbar tools with their durability bars; make_cover_extras adds an animated wear-rate dial.
+    'DurabilityMultiplier': dict(
+        title='DURABILITY MULTIPLIER', caption='TOOLS, WEAPONS AND ARMOR LAST LONGER', gain=1.7,
+        bg=('hdr:11.23.25.65', (160, 120, 800, 480), 6),
+        panels=[('hdr:11.23.25.65', (520, 642, 760, 697), (24, TOP + 60, 880, H - 60), [])]),
     # Fighting a Shrooman Brute in the desert.
     'MushroomSlayer': dict(
         title='MUSHROOM SLAYER', caption="STRONG HITS BREAK A BRUTE'S ARMOR", gain=1.6,

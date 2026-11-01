@@ -160,6 +160,45 @@ def fast_fishing():
     return c
 
 
+def vehicle_speed():
+    c = covers.compose('VehicleSpeed')
+    b = clock_bubble()
+    c.paste(b, (800, 210), b)
+    return c
+
+
+def buff_duration():
+    c = covers.compose('BuffDurationFloor')
+    b = clock_bubble(cell=7)
+    c.paste(b, (960, 230), b)
+    return c
+
+
+DUR_VALUES = ['1x', '0.75x', '0.5x', '0.25x', '0x']   # the mod's 'Durability loss rate' choices
+
+
+def durability_frames():
+    """Hotbar tools plus the Faster Machines dial counting the wear rate down 1x -> 0x (still: 0.5x default)."""
+    import make_fastermachines_cover as fm
+    fm.VALUES = DUR_VALUES
+    fm.DIAL_POS = (930, 300)
+    base = covers.compose('DurabilityMultiplier')
+    n = len(DUR_VALUES) - 1
+    still = fm.frame(base, '0.5x', 2 / n)
+    frames, durations = [], []
+    for i, v in enumerate(DUR_VALUES):
+        if i:
+            for s in (0.25, 0.5, 0.75):
+                frames.append(fm.frame(base, DUR_VALUES[i - 1], (i - 1 + s) / n))
+                durations.append(60)
+        frames.append(fm.frame(base, v, i / n))
+        durations.append(1400 if v == '0x' else 700)
+    for s in (0.8, 0.6, 0.4, 0.2):
+        frames.append(fm.frame(base, '0x', s))
+        durations.append(50)
+    return still, frames, durations
+
+
 def watering_cans():
     c = covers.compose('BiggerWateringCans')
     can = sprite('11.23.25.65', (2462, 1932, 2608, 2083), gain=1.6)
@@ -238,7 +277,7 @@ def save_gif(frames, durations, path):
     q[0].save(path, save_all=True, append_images=q[1:], duration=durations, loop=0, optimize=False, disposal=1)
 
 
-BUILDERS = {'FishSeller': fish_seller, 'PotionSeller': potion_seller, 'FastAutoFishing': fast_fishing, 'BiggerWateringCans': watering_cans, 'InfiniteOreBoulders': ore_boulders}
+BUILDERS = {'FishSeller': fish_seller, 'PotionSeller': potion_seller, 'FastAutoFishing': fast_fishing, 'VehicleSpeed': vehicle_speed, 'BuffDurationFloor': buff_duration, 'BiggerWateringCans': watering_cans, 'InfiniteOreBoulders': ore_boulders}
 
 if __name__ == '__main__':
     args = sys.argv[1:]
@@ -251,7 +290,12 @@ if __name__ == '__main__':
     prepare()
     keys = args or ['FishSeller', 'BiggerWateringCans', 'AutoReplant', 'InfiniteOreBoulders', 'MushroomSlayer']
     for key in keys:
-        if key == 'MushroomSlayer':
+        if key == 'DurabilityMultiplier':
+            still, frames, durations = durability_frames()
+            still.save(out / 'DurabilityMultiplier.png', optimize=True)
+            save_gif(frames, durations, out / 'DurabilityMultiplier.gif')
+            paths = [out / 'DurabilityMultiplier.png', out / 'DurabilityMultiplier.gif']
+        elif key == 'MushroomSlayer':
             frames, durations = mushroom_frames()
             frames[-2].save(out / 'MushroomSlayer.png', optimize=True)
             save_gif(frames, durations, out / 'MushroomSlayer.gif')

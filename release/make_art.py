@@ -315,7 +315,7 @@ def durability():
     print("durability_logo.png")
 
 
-# ---------- Buff Duration Floor ----------
+# ---------- Longer Buffs (Buff Duration Floor) ----------
 POTION = [
     "....kkkk....",
     "....kbbk....",
@@ -392,7 +392,7 @@ def timer_bar(d, x, y, w, h, frac, colour, label, f, ghost_frac=None):
 def buffduration():
     img = cave_bg(seed=11, top=(18, 16, 36), bottom=(40, 28, 66)).convert("RGBA")
     d = ImageDraw.Draw(img)
-    text_shadow(d, (W // 2, 40), "BUFF DURATION FLOOR", font(78), (245, 240, 255))
+    text_shadow(d, (W // 2, 40), "LONGER BUFFS", font(78), (245, 240, 255))
     text_shadow(d, (W // 2, 134), "Every food and potion buff lasts at least as long as you choose.", font(28), (200, 190, 225))
 
     # left: the consumables

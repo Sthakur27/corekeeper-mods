@@ -171,7 +171,7 @@ COVERS = {
         panels=[('hdr:11.20.08.45', (430, 100, 790, 430), (170, TOP + 8, W - 170, H - 14), [])]),
     # The buff bar (food and potion buffs) in the top-left of the HUD.
     'BuffDurationFloor': dict(
-        title='BUFF DURATION FLOOR', caption='SHORT FOOD AND POTION BUFFS LAST LONGER', gain=1.9,
+        title='LONGER BUFFS', caption='MINIMUM TIME FOR FOOD AND POTION BUFFS', gain=1.9,
         bg=('hdr:11.28.55.84', (0, 0, 1280, 720), 6),
         panels=[('hdr:11.28.55.84', (35, 105, 258, 146), (40, TOP + 150, 900, TOP + 330), [])]),
     # Hotbar tools with their durability bars; make_cover_extras adds an animated wear-rate dial.

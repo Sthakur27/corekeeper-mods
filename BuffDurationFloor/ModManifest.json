@@ -1,7 +1,7 @@
 {
     "guid": "4b7d1e9a6c2f4a3e8d5b0c9f1a2e3d47",
     "name": "BuffDurationFloor",
-    "displayName": "Buff Duration Floor",
+    "displayName": "Longer Buffs",
     "skipSafetyChecks": false,
     "disableScripts": false,
     "accessesExtraAssemblies": true,

@@ -26,7 +26,7 @@ I've been playing a lot of Core Keeper with friends and kept running into little
 
 **Buffs and items**
 - [Quick Buff](https://mod.io/g/corekeeper/m/quick-buff): press B to eat one of every buff food and drink one of every buff potion you're carrying (Terraria style).
-- [Buff Duration Floor](https://mod.io/g/corekeeper/m/buff-duration-floor): short food and potion buffs last at least 3 minutes (configurable, healing separately).
+- [Longer Buffs](https://mod.io/g/corekeeper/m/buff-duration-floor): short food and potion buffs last at least 3 minutes (configurable, healing separately).
 - [Potion Seller](https://mod.io/g/corekeeper/m/potion-seller): the Caveling Merchant sells every potion, 50 to 500 coins.
 - [Durability Multiplier](https://mod.io/g/corekeeper/m/durability-multiplier): gear wears out at 0.5x (or 0x to 1x, your pick).
 

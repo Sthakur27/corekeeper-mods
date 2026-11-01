@@ -58,7 +58,7 @@ Prefer to pick individual mods? Use [Sid's Core Keeper Mods collection](https://
 | Faster Machines | Per-machine speed for furnaces, kilns, glass smelter, fury forge, cooking pot, table saw, egg incubator and drills (default 5x, up to 100x or Instant). |
 | No intro logos | Skips the studio logos when the game starts. Always on. |
 | Quick Buff | Shortcuts for buffs (B), food only (F), a healing potion (H) and a mana potion (J), including items in pouches. |
-| Buff Duration Floor | Set minimum durations for food and potion buffs. |
+| Longer Buffs | Set minimum durations for food and potion buffs. |
 | Durability Multiplier | Choose how fast equipment wears out. |
 | Difficulty Tuning | Separate enemy and boss settings for Hard and Normal worlds. |
 | Mushroom Slayer | Configurable gray brute armor: hits below 200 deal 1; hits of 200 or more deal 10%. Red phase unchanged. |
@@ -81,7 +81,7 @@ Version 1.3.7 adds Magic Mirror 1.0.2: a permanent Recall Idol alternative, craf
 
 Version 1.3.6 includes Golden Chance 2.2.0: native inventory processing keeps Burst optimization, and talent updates run only on relevant events. Regular-main-dish upgrades have been removed to prioritize performance. Existing upgraded food is unchanged.
 
-Version 1.3.5 fixed repeated Buff Duration Floor scans caused by live items loading and unloading. Duration updates now target item templates only. This update does not change the game's automation or sound-pool behavior.
+Version 1.3.5 fixed repeated Longer Buffs (then Buff Duration Floor) scans caused by live items loading and unloading. Duration updates now target item templates only. This update does not change the game's automation or sound-pool behavior.
 
 The **Turn Sub-Mods On/Off** page disables whole features after a restart. Shared Loadout Gear & Vanity, Five Loadouts, Ender Stash and Runic Storage stay enabled because they hold items in added inventory slots. Empty the stash and extra equipment slots before removing mods that provide them.
 

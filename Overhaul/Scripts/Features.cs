@@ -31,7 +31,7 @@ namespace SidsOverhaul
         {
             { "AutoReplant", "Auto Replant" },
             { "QuickBuff", "Quick Buff" },
-            { "BuffDurationFloor", "Buff Duration Floor" },
+            { "BuffDurationFloor", "Longer Buffs" },
             { "PotionSeller", "Potion Seller" },
             { "FishSeller", "Fish Seller" },
             { "MerchantRestock", "Merchant Restock" },
@@ -73,17 +73,24 @@ namespace SidsOverhaul
         /// <summary>Adds one toggle per feature to the switches page (same keys the snapshot reads).</summary>
         public static void RegisterSettings(SettingsPage page)
         {
-            // Seed the renamed setting from the saved switch before binding any new config keys.
-            bool hitSoundEffectsDefault = On("StimHits");
+            // Seed renamed switches from the saved value (read via the snapshot, which knows the old labels)
+            // before binding any new config keys.
             page.PinToTop();
             for (int i = 0; i < All.GetLength(0); i++)
-                page.Toggle(out _, All[i, 1], All[i, 0] == "StimHits" ? hitSoundEffectsDefault : true);
+                page.Toggle(out _, All[i, 1], !LegacyLabels.ContainsValue(All[i, 0]) || On(All[i, 0]));
         }
+
+        /// <summary>Earlier menu labels of renamed features (old label → mod folder), so saved switches carry over.</summary>
+        private static readonly Dictionary<string, string> LegacyLabels = new Dictionary<string, string>
+        {
+            { "Stim Hits", "StimHits" },
+            { "Buff Duration Floor", "BuffDurationFloor" },
+        };
 
         private static Dictionary<string, bool> ReadSnapshot()
         {
             var result = new Dictionary<string, bool>();
-            bool? legacyStimHits = null;
+            var legacy = new Dictionary<string, bool>();
             var byLabel = new Dictionary<string, string>();
             for (int i = 0; i < All.GetLength(0); i++)
                 byLabel[KeyPrefix + All[i, 1]] = All[i, 0];
@@ -103,10 +110,11 @@ namespace SidsOverhaul
                         int eq = line.IndexOf('=');
                         if (section != "Settings" || eq < 0) continue;
                         string label = line.Substring(0, eq).Trim();
-                        if (label == KeyPrefix + "Stim Hits")
-                            legacyStimHits = line.Substring(eq + 1).Trim().ToLowerInvariant() != "false";
-                        else if (byLabel.TryGetValue(label, out string key))
-                            result[key] = line.Substring(eq + 1).Trim().ToLowerInvariant() != "false";
+                        bool value = line.Substring(eq + 1).Trim().ToLowerInvariant() != "false";
+                        if (byLabel.TryGetValue(label, out string key))
+                            result[key] = value;
+                        else if (label.StartsWith(KeyPrefix) && LegacyLabels.TryGetValue(label.Substring(KeyPrefix.Length), out string oldKey))
+                            legacy[oldKey] = value;
                     }
                 }
             }
@@ -116,8 +124,9 @@ namespace SidsOverhaul
             }
 
             // The new key wins even when the legacy line appears later in the file.
-            if (!result.ContainsKey("StimHits") && legacyStimHits.HasValue)
-                result["StimHits"] = legacyStimHits.Value;
+            foreach (var kv in legacy)
+                if (!result.ContainsKey(kv.Key))
+                    result[kv.Key] = kv.Value;
 
             var off = new List<string>();
             foreach (var kv in result)

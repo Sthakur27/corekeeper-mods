@@ -37,12 +37,12 @@ OVERHAUL_CONFIG = PROFILE / "mods" / "SidsOverhaul" / "config.cfg"
 KEPT_OVERHAUL = GAME_MODS.parent / "SidsOverhaul.benchkeep"
 # Switchable Overhaul features in Features.All order (labels as written in config.cfg). Setup
 # "overhaul-off=<i>-<j>" is overhaul-only with features i..j (inclusive) switched off; "=all" for every one.
-FEATURES = ["Auto Replant", "Quick Buff", "Buff Duration Floor", "Potion Seller", "Fish Seller", "Merchant Restock",
+FEATURES = ["Auto Replant", "Quick Buff", "Longer Buffs", "Potion Seller", "Fish Seller", "Merchant Restock",
             "Faster Mushrooms", "Bigger Watering Cans", "Fast Auto Fishing", "Better Fishing Loot", "Durability Multiplier",
             "Vehicle Speed", "Golden Chance", "Difficulty Tuning", "Skill XP Multiplier", "Keep Minions On Teleport",
             "Pet Editor", "Boss Bonus Loot", "Infinite Ore Boulders", "Hit Sound Effects", "Armor Dye", "Mushroom Slayer",
             "Magic Mirror"]
-LEGACY_LABELS = {"Hit Sound Effects": ["Stim Hits"]}
+LEGACY_LABELS = {"Hit Sound Effects": ["Stim Hits"], "Longer Buffs": ["Buff Duration Floor"]}
 MODIO_USER = "2667367"
 # Always loaded in every setup: the recorder, its CoreLib dependency, and SkipIntro (startup only).
 KEEP_MODIO = {"3177992", "6363825"}

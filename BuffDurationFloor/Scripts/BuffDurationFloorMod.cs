@@ -26,7 +26,7 @@ namespace BuffDurationFloor
     public sealed class BuffDurationFloorMod : IMod
     {
         public const string Name = "BuffDurationFloor";
-        public const string Version = "1.3.1";
+        public const string Version = "1.3.2";
 
         private static Setting<string> _buffFloor;
         private static Setting<string> _healingFloor;
@@ -36,12 +36,12 @@ namespace BuffDurationFloor
             Debug.Log($"[{Name}] v{Version}");
         }
 
-        public const string SettingsHint = "Food and potion buffs shorter than the floor last the floor instead. Off = vanilla. Longer buffs and debuffs are unchanged.";
+        public const string SettingsHint = "Food and potion buffs shorter than the minimum are extended to it. Off = vanilla. Buffs that already last longer, and debuffs, are unchanged.";
 
         public void Init()
         {
             if (InOverhaul(this)) return; // the overhaul builds one page per feature
-            var section = SettingsPages.Create(this, "Buff Duration Floor").Hint(SettingsHint);
+            var section = SettingsPages.Create(this, "Longer Buffs").Hint(SettingsHint);
             RegisterSettings(section);
             section.Build();
         }

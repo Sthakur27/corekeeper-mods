@@ -33,7 +33,7 @@ MODS = [
     ("SkillXPMultiplier", "Skill XP & Talent Points", "skillxp-logo.png", "Quality of Life"),
     ("FastAutoFishing", "Fast Auto Fishing", "fastfish_logo.png", "Quality of Life"),
     ("DurabilityMultiplier", "Durability Multiplier", "durability_logo.png", "Quality of Life"),
-    ("BuffDurationFloor", "Buff Duration Floor", "buffduration_logo.png", "Quality of Life"),
+    ("BuffDurationFloor", "Longer Buffs", "buffduration_logo.png", "Quality of Life"),
     ("FasterMushrooms", "Faster Mushrooms", "fastermushrooms_logo.png", "Quality of Life"),
     ("BiggerWateringCans", "Bigger Watering Cans", "wateringcans_logo.png", "Quality of Life"),
     ("BetterFishingLoot", "Better Fishing Loot", "betterfishingloot_logo.png", "Quality of Life"),

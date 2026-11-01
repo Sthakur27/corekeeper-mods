@@ -1,12 +1,14 @@
-# Buff Duration Floor
+# Longer Buffs
 
-![Buff Duration Floor — mod cover from in-game screenshots](../release/buffduration_logo.png)
+![Longer Buffs — mod cover from in-game screenshots](../release/buffduration_logo.png)
 
 Keep short food and potion buffs active longer. Choose a minimum duration; effects already lasting longer keep their normal duration.
 
+Formerly named **Buff Duration Floor**. Saved settings carry over.
+
 ## Settings
 
-Open **Settings > Mod Options > Buff Duration Floor**.
+Open **Settings > Mod Options > Longer Buffs**.
 
 | Setting | Default | What it changes |
 |---|---|---|
@@ -17,7 +19,7 @@ Both settings offer Off, 30 s, 45 s, 1:00, 1:30, 2:00, 3:00, 5:00 and 10:00. **O
 
 Changes affect the next food or potion you consume. Buffs already active keep their existing timers. Settings save automatically, and item tooltips reflect the adjusted consumable durations.
 
-Version 1.3.1 limits duration updates to item templates. Dropped items loading or unloading no longer trigger repeated full scans or accumulate cached copies of their durations.
+Version 1.3.2 renames the mod to Longer Buffs; gameplay is unchanged. Version 1.3.1 limits duration updates to item templates. Dropped items loading or unloading no longer trigger repeated full scans or accumulate cached copies of their durations.
 
 ## Requirements and multiplayer
 

@@ -81,7 +81,7 @@ d.line([(731,388),(798,448),(927,331)],fill='#d6f3cf',width=22)
 panel(d,(170,561,1108,595),'#a8deae'); d.rectangle((181,571,1020,585),fill='#a8deae')
 imgs.append(save(im,'durability_logo.png'))
 # Potion beside a clock; three minutes is the documented buff default.
-im,d=base('BUFF DURATION FLOOR','Give short food and potion buffs more time.','#dcafea')
+im,d=base('LONGER BUFFS','Give short food and potion buffs more time.','#dcafea')
 put(im,POTION,205,247,30,(183,125,226))
 d.ellipse((657,248,1007,598),fill='#27364e',outline='#dcafea',width=10)
 for a in range(0,360,30):

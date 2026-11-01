@@ -169,8 +169,8 @@ def vehicle_speed():
 
 def buff_duration():
     c = covers.compose('BuffDurationFloor')
-    b = clock_bubble(cell=7)
-    c.paste(b, (960, 230), b)
+    b = stopwatch('3:00', 0.5)   # default minimum buff duration, as the setting shows it
+    c.paste(b, (930, 260), b)
     return c
 
 

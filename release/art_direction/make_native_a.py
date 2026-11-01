@@ -258,7 +258,7 @@ def buff():
  d.line((223,114,233,92),fill='#8d795a');d.line((245,114,233,92),fill='#8d795a');d.ellipse((225,108,243,119),fill='#d77932');d.ellipse((225,99,243,113),fill='#465657');d.arc((224,93,244,111),180,360,fill='#a2b0a0',width=1);d.line((227,101,240,101),fill='#899c8b');s.lights.append((233,114,72,(38,21,4)))
  for x,y in [(35,133),(50,155),(285,106),(285,148),(149,165)]:s.mushroom(x,y,'purple');s.moss(x,y,20)
  s.fern(80,121,pot=True);s.fern(254,120,purple=True,pot=True);s.fern(180,147,pot=True)
- s.torch(97,106);s.torch(263,97);return s.finish('BUFF DURATION|FLOOR','buffduration_logo.png')
+ s.torch(97,106);s.torch(263,97);return s.finish('LONGER|BUFFS','buffduration_logo.png')
 
 def mushrooms():
  s=Scene(116,True);d=s.d;s.pool([(198,121),(243,121),(243,133),(264,133),(264,152),(215,152),(215,144),(198,144)])

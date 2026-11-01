@@ -53,7 +53,7 @@ MODS = [
     ("MerchantRestock", "Merchant Restock", "merchantrestock_logo.png", "Quality of Life"),
     ("FishSeller", "Fish Seller", "fishseller_logo.png", "Quality of Life"),
     ("MagicMirror", "Magic Mirror", "magicmirror_logo.png", "Item"),
-    ("MushroomSlayer", "Mushroom Slayer", "mushroomslayer_logo.png", "Quality of Life"),
+    ("MushroomSlayer", "Mushroom Slayer", "mushroomslayer_logo.gif", "Quality of Life"),
     ("ConnectedStorage", "Runic Storage", "runicstorage_workshop.png", "Item"),
     ("SlotOrganizer", "Slot Organizer", "slotorganizer_logo.png", "Quality of Life"),
     ("FasterMachines", "Faster Machines", "fastermachines_logo.gif", "Quality of Life"),
@@ -80,6 +80,11 @@ COVER_NOTES = {
     "FasterMachines": "Cover is an in-game screenshot of the machines (HDR capture tone-mapped); title banner, highlights and an animated speed dial added.",
     "BuildTools": "Cover is an in-game screenshot of a line brush preview over a block wall; title banner and highlight added.",
     "ItemSpawner": "Cover and the first gallery image are made from in-game screenshots of the spawn browser and its cooking mode (HDR captures tone-mapped); title banners and highlights added.",
+    "FishSeller": "Cover is made from in-game screenshots of the Fishing Merchant and its shop (HDR captures tone-mapped); title banner and label added.",
+    "BiggerWateringCans": "Cover is made from in-game screenshots of the watering preview, the watered field and the watering can (HDR captures tone-mapped); title banner added.",
+    "AutoReplant": "Cover is made from in-game screenshots of the same field before and after harvesting (HDR captures tone-mapped; sprinklers edited out); title banner added.",
+    "InfiniteOreBoulders": "Cover is an in-game screenshot of drills around an ore boulder (HDR capture tone-mapped); title banner and infinity sign added.",
+    "MushroomSlayer": "Cover is an in-game screenshot of a fight with a Shrooman Brute (HDR capture tone-mapped); title banner and an animated damage number added.",
 }
 
 # Steam collection with every individual mod (+ CoreLib); processed first so other descriptions can link it.

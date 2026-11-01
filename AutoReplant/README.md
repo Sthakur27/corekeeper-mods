@@ -1,6 +1,6 @@
 # Auto Replant
 
-![Auto Replant — illustrated mod cover](../release/autoreplant_logo.png)
+![Auto Replant — mod cover from in-game screenshots](../release/autoreplant_logo.png)
 
 Harvest your crops and let the next planting take care of itself.
 

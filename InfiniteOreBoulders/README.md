@@ -1,6 +1,6 @@
 # Infinite Ore Boulders
 
-![Infinite Ore Boulders — illustrated mod cover](../release/infiniteore_logo.png)
+![Infinite Ore Boulders — mod cover from in-game screenshots](../release/infiniteore_logo.png)
 
 Keep your mining operation running: **ore boulders keep producing ore without being used up**. You can leave drills in place instead of finding a new boulder when one runs out.
 

@@ -1,6 +1,6 @@
 # Mushroom Slayer
 
-![Mushroom Slayer — illustrated mod cover](../release/mushroomslayer_logo.png)
+![Mushroom Slayer — mod cover from in-game screenshots](../release/mushroomslayer_logo.gif)
 
 Let powerful attacks punch through a Shrooman Brute's gray armor. Early-game hits still do one damage, while stronger builds can wear it down without waiting for a wall collision.
 

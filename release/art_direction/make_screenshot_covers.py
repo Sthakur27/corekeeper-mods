@@ -21,7 +21,7 @@ W, H, TOP = 1280, 720, 176          # canvas; content area starts below the bann
 # HDR captures (.jxr scRGB float) are tone-mapped to PNG first with hdr_to_png.py:
 # value / 10 (game UI white ~9.5), clamp, sRGB curve. Converted copies live in HDR_DIRS.
 HDR_DIRS = [REPO / 'build/artwork-review/hdr', REPO / 'build/artwork-review/2026-10-28/hdr',
-            REPO / 'build/artwork-review/2026-10-29/hdr']
+            REPO / 'build/artwork-review/2026-10-29/hdr', REPO / 'build/artwork-review/2026-11-01/hdr']
 
 
 def shot(stamp):
@@ -117,6 +117,36 @@ COVERS = {
                  [(312, 202, 370, 259)]),
                 ('hdr:15.53.04.82', (630, 318, 1228, 430), (640, TOP + 195, W - 24, H - 14),
                  [(1048, 328, 1170, 380)])]),
+    # 2026-11-01 captures (HDR, dark, so brightened).
+    # Fishing Merchant's buy window full of fish, and the Elder Dragonfish tooltip with its price.
+    'FishSeller': dict(
+        title='FISH SELLER', caption='THE FISHING MERCHANT SELLS EVERY FISH', gain=1.9,
+        bg=('hdr:11.19.28.88', (0, 0, 1280, 720), 6),
+        panels=[('hdr:11.19.28.88', (140, 162, 630, 350), (24, TOP + 8, 820, TOP + 330), []),
+                ('hdr:11.19.31.03', (838, 410, 1262, 702), (840, TOP + 8, W - 24, H - 150), [])]),
+    # The same field: the 4x4 can preview, then the square it watered.
+    'BiggerWateringCans': dict(
+        title='BIGGER WATERING CANS', caption='UP TO 4X4 TILES IN ONE POUR', gain=1.9,
+        bg=('hdr:11.23.25.65', (160, 120, 800, 480), 6),
+        panels=[('hdr:11.23.25.65', (310, 210, 650, 528), (40, TOP + 12, 620, H - 14), []),
+                ('hdr:11.23.28.75', (310, 210, 650, 528), (660, TOP + 12, W - 40, H - 14), [])]),
+    # Grown crops, then the same field replanted after harvesting. The "-clean" captures have the
+    # sprinklers covered with neighbouring plants (make_cover_extras.prepare).
+    'AutoReplant': dict(
+        title='AUTO REPLANT', caption='HARVEST AND THE SEEDS GO RIGHT BACK IN', gain=1.9,
+        bg=('hdr:11.21.06.00-clean', (0, 0, 853, 480), 6),
+        panels=[('hdr:11.21.06.00-clean', (440, 150, 830, 520), (24, TOP + 12, 632, H - 14), []),
+                ('hdr:11.21.24.87-clean', (440, 150, 830, 520), (648, TOP + 12, W - 24, H - 14), [])]),
+    # Ore boulder boxed in by drills.
+    'InfiniteOreBoulders': dict(
+        title='INFINITE ORE BOULDERS', caption='ORE BOULDERS THAT NEVER RUN OUT', gain=1.9,
+        bg=('hdr:11.27.00.69', (480, 150, 1120, 510), 6),
+        panels=[('hdr:11.27.00.69', (560, 210, 1060, 500), (180, TOP + 12, W - 180, H - 14), [])]),
+    # Fighting a Shrooman Brute in the desert.
+    'MushroomSlayer': dict(
+        title='MUSHROOM SLAYER', caption="STRONG HITS BREAK A BRUTE'S ARMOR", gain=1.6,
+        bg=('hdr:11.27.54.23', (480, 160, 1120, 520), 6),
+        panels=[('hdr:11.27.54.23', (560, 250, 1000, 430), (40, TOP + 12, W - 40, H - 14), [])]),
 }
 
 

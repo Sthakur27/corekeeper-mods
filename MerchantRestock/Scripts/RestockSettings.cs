@@ -8,8 +8,8 @@ namespace MerchantRestock
         public const string Vanilla = "Vanilla (25-35 min)";
         public const string SameAsAll = "Same as all";
 
-        public static readonly string[] Ladder = { Vanilla, "15 min", "10 min", "5 min", "2 min", "1 min" };
-        public static readonly string[] MerchantLadder = { SameAsAll, Vanilla, "15 min", "10 min", "5 min", "2 min", "1 min" };
+        public static readonly string[] Ladder = { Vanilla, "15 min", "10 min", "5 min", "2 min", "1 min", "30 sec" };
+        public static readonly string[] MerchantLadder = { SameAsAll, Vanilla, "15 min", "10 min", "5 min", "2 min", "1 min", "30 sec" };
 
         /// <summary>Upper end of the game's random restock time (MerchantBuyInventorySystem: 1500-2100 s).</summary>
         public const int VanillaMaxSeconds = 2100;
@@ -31,13 +31,15 @@ namespace MerchantRestock
 
         public static void SetCap(ObjectID merchant, int seconds) => _caps[merchant] = seconds;
 
-        /// <summary>"5 min" -> 300; vanilla or unknown -> 0.</summary>
+        /// <summary>"5 min" -> 300, "30 sec" -> 30; vanilla or unknown -> 0.</summary>
         public static int ParseSeconds(string token)
         {
             if (string.IsNullOrEmpty(token)) return 0;
             int space = token.IndexOf(' ');
-            if (space <= 0 || !int.TryParse(token.Substring(0, space), out int minutes) || !token.EndsWith(" min")) return 0;
-            return minutes * 60;
+            if (space <= 0 || !int.TryParse(token.Substring(0, space), out int n)) return 0;
+            if (token.EndsWith(" min")) return n * 60;
+            if (token.EndsWith(" sec")) return n;
+            return 0;
         }
     }
 }

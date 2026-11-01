@@ -1,6 +1,6 @@
 # Merchant Restock
 
-![Merchant Restock — illustrated mod cover](../release/merchantrestock_logo.png)
+![Merchant Restock — mod cover from in-game screenshots](../release/merchantrestock_logo.png)
 
 Spend less time waiting for shop stock. **Choose how often merchants refill**, with one setting for all shops and optional settings for individual merchants.
 
@@ -10,7 +10,7 @@ Open **Settings > Mod Options > Merchant Restock**.
 
 | Setting | Choices | Default |
 |---|---|---|
-| All merchants | Normal (25–35 min), 15, 10, 5, 2 or 1 min | Normal |
+| All merchants | Normal (25–35 min), 15, 10, 5, 2 or 1 min, or 30 s | Normal |
 | Each merchant | Same as all, or its own time | Same as all |
 
 Individual choices cover Caveling, Slime, Fishing, Crystal, Void and Seasonal Merchants. The game keeps a random spread: **5 minutes means roughly 3.5–5 minutes**, rather than exactly five.

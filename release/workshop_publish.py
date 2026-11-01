@@ -92,6 +92,7 @@ COVER_NOTES = {
     "KeepMinions": "Cover is an in-game screenshot of the Core teleporter with a minion and pet beside the player (HDR capture tone-mapped); title banner added.",
     "BuffDurationFloor": "Cover is an in-game screenshot of the buff bar (HDR capture tone-mapped); title banner and a clock icon added.",
     "FasterMushrooms": "Cover is an in-game screenshot of a mycelium field of grown mushrooms (HDR capture tone-mapped); title banner and a stopwatch icon added.",
+    "MerchantRestock": "Cover is made from in-game screenshots of the Caveling and Fishing Merchants' shops and the Fishing Merchant (HDR captures tone-mapped); title banner and a stopwatch icon added.",
 }
 
 # Steam collection with every individual mod (+ CoreLib); processed first so other descriptions can link it.

@@ -265,6 +265,15 @@ def stopwatch(label='2x', frac=0.3, badge='side', cell=5):
     return out
 
 
+def merchant_restock():
+    c = covers.compose('MerchantRestock')
+    b = stopwatch('30 sec', 0.15)
+    c.paste(b, (930, 200), b)
+    merchant = sprite('11.19.35.63', (2040, 680, 2215, 840))   # the Fishing Merchant
+    plate(c, merchant, (W - 205, H - 166), scale=0.9)
+    return c
+
+
 def faster_mushrooms():
     c = covers.compose('FasterMushrooms')
     b = stopwatch('4x', 0.3)   # default growth speed
@@ -350,7 +359,7 @@ def save_gif(frames, durations, path):
     q[0].save(path, save_all=True, append_images=q[1:], duration=durations, loop=0, optimize=False, disposal=1)
 
 
-BUILDERS = {'FishSeller': fish_seller, 'PotionSeller': potion_seller, 'FastAutoFishing': fast_fishing, 'VehicleSpeed': vehicle_speed, 'FasterMushrooms': faster_mushrooms, 'BuffDurationFloor': buff_duration, 'BiggerWateringCans': watering_cans, 'InfiniteOreBoulders': ore_boulders}
+BUILDERS = {'FishSeller': fish_seller, 'PotionSeller': potion_seller, 'FastAutoFishing': fast_fishing, 'VehicleSpeed': vehicle_speed, 'FasterMushrooms': faster_mushrooms, 'MerchantRestock': merchant_restock, 'BuffDurationFloor': buff_duration, 'BiggerWateringCans': watering_cans, 'InfiniteOreBoulders': ore_boulders}
 
 if __name__ == '__main__':
     args = sys.argv[1:]

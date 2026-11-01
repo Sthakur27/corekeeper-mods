@@ -184,6 +184,12 @@ COVERS = {
         title='FASTER MUSHROOMS', caption='MUSHROOMS GROW AND RESPAWN SOONER', gain=1.7,
         bg=('hdr:12.07.00.77', (150, 100, 950, 550), 6),
         panels=[('hdr:12.07.00.77', (420, 200, 780, 440), (120, TOP + 8, W - 120, H - 14), [])]),
+    # Two merchants' buy windows (Caveling and Fishing); make_cover_extras adds a stopwatch with a restock time.
+    'MerchantRestock': dict(
+        title='MERCHANT RESTOCK', caption='CHOOSE HOW OFTEN MERCHANTS REFILL', gain=1.9,
+        bg=('hdr:11.19.28.88', (0, 0, 1280, 720), 6),
+        panels=[('hdr:11.20.19.34', (140, 166, 630, 345), (24, TOP + 8, 860, TOP + 262), []),
+                ('hdr:11.19.28.88', (140, 162, 630, 350), (24, TOP + 280, 860, H - 14), [])]),
     # Fighting a Shrooman Brute in the desert.
     'MushroomSlayer': dict(
         title='MUSHROOM SLAYER', caption="STRONG HITS BREAK A BRUTE'S ARMOR", gain=1.6,

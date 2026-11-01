@@ -13,7 +13,7 @@ namespace MerchantRestock
     public sealed class MerchantRestockMod : IMod
     {
         public const string Name = "MerchantRestock";
-        public const string Version = "1.0.0";
+        public const string Version = "1.1.0";
 
         public const string SettingsHint = "How often merchants refill their stock (vanilla: every 25-35 min). "
             + "'All merchants' applies to every merchant set to 'Same as all'. Applies right away, including to the current countdown. "
@@ -56,7 +56,7 @@ namespace MerchantRestock
                 string token = _perMerchant[i]?.Value ?? RestockSettings.SameAsAll;
                 int seconds = token == RestockSettings.SameAsAll ? all : RestockSettings.ParseSeconds(token);
                 RestockSettings.SetCap(RestockSettings.Merchants[i].id, seconds);
-                parts.Add($"{RestockSettings.Merchants[i].label} {(seconds > 0 ? seconds / 60 + " min" : "vanilla")}");
+                parts.Add($"{RestockSettings.Merchants[i].label} {(seconds <= 0 ? "vanilla" : seconds < 60 ? seconds + " sec" : seconds / 60 + " min")}");
             }
             Debug.Log($"[{Name}] restock: {string.Join(", ", parts)}");
         }

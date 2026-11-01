@@ -1,6 +1,6 @@
 # Skill XP & Talent Points
 
-![Skill XP & Talent Points — illustrated mod cover](../release/skillxp-logo.png)
+![Skill XP & Talent Points — in-game screenshot cover](../release/skillxp-logo.png)
 
 Choose how quickly each skill levels up and how many talent points each skill gives you. Speed up the skills you find slow, slow down others, pause XP gains entirely, or raise the talent point total so you can fill more of each tree.
 

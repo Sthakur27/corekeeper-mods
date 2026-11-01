@@ -142,12 +142,29 @@ COVERS = {
         title='INFINITE ORE BOULDERS', caption='ORE BOULDERS THAT NEVER RUN OUT', gain=1.9,
         bg=('hdr:11.27.00.69', (480, 150, 1120, 510), 6),
         panels=[('hdr:11.27.00.69', (560, 210, 1060, 500), (180, TOP + 12, W - 180, H - 14), [])]),
+    # A Scarlet Ore Boulder mined loose and placed again in the open desert, the boulder item in hotbar slot 1
+    # next to the pickaxe, and its tooltip.
+    'BoulderMover': dict(
+        title='MOVABLE ORE BOULDERS', caption='MINE A BOULDER LOOSE, CARRY IT TO YOUR DRILLS', gain=1.7,
+        bg=('hdr:14.37.29.56', (400, 120, 1040, 480), 6),
+        panels=[('hdr:14.37.29.56', (480, 173, 880, 493), (24, TOP + 12, 664, H - 14),
+                 [(652, 284, 760, 392)]),
+                ('hdr:14.37.37.63', (344, 368, 464, 429), (688, TOP + 30, W - 24, TOP + 330),
+                 [(348, 370, 405, 428)]),
+                ('hdr:14.37.37.63', (975, 664, 1266, 710), (688, TOP + 360, W - 24, H - 40), [])]),
     # Tester at level 100 in every skill (all twelve starred) and a completely filled Gardening tree.
     'SkillXPMultiplier': dict(
         title='SKILL XP & TALENT POINTS', caption='FILL WHOLE TALENT TREES, LEVEL AT YOUR PACE', gain=1.9,
         bg=('hdr:12.03.21.27', (0, 0, 1280, 720), 6),
         panels=[('hdr:12.03.21.27', (706, 98, 972, 350), (40, TOP + 16, 660, H - 16), []),
                 ('hdr:12.03.21.27', (975, 98, 1194, 498), (680, TOP + 4, W - 40, H - 8), [])]),
+    # Gallery showcase: the pet in its equipment slot beside its talent window, all nine talents placed, 0 points left.
+    'SkillXPPet': dict(
+        title='MAX OUT YOUR PET', caption='ALL NINE PET TALENTS AT LEVEL 10', gain=1.7,
+        bg=('hdr:14.37.19.10', (0, 0, 1280, 720), 6),
+        panels=[('hdr:14.37.19.10', (664, 58, 998, 350), (40, TOP + 30, 720, H - 30), [(910, 284, 970, 342)]),
+                ('hdr:14.37.19.10', (1003, 96, 1223, 544), (740, TOP + 6, W - 40, H - 6),
+                 [(1022, 150, 1204, 182), (1024, 184, 1200, 378), (1018, 460, 1206, 496)])]),
     # A bite on the line ("!" over the player, strong ripple) and the log of automatic catches.
     'FastAutoFishing': dict(
         title='FAST AUTO FISHING', caption='CATCHES AND RECASTS BY ITSELF', gain=1.9,

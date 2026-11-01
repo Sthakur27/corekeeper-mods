@@ -87,7 +87,6 @@ COVER_NOTES = {
     "MushroomSlayer": "Cover is an in-game screenshot of a fight with a Shrooman Brute (HDR capture tone-mapped); title banner and an animated damage number added.",
     "FastAutoFishing": "Cover is made from in-game screenshots of a bite on the line and the catch log (HDR captures tone-mapped); title banner and a clock icon added.",
     "SkillXPMultiplier": "Cover is made from an in-game screenshot of the skills panel and a filled talent tree (HDR capture tone-mapped); title banner added.",
-    "SkillXPMultiplier": "Cover is made from an in-game screenshot of the skills panel and a filled talent tree (HDR capture tone-mapped); title banner added.",
     "PotionSeller": "Cover is made from in-game screenshots of the Caveling Merchant and his shop (HDR captures tone-mapped); title banner and label added.",
     "VehicleSpeed": "Cover is an in-game screenshot of a boat crossing open water (HDR capture tone-mapped); title banner and a clock icon added.",
     "KeepMinions": "Cover is an in-game screenshot of the Core teleporter with a minion and pet beside the player (HDR capture tone-mapped); title banner added.",

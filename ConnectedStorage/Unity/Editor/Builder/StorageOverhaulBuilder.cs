@@ -30,7 +30,7 @@ public static class StorageOverhaulBuilder {
 public sealed class StorageOverhaulAssets : PugMod.IPugModBuilderProcessor {
     public void Execute(ModBuilderSettings settings,string output,List<string> paths) {
         if(settings.metadata.name!="SidsStorageAssets")return;
-        foreach(string root in new[]{"Assets/EnderStash","Assets/MagicMirror","Assets/ConnectedStorageBrowser"}) {
+        foreach(string root in new[]{"Assets/EnderStash","Assets/MagicMirror","Assets/SolariteDrill","Assets/ConnectedStorageBrowser"}) {
             if(!AssetDatabase.IsValidFolder(root))throw new Exception("Missing combined bundle source: "+root);
             foreach(string path in AssetDatabase.FindAssets("t:Object",new[]{root}).Select(AssetDatabase.GUIDToAssetPath))
                 if(!Directory.Exists(path)&&!path.EndsWith(".unity")&&!path.EndsWith(".cs")&&!path.EndsWith(".asmdef")&&AssetDatabase.GetMainAssetTypeAtPath(path)!=typeof(ModBuilderSettings)&&!paths.Contains(path))paths.Add(path);

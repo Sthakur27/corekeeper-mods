@@ -4,7 +4,9 @@
 
 Spend less time repeating chores and more time exploring. Sid's Overhaul brings the individual mods in this repository into one package: easier farming and fishing, equipment tools, merchant supplies, and adjustable combat and progression.
 
-**New in 1.9.5: Movable Ore Boulders and pet talent points.** Mine an ore boulder loose with a pickaxe strong enough to break a Maze Block, and carry it to your drills; mining boulders never gives ore, drills still do. Skill XP & Talent Points now also sets how many talent points a pet has at level 10: default 9, enough for all nine slots (Vanilla is 5).
+**New in 1.10.0: Solarite Drill, and drills that actually pay off on ore boulders.** A gold Solarite Drill one tier above the Scarlet Drill: 10 Galaxite + 10 Solarite Bars at the Solarite Workbench, 3x the Scarlet Drill's mining damage. Infinite Ore Boulders 1.0.2 fixes drills getting no ore from a protected boulder (it reset their progress toward the next ore every tick). Faster Machines 1.1.0 raises the game's ore-boulder limit on fast drilling along with your Drills speed, so 5x drills really get 5x the ore. Movable Ore Boulders 1.2.0: optional setting to move drilled boulders too (they're placed back full; off by default).
+
+**1.9.5: Movable Ore Boulders and pet talent points.** Mine an ore boulder loose with a pickaxe strong enough to break a Maze Block, and carry it to your drills; mining boulders never gives ore, drills still do. Skill XP & Talent Points now also sets how many talent points a pet has at level 10: default 9, enough for all nine slots (Vanilla is 5).
 
 **1.9.4:** Item Spawner 1.1.1: the trash can is usable while the spawner is open, and the item on your cursor no longer hides behind the Gourmet checkbox.
 
@@ -45,6 +47,7 @@ Prefer to pick individual mods? Use [Sid's Core Keeper Mods collection](https://
 | Shared Loadout Gear & Vanity + Five Loadouts | Fill empty equipment slots from lower loadouts, use separate vanity outfits, and add two loadout tabs. |
 | Ender Stash | A personal 40-slot stash accessed through an Ender Chest bought from the Fishing Merchant; travels with your character and stays safe on death. |
 | Runic Storage | Craft a storage workbench, connect storage units, and upgrade them through eight tiers from 20 to 160 slots per unit. One-click category tabs (Materials, Weapons, Tools, Armor, Blocks, Furniture and more) filter the shared inventory, and Sort groups it by category. Inspired by Magic Storage for Terraria. |
+| Solarite Drill | A gold stationary drill one tier above the Scarlet Drill with 3x its mining damage. Craft for 10 Galaxite + 10 Solarite Bars at a Solarite Workbench. |
 | Magic Mirror | Reusable three-second return to the Core. Craft for 50 Solarite Bars + 10 Recall Idols at a Solarite Workbench, or get one from Omoroth with a 20% chance per defeat. |
 | Armor Dye | Color individual armor, weapons and tools with an inventory palette. |
 | Pet Editor | Change pet levels, talents and colors through the pet window. |
@@ -58,7 +61,7 @@ Prefer to pick individual mods? Use [Sid's Core Keeper Mods collection](https://
 | Fish Seller | Buy fish and Shiny Larva Meat, and scroll through expanded shops. |
 | Merchant Restock | Choose a restock interval for all merchants or individual merchant types. |
 | Infinite Ore Boulders | Keep drilling ore boulders without depleting them. |
-| Movable Ore Boulders | Mine an untouched ore boulder loose (Maze Block mining power) and place it next to your drills. Mining boulders gives no ore. May not work with other mods that change ore boulder mining or destruction. |
+| Movable Ore Boulders | Mine an untouched ore boulder loose (Maze Block mining power) and place it next to your drills. Mining boulders gives no ore. Optional setting to move drilled boulders too (refills them, off by default). May not work with other mods that change ore boulder mining or destruction. |
 | Build Tools | Bigger tool areas remembered per tool, a block brush with floor/wall modes and Swap, and roofing gadget modes. Inspired by Placement Plus and Roofing Gadget Plus. |
 | Faster Machines | Per-machine speed for furnaces, kilns, glass smelter, fury forge, cooking pot, table saw, egg incubator and drills (default 5x, up to 100x or Instant). |
 | No intro logos | Skips the studio logos when the game starts. Always on. |

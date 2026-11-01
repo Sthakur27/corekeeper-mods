@@ -24,6 +24,8 @@ Changes apply while you play. An item that is already in progress finishes at th
 
 **Instant** finishes one item every game tick. Drills get faster by hitting more often, and past the fastest hit rate by hitting harder.
 
+Ore boulders normally weaken every drill hit when they take a lot of drill damage per second, so in vanilla, extra drilling past a point gives less ore, and very fast drills stop doing damage at all. The Drills setting raises that limit by the same multiplier, so 5x drills really get 5x the ore from a boulder. At 1x boulders behave exactly as in vanilla.
+
 ## Requirements and limits
 
 Requires **CoreLib and Mod Options** on the host and every client. The host's settings decide the speed; clients with different values only see a different progress bar.

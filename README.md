@@ -41,6 +41,7 @@ Use the Overhaul or the individual versions of its features. Installing both run
 | [Movable Ore Boulders](BoulderMover/README.md) | Mine an ore boulder loose and carry it to your drills. |
 | [Build Tools](BuildTools/README.md) | Bigger tool areas remembered per tool, a block brush with floor/wall modes and Swap, and roofing gadget modes. |
 | [Faster Machines](FasterMachines/README.md) | Set the speed of each machine: furnaces, kilns, cooking pot, table saw, egg incubator and drills. |
+| [Solarite Drill](SolariteDrill/README.md) | A gold drill one tier above the Scarlet Drill, crafted at the Solarite Workbench, with 3x its mining damage. |
 
 ### Combat, travel and progression
 

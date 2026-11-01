@@ -11,11 +11,13 @@ namespace InfiniteOreBoulders.Systems
     /// at 0 health the boulder is destroyed.
     ///
     /// This system runs on the server right before UpdateHealthFromBufferSystem and, for every ore boulder:
-    ///  - refills its health to max, and
-    ///  - caps this tick's queued damage (HealthChangeBuffer) so it cannot reach 0 from full health.
+    ///  - tops its health back up in whole multiples of damageToDealToDropLoot, and
+    ///  - caps this tick's queued damage (HealthChangeBuffer) so it cannot reach 0.
     /// The game then applies the damage and drops ore exactly as usual, so ore per damage dealt is vanilla,
-    /// but the boulder never breaks. Ore boulders are found by ObjectID name ("...OreBoulder"), so new
-    /// boulder types are covered automatically.
+    /// but the boulder never breaks. Topping up by whole drop steps keeps health modulo the drop step, i.e.
+    /// the progress toward the next ore; refilling to max instead reset that progress every tick, so hits
+    /// smaller than (max % step) never dropped ore at all. Ore boulders are found by ObjectID name
+    /// ("...OreBoulder"), so new boulder types are covered automatically.
     /// </summary>
     [UpdateInGroup(typeof(UpdateHealthSystemGroup))]
     [UpdateBefore(typeof(UpdateHealthFromBufferSystem))]
@@ -56,9 +58,11 @@ namespace InfiniteOreBoulders.Systems
                 var health = EntityManager.GetComponentData<HealthCD>(entities[i]);
                 if (health.maxHealth <= 1) continue;
 
-                if (health.health != health.maxHealth)
+                int step = EntityManager.GetComponentData<DropsLootWhenDamagedCD>(entities[i]).damageToDealToDropLoot;
+                int refill = step > 0 ? (health.maxHealth - health.health) / step * step : health.maxHealth - health.health;
+                if (refill > 0)
                 {
-                    health.health = health.maxHealth;
+                    health.health += refill;
                     EntityManager.SetComponentData(entities[i], health);
                 }
 
@@ -67,7 +71,7 @@ namespace InfiniteOreBoulders.Systems
                 // and most ticks no boulder has queued damage.
                 if (!HasDamage(EntityManager.GetBuffer<HealthChangeBuffer>(entities[i], true))) continue;
                 var changes = EntityManager.GetBuffer<HealthChangeBuffer>(entities[i]);
-                int budget = health.maxHealth - 1; // damage this tick may take it down to 1, never 0
+                int budget = health.health - 1; // damage this tick may take it down to 1, never 0
                 for (int c = 0; c < changes.Length; c++)
                 {
                     var entry = changes[c];

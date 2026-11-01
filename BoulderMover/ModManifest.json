@@ -21,5 +21,14 @@
             "guid": "3e9d2b7c41a84f0e9b6c5d1a2f7e8c43"
         }
     ],
-    "dependencies": []
+    "dependencies": [
+        {
+            "modName": "CoreLib",
+            "required": true
+        },
+        {
+            "modName": "ModOptions",
+            "required": true
+        }
+    ]
 }

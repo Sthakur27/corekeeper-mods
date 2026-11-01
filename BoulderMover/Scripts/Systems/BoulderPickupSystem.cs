@@ -18,8 +18,9 @@ namespace BoulderMover.Systems
     ///  - a player's own hit adds what a Maze Block would have taken (damage minus the Maze Block's reduction) to the
     ///    boulder's pickup meter. At MazeBlock.PickupEffort (3 Maze Blocks' health) the boulder is killed without loot and dropped as an item,
     ///    pulled to that player.
-    /// Only untouched boulders (full health) can be picked up: the item places a fresh boulder, so moving a half-drilled
-    /// one would refill it. With Infinite Ore Boulders every boulder stays at full health.
+    /// Only untouched boulders (less than one ore's worth of damage taken) can be picked up: the item places a fresh
+    /// boulder, so moving a half-drilled one would refill it. Infinite Ore Boulders keeps every boulder within one ore step.
+    /// The "Move drilled boulders" setting (default off) lifts that limit.
     /// Also keeps live boulders at the Maze Block's damage reduction (prefab change in BoulderMoverMod covers new ones;
     /// this covers saves and a late-read Maze Block value). DamageReductionCD.reduction is a ghost field, so clients follow.
     /// </summary>
@@ -90,7 +91,12 @@ namespace BoulderMover.Systems
                 if (counted <= 0) continue;
 
                 var health = EntityManager.GetComponentData<HealthCD>(hc.entity);
-                if (health.health <= 0 || health.health < health.maxHealth) continue;
+                // Less than one ore's worth of damage counts as untouched: Infinite Ore Boulders tops boulders up
+                // in whole ore steps, so a drilled one sits up to one step below max.
+                int step = EntityManager.HasComponent<DropsLootWhenDamagedCD>(hc.entity)
+                    ? EntityManager.GetComponentData<DropsLootWhenDamagedCD>(hc.entity).damageToDealToDropLoot : 0;
+                if (health.health <= 0) continue;
+                if (!BoulderMoverMod.MoveDrilled && health.maxHealth - health.health >= System.Math.Max(step, 1)) continue;
 
                 _progress.TryGetValue(hc.entity, out int meter);
                 meter += counted;

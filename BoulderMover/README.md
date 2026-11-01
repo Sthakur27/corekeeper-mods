@@ -11,13 +11,19 @@ Mine an ore boulder loose and carry it to where your drills are.
 - Place it anywhere like any other object, for example next to your drill setup.
 - Mining a boulder never gives ore. Drills work as before and are still the only way to get ore out of a boulder.
 
-No settings. Covers every ore boulder type, including pandorium and relucite.
+Covers every ore boulder type, including pandorium and relucite.
+
+## Settings
+
+In **Settings > Mod Options > Movable Ore Boulders**:
+
+- **Move drilled boulders (refills them)**, default off. When on, boulders that drills have already worn down can be moved too. A moved boulder is placed back full, so this gives free ore. In multiplayer the host's value counts.
 
 ## Requirements and limits
 
-No library dependencies. Install on the host and every client in multiplayer; the host decides when a boulder comes loose.
+Requires CoreLib and Mod Options. Install on the host and every client in multiplayer; the host decides when a boulder comes loose.
 
-- Only untouched boulders can be picked up. A boulder that drills have already worn down stays where it is (a placed boulder starts fresh, so moving a half-drilled one would refill it). With Infinite Ore Boulders every boulder stays untouched.
+- By default only untouched boulders can be picked up. A boulder that drills have already worn down stays where it is (a placed boulder starts fresh, so moving a half-drilled one would refill it). With Infinite Ore Boulders every boulder stays untouched.
 - Explosions and weapons don't move boulders and don't drop ore from them.
 - There is no progress bar while you mine a boulder loose; you see the hits, and then the boulder pops out.
 - **Compatibility:** this mod changes how ore boulders take damage. It may not work with other mods that change ore boulder mining, damage or destruction.

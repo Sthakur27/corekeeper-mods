@@ -1,0 +1,96 @@
+{
+    "assets": [
+        {
+            "path": "Assets/SolariteDrill/Textures/solariteDrillBase_idle_up.png",
+            "guid": "5d7a11e0c0de4d5a9b1e5017a17e000a"
+        },
+        {
+            "path": "Assets/SolariteDrill/Textures/solariteDrillBase_idle_side2.png",
+            "guid": "5d7a11e0c0de4d5a9b1e5017a17e0009"
+        },
+        {
+            "path": "Assets/SolariteDrill/Textures/solariteDrillBase_idle_side.png",
+            "guid": "5d7a11e0c0de4d5a9b1e5017a17e0008"
+        },
+        {
+            "path": "Assets/SolariteDrill/Textures/solariteDrillBase_idle.png",
+            "guid": "5d7a11e0c0de4d5a9b1e5017a17e0007"
+        },
+        {
+            "path": "Assets/SolariteDrill/Textures/SolariteDrill_smallIcon.png",
+            "guid": "5d7a11e0c0de4d5a9b1e5017a17e000c"
+        },
+        {
+            "path": "Assets/SolariteDrill/Textures/solariteDrill_inactive_up.png",
+            "guid": "5d7a11e0c0de4d5a9b1e5017a17e0006"
+        },
+        {
+            "path": "Assets/SolariteDrill/Textures/solariteDrill_inactive_side.png",
+            "guid": "5d7a11e0c0de4d5a9b1e5017a17e0005"
+        },
+        {
+            "path": "Assets/SolariteDrill/Textures/solariteDrill_inactive.png",
+            "guid": "5d7a11e0c0de4d5a9b1e5017a17e0004"
+        },
+        {
+            "path": "Assets/SolariteDrill/Textures/SolariteDrill_icon.png",
+            "guid": "5d7a11e0c0de4d5a9b1e5017a17e000b"
+        },
+        {
+            "path": "Assets/SolariteDrill/Textures/solariteDrill_active_up.png",
+            "guid": "5d7a11e0c0de4d5a9b1e5017a17e0003"
+        },
+        {
+            "path": "Assets/SolariteDrill/Textures/solariteDrill_active_side.png",
+            "guid": "5d7a11e0c0de4d5a9b1e5017a17e0002"
+        },
+        {
+            "path": "Assets/SolariteDrill/Textures/solariteDrill_active.png",
+            "guid": "5d7a11e0c0de4d5a9b1e5017a17e0001"
+        },
+        {
+            "path": "Assets/SolariteDrill/Prefabs/SolariteDrill_RightEntity.prefab",
+            "guid": "9687bf376ddf84f4aa8c315e294319e7"
+        },
+        {
+            "path": "Assets/SolariteDrill/Prefabs/SolariteDrill_LeftEntity.prefab",
+            "guid": "b073ce75757c03547aeaafb332e380d4"
+        },
+        {
+            "path": "Assets/SolariteDrill/Prefabs/SolariteDrill_ForwardEntity.prefab",
+            "guid": "ba2445817bc4ae949b5b356fe9b9e975"
+        },
+        {
+            "path": "Assets/SolariteDrill/Prefabs/SolariteDrill_BackwardEntity.prefab",
+            "guid": "dd1b8ecd9da86674a8db4b2611bf962d"
+        },
+        {
+            "path": "Assets/SolariteDrill/Data/TextDataBlock/Items/SolariteDrill_Drill.asset",
+            "guid": "5d7a11e0c0de4d5a9b1e5017a17e0100"
+        },
+        {
+            "path": "Assets/SolariteDrill/Data/SpriteAssetSkin/SolariteDrill_DrillSkin.asset",
+            "guid": "41ec26844e09d584690916ea24d3aad5"
+        },
+        {
+            "path": "Assets/SolariteDrill/Data/SpriteAssetSkin/SolariteDrill_BaseSkin.asset",
+            "guid": "aec541b03e66b0847a1a493af5f9b966"
+        },
+        {
+            "path": "Assets/SolariteDrill/Data/EntityAuthoringDataBlock/SolariteDrill_RightEntity.asset",
+            "guid": "a3d3e49578d04dd46aab8c49752671fd"
+        },
+        {
+            "path": "Assets/SolariteDrill/Data/EntityAuthoringDataBlock/SolariteDrill_LeftEntity.asset",
+            "guid": "3e9b49bb0122fee4cb3ea479866e8ebf"
+        },
+        {
+            "path": "Assets/SolariteDrill/Data/EntityAuthoringDataBlock/SolariteDrill_ForwardEntity.asset",
+            "guid": "890062edf3de6b941a0b960478890c67"
+        },
+        {
+            "path": "Assets/SolariteDrill/Data/EntityAuthoringDataBlock/SolariteDrill_BackwardEntity.asset",
+            "guid": "8c7791aa9f8c48d4eaa75ad08e34aa6e"
+        }
+    ]
+}

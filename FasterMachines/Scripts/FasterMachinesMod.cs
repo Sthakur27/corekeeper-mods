@@ -14,7 +14,7 @@ namespace FasterMachines
     public sealed class FasterMachinesMod : IMod
     {
         public const string Name = "FasterMachines";
-        public const string Version = "1.0.1";
+        public const string Version = "1.1.0";
 
         public const string SettingsHint = "How fast each machine works. 1x = vanilla, Instant = one item per tick. "
             + "Applies instantly (an item already in progress speeds up from its next item). In multiplayer the host's values count.";
@@ -36,6 +36,7 @@ namespace FasterMachines
         public void EarlyInit()
         {
             Debug.Log($"[{Name}] v{Version}");
+            API.Authoring.OnObjectTypeAdded += Systems.BoulderToleranceSystem.Record;
         }
 
         public void Init()
@@ -70,7 +71,7 @@ namespace FasterMachines
             return info != null && info.Metadata.name == "SidsOverhaul";
         }
 
-        public void Shutdown() { }
+        public void Shutdown() { API.Authoring.OnObjectTypeAdded -= Systems.BoulderToleranceSystem.Record; }
         public void ModObjectLoaded(Object obj) { }
         public void Update() { }
     }

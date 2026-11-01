@@ -152,6 +152,14 @@ COVERS = {
                 ('hdr:14.37.37.63', (344, 368, 464, 429), (688, TOP + 30, W - 24, TOP + 330),
                  [(348, 370, 405, 428)]),
                 ('hdr:14.37.37.63', (975, 664, 1266, 710), (688, TOP + 360, W - 24, H - 40), [])]),
+    # One placed Solarite Drill blown up 15x nearest-neighbour from capture 17.43.22.67 (make_solaritedrill_hero.py
+    # writes the 570x480 src image; the target box is exactly that size so it is pasted unresampled), and the
+    # Solarite Workbench recipe tooltip (180 mining damage, requires electricity, 10 Galaxite + 10 Solarite Bars).
+    'SolariteDrill': dict(
+        title='SOLARITE DRILL', caption='MINES 3X FASTER THAN A SCARLET DRILL', gain=1.7,
+        bg=('hdr:17.43.22.67', (330, 100, 970, 460), 6),
+        panels=[('src:solaritedrill_hero.png', (0, 0, 1280, 1078), (37, TOP + 32, 607, TOP + 512), []),
+                ('hdr:17.22.48.91', (822, 362, 1262, 705), (636, TOP + 8, W - 24, H - 10), [])]),
     # Tester at level 100 in every skill (all twelve starred) and a completely filled Gardening tree.
     'SkillXPMultiplier': dict(
         title='SKILL XP & TALENT POINTS', caption='FILL WHOLE TALENT TREES, LEVEL AT YOUR PACE', gain=1.9,

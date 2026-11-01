@@ -22,6 +22,8 @@ Supports Mining, Running, Melee, Vitality, Crafting, Range, Gardening, Fishing, 
 - Lowering it (or going back to Vanilla) below what you have already spent resets that skill's talent tree for free the next time you open it, so you can place the points again.
 - Choices are **Vanilla**, 30, 35 and 40: a tree has 8 talents of 5 points each, so 40 fills it completely.
 
+**Pet talent points at level 10** does the same for pets. The default is **9**, one for every talent slot, so a fully leveled pet can fill all of them. **Vanilla** keeps the normal 1 point every 2 levels (5 at level 10); the other choices are 6, 7 and 8. If a lower setting leaves a pet with more points placed than it has, use the reset button in its talent window.
+
 ## Chat shortcuts
 
 - `/xp` — show every multiplier.
@@ -36,7 +38,7 @@ Commands choose the nearest supported multiplier. This changes XP earned from pl
 
 The host picks **Multiplayer (when hosting)**:
 
-- **Host decides** (default): the host's XP multipliers and talent points apply to every player. Other players' own settings are ignored while they are on that world.
+- **Host decides** (default): the host's XP multipliers, talent points and pet talent points apply to every player. Other players' own settings are ignored while they are on that world.
 - **Each player picks**: every player uses the multipliers and talent points from their own menu.
 
 Only the host can use `/xp` to change values; other players get a short note instead. On your own world you are the host, so your settings always apply. Players without the mod use the host's XP multipliers and the normal talent curve.

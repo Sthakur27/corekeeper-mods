@@ -35,7 +35,8 @@ namespace SkillXPMultiplier
     }
 
     /// <summary>
-    /// Server → clients relay, sent automatically: "/xphost mode talents m0 … m11", the host's choice.
+    /// Server → clients relay, sent automatically: "/xphost mode talents m0 … m11 pet", the host's choice.
+    /// A host on 1.2.0 sends no pet value; the pet total then stays vanilla.
     /// </summary>
     public sealed class XpHostCommand : IClientCommandHandler
     {
@@ -45,7 +46,9 @@ namespace SkillXPMultiplier
                 int.TryParse(parameters[1], out int talents) &&
                 MultiplayerSync.TryParseFloats(parameters, 2, out float[] values))
             {
-                MultiplayerSync.ReceiveHost(parameters[0] == "1", talents, values);
+                int pet = parameters.Length > 2 + SkillXPTable.SkillCount &&
+                          int.TryParse(parameters[2 + SkillXPTable.SkillCount], out int p) ? p : -1;
+                MultiplayerSync.ReceiveHost(parameters[0] == "1", talents, pet, values);
             }
             return new CommandOutput(MultiplayerSync.Marker, CommandStatus.Info);
         }

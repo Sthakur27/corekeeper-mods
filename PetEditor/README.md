@@ -13,7 +13,7 @@ Equip a pet, then open its talent window.
 - **Replace a talent:** right-click a talent slot, then left-click a talent in the selection grid. Hover to read its description; right-click to close the grid.
 - **Refund a talent:** Shift + left-click a filled talent slot to clear its spent points for free.
 
-Spending points still works as usual. The total follows the game's own point formula, including changes from mods such as AllSkills. Lowering a pet's level resets allocated points if the pet would otherwise have too many.
+Spending points still works as usual. The total follows the game's own point formula, including the pet talent points setting in Skill XP & Talent Points. Lowering a pet's level resets allocated points if the pet would otherwise have too many.
 
 ## Chat alternatives
 

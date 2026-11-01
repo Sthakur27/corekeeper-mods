@@ -17,7 +17,7 @@ namespace SkillXPMultiplier
     /// server needs each player's multipliers; talent points are worked out on each client, so clients
     /// need the host's values. Both travel over CoreLib's command channel:
     ///   client → server  /xpsync m0 … m11          each player's own multipliers (on join and on change)
-    ///   server → clients /xphost mode talents m0 … m11   the host's choice, broadcast as a relay command
+    ///   server → clients /xphost mode talents m0 … m11 pet   the host's choice, broadcast as a relay command
     /// The replies those commands produce start with <see cref="Marker"/> and are kept out of chat by
     /// <see cref="HideSyncChatPatch"/>.
     /// </summary>
@@ -76,7 +76,7 @@ namespace SkillXPMultiplier
                 return connections.CalculateEntityCount() <= 1;
         }
 
-        /// <summary>Tell every client the host's mode, talent points and multipliers.</summary>
+        /// <summary>Tell every client the host's mode, talent points, multipliers and pet talent points.</summary>
         public static void BroadcastHost()
         {
             var comm = CommandModule.ServerCommSystem;
@@ -86,6 +86,7 @@ namespace SkillXPMultiplier
             sb.Append(LocalEachPlayer ? '1' : '0').Append(' ').Append(TalentPoints.Total);
             for (int i = 0; i < SkillXPTable.SkillCount; i++)
                 sb.Append(' ').Append(SkillXPTable.Get(i).ToString(CultureInfo.InvariantCulture));
+            sb.Append(' ').Append(PetTalentPoints.Total); // last, so 1.2.0 clients (which stop after m11) still parse it
             comm.SendRelayCommand(sb.ToString());
         }
 
@@ -95,6 +96,7 @@ namespace SkillXPMultiplier
         public static bool HaveHostState { get; private set; }
         public static bool HostEachPlayer { get; private set; }
         public static int HostTalentTotal { get; private set; } = -1;
+        public static int HostPetTalentTotal { get; private set; } = -1;
         private static readonly float[] _hostMultipliers = new float[SkillXPTable.SkillCount];
 
         /// <summary>True when this game is joined to someone else's world (no server world in this process).</summary>
@@ -103,11 +105,12 @@ namespace SkillXPMultiplier
         /// <summary>True when this player's own settings are being ignored because the host decides.</summary>
         public static bool HostOverrides => IsRemoteClient && HaveHostState && !HostEachPlayer;
 
-        internal static void ReceiveHost(bool eachPlayer, int talentTotal, float[] multipliers)
+        internal static void ReceiveHost(bool eachPlayer, int talentTotal, int petTalentTotal, float[] multipliers)
         {
             HaveHostState = true;
             HostEachPlayer = eachPlayer;
             HostTalentTotal = TalentPoints.Clamp(talentTotal);
+            HostPetTalentTotal = PetTalentPoints.Clamp(petTalentTotal);
             for (int i = 0; i < _hostMultipliers.Length && i < multipliers.Length; i++)
                 _hostMultipliers[i] = multipliers[i];
         }

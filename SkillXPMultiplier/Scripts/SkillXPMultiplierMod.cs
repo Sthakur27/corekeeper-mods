@@ -18,13 +18,14 @@ namespace SkillXPMultiplier
     /// Do not run together with the mod.io "XP Multiplier" mod: it multiplies whatever XP it
     /// sees land, including ours.
     ///
-    /// Also sets the total talent points per skill at max level (<see cref="TalentPoints"/>), and lets the
+    /// Also sets the total talent points per skill at max level (<see cref="TalentPoints"/>) and per pet
+    /// (<see cref="PetTalentPoints"/>), and lets the
     /// host decide whether their settings apply to everyone in multiplayer (<see cref="MultiplayerSync"/>).
     /// </summary>
     public sealed class SkillXPMultiplierMod : IMod
     {
         public const string Name = "SkillXPMultiplier";
-        public const string Version = "1.2.0";
+        public const string Version = "1.3.0";
 
         private static readonly Setting<string>[] _handles = new Setting<string>[SkillXPTable.SkillCount];
         private LoadedMod _modInfo;
@@ -49,6 +50,7 @@ namespace SkillXPMultiplier
         public const string SettingsHint = "XP multiplier per skill (1x = vanilla, 0x = skill frozen) and how many talent points each skill has at level 100. Applies instantly. Multiplayer: the host chooses whether their settings apply to everyone or each player uses their own.";
 
         private static Setting<string> _talentHandle;
+        private static Setting<string> _petTalentHandle;
         private static Setting<string> _modeHandle;
 
         public void Init()
@@ -78,6 +80,14 @@ namespace SkillXPMultiplier
                 MultiplayerSync.OnLocalSettingsChanged();
             };
 
+            section.Choice(out _petTalentHandle, "Pet talent points at level 10", PetTalentPoints.Ladder, PetTalentPoints.DefaultToken);
+            PetTalentPoints.Total = PetTalentPoints.Parse(_petTalentHandle.Value);
+            _petTalentHandle.OnChanged += token =>
+            {
+                PetTalentPoints.Total = PetTalentPoints.Parse(token);
+                MultiplayerSync.OnLocalSettingsChanged();
+            };
+
             for (int i = 0; i < SkillXPTable.SkillCount; i++)
             {
                 section.Choice(out _handles[i], SkillXPTable.SkillNames[i], SkillXPTable.Ladder, SkillXPTable.DefaultToken);
@@ -90,7 +100,7 @@ namespace SkillXPMultiplier
                 };
             }
 
-            Debug.Log($"[{Name}] Loaded. Multiplayer: {_modeHandle.Value}. Talent points at max level: {_talentHandle.Value}. Multipliers: {Describe()}");
+            Debug.Log($"[{Name}] Loaded. Multiplayer: {_modeHandle.Value}. Talent points at max level: {_talentHandle.Value}. Pet talent points: {_petTalentHandle.Value}. Multipliers: {Describe()}");
         }
 
         /// <summary>True when this feature is running inside Sid's Overhaul (one combined mod).</summary>

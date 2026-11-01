@@ -84,4 +84,61 @@ namespace SkillXPMultiplier
             return false;
         }
     }
+
+    /// <summary>
+    /// How many talent points a pet has in total at its max level (10). Like skills, points come in evenly:
+    /// a pet at level L has floor(L * total / 10). "Vanilla" keeps the game's own 1 per 2 levels (5 at level 10).
+    /// </summary>
+    public static class PetTalentPoints
+    {
+        public const string DefaultToken = "9";
+
+        /// <summary>A pet has 9 talent slots of 1 point each.</summary>
+        public const int MaxUseful = 9;
+
+        /// <summary>Vanilla already gives 5, so only totals above it are offered.</summary>
+        public const int MinUseful = 6;
+
+        public static readonly string[] Ladder =
+        {
+            TalentPoints.VanillaToken, "6", "7", "8", "9"
+        };
+
+        /// <summary>This player's own setting; -1 means the game's own curve.</summary>
+        public static int Total = 9;
+
+        /// <summary>The total in effect: the host's when joined to a world where the host decides, else <see cref="Total"/>.</summary>
+        public static int Effective => MultiplayerSync.HostOverrides ? MultiplayerSync.HostPetTalentTotal : Total;
+
+        public static int Parse(string token)
+        {
+            return int.TryParse(token, out int v) ? Clamp(v) : -1;
+        }
+
+        /// <summary>Below 6 → -1 (vanilla), above 9 → 9.</summary>
+        public static int Clamp(int total)
+        {
+            if (total < MinUseful) return -1;
+            return total > MaxUseful ? MaxUseful : total;
+        }
+    }
+
+    /// <summary>
+    /// PetExtensions.GetTotalTalentPoints is where the game turns a pet's XP into its talent points (the
+    /// pet window subtracts what is placed). Client-side UI only, like skill talents. If a lower total
+    /// leaves more placed than earned, the pet window's own reset button frees them.
+    /// </summary>
+    [HarmonyPatch(typeof(PetExtensions), nameof(PetExtensions.GetTotalTalentPoints))]
+    public static class PetTalentPointsPatch
+    {
+        [HarmonyPrefix]
+        public static bool Prefix(int currentXp, ref int __result)
+        {
+            int total = PetTalentPoints.Effective;
+            if (total < 0) return true;
+
+            __result = TalentPoints.Earned(PetExtensions.GetLevelFromXP(currentXp), PetExtensions.maxLevel, total);
+            return false;
+        }
+    }
 }

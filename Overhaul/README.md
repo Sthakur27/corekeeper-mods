@@ -4,6 +4,8 @@
 
 Spend less time repeating chores and more time exploring. Sid's Overhaul brings the individual mods in this repository into one package: easier farming and fishing, equipment tools, merchant supplies, and adjustable combat and progression.
 
+**1.9.4:** Item Spawner 1.1.1: the trash can is usable while the spawner is open, and the item on your cursor no longer hides behind the Gourmet checkbox.
+
 **New in 1.9.3: pet talent points.** Skill XP & Talent Points now also sets how many talent points a pet has at level 10: default 9, enough for all nine slots (Vanilla is 5).
 
 **1.9.0: Skill XP & Talent Points.** Choose how many talent points each skill has at level 100 (Vanilla 25, or 30, 35 or 40, enough to fill a whole tree; default 40). In multiplayer the host picks whether their XP multipliers and talent points apply to everyone or each player uses their own, and only the host can change values with `/xp`.

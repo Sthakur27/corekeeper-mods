@@ -50,7 +50,11 @@ namespace ItemSpawner
         private int filter;
         private string lastSearch="";
         private PugText heading, emptyMessage;
-        private Vector3 bagPosition, barPosition;
+        private Vector3 bagPosition, barPosition, trashPosition;
+        // Highest sort order in the cooking row; the held item draws above it.
+        private int equationTopOrder;
+        // Panel's right edge in screen-local x (measured once the panel has real bounds), so the trash can stays clear of it.
+        private float panelRightLocal=float.NaN;
         private List<SpawnEntry> catalogue;
         private readonly Dictionary<SpawnEntry,string> names=new Dictionary<SpawnEntry,string>();
 
@@ -102,11 +106,14 @@ namespace ItemSpawner
             Manager.ui.TryHideAllInventoryAndCraftingUI();
             try {
                 self.bagPosition=Manager.ui.playerInventoryUI.transform.position;
+                self.trashPosition=Manager.ui.trashCanUI.transform.position;
                 self.barPosition=Manager.ui.itemSlotsBar.transform.position;
                 if(self.screen==null) self.Build();
                 if(self.catalogue==null) self.BuildCatalogue();
                 Manager.ui.itemSlotsBar.HideContainerUI();
                 Manager.ui.playerInventoryUI.ShowContainerUI();
+                // Vanilla shows the trash can with the inventory; it follows the bag when the bag moves aside.
+                Manager.ui.trashCanUI.ShowContainerUI();
                 self.open=true;
                 self.ApplyLayout();
                 self.screen.SetActive(true);
@@ -128,6 +135,7 @@ namespace ItemSpawner
             if(Manager.ui!=null) {
                 Manager.ui.mouse.ReleaseGrabbedItemBackToInventory();
                 Manager.ui.playerInventoryUI.transform.position=self.bagPosition;
+                Manager.ui.trashCanUI.transform.position=self.trashPosition;
                 Manager.ui.itemSlotsBar.transform.position=self.barPosition;
                 Manager.ui.TryHideAllInventoryAndCraftingUI();
             }
@@ -419,6 +427,7 @@ namespace ItemSpawner
                 r.sortingOrder+=top+10;
                 if(r.name=="Icon" && r.sprite!=null) gourmetIcons.Add((r,GlyphIcons.Make(r.sprite,GlyphIcons.Shape.Box),GlyphIcons.Make(r.sprite,GlyphIcons.Shape.CheckedBox)));
             }
+            equationTopOrder=equationRoot.GetComponentsInChildren<SpriteRenderer>(true).Max(r=>r.sortingOrder);
             equationRoot.SetActive(false);
         }
 
@@ -601,6 +610,7 @@ namespace ItemSpawner
             }
             if(first)return;
             var low=screen.transform.InverseTransformPoint(bounds.min);var high=screen.transform.InverseTransformPoint(bounds.max);
+            panelRightLocal=high.x;
             float step=Mathf.Min(1.05f,(high.y-low.y)/Categories.Length);
             for(int i=0;i<tabButtons.Count;i++)
                 tabButtons[i].transform.localPosition=new Vector3(low.x-TabSize*.5f-.1f,high.y-step*(i+.5f),-.2f);
@@ -703,7 +713,27 @@ namespace ItemSpawner
             screen.transform.localPosition=new Vector3(BrowserPos.x*scale.x,BrowserPos.y*scale.y,bagDepth);
             Manager.ui.playerInventoryUI.transform.position=camera.TransformPoint(new Vector3(BagPos.x*scale.x,(BagPos.y+3f)*scale.y,bagDepth));
             FitInventoryToScreen();
+            var trash=Manager.ui.trashCanUI.transform;
+            if(!trash.IsChildOf(Manager.ui.playerInventoryUI.transform))
+                trash.position=trashPosition+(Manager.ui.playerInventoryUI.transform.position-bagPosition);
+            KeepTrashClearOfPanel(trash);
             Manager.ui.itemSlotsBar.HideContainerUI();
+        }
+
+        // The trash can sits left of the bag, where the panel's right edge can cover its border: if it does,
+        // slide the bag and trash can right until the trash can clears the panel by a tenth of a slot.
+        private void KeepTrashClearOfPanel(Transform trash)
+        {
+            if(float.IsNaN(panelRightLocal) || grid.Count==0 || grid[0].background==null) return;
+            float trashLeft=float.MaxValue;
+            foreach(var r in trash.GetComponentsInChildren<SpriteRenderer>())
+                if(r.enabled && r.sprite!=null) trashLeft=Mathf.Min(trashLeft,r.bounds.min.x);
+            if(trashLeft==float.MaxValue) return;
+            float panelRight=screen.transform.TransformPoint(new Vector3(panelRightLocal,0,0)).x;
+            float push=panelRight+grid[0].background.bounds.size.x*.1f-trashLeft;
+            if(push<=0) return;
+            Manager.ui.playerInventoryUI.transform.position+=Vector3.right*push;
+            if(!trash.IsChildOf(Manager.ui.playerInventoryUI.transform)) trash.position+=Vector3.right*push;
         }
 
         private void FitInventoryToScreen()
@@ -728,7 +758,7 @@ namespace ItemSpawner
         // The grabbed item draws above the panel instead of behind it.
         private void RaiseCursor()
         {
-            var mouse=Manager.ui.mouse;int order=100;
+            var mouse=Manager.ui.mouse;int order=Math.Max(100,equationTopOrder+10);
             foreach(var renderer in new[]{mouse.grabbedItemUnderlaySR,mouse.grabbedItemSR,mouse.grabbedItemOverlaySR}) {
                 if(renderer==null)continue;
                 if(!cursorLayers.ContainsKey(renderer))cursorLayers.Add(renderer,(renderer.sortingLayerID,renderer.sortingOrder,renderer.maskInteraction));

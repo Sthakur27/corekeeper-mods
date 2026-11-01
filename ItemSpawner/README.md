@@ -9,6 +9,7 @@ A searchable spawn browser for the host and admins. Press **Z** (rebind under Co
 - **Shift-left-click**: a full stack into your bag. Bag spawns drop at your feet if the bag is full.
 - Category tabs on the left and the search box narrow the list. The grid/list button switches views.
 - **Level bonus** (the two buttons next to grid/list, or the `[` and `]` keys): adds levels on top of each gear piece's or tool's base level. "Lv base" means the normal level; "Lv +3" means three levels above it. Hold Shift to step by 5. It never goes below base, and an item stops at the game's max level instead of overshooting. Hover an item to see its stats at that level.
+- The trash can sits next to your bag as usual, so you can spawn something and bin it without closing the browser.
 - Esc, Z or opening another inventory closes the browser.
 
 ## Cooking

@@ -225,6 +225,9 @@ namespace ModOptions.UI
         /// <summary>Removes the menu's current rows and returns an empty list for the new ones.</summary>
         private static List<RadicalMenuOption> Rebuild(RadicalOptionsMenu menu)
         {
+            // The menu keeps the previous page's selectedIndex; on a shorter page RadicalMenu.CanChangeIndex
+            // would index past the end of menuOptions. Deselect while the old rows are still in the list.
+            menu.DeselectAnyCurrentOption(playEffect: false);
             Transform scroll = menu.transform.Find("Options/Scroll");
             for (int i = scroll.childCount - 1; i >= 0; i--)
             {

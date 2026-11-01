@@ -152,7 +152,7 @@ COVERS = {
     'PotionSeller': dict(
         title='POTION SELLER', caption='POTIONS AND MORE FROM FAMILIAR MERCHANTS', gain=1.9,
         bg=('hdr:11.20.19.34', (0, 0, 1280, 720), 6),
-        panels=[('hdr:11.20.19.34', (140, 166, 630, 345), (40, TOP + 12, W - 40, H - 14), [])]),
+        panels=[('hdr:11.20.19.34', (140, 166, 630, 345), (236, TOP + 30, W - 24, H - 14), [])]),
     # Fighting a Shrooman Brute in the desert.
     'MushroomSlayer': dict(
         title='MUSHROOM SLAYER', caption="STRONG HITS BREAK A BRUTE'S ARMOR", gain=1.6,

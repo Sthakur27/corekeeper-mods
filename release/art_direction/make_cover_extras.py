@@ -6,6 +6,8 @@
   PNGs): each sprinkler tile is covered with the same patch from two tiles over, so the before/after
   pair shows only crops and seedlings.
 - FishSeller: the Fishing Merchant (cut from capture 11.19.35.63) framed in the bottom-left corner.
+- PotionSeller: the Caveling Merchant (capture 11.20.29.50) framed in the bottom-left corner.
+- FastAutoFishing: clock_bubble(), a reusable speech-bubble clock icon in the style of the game's bite bubble.
 - BiggerWateringCans: the watering can's own hotbar slot (capture 11.23.25.65), blown up between panels.
 - InfiniteOreBoulders: a symmetric pixel infinity sign on a framed plate beside the boulder.
 - MushroomSlayer: animated GIF; a big pixel damage number pops off the Brute and floats up, plus a
@@ -109,6 +111,55 @@ def fish_seller():
     return c
 
 
+def potion_seller():
+    c = covers.compose('PotionSeller')
+    # the Caveling Merchant walking through the base, with his pack (capture 11.20.29.50)
+    merchant = sprite('11.20.29.50', (1570, 670, 1820, 1080))
+    tag(c, 'CAVELING MERCHANT', (205, 180))
+    plate(c, merchant, (40, 268), scale=0.75)
+    return c
+
+
+def clock_bubble(cell=5):
+    """Speech-bubble icon with a clock face, in the style of the game's "!" bite bubble: white bubble with
+    a dark outline, grey shading at the bottom and a tail at the lower left. Drawn on a small grid and
+    scaled with nearest-neighbour. Reusable for any 'faster / less waiting' mod."""
+    import math
+    gw, gh = 25, 27
+    ink, white, shade, face, gold = DARK, '#f6f2e8', '#c7c1b3', '#fff8e0', '#d79a2b'
+    img = Image.new('RGBA', (gw, gh), (0, 0, 0, 0))
+    d = ImageDraw.Draw(img)
+    d.rounded_rectangle((0, 0, gw - 1, 21), 5, fill=white, outline=ink)
+    d.rectangle((2, 18, gw - 3, 20), fill=shade)                     # bottom shading inside the outline
+    d.rounded_rectangle((0, 0, gw - 1, 21), 5, outline=ink)
+    d.polygon([(5, 20), (11, 20), (5, 26)], fill=white)               # tail
+    d.line([(5, 21), (5, 26), (11, 21)], fill=ink)
+    d.point((6, 22), fill=shade); d.point((6, 23), fill=shade)
+    cx, cy, r = 12, 10, 7.4
+    for y in range(gh):
+        for x in range(gw):
+            dist = math.hypot(x - cx, y - cy)
+            if dist <= r - 1.2:
+                img.putpixel((x, y), (255, 248, 224, 255))
+            elif dist <= r:
+                img.putpixel((x, y), (26, 15, 8, 255))
+    for tx, ty in ((cx, cy - 5), (cx + 5, cy), (cx, cy + 5), (cx - 5, cy)):   # 12, 3, 6, 9 ticks
+        img.putpixel((tx, ty), (215, 154, 43, 255))
+    for i in range(1, 5):                                              # minute hand to 12
+        img.putpixel((cx, cy - i), (26, 15, 8, 255))
+    for i in range(1, 4):                                              # hour hand to 2
+        img.putpixel((cx + i, cy - (i + 1) // 2), (26, 15, 8, 255))
+    img.putpixel((cx, cy), (200, 60, 40, 255))
+    return img.resize((gw * cell, gh * cell), Image.NEAREST)
+
+
+def fast_fishing():
+    c = covers.compose('FastAutoFishing')
+    b = clock_bubble()
+    c.paste(b, (560, 196), b)
+    return c
+
+
 def watering_cans():
     c = covers.compose('BiggerWateringCans')
     can = sprite('11.23.25.65', (2462, 1932, 2608, 2083), gain=1.6)
@@ -187,7 +238,7 @@ def save_gif(frames, durations, path):
     q[0].save(path, save_all=True, append_images=q[1:], duration=durations, loop=0, optimize=False, disposal=1)
 
 
-BUILDERS = {'FishSeller': fish_seller, 'BiggerWateringCans': watering_cans, 'InfiniteOreBoulders': ore_boulders}
+BUILDERS = {'FishSeller': fish_seller, 'PotionSeller': potion_seller, 'FastAutoFishing': fast_fishing, 'BiggerWateringCans': watering_cans, 'InfiniteOreBoulders': ore_boulders}
 
 if __name__ == '__main__':
     args = sys.argv[1:]

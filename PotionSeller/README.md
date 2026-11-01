@@ -1,6 +1,6 @@
 # Potion Seller
 
-![Potion Seller — illustrated mod cover](../release/potionseller_logo.png)
+![Potion Seller — mod cover from in-game screenshots](../release/potionseller_logo.png)
 
 Spend Ancient Coins to restock potions, explosives and unlocked Titan summoning items from familiar merchants.
 

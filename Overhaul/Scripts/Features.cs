@@ -48,6 +48,7 @@ namespace SidsOverhaul
             { "PetEditor", "Pet Editor" },
             { "BossBonusLoot", "Boss Bonus Loot" },
             { "InfiniteOreBoulders", "Infinite Ore Boulders" },
+            { "BoulderMover", "Movable Ore Boulders" },
             { "StimHits", "Hit Sound Effects" },
             { "ArmorDye", "Armor Dye" },
             { "MushroomSlayer", "Mushroom Slayer" },

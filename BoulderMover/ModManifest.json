@@ -1,0 +1,25 @@
+{
+    "guid": "3e9d2b7c41a84f0e9b6c5d1a2f7e8c40",
+    "name": "BoulderMover",
+    "displayName": "Movable Ore Boulders",
+    "skipSafetyChecks": false,
+    "disableScripts": false,
+    "accessesExtraAssemblies": true,
+    "disableHarmonyPatching": false,
+    "requiredOn": 3,
+    "files": [
+        {
+            "path": "Scripts/BoulderMoverMod.cs",
+            "guid": "3e9d2b7c41a84f0e9b6c5d1a2f7e8c41"
+        },
+        {
+            "path": "Scripts/MazeBlock.cs",
+            "guid": "3e9d2b7c41a84f0e9b6c5d1a2f7e8c42"
+        },
+        {
+            "path": "Scripts/Systems/BoulderPickupSystem.cs",
+            "guid": "3e9d2b7c41a84f0e9b6c5d1a2f7e8c43"
+        }
+    ],
+    "dependencies": []
+}

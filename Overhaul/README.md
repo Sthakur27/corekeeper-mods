@@ -4,9 +4,9 @@
 
 Spend less time repeating chores and more time exploring. Sid's Overhaul brings the individual mods in this repository into one package: easier farming and fishing, equipment tools, merchant supplies, and adjustable combat and progression.
 
-**1.9.4:** Item Spawner 1.1.1: the trash can is usable while the spawner is open, and the item on your cursor no longer hides behind the Gourmet checkbox.
+**New in 1.9.5: Movable Ore Boulders and pet talent points.** Mine an ore boulder loose with a pickaxe strong enough to break a Maze Block, and carry it to your drills; mining boulders never gives ore, drills still do. Skill XP & Talent Points now also sets how many talent points a pet has at level 10: default 9, enough for all nine slots (Vanilla is 5).
 
-**New in 1.9.3: pet talent points.** Skill XP & Talent Points now also sets how many talent points a pet has at level 10: default 9, enough for all nine slots (Vanilla is 5).
+**1.9.4:** Item Spawner 1.1.1: the trash can is usable while the spawner is open, and the item on your cursor no longer hides behind the Gourmet checkbox.
 
 **1.9.0: Skill XP & Talent Points.** Choose how many talent points each skill has at level 100 (Vanilla 25, or 30, 35 or 40, enough to fill a whole tree; default 40). In multiplayer the host picks whether their XP multipliers and talent points apply to everyone or each player uses their own, and only the host can change values with `/xp`.
 
@@ -58,6 +58,7 @@ Prefer to pick individual mods? Use [Sid's Core Keeper Mods collection](https://
 | Fish Seller | Buy fish and Shiny Larva Meat, and scroll through expanded shops. |
 | Merchant Restock | Choose a restock interval for all merchants or individual merchant types. |
 | Infinite Ore Boulders | Keep drilling ore boulders without depleting them. |
+| Movable Ore Boulders | Mine an untouched ore boulder loose (Maze Block mining power) and place it next to your drills. Mining boulders gives no ore. May not work with other mods that change ore boulder mining or destruction. |
 | Build Tools | Bigger tool areas remembered per tool, a block brush with floor/wall modes and Swap, and roofing gadget modes. Inspired by Placement Plus and Roofing Gadget Plus. |
 | Faster Machines | Per-machine speed for furnaces, kilns, glass smelter, fury forge, cooking pot, table saw, egg incubator and drills (default 5x, up to 100x or Instant). |
 | No intro logos | Skips the studio logos when the game starts. Always on. |

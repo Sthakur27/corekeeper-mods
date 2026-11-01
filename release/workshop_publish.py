@@ -85,12 +85,13 @@ COVER_NOTES = {
     "AutoReplant": "Cover is made from in-game screenshots of the same field before and after harvesting (HDR captures tone-mapped; sprinklers edited out); title banner added.",
     "InfiniteOreBoulders": "Cover is an in-game screenshot of drills around an ore boulder (HDR capture tone-mapped); title banner and infinity sign added.",
     "MushroomSlayer": "Cover is an in-game screenshot of a fight with a Shrooman Brute (HDR capture tone-mapped); title banner and an animated damage number added.",
-    "FastAutoFishing": "Cover is made from in-game screenshots of a bite on the line and the catch log (HDR captures tone-mapped); title banner and a clock icon added.",
+    "FastAutoFishing": "Cover is made from in-game screenshots of a bite on the line and the catch log (HDR captures tone-mapped); title banner and a stopwatch icon added.",
     "SkillXPMultiplier": "Cover is made from an in-game screenshot of the skills panel and a filled talent tree (HDR capture tone-mapped); title banner added.",
     "PotionSeller": "Cover is made from in-game screenshots of the Caveling Merchant and his shop (HDR captures tone-mapped); title banner and label added.",
-    "VehicleSpeed": "Cover is an in-game screenshot of a boat crossing open water (HDR capture tone-mapped); title banner and a clock icon added.",
+    "VehicleSpeed": "Cover is an in-game screenshot of a boat crossing open water (HDR capture tone-mapped); title banner and a stopwatch icon added.",
     "KeepMinions": "Cover is an in-game screenshot of the Core teleporter with a minion and pet beside the player (HDR capture tone-mapped); title banner added.",
     "BuffDurationFloor": "Cover is an in-game screenshot of the buff bar (HDR capture tone-mapped); title banner and a clock icon added.",
+    "FasterMushrooms": "Cover is an in-game screenshot of a mycelium field of grown mushrooms (HDR capture tone-mapped); title banner and a stopwatch icon added.",
 }
 
 # Steam collection with every individual mod (+ CoreLib); processed first so other descriptions can link it.

@@ -179,6 +179,11 @@ COVERS = {
         title='DURABILITY MULTIPLIER', caption='TOOLS, WEAPONS AND ARMOR LAST LONGER', gain=1.7,
         bg=('hdr:11.23.25.65', (160, 120, 800, 480), 6),
         panels=[('hdr:11.23.25.65', (520, 642, 760, 697), (24, TOP + 60, 880, H - 60), [])]),
+    # A mycelium field full of grown mushrooms around the player.
+    'FasterMushrooms': dict(
+        title='FASTER MUSHROOMS', caption='MUSHROOMS GROW AND RESPAWN SOONER', gain=1.7,
+        bg=('hdr:12.07.00.77', (150, 100, 950, 550), 6),
+        panels=[('hdr:12.07.00.77', (420, 200, 780, 440), (120, TOP + 8, W - 120, H - 14), [])]),
     # Fighting a Shrooman Brute in the desert.
     'MushroomSlayer': dict(
         title='MUSHROOM SLAYER', caption="STRONG HITS BREAK A BRUTE'S ARMOR", gain=1.6,

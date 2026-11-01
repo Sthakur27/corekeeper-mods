@@ -155,15 +155,15 @@ def clock_bubble(cell=5):
 
 def fast_fishing():
     c = covers.compose('FastAutoFishing')
-    b = clock_bubble()
+    b = stopwatch(None, 0.3, cell=4)   # no multiplier setting, so no number
     c.paste(b, (560, 196), b)
     return c
 
 
 def vehicle_speed():
     c = covers.compose('VehicleSpeed')
-    b = clock_bubble()
-    c.paste(b, (800, 210), b)
+    b = stopwatch('2x', 0.5)   # one of the speed choices
+    c.paste(b, (900, 200), b)
     return c
 
 
@@ -197,6 +197,79 @@ def durability_frames():
         frames.append(fm.frame(base, '0x', s))
         durations.append(50)
     return still, frames, durations
+
+
+def stopwatch(label='2x', frac=0.3, badge='side', cell=5):
+    """Cartoon pixel stopwatch, reusable for any 'faster' mod: brass rim and crown, cream face, a red wedge
+    for the elapsed part (frac of a turn from 12 o'clock), a hand at the wedge edge, and a speed label
+    either on a teal badge at the lower right (badge='side') or on the face itself (badge='center').
+    Drawn on a small grid and scaled with nearest-neighbour like the banner."""
+    import math
+    gw, gh = 34, 36
+    img = Image.new('RGBA', (gw, gh), (0, 0, 0, 0))
+    d = ImageDraw.Draw(img)
+    cx, cy, r = 15, 20, 13.2
+    ink, brass, brass_hi, brass_lo = (26, 15, 8, 255), (232, 184, 90, 255), (255, 228, 150, 255), (150, 98, 36, 255)
+    face, face_lo, red, red_hi = (255, 248, 224, 255), (226, 214, 186, 255), (214, 58, 44, 255), (246, 112, 84, 255)
+    # crown (top button) and side button
+    d.rectangle((cx - 2, 2, cx + 2, 4), fill=brass, outline=ink)
+    d.rectangle((cx - 1, 4, cx + 1, 6), fill=brass_lo, outline=ink)
+    d.polygon([(cx + 7, 8), (cx + 10, 5), (cx + 12, 7), (cx + 9, 10)], fill=brass, outline=ink)
+    start = -math.pi / 2
+    for y in range(gh):
+        for x in range(gw):
+            dx, dy = x - cx, y - cy
+            dist = math.hypot(dx, dy)
+            if dist > r:
+                continue
+            if dist > r - 1.1:
+                img.putpixel((x, y), ink)
+            elif dist > r - 3.1:                       # brass rim, lit from the top left
+                img.putpixel((x, y), brass_hi if dx + dy < -6 else (brass_lo if dx + dy > 8 else brass))
+            elif dist > r - 4.0:
+                img.putpixel((x, y), ink)
+            else:
+                ang = (math.atan2(dy, dx) - start) % (2 * math.pi)
+                inside = ang <= frac * 2 * math.pi
+                col = (red_hi if dist < 4 else red) if inside else (face_lo if dy > 5 else face)
+                img.putpixel((x, y), col)
+    for k in range(12):                                # hour ticks
+        a = start + k * math.pi / 6
+        tx, ty = round(cx + (r - 5.6) * math.cos(a)), round(cy + (r - 5.6) * math.sin(a))
+        if k % 3 == 0:
+            img.putpixel((tx, ty), ink)
+    a = start + frac * 2 * math.pi                     # hand at the edge of the wedge
+    for i in range(1, 9):
+        img.putpixel((round(cx + i * math.cos(a)), round(cy + i * math.sin(a))), ink)
+    for i in range(1, 9):                              # wedge edge from 12
+        img.putpixel((cx, cy - i), ink if i > 7 else img.getpixel((cx, cy - i)))
+    d.rectangle((cx - 1, cy - 1, cx + 1, cy + 1), fill=ink)
+    img.putpixel((cx, cy), brass)
+    big = img.resize((gw * cell, gh * cell), Image.NEAREST)
+    if not label:
+        return big
+    t = big_text(label.upper(), 15 if badge == 'side' else 9, '#ffd36a')
+    if badge == 'center':
+        big.paste(t, (round(cx * cell + cell / 2 - t.width / 2), round((cy + 2) * cell)), t)
+        return big
+    pad = 10
+    plate_w, plate_h = t.width + 2 * pad, t.height + pad
+    out = Image.new('RGBA', (big.width + plate_w // 2, big.height + plate_h // 3), (0, 0, 0, 0))
+    out.paste(big, (0, 0), big)
+    plate = Image.new('RGBA', (plate_w, plate_h), (0, 0, 0, 0))
+    pd = ImageDraw.Draw(plate)
+    pd.rounded_rectangle((0, 0, plate_w - 1, plate_h - 1), 10, fill=TEAL, outline=TEAL_EDGE, width=4)
+    pd.rounded_rectangle((7, 7, plate_w - 8, plate_h - 8), 6, outline=GOLD, width=3)
+    plate.paste(t, (pad, pad // 2 - 2), t)
+    out.paste(plate, (out.width - plate_w, out.height - plate_h), plate)
+    return out
+
+
+def faster_mushrooms():
+    c = covers.compose('FasterMushrooms')
+    b = stopwatch('4x', 0.3)   # default growth speed
+    c.paste(b, (1020, 230), b)
+    return c
 
 
 def watering_cans():
@@ -277,7 +350,7 @@ def save_gif(frames, durations, path):
     q[0].save(path, save_all=True, append_images=q[1:], duration=durations, loop=0, optimize=False, disposal=1)
 
 
-BUILDERS = {'FishSeller': fish_seller, 'PotionSeller': potion_seller, 'FastAutoFishing': fast_fishing, 'VehicleSpeed': vehicle_speed, 'BuffDurationFloor': buff_duration, 'BiggerWateringCans': watering_cans, 'InfiniteOreBoulders': ore_boulders}
+BUILDERS = {'FishSeller': fish_seller, 'PotionSeller': potion_seller, 'FastAutoFishing': fast_fishing, 'VehicleSpeed': vehicle_speed, 'FasterMushrooms': faster_mushrooms, 'BuffDurationFloor': buff_duration, 'BiggerWateringCans': watering_cans, 'InfiniteOreBoulders': ore_boulders}
 
 if __name__ == '__main__':
     args = sys.argv[1:]

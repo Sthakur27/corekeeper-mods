@@ -6,7 +6,8 @@ namespace SkillXPMultiplier.Systems
 {
     /// <summary>
     /// Runs right before the game's AddSkillValueSystem and multiplies the pending XP amount on
-    /// every AddSkillValueCD entity by that skill's configured multiplier. The game then adds the
+    /// every AddSkillValueCD entity by that skill's configured multiplier (the host's, or the earning
+    /// player's own when the host lets each player pick). Grants only exist on the server. The game then adds the
     /// scaled amount to the player's skill progress and destroys the entity (via the
     /// BeginSimulation command buffer, i.e. at the start of the next frame).
     ///
@@ -45,7 +46,7 @@ namespace SkillXPMultiplier.Systems
                 _scaledThisFrame.Add(entity);
 
                 var grant = grants[i];
-                float mult = SkillXPTable.Get((int)grant.skillID);
+                float mult = MultiplayerSync.MultiplierFor(grant.entity, (int)grant.skillID);
                 if (mult == 1f || grant.amount <= 0f) continue;
 
                 grant.amount *= mult;

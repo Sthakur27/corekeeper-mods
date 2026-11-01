@@ -4,7 +4,9 @@
 
 Spend less time repeating chores and more time exploring. Sid's Overhaul brings the individual mods in this repository into one package: easier farming and fishing, equipment tools, merchant supplies, and adjustable combat and progression.
 
-**New in 1.8.0: cooking in Item Spawner.** Press the cooking pot button in the spawner to build any dish: pick two ingredients (golden ones included), see the real dish with its stats, and tick Gourmet for the rarer roll. Every dish is one the cooking pot can make.
+**New in 1.9.0: Skill XP & Talent Points.** Choose how many talent points each skill has at level 100 (Vanilla 25, or 30, 35 or 40, enough to fill a whole tree; default 40). In multiplayer the host picks whether their XP multipliers and talent points apply to everyone or each player uses their own, and only the host can change values with `/xp`.
+
+**1.8.0: cooking in Item Spawner.** Press the cooking pot button in the spawner to build any dish: pick two ingredients (golden ones included), see the real dish with its stats, and tick Gourmet for the rarer roll. Every dish is one the cooking pot can make.
 
 **1.7.0: Item Spawner.** Press Z (rebindable under Controls) to search every item in the game, modded ones included. Left-click puts one on your cursor (Ctrl: a full stack), right-click puts one in your bag (Shift or Ctrl: a full stack), and the - / + buttons spawn gear and tools up to the max level above their base. Host and admins only.
 
@@ -61,7 +63,7 @@ Prefer to pick individual mods? Use [Sid's Core Keeper Mods collection](https://
 | Difficulty Tuning | Separate enemy and boss settings for Hard and Normal worlds. |
 | Mushroom Slayer | Configurable gray brute armor: hits below 200 deal 1; hits of 200 or more deal 10%. Red phase unchanged. |
 | Boss Bonus Loot | Extra drops from selected bosses and enemies. |
-| Skill XP Multiplier | Adjust experience gains per skill. |
+| Skill XP & Talent Points | Adjust experience gains per skill and the talent points each skill gives. |
 | Keep Minions On Teleport | Bring summoned minions with you through teleports. |
 | Vehicle Speed | Adjust boat and go-kart speeds. |
 | Hit Sound Effects | Pick hit, kill and hurt sounds, including custom audio. |

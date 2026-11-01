@@ -10,13 +10,25 @@ namespace SkillXPMultiplier
     ///   /xp                 show every skill's multiplier
     ///   /xp mining 20       set one skill (snapped to the nearest menu choice)
     ///   /xp all 5           set every skill
+    /// It runs on the server and changes the host's settings, so only the host can set values.
     /// </summary>
     public sealed class SkillXPCommand : IServerCommandHandler
     {
         public CommandOutput Execute(string[] parameters, Entity sender)
         {
+            bool host = MultiplayerSync.IsHostConnection(sender);
+            string mode = host ? "" : MultiplayerSync.LocalEachPlayer
+                ? " (host's values; the host lets each player pick their own in Settings > Mod Options)"
+                : " (the host decides for everyone)";
+
             if (parameters.Length == 0)
-                return "XP multipliers: " + SkillXPMultiplierMod.Describe();
+                return "XP multipliers: " + SkillXPMultiplierMod.Describe() + mode;
+
+            // Runs on the server, so it changes the host's settings: only the host may do that.
+            if (!host)
+                return MultiplayerSync.LocalEachPlayer
+                    ? "Set your own multipliers in Settings > Mod Options > " + SkillXPMultiplierMod.Title + "."
+                    : "Only the host can change XP multipliers on this world.";
 
             if (parameters.Length != 2)
                 return "Usage: /xp <skill|all> <multiplier>   e.g. /xp mining 20, /xp all 1";

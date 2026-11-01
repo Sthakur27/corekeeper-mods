@@ -142,6 +142,17 @@ COVERS = {
         title='INFINITE ORE BOULDERS', caption='ORE BOULDERS THAT NEVER RUN OUT', gain=1.9,
         bg=('hdr:11.27.00.69', (480, 150, 1120, 510), 6),
         panels=[('hdr:11.27.00.69', (560, 210, 1060, 500), (180, TOP + 12, W - 180, H - 14), [])]),
+    # A bite on the line ("!" over the player, strong ripple) and the log of automatic catches.
+    'FastAutoFishing': dict(
+        title='FAST AUTO FISHING', caption='CATCHES AND RECASTS BY ITSELF', gain=1.9,
+        bg=('hdr:11.52.29.82', (330, 100, 970, 460), 6),
+        panels=[('hdr:11.52.29.82', (430, 195, 790, 455), (24, TOP + 12, 700, H - 14), []),
+                ('hdr:11.52.29.82', (18, 478, 318, 636), (716, TOP + 60, W - 24, H - 60), [])]),
+    # The Caveling Merchant's buy window with the added potions.
+    'PotionSeller': dict(
+        title='POTION SELLER', caption='POTIONS AND MORE FROM FAMILIAR MERCHANTS', gain=1.9,
+        bg=('hdr:11.20.19.34', (0, 0, 1280, 720), 6),
+        panels=[('hdr:11.20.19.34', (140, 166, 630, 345), (40, TOP + 12, W - 40, H - 14), [])]),
     # Fighting a Shrooman Brute in the desert.
     'MushroomSlayer': dict(
         title='MUSHROOM SLAYER', caption="STRONG HITS BREAK A BRUTE'S ARMOR", gain=1.6,

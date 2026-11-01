@@ -21,7 +21,7 @@ namespace SidsOverhaul
     public sealed class SidsOverhaulMod : IMod
     {
         public const string Name = "SidsOverhaul";
-        public const string Version = "1.8.0";
+        public const string Version = "1.9.0";
 
         public void EarlyInit()
         {
@@ -57,7 +57,7 @@ namespace SidsOverhaul
             Page("GoldenChance", "Golden Chance", "Golden: ", GoldenChance.GoldenChanceMod.SettingsHint, GoldenChance.GoldenChanceMod.RegisterSettings);
             Page("DifficultyTuning", "Difficulty Tuning (Hard)", "Hard Mode: ", DifficultyTuning.DifficultyTuningMod.SettingsHint, DifficultyTuning.DifficultyTuningMod.RegisterSettings);
             Page("DifficultyTuning", "Difficulty Tuning (Normal)", "Normal Mode: ", DifficultyTuning.DifficultyTuningMod.NormalSettingsHint, DifficultyTuning.DifficultyTuningMod.RegisterNormalSettings);
-            Page("SkillXPMultiplier", "Skill XP Multiplier", "Skill XP: ", SkillXPMultiplier.SkillXPMultiplierMod.SettingsHint, SkillXPMultiplier.SkillXPMultiplierMod.RegisterSettings);
+            Page("SkillXPMultiplier", SkillXPMultiplier.SkillXPMultiplierMod.Title, "Skill XP: ", SkillXPMultiplier.SkillXPMultiplierMod.SettingsHint, SkillXPMultiplier.SkillXPMultiplierMod.RegisterSettings);
             Page("StimHits", "Hit Sound Effects", "Stim Hits: ", StimHits.StimHitsMod.SettingsHint, StimHits.StimHitsMod.RegisterSettings);
             Page("ArmorDye", "Armor Dye", "Armor Dye: ", ArmorDye.DyeSettings.SettingsHint, ArmorDye.DyeSettings.RegisterSettings);
             Page("BuildTools", "Build Tools", "Build Tools: ", BuildTools.BuildToolsMod.SettingsHint, BuildTools.BuildToolsMod.RegisterSettings);

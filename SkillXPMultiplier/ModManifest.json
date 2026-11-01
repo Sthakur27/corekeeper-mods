@@ -1,7 +1,7 @@
 {
     "guid": "9e4c2f7b1d3a4c8e9f5b6a7d8c1e2f30",
     "name": "SkillXPMultiplier",
-    "displayName": "Skill XP Multiplier",
+    "displayName": "Skill XP & Talent Points",
     "skipSafetyChecks": false,
     "disableScripts": false,
     "accessesExtraAssemblies": true,
@@ -23,6 +23,18 @@
         {
             "path": "Scripts/Systems/ScaleSkillXPSystem.cs",
             "guid": "9e4c2f7b1d3a4c8e9f5b6a7d8c1e2f34"
+        },
+        {
+            "path": "Scripts/TalentPoints.cs",
+            "guid": "9e4c2f7b1d3a4c8e9f5b6a7d8c1e2f35"
+        },
+        {
+            "path": "Scripts/MultiplayerSync.cs",
+            "guid": "9e4c2f7b1d3a4c8e9f5b6a7d8c1e2f36"
+        },
+        {
+            "path": "Scripts/SyncCommands.cs",
+            "guid": "9e4c2f7b1d3a4c8e9f5b6a7d8c1e2f37"
         }
     ],
     "dependencies": [

@@ -43,7 +43,7 @@ namespace SidsOverhaul
             { "VehicleSpeed", "Vehicle Speed" },
             { "GoldenChance", "Golden Chance" },
             { "DifficultyTuning", "Difficulty Tuning" },
-            { "SkillXPMultiplier", "Skill XP Multiplier" },
+            { "SkillXPMultiplier", "Skill XP & Talent Points" },
             { "KeepMinions", "Keep Minions On Teleport" },
             { "PetEditor", "Pet Editor" },
             { "BossBonusLoot", "Boss Bonus Loot" },

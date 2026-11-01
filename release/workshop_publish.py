@@ -30,7 +30,7 @@ MODS = [
     ("ModOptions", "Mod Options", "modoptions_logo.png", "Library"),  # first: other mods require it
     ("LoadoutSharing", "Shared Loadout Gear & Vanity", "loadout_logo.png", "Quality of Life"),
     ("FiveLoadouts", "Five Loadouts", "fiveloadouts_logo.png", "Quality of Life"),
-    ("SkillXPMultiplier", "Skill XP Multiplier", "skillxp-logo.png", "Quality of Life"),
+    ("SkillXPMultiplier", "Skill XP & Talent Points", "skillxp-logo.png", "Quality of Life"),
     ("FastAutoFishing", "Fast Auto Fishing", "fastfish_logo.png", "Quality of Life"),
     ("DurabilityMultiplier", "Durability Multiplier", "durability_logo.png", "Quality of Life"),
     ("BuffDurationFloor", "Buff Duration Floor", "buffduration_logo.png", "Quality of Life"),

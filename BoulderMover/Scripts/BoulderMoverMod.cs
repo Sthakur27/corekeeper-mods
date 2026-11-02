@@ -16,7 +16,7 @@ namespace BoulderMover
     public sealed class BoulderMoverMod : IMod
     {
         public const string Name = "BoulderMover";
-        public const string Version = "1.2.0";
+        public const string Version = "1.2.1";
 
         public const string SettingsHint = "Off: only boulders that have not been drilled can be moved. On: drilled boulders can be moved too, "
             + "but a moved boulder is placed back full, so this gives free ore. In multiplayer the host's value counts.";

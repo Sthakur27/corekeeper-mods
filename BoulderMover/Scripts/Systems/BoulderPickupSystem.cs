@@ -86,9 +86,12 @@ namespace BoulderMover.Systems
                 entry.healthChange = hc;
                 changes[i] = entry;
 
-                if (!server || hc.causedByEntity == Entity.Null || !EntityManager.HasComponent<PlayerGhost>(hc.causedByEntity)) continue;
                 int counted = damage - MazeBlock.Reduction;
                 if (counted <= 0) continue;
+                // Cancelled damage skips the game's hit effect, so play it here: a hit that counts still wiggles the boulder.
+                PlayHitEffect(hc.entity, hc.causedByEntity, hc.wasKnockedBack);
+
+                if (!server || hc.causedByEntity == Entity.Null || !EntityManager.HasComponent<PlayerGhost>(hc.causedByEntity)) continue;
 
                 var health = EntityManager.GetComponentData<HealthCD>(hc.entity);
                 // Less than one ore's worth of damage counts as untouched: Infinite Ore Boulders tops boulders up
@@ -109,6 +112,40 @@ namespace BoulderMover.Systems
                 PickUp(hc.entity, hc.causedByEntity, health.health);
                 changes = EntityManager.GetBuffer<HealthChangeBuffer>(holder); // PickUp may have structurally changed things
             }
+        }
+
+        /// <summary>
+        /// Same effect UpdateHealthFromBufferSystem.DoDamageEffects queues for a hit that lands: the damage trigger on the
+        /// boulder plus a PlayDamageEffect event in the attacker's (else the boulder's) ghost effect ring buffer.
+        /// </summary>
+        private void PlayHitEffect(Entity boulder, Entity attacker, bool knockedBack)
+        {
+            if (EntityManager.HasComponent<DamageTakenTriggerCD>(boulder))
+            {
+                EntityManager.SetComponentEnabled<DamageTakenTriggerCD>(boulder, true);
+                EntityManager.SetComponentData(boulder, new DamageTakenTriggerCD { skipRequestTookDamageState = true });
+            }
+            if (!EntityManager.HasComponent<DamageEffectCD>(boulder)) return;
+            Entity target = attacker != Entity.Null && EntityManager.HasBuffer<GhostEffectEventBuffer>(attacker) ? attacker
+                : EntityManager.HasBuffer<GhostEffectEventBuffer>(boulder) ? boulder : Entity.Null;
+            if (target == Entity.Null || !EntityManager.HasComponent<GhostEffectEventBufferPointerCD>(target)) return;
+
+            var health = EntityManager.GetComponentData<HealthCD>(boulder);
+            var buffer = EntityManager.GetBuffer<GhostEffectEventBuffer>(target);
+            var pointer = EntityManager.GetComponentData<GhostEffectEventBufferPointerCD>(target);
+            var item = new GhostEffectEventBuffer
+            {
+                Tick = GetServerTick(),
+                value = new EffectEventCD
+                {
+                    entity = boulder,
+                    effectID = EffectID.PlayDamageEffect,
+                    value1 = knockedBack ? 1 : 0,
+                    value2 = health.health == health.maxHealth ? 1 : 0,
+                }
+            };
+            buffer.AddToRingBuffer(ref pointer, in item);
+            EntityManager.SetComponentData(target, pointer);
         }
 
         private bool IsBoulder(Entity e)

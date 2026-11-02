@@ -4,6 +4,8 @@
 
 Spend less time repeating chores and more time exploring. Sid's Overhaul brings the individual mods in this repository into one package: easier farming and fishing, equipment tools, merchant supplies, and adjustable combat and progression.
 
+**New in 1.10.1:** Movable Ore Boulders 1.2.1 brings back the hit wiggle when you mine an ore boulder with a pickaxe (the hits counted, but the boulder didn't react).
+
 **New in 1.10.0: Solarite Drill, and drills that actually pay off on ore boulders.** A gold Solarite Drill one tier above the Scarlet Drill: 10 Galaxite + 10 Solarite Bars at the Solarite Workbench, 3x the Scarlet Drill's mining damage. Infinite Ore Boulders 1.0.2 fixes drills getting no ore from a protected boulder (it reset their progress toward the next ore every tick). Faster Machines 1.1.0 raises the game's ore-boulder limit on fast drilling along with your Drills speed, so 5x drills really get 5x the ore. Movable Ore Boulders 1.2.0: optional setting to move drilled boulders too (they're placed back full; off by default).
 
 **1.9.5: Movable Ore Boulders and pet talent points.** Mine an ore boulder loose with a pickaxe strong enough to break a Maze Block, and carry it to your drills; mining boulders never gives ore, drills still do. Skill XP & Talent Points now also sets how many talent points a pet has at level 10: default 9, enough for all nine slots (Vanilla is 5).

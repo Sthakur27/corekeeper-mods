@@ -164,6 +164,15 @@ namespace BuildTools.Systems
             }
         }
 
+        /// <summary>The Remove commands EntityUtility.AddTile queues right after an add of <paramref name="add"/>.</summary>
+        private static bool IsAddSideEffect(TileUpdateBuffer u, TileUpdateBuffer add)
+        {
+            if (u.command != TileUpdateBuffer.Command.Remove || !u.position.Equals(add.position)) return false;
+            if (add.tile.tileType == TileType.ground) return u.tile.tileType == TileType.pit || u.tile.tileType == TileType.water;
+            if (add.tile.tileType == TileType.wall) return u.tile.tileType == TileType.roofHole;
+            return false;
+        }
+
         /// <summary>Takes vanilla's own placement of the aimed cell (tile add + item use) back out of this tick's queues.</summary>
         private void StripVanillaAnchor(Entity player, EquippedObjectCD held, ref PugDatabase.EntityObjectInfo info)
         {
@@ -176,7 +185,13 @@ namespace BuildTools.Systems
                 var u = updates[i];
                 if (u.command != TileUpdateBuffer.Command.Add || !u.position.Equals(anchor2) || u.tile.tileset != info.tileset) continue;
                 if (u.tile.tileType != info.tileType && u.tile.tileType != TileType.ground) continue;
-                updates.RemoveAt(i);
+
+                // EntityUtility.AddTile queues side effects right after the add: a floor also removes the pit
+                // and water there, a wall the roof hole. Taking out only the add left those behind, so over a
+                // pit or water the pit/water vanished with nothing in its place (an empty, dead cell).
+                int end = i + 1;
+                while (end < updates.Length && IsAddSideEffect(updates[end], u)) end++;
+                for (int k = end - 1; k >= i; k--) updates.RemoveAt(k);
                 removed = true;
             }
             if (!removed || _inventoryChanges.IsEmptyIgnoreFilter) return;
@@ -252,7 +267,7 @@ namespace BuildTools.Systems
                 var pos = new int2(cell.x, cell.z);
                 if (!LayerFor(pos, job, groundPass, ref info, in shared, out var layer)) continue;
 
-                if (_tileAccessor.GetType(pos, layer, out var old))
+                if (_tileAccessor.GetType(pos, layer, out var old) && !(layer == TileType.ground && IsWetOrPit(pos)))
                 {
                     if (old.tileset == info.tileset || !job.bits.Replace) continue;
                     if (!CanReplace(pos, layer, old, playerPos, creativeWorld, hasPickaxe, hasShovel, blob, out var oldItem)) continue;
@@ -270,7 +285,9 @@ namespace BuildTools.Systems
                 {
                     if (!CanPlace(prefab, cell, in aspect, in shared, in lookups, tilesChecked, ref found)) continue;
                     // The vanilla check is for the item's own layer; the floor version must not land on existing floor.
-                    if (layer == TileType.ground && _tileAccessor.HasType(pos, TileType.ground)) continue;
+                    if (layer == TileType.ground && SolidFloor(pos)) continue;
+                    // Walls only ever go on solid floor (never on water, lava or a pit).
+                    if (layer == TileType.wall && !SolidFloor(pos)) continue;
                     EntityUtility.AddTile(info.tileset, layer, pos, creativeWorld, tileUpdates);
                 }
 
@@ -298,6 +315,20 @@ namespace BuildTools.Systems
         }
 
         /// <summary>
+        /// Ground or bridge to stand on, with no water, lava or pit on top. A cell can hold a ground tile under
+        /// water, so "has ground" alone let walls-only mode put walls on water.
+        /// </summary>
+        private bool SolidFloor(int2 pos)
+        {
+            return (_tileAccessor.HasType(pos, TileType.ground) || _tileAccessor.HasType(pos, TileType.bridge)) && !IsWetOrPit(pos);
+        }
+
+        private bool IsWetOrPit(int2 pos)
+        {
+            return _tileAccessor.HasType(pos, TileType.water) || _tileAccessor.HasType(pos, TileType.pit);
+        }
+
+        /// <summary>
         /// Toggle mode works on the whole brush at once, like Placement Plus: while any cell still lacks
         /// floor, a pass only lays floor; once the area is floored, the next pass builds walls. (Vanilla's
         /// per-cell rule would mix floor and walls in one swipe.) Not with replace, which follows each
@@ -311,7 +342,7 @@ namespace BuildTools.Systems
             foreach (var cell in cells)
             {
                 var pos = new int2(cell.x, cell.z);
-                if (!_tileAccessor.HasType(pos, TileType.ground) && !_tileAccessor.HasType(pos, TileType.bridge) && !_tileAccessor.HasType(pos, TileType.wall))
+                if (!SolidFloor(pos) && !_tileAccessor.HasType(pos, TileType.wall))
                     return true;
             }
             return false;
@@ -329,7 +360,7 @@ namespace BuildTools.Systems
             if (job.category != BrushCategory.Walls || info.tileType != TileType.wall) return true;
 
             bool groundVersion = PugDatabase.TryGetTileItemInfo(TileType.ground, (Tileset)info.tileset, in shared.tileWithTilesetToObjectDataMapCD).objectID != ObjectID.None;
-            bool hasFloor = _tileAccessor.HasType(pos, TileType.ground) || _tileAccessor.HasType(pos, TileType.bridge);
+            bool hasFloor = SolidFloor(pos);
             switch (job.bits.Block)
             {
                 case BlockMode.Ground:
@@ -352,7 +383,7 @@ namespace BuildTools.Systems
                         layer = TileType.ground;
                         return true;
                     }
-                    return hasFloor || !groundVersion;
+                    return hasFloor;
             }
         }
 

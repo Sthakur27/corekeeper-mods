@@ -4,7 +4,9 @@
 
 Spend less time repeating chores and more time exploring. Sid's Overhaul brings the individual mods in this repository into one package: easier farming and fishing, equipment tools, merchant supplies, and adjustable combat and progression.
 
-**New in 1.10.1:** Movable Ore Boulders 1.2.1 brings back the hit wiggle when you mine an ore boulder with a pickaxe (the hits counted, but the boulder didn't react).
+**New in 1.10.2:** Build Tools 0.6.3 fixes the block brush leaving an empty, unusable cell when aimed at a pit or water in walls-only, floor-only or Swap mode, and never puts walls on water, lava or pits.
+
+**1.10.1:** Movable Ore Boulders 1.2.1 brings back the hit wiggle when you mine an ore boulder with a pickaxe (the hits counted, but the boulder didn't react).
 
 **New in 1.10.0: Solarite Drill, and drills that actually pay off on ore boulders.** A gold Solarite Drill one tier above the Scarlet Drill: 10 Galaxite + 10 Solarite Bars at the Solarite Workbench, 3x the Scarlet Drill's mining damage. Infinite Ore Boulders 1.0.2 fixes drills getting no ore from a protected boulder (it reset their progress toward the next ore every tick). Faster Machines 1.1.0 raises the game's ore-boulder limit on fast drilling along with your Drills speed, so 5x drills really get 5x the ore. Movable Ore Boulders 1.2.0: optional setting to move drilled boulders too (they're placed back full; off by default).
 

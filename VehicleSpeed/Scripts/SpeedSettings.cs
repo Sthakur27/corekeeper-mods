@@ -6,7 +6,7 @@ namespace VehicleSpeed
     public static class SpeedSettings
     {
         public static readonly string[] Ladder = { "1x", "1.25x", "1.5x", "1.75x", "2x", "3x", "5x", "10x" };
-        public const string DefaultToken = "1x";
+        public const string DefaultToken = "1.5x";
 
         public static float Boat { get; set; } = 1f;
         public static float GoKart { get; set; } = 1f;

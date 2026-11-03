@@ -2,7 +2,7 @@
 
 ![Vehicle Speed — mod cover from in-game screenshots](../release/vehiclespeed_logo.png)
 
-Spend less time travelling: choose separate speed boosts for **boats and go-karts**. Both start at normal speed, so you decide how fast to go.
+Spend less time travelling: choose separate speed boosts for **boats and go-karts**. Both start at 1.5x; pick 1x for normal speed or go faster.
 
 ## Choose your speed
 
@@ -10,8 +10,8 @@ Open **Settings > Mod Options > Vehicle Speed**.
 
 | Setting | Choices | Default |
 |---|---|---|
-| Boat speed | 1x, 1.25x, 1.5x, 1.75x, 2x, 3x, 5x, 10x | 1x (normal) |
-| Go-kart speed | 1x, 1.25x, 1.5x, 1.75x, 2x, 3x, 5x, 10x | 1x (normal) |
+| Boat speed | 1x, 1.25x, 1.5x, 1.75x, 2x, 3x, 5x, 10x | 1.5x |
+| Go-kart speed | 1x, 1.25x, 1.5x, 1.75x, 2x, 3x, 5x, 10x | 1.5x |
 
 Changes apply while you play to existing boats and karts. This includes Primitive, Renegade and Speeder go-karts.
 

@@ -14,7 +14,7 @@ namespace VehicleSpeed
     public sealed class VehicleSpeedMod : IMod
     {
         public const string Name = "VehicleSpeed";
-        public const string Version = "1.1.0";
+        public const string Version = "1.2.0";
 
         private static Setting<string> _boat;
         private static Setting<string> _goKart;

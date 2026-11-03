@@ -7,14 +7,14 @@ using Object = UnityEngine.Object;
 namespace VehicleSpeed
 {
     /// <summary>
-    /// Boat and go-kart speed multipliers (1x / 2x / 3x / 5x / 10x) in the Mod Settings menu.
+    /// Boat and go-kart speed multipliers (1x to 2x in 0.25 steps, then 3x / 5x / 10x) in the Mod Settings menu.
     /// Replaces the third-party Boat Turbo mod (disable that one: both write the boat multiplier).
     /// See <see cref="Systems.VehicleSpeedSystem"/>.
     /// </summary>
     public sealed class VehicleSpeedMod : IMod
     {
         public const string Name = "VehicleSpeed";
-        public const string Version = "1.0.0";
+        public const string Version = "1.1.0";
 
         private static Setting<string> _boat;
         private static Setting<string> _goKart;

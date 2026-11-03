@@ -10,8 +10,8 @@ Open **Settings > Mod Options > Vehicle Speed**.
 
 | Setting | Choices | Default |
 |---|---|---|
-| Boat speed | 1x, 2x, 3x, 5x, 10x | 1x (normal) |
-| Go-kart speed | 1x, 2x, 3x, 5x, 10x | 1x (normal) |
+| Boat speed | 1x, 1.25x, 1.5x, 1.75x, 2x, 3x, 5x, 10x | 1x (normal) |
+| Go-kart speed | 1x, 1.25x, 1.5x, 1.75x, 2x, 3x, 5x, 10x | 1x (normal) |
 
 Changes apply while you play to existing boats and karts. This includes Primitive, Renegade and Speeder go-karts.
 

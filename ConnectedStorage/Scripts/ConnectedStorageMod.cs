@@ -12,7 +12,7 @@ namespace ConnectedStorage
 {
     public sealed class ConnectedStorageMod : IMod
     {
-        public const string Version = "0.9.1";
+        public const string Version = "0.10.0";
         private GameObject ui;
         public void EarlyInit()
         {
@@ -70,18 +70,29 @@ namespace ConnectedStorage
             if(limit<=0)return;
             // Check read-only first: write access syncs jobs and marks the buffer changed.
             var current=em.GetBuffer<InventoryBuffer>(entity,true);
-            if(current.Length==0||(current[0].size==limit && current[0].maxSize==limit))return;
+            if(current.Length==0)return;
+            bool grow=em.HasBuffer<ContainedObjectsBuffer>(entity) && em.GetBuffer<ContainedObjectsBuffer>(entity,true).Length<limit;
+            if(current[0].size==limit && current[0].maxSize==limit && !grow)return;
             var inventories=em.GetBuffer<InventoryBuffer>(entity);
             var range=inventories[0];
             range.sizeX=2;range.sizeY=limit/2;range.extraSize=0;range.maxSize=limit;
             inventories[0]=range;
+            // Units saved at an older, smaller capacity get empty slots up to the new one.
+            if(grow) {
+                var contained=em.GetBuffer<ContainedObjectsBuffer>(entity);
+                while(contained.Length<limit)contained.Add(default(ContainedObjectsBuffer));
+                if(em.HasBuffer<LockedObjectsBuffer>(entity)) {
+                    var locks=em.GetBuffer<LockedObjectsBuffer>(entity);
+                    while(locks.Length<limit)locks.Add(default(LockedObjectsBuffer));
+                }
+            }
             // Never truncate ContainedObjectsBuffer: old overflow stays withdrawable.
         }
         internal static void EnsureRecipes(Entity entity, EntityManager em)
         {
             if (!em.HasComponent<ObjectDataCD>(entity) || !em.HasBuffer<CanCraftObjectsBuffer>(entity)) return;
             var id = em.GetComponentData<ObjectDataCD>(entity).objectID;
-            if (id == StorageCatalog.Workbench && id != ObjectID.None) return; // Authored with all nine recipes.
+            if (id == StorageCatalog.Workbench && id != ObjectID.None) return; // Authored with all ten recipes.
             if (!em.HasBuffer<IncludedCraftingBuildingsBuffer>(entity) && id != ObjectID.WoodenWorkBench && id != ObjectID.CopperWorkbench && id != ObjectID.TinWorkbench
                 && id != ObjectID.IronWorkBench && id != ObjectID.ScarletWorkBench && id != ObjectID.OctarineWorkbench
                 && id != ObjectID.GalaxiteWorkbench && id != ObjectID.SolariteWorkbench && id != ObjectID.HydraWorkbench) return;

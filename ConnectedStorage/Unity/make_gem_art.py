@@ -26,6 +26,7 @@ TIERS = {
     'Galaxite':  ['2a0e50', '46207e', '7a3ad0', 'b070ff', 'dcb4ff', 'f6ecff'],
     'Solarite':  ['5a3a04', '8a5c06', 'd09810', 'ffd030', 'ffec90', 'fffbe0'],
     'Pandorium': ['0a1450', '14287a', '2050d0', '4a8aff', 'a8ccff', 'e8f2ff'],
+    'Relucite':  ['3a0a3a', '6a1464', 'a8248e', 'e848b4', 'ff8ad4', 'ffe2f4'],
 }
 HEIGHTS = {'unit': {'': 16, '_side': 19, '_up': 16}, 'bench': {'': 16, '_side': 20, '_up': 16}}
 

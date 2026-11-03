@@ -46,7 +46,7 @@ public static class ConnectedStorageBuilder
         {
             ConfigureTextures();
             AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport);
-            foreach (var entry in new[] { "Workbench:-2", "Terminal:0", "CopperChest:20", "TinChest:40", "IronChest:60", "ScarletChest:80", "OctarineChest:100", "GalaxiteChest:120", "SolariteChest:140", "PandoriumChest:160", "TinGem:-1", "IronGem:-1", "ScarletGem:-1", "OctarineGem:-1", "GalaxiteGem:-1", "SolariteGem:-1", "PandoriumGem:-1" })
+            foreach (var entry in new[] { "Workbench:-2", "Terminal:0", "CopperChest:40", "TinChest:80", "IronChest:120", "ScarletChest:160", "OctarineChest:200", "GalaxiteChest:240", "SolariteChest:280", "PandoriumChest:320", "ReluciteChest:360", "TinGem:-1", "IronGem:-1", "ScarletGem:-1", "OctarineGem:-1", "GalaxiteGem:-1", "SolariteGem:-1", "PandoriumGem:-1", "ReluciteGem:-1" })
             {
             AssetName = entry.Split(':')[0]; Capacity = int.Parse(entry.Split(':')[1]);
             // ModBuilder bundles everything under Root: drop the old vanilla-named prefab so it is not shipped too.
@@ -91,7 +91,7 @@ public static class ConnectedStorageBuilder
     // Keep the approved PNG pixels; compensate the game's fixed 16 pixels/unit locally.
     static void ConfigureApprovedArt()
     {
-        foreach (var name in new[] { "Workbench", "TinChest", "IronChest", "ScarletChest", "OctarineChest", "GalaxiteChest", "SolariteChest", "PandoriumChest", "CopperChest", "Terminal", "TinGem", "IronGem", "ScarletGem", "OctarineGem", "GalaxiteGem", "SolariteGem", "PandoriumGem" })
+        foreach (var name in new[] { "Workbench", "TinChest", "IronChest", "ScarletChest", "OctarineChest", "GalaxiteChest", "SolariteChest", "PandoriumChest", "ReluciteChest", "CopperChest", "Terminal", "TinGem", "IronGem", "ScarletGem", "OctarineGem", "GalaxiteGem", "SolariteGem", "PandoriumGem", "ReluciteGem" })
         {
             var texture = AssetDatabase.LoadAssetAtPath<Texture2D>(Root + "/Textures/" + name + ".png");
             if (texture == null) continue;
@@ -393,7 +393,7 @@ public static class ConnectedStorageBuilder
                 if (recipes.arraySize == 0) return;
                 var bar = recipes.GetArrayElementAtIndex(0);
                 bar.FindPropertyRelative("objectName").stringValue = Capacity != 0 ? AssetName.Replace("Chest", "Bar").Replace("Gem", "Bar") : "CopperBar";
-                bar.FindPropertyRelative("amount").intValue = Capacity != 0 ? 30 : 10;
+                bar.FindPropertyRelative("amount").intValue = Capacity < 0 ? 40 : Capacity > 0 ? 30 : 10;
                 if (Capacity == 0) {
                     var wood = recipes.GetArrayElementAtIndex(1);
                     wood.FindPropertyRelative("objectName").stringValue = "Wood";
@@ -402,7 +402,7 @@ public static class ConnectedStorageBuilder
             });
             if (IsWorkbench) Fill(Add(go, "CraftingAuthoring"), so => {
                 N(so, "craftingType", 0);
-                string[] items = { "Terminal", "CopperChest", "TinGem", "IronGem", "ScarletGem", "OctarineGem", "GalaxiteGem", "SolariteGem", "PandoriumGem" };
+                string[] items = { "Terminal", "CopperChest", "TinGem", "IronGem", "ScarletGem", "OctarineGem", "GalaxiteGem", "SolariteGem", "PandoriumGem", "ReluciteGem" };
                 var recipes = so.FindProperty("canCraftObjects"); recipes.arraySize = items.Length;
                 for (int i = 0; i < items.Length; i++) {
                     var recipe = recipes.GetArrayElementAtIndex(i);

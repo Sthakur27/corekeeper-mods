@@ -2,7 +2,7 @@
 from pathlib import Path
 from PIL import Image
 ROOT = Path(__file__).parent / 'Art'
-TIERS = ('Copper', 'Tin', 'Iron', 'Scarlet', 'Octarine', 'Galaxite', 'Solarite', 'Pandorium')
+TIERS = ('Copper', 'Tin', 'Iron', 'Scarlet', 'Octarine', 'Galaxite', 'Solarite', 'Pandorium', 'Relucite')
 NAMES = ['Terminal', 'Workbench'] + [t + 'Chest' for t in TIERS] + [t + 'Gem' for t in TIERS[1:]]
 count = 0
 for name in NAMES:

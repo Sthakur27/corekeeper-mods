@@ -15,8 +15,8 @@ from PIL import Image
 
 ROOT = Path(__file__).parent
 NAMES = ["Workbench", "TinChest", "IronChest", "ScarletChest", "OctarineChest", "GalaxiteChest", "SolariteChest",
-         "PandoriumChest", "CopperChest", "Terminal", "TinGem", "IronGem", "ScarletGem", "OctarineGem", "GalaxiteGem",
-         "SolariteGem", "PandoriumGem"]  # same list ConnectedStorageBuilder resizes
+         "PandoriumChest", "ReluciteChest", "CopperChest", "Terminal", "TinGem", "IronGem", "ScarletGem", "OctarineGem", "GalaxiteGem",
+         "SolariteGem", "PandoriumGem", "ReluciteGem"]  # same list ConnectedStorageBuilder resizes
 SUFFIXES = ["", "_side", "_up", "_emissive", "_side_emissive", "_up_emissive", "_icon"]
 
 

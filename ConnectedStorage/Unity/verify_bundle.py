@@ -3,7 +3,7 @@ from pathlib import Path
 import sys
 import UnityPy
 from PIL import Image
-CAPACITY=dict(zip(('Copper','Tin','Iron','Scarlet','Octarine','Galaxite','Solarite','Pandorium'),(20,40,60,80,100,120,140,160)))
+CAPACITY=dict(zip(('Copper','Tin','Iron','Scarlet','Octarine','Galaxite','Solarite','Pandorium','Relucite'),(40,80,120,160,200,240,280,320,360)))
 paths=[Path(x) for x in sys.argv[1:]] or list((Path(__file__).parents[1]/'Bundles').glob('ConnectedStorage_*.assetbundle'))
 assert paths, 'No bundles found'
 for path in paths:
@@ -21,7 +21,7 @@ for path in paths:
    backdrop = Image.new('RGBA', actual.size, color)
    assert Image.alpha_composite(backdrop, actual).tobytes() == Image.alpha_composite(backdrop, expected).tobytes(), data.m_Name + ': bundled artwork differs from source'
   texture_count += 1
- assert texture_count == 102, f'Expected 102 art textures, found {texture_count}' 
+ assert texture_count == 114, f'Expected 114 art textures, found {texture_count}' 
  # Runtime art is the approved art downsampled (downscale_art.py): compare visible pixels to the
  # approved crop resized to the same visible size, on black and white, within a small tolerance.
  def assert_resample_of(art, crop, label):
@@ -78,7 +78,7 @@ for path in paths:
    assert abs(scale.x-scale.y)<0.000001, name+': distorted aspect ratio'
    found=True
   assert found, name+': scaled visual missing'
- for tier in ('Tin','Iron','Scarlet','Octarine','Galaxite','Solarite','Pandorium'):
+ for tier in ('Tin','Iron','Scarlet','Octarine','Galaxite','Solarite','Pandorium','Relucite'):
   source=Image.open(Path(__file__).parents[1]/'ArtConcepts/UpgradeGems'/(tier+'.png')).convert('RGBA')
   crop=source.crop(source.getchannel('A').point(lambda a:255 if a>=128 else 0).getbbox())
   art=Image.open(Path(__file__).parent/'Art'/(tier+'Gem.png')).convert('RGBA')
@@ -105,14 +105,14 @@ for path in paths:
    assert gem['ObjectAuthoring']['objectName']=='ConnectedStorage_'+tier+'Gem'
    assert gem['ObjectAuthoring']['objectType']==0
    assert 'InventoryAuthoring' not in gem and 'PlaceableObjectAuthoring' not in gem
-   assert gem['InventoryItemAuthoring']['requiredObjectsToCraft']==[{'objectName':tier+'Bar','amount':30}]
+   assert gem['InventoryItemAuthoring']['requiredObjectsToCraft']==[{'objectName':tier+'Bar','amount':40}]
   assert 'Chest' in prefabs[name+'Graphics']
  w=prefabs['ConnectedStorage_WorkbenchEntity']
  assert w['ObjectAuthoring']['objectName']=='ConnectedStorage_Workbench'
  assert w['InventoryItemAuthoring']['requiredObjectsToCraft']==[{'objectName':'Wood','amount':20}]
  assert 'InventoryAuthoring' not in w
  assert w['CraftingAuthoring']['craftingType']==0
- expected=['Terminal','CopperChest','TinGem','IronGem','ScarletGem','OctarineGem','GalaxiteGem','SolariteGem','PandoriumGem']
+ expected=['Terminal','CopperChest','TinGem','IronGem','ScarletGem','OctarineGem','GalaxiteGem','SolariteGem','PandoriumGem','ReluciteGem']
  recipes=w['CraftingAuthoring']['canCraftObjects']
  assert [r['moddedObjectID'] for r in recipes]==['ConnectedStorage_'+n for n in expected]
  assert all(r['amount']==1 for r in recipes)
@@ -127,5 +127,5 @@ for path in paths:
  ghosts=[n for n,c in prefabs.items() if 'GhostAuthoringComponent' in c]
  assert ghosts and all(n.startswith('ConnectedStorage_') for n in ghosts), 'unprefixed networked prefabs: '+str([n for n in ghosts if not n.startswith('ConnectedStorage_')])
  assert 'ConnectedStorage.dll' not in vanilla
- print(path.name+': PASS - storage workbench with nine recipes, eight units, seven gems, crafting costs and native UI')
+ print(path.name+': PASS - storage workbench with ten recipes, nine units, eight gems, crafting costs and native UI')
 

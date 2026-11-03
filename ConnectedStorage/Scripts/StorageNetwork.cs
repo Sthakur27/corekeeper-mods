@@ -10,11 +10,11 @@ namespace ConnectedStorage
     public struct StorageNodeTag : IComponentData { }
     public static class StorageCatalog
     {
-        public static readonly string[] Tiers = { "Copper", "Tin", "Iron", "Scarlet", "Octarine", "Galaxite", "Solarite", "Pandorium" };
-        public static readonly int[] Capacities = { 20, 40, 60, 80, 100, 120, 140, 160 };
+        public static readonly string[] Tiers = { "Copper", "Tin", "Iron", "Scarlet", "Octarine", "Galaxite", "Solarite", "Pandorium", "Relucite" };
+        public static readonly int[] Capacities = { 40, 80, 120, 160, 200, 240, 280, 320, 360 };
         private static ObjectID terminal;
         public static ObjectID Workbench => API.Authoring.GetObjectID("ConnectedStorage_Workbench");
-        private static readonly ObjectID[] chests = new ObjectID[8];
+        private static readonly ObjectID[] chests = new ObjectID[Tiers.Length];
         public static ObjectID Terminal => terminal != ObjectID.None ? terminal : (terminal = API.Authoring.GetObjectID("ConnectedStorage_Terminal"));
         public static ObjectID Chest(int tier) => chests[tier] != ObjectID.None ? chests[tier] : (chests[tier] = API.Authoring.GetObjectID("ConnectedStorage_" + Tiers[tier] + "Chest"));
         public static ObjectID Gem(int tier) => tier > 0 && tier < Tiers.Length ? API.Authoring.GetObjectID("ConnectedStorage_" + Tiers[tier] + "Gem") : ObjectID.None;

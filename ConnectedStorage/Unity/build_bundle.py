@@ -1,4 +1,4 @@
-"""Rebuilds ConnectedStorage/Bundles (terminal and eight storage chest tiers) with the official Core Keeper Mod SDK.
+"""Rebuilds ConnectedStorage/Bundles (terminal and nine storage chest tiers) with the official Core Keeper Mod SDK.
 
 Needs: Unity 6000.0.59f2 (+ Linux Build Support (Mono)) via Unity Hub, and a clone of
 https://github.com/Pugstorm/CoreKeeperModSDK (default C:\\Users\\Sid\\CoreKeeperModSDK).

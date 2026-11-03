@@ -4,7 +4,9 @@
 
 Spend less time repeating chores and more time exploring. Sid's Overhaul brings the individual mods in this repository into one package: easier farming and fishing, equipment tools, merchant supplies, and adjustable combat and progression.
 
-**New in 1.10.3:** Build Tools 0.6.4: Swap no longer removes the protected floor in front of the Core (worlds where it already did get that floor back on load), a swapped-out floor gives the block you'd get by digging it up (Dirt, not Dirt Ground), and "Roofing gadget never wears out" also covers reinforced gadgets. Vehicle Speed 1.1.0 adds 1.25x, 1.5x and 1.75x steps for boats and go-karts.
+**New in 1.10.4: Relucite storage and bigger units.** Runic Storage 0.10.0 adds a ninth tier, Relucite, and every tier now holds 40 more slots than the last: Copper units start at 40 and Relucite units hold 360. Upgrade gems cost 40 bars of their material (Copper units still cost 30 Copper Bars). Units you already placed grow to their new size and keep their items.
+
+**1.10.3:** Build Tools 0.6.4: Swap no longer removes the protected floor in front of the Core (worlds where it already did get that floor back on load), a swapped-out floor gives the block you'd get by digging it up (Dirt, not Dirt Ground), and "Roofing gadget never wears out" also covers reinforced gadgets. Vehicle Speed 1.1.0 adds 1.25x, 1.5x and 1.75x steps for boats and go-karts.
 
 **1.10.2:** Build Tools 0.6.3 fixes the block brush leaving an empty, unusable cell when aimed at a pit or water in walls-only, floor-only or Swap mode, and never puts walls on water, lava or pits.
 
@@ -52,7 +54,7 @@ Prefer to pick individual mods? Use [Sid's Core Keeper Mods collection](https://
 |---|---|
 | Shared Loadout Gear & Vanity + Five Loadouts | Fill empty equipment slots from lower loadouts, use separate vanity outfits, and add two loadout tabs. |
 | Ender Stash | A personal 40-slot stash accessed through an Ender Chest bought from the Fishing Merchant; travels with your character and stays safe on death. |
-| Runic Storage | Craft a storage workbench, connect storage units, and upgrade them through eight tiers from 20 to 160 slots per unit. One-click category tabs (Materials, Weapons, Tools, Armor, Blocks, Furniture and more) filter the shared inventory, and Sort groups it by category. Inspired by Magic Storage for Terraria. |
+| Runic Storage | Craft a storage workbench, connect storage units, and upgrade them through nine tiers from 40 to 360 slots per unit. One-click category tabs (Materials, Weapons, Tools, Armor, Blocks, Furniture and more) filter the shared inventory, and Sort groups it by category. Inspired by Magic Storage for Terraria. |
 | Solarite Drill | A gold stationary drill one tier above the Scarlet Drill with 3x its mining damage. Craft for 10 Galaxite + 10 Solarite Bars at a Solarite Workbench. |
 | Magic Mirror | Reusable three-second return to the Core. Craft for 50 Solarite Bars + 10 Recall Idols at a Solarite Workbench, or get one from Omoroth with a 20% chance per defeat. |
 | Armor Dye | Color individual armor, weapons and tools with an inventory palette. |

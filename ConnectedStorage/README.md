@@ -2,7 +2,7 @@
 
 Build storage that grows with your adventure. Craft a Storage Workbench, connect storage units to a terminal, and keep your items together in one searchable inventory.
 
-Start with **20 slots** per Copper unit. As you discover new materials, craft upgrade gems to add more space, up to **160 slots** per Pandorium unit. Each unit costs **30 copper bars**, and each upgrade costs **30 bars of the next material**. Upgrade through every tier in order without emptying the unit first.
+Start with **40 slots** per Copper unit. As you discover new materials, craft upgrade gems to add more space, up to **360 slots** per Relucite unit. Each unit costs **30 copper bars**, and each upgrade costs **40 bars of the next material** and adds 40 slots. Upgrade through every tier in order without emptying the unit first.
 
 Need more room? Add another unit or upgrade one you already have. Search, category filters, sorting, and quick transfers help you keep everything organized. Craft all units and upgrade gems at your Storage Workbench.
 
@@ -27,18 +27,19 @@ Nearby crafting stations can use storage materials through the game's nearby-che
 
 ## Upgrade tiers
 
-Craft the next gem, select it in your hotbar, and press E on a unit. Upgrades keep its contents and require every tier in order. Only Copper units are crafted directly; each gem costs **30 bars of its material**.
+Craft the next gem, select it in your hotbar, and press E on a unit. Upgrades keep its contents and require every tier in order. Only Copper units are crafted directly; each gem costs **40 bars of its material**.
 
 | Tier | Slots per unit |
 |---|---:|
-| Copper | 20 |
-| Tin | 40 |
-| Iron | 60 |
-| Scarlet | 80 |
-| Octarine | 100 |
-| Galaxite | 120 |
-| Solarite | 140 |
-| Pandorium | 160 |
+| Copper | 40 |
+| Tin | 80 |
+| Iron | 120 |
+| Scarlet | 160 |
+| Octarine | 200 |
+| Galaxite | 240 |
+| Solarite | 280 |
+| Pandorium | 320 |
+| Relucite | 360 |
 
 These capacities also apply when using Double Chest Inventory. If an older version left a unit over capacity, you can still take those extra items out.
 

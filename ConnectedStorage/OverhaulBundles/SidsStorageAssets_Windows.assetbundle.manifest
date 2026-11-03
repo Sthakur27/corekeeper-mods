@@ -397,6 +397,62 @@
             "guid": "dbb2afb5adfb355269d22f8ffd43acf6"
         },
         {
+            "path": "Assets/ConnectedStorage/Textures/ReluciteGem_up_emissive.png",
+            "guid": "7d8aa7408f59741a2bc87ac0d2e834f9"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/ReluciteGem_up.png",
+            "guid": "c36e89bdee04996635ec371778dba75a"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/ReluciteGem_side_emissive.png",
+            "guid": "35b7bd19c5700c57e1b75b036e6d5a0b"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/ReluciteGem_side.png",
+            "guid": "572a318941af0f714dbb50c096e594aa"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/ReluciteGem_icon.png",
+            "guid": "f8294c294016d70b4d1f10b20d1c80fb"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/ReluciteGem_emissive.png",
+            "guid": "aa49af6d8917fa7338ab7cee4ff52f64"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/ReluciteGem.png",
+            "guid": "a13e4ce6c187259aa93bb76475de5306"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/ReluciteChest_up_emissive.png",
+            "guid": "0918f5341bdc4814051322ee2e13134a"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/ReluciteChest_up.png",
+            "guid": "d64931c007369d0b2166c4238e39b96a"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/ReluciteChest_side_emissive.png",
+            "guid": "4736bb7c5ee946169eb26d2ce7752621"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/ReluciteChest_side.png",
+            "guid": "63efd57ebb415c6c80ba0bf4eaa27ac2"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/ReluciteChest_icon.png",
+            "guid": "4d72e92e7f3335ad387c58cb7c0769e6"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/ReluciteChest_emissive.png",
+            "guid": "05e556fc64ad215fb906631254944c38"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Textures/ReluciteChest.png",
+            "guid": "7e6acbbcd40adf0cff77ae586bf3cc1a"
+        },
+        {
             "path": "Assets/ConnectedStorage/Textures/preview.png",
             "guid": "60b9afb68bd99a849827cd0a81a3a118"
         },
@@ -689,6 +745,14 @@
             "guid": "530520fa89381fa48bca7849cf947de0"
         },
         {
+            "path": "Assets/ConnectedStorage/Prefabs/ReluciteGemGraphics.prefab",
+            "guid": "2e017629838b8d24287a4c7ea03fe561"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Prefabs/ReluciteChestGraphics.prefab",
+            "guid": "418c1a361cc00bd43892f092a95677a3"
+        },
+        {
             "path": "Assets/ConnectedStorage/Prefabs/PandoriumGemGraphics.prefab",
             "guid": "8dc5965512d37cc4bbb99384517d13e7"
         },
@@ -755,6 +819,14 @@
         {
             "path": "Assets/ConnectedStorage/Prefabs/ConnectedStorage_ScarletChestEntity.prefab",
             "guid": "5fc8db97e47a2e94d9065b9c36729116"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Prefabs/ConnectedStorage_ReluciteGemEntity.prefab",
+            "guid": "0c4eea38cb5face4b8a7290148760952"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Prefabs/ConnectedStorage_ReluciteChestEntity.prefab",
+            "guid": "088c252b90e12e44da1606b1eda22aa4"
         },
         {
             "path": "Assets/ConnectedStorage/Prefabs/ConnectedStorage_PandoriumGemEntity.prefab",
@@ -825,6 +897,14 @@
             "guid": "3a5b29cfea0765b53edd80aea5e540a6"
         },
         {
+            "path": "Assets/ConnectedStorage/Data/TextDataBlock/Items/ConnectedStorage_ReluciteGem.asset",
+            "guid": "0a07290eba5588daac0051aa76a40445"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Data/TextDataBlock/Items/ConnectedStorage_ReluciteChest.asset",
+            "guid": "19cfbb08fab4e4887da0cdcd620d6f21"
+        },
+        {
             "path": "Assets/ConnectedStorage/Data/TextDataBlock/Items/ConnectedStorage_PandoriumGem.asset",
             "guid": "9683b380fcc2a99c60ce860397880d7a"
         },
@@ -891,6 +971,14 @@
         {
             "path": "Assets/ConnectedStorage/Data/SpriteAsset/ScarletChest.asset",
             "guid": "3e6d95f6360ec02b612df54efc73cc72"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Data/SpriteAsset/ReluciteGem.asset",
+            "guid": "00f1070c2203ee023bab85d00661eb0f"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Data/SpriteAsset/ReluciteChest.asset",
+            "guid": "de27eafecad4d98b6cfa3d420b39f35c"
         },
         {
             "path": "Assets/ConnectedStorage/Data/SpriteAsset/PandoriumGem.asset",
@@ -961,6 +1049,14 @@
             "guid": "ed23afc100ef6f44ca2fe6c3b17653cc"
         },
         {
+            "path": "Assets/ConnectedStorage/Data/GraphicalObjectDataBlock/ReluciteGemGraphics.asset",
+            "guid": "61246cbde21c8fa4586aef424469c69c"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Data/GraphicalObjectDataBlock/ReluciteChestGraphics.asset",
+            "guid": "bf0ed544b8586d24c8b4d60c6e4b23de"
+        },
+        {
             "path": "Assets/ConnectedStorage/Data/GraphicalObjectDataBlock/PandoriumGemGraphics.asset",
             "guid": "0a487c8d6c8ee794c9a55a4e843e760c"
         },
@@ -1027,6 +1123,14 @@
         {
             "path": "Assets/ConnectedStorage/Data/EntityAuthoringDataBlock/ScarletChestEntity.asset",
             "guid": "8f0e72a7ea09d224fa2ccdf712847ceb"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Data/EntityAuthoringDataBlock/ReluciteGemEntity.asset",
+            "guid": "49c8e3ef0d2402640b07f9f97b48c553"
+        },
+        {
+            "path": "Assets/ConnectedStorage/Data/EntityAuthoringDataBlock/ReluciteChestEntity.asset",
+            "guid": "782d7b2904bf74e4bbc5b183928d4cd3"
         },
         {
             "path": "Assets/ConnectedStorage/Data/EntityAuthoringDataBlock/PandoriumGemEntity.asset",

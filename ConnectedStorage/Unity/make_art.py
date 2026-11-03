@@ -4,7 +4,7 @@ import runpy
 from PIL import Image, ImageDraw
 HERE = Path(__file__).parent
 OUT = HERE / 'Art'
-TIERS = ('Copper', 'Tin', 'Iron', 'Scarlet', 'Octarine', 'Galaxite', 'Solarite', 'Pandorium')
+TIERS = ('Copper', 'Tin', 'Iron', 'Scarlet', 'Octarine', 'Galaxite', 'Solarite', 'Pandorium', 'Relucite')
 
 def previews():
     sheet = Image.new('RGBA', (960, 480), (24, 29, 36, 255))

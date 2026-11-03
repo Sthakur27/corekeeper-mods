@@ -6,6 +6,8 @@ Spend less time repeating chores and more time exploring. Sid's Overhaul brings 
 
 **New in 1.10.4: Relucite storage and bigger units.** Runic Storage 0.10.0 adds a ninth tier, Relucite, and every tier now holds 40 more slots than the last: Copper units start at 40 and Relucite units hold 360. Upgrade gems cost 40 bars of their material (Copper units still cost 30 Copper Bars). Units you already placed grow to their new size and keep their items.
 
+**1.10.5:** Vehicle Speed 1.2.0: boats and go-karts now default to 1.5x. Speeds you already chose are kept.
+
 **1.10.3:** Build Tools 0.6.4: Swap no longer removes the protected floor in front of the Core (worlds where it already did get that floor back on load), a swapped-out floor gives the block you'd get by digging it up (Dirt, not Dirt Ground), and "Roofing gadget never wears out" also covers reinforced gadgets. Vehicle Speed 1.1.0 adds 1.25x, 1.5x and 1.75x steps for boats and go-karts.
 
 **1.10.2:** Build Tools 0.6.3 fixes the block brush leaving an empty, unusable cell when aimed at a pit or water in walls-only, floor-only or Swap mode, and never puts walls on water, lava or pits.

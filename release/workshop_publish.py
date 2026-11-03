@@ -69,7 +69,7 @@ OVERHAUL = ("SidsOverhaul", "Sid's Overhaul", "overhaul_logo.png", "Overhaul")
 NOT_IN_OVERHAUL = {"SlotOrganizer"}
 # Cover disclosure per item; everything else keeps the AI-artwork note.
 COVER_NOTES = {
-    "ConnectedStorage": "Cover is made from in-game screenshots (storage network and browser); title banner added.",
+    "ConnectedStorage": "Cover combines in-game screenshots (storage panel, base floor), the mod's own unit and gem sprites and the game's bar icons; title banner and highlights added.",
     "SlotOrganizer": "Cover is an in-game screenshot of the Select World menu with the mod's buttons; title banner and highlight added.",
     "FiveLoadouts": "Cover is an in-game screenshot of the equipment panel; title banner and highlight added.",
     "LoadoutSharing": "Cover is an in-game screenshot of the equipment panel; title banner and highlight added.",

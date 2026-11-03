@@ -4,7 +4,9 @@
 
 Spend less time repeating chores and more time exploring. Sid's Overhaul brings the individual mods in this repository into one package: easier farming and fishing, equipment tools, merchant supplies, and adjustable combat and progression.
 
-**New in 1.10.2:** Build Tools 0.6.3 fixes the block brush leaving an empty, unusable cell when aimed at a pit or water in walls-only, floor-only or Swap mode, and never puts walls on water, lava or pits.
+**New in 1.10.3:** Build Tools 0.6.4: Swap no longer removes the protected floor in front of the Core (worlds where it already did get that floor back on load), a swapped-out floor gives the block you'd get by digging it up (Dirt, not Dirt Ground), and "Roofing gadget never wears out" also covers reinforced gadgets. Vehicle Speed 1.1.0 adds 1.25x, 1.5x and 1.75x steps for boats and go-karts.
+
+**1.10.2:** Build Tools 0.6.3 fixes the block brush leaving an empty, unusable cell when aimed at a pit or water in walls-only, floor-only or Swap mode, and never puts walls on water, lava or pits.
 
 **1.10.1:** Movable Ore Boulders 1.2.1 brings back the hit wiggle when you mine an ore boulder with a pickaxe (the hits counted, but the boulder didn't react).
 

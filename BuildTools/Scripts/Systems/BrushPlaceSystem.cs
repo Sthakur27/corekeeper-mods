@@ -164,6 +164,21 @@ namespace BuildTools.Systems
             }
         }
 
+        /// <summary>
+        /// Whether EntityUtility.AddTile would accept this tile here. Outside creative it silently drops
+        /// tileset 2 and the four Core cells (0,0), (0,1), (-1,1), (1,1). Swap used to remove the old tile
+        /// there first, so the Core lost its floor (an invisible wall where you stand to talk to it).
+        /// </summary>
+        public static bool AddAllowed(int tileset, int2 pos, bool creative)
+        {
+            return creative || (tileset != 2 && !IsCoreCell(pos));
+        }
+
+        public static bool IsCoreCell(int2 pos)
+        {
+            return (pos.x == 0 && pos.y == 0) || (pos.y == 1 && pos.x >= -1 && pos.x <= 1);
+        }
+
         /// <summary>The Remove commands EntityUtility.AddTile queues right after an add of <paramref name="add"/>.</summary>
         private static bool IsAddSideEffect(TileUpdateBuffer u, TileUpdateBuffer add)
         {
@@ -265,6 +280,7 @@ namespace BuildTools.Systems
                 }
 
                 var pos = new int2(cell.x, cell.z);
+                if (!AddAllowed(info.tileset, pos, creativeWorld)) continue;
                 if (!LayerFor(pos, job, groundPass, ref info, in shared, out var layer)) continue;
 
                 if (_tileAccessor.GetType(pos, layer, out var old) && !(layer == TileType.ground && IsWetOrPit(pos)))
@@ -274,12 +290,8 @@ namespace BuildTools.Systems
 
                     EntityUtility.RemoveTile(old.tileset, layer, pos, tileUpdates, _tileAccessor);
                     EntityUtility.AddTile(info.tileset, layer, pos, creativeWorld, tileUpdates);
-                    if (!godMode && oldItem.objectID != ObjectID.None)
-                        inventoryChanges.Add(new InventoryChangeBuffer
-                        {
-                            inventoryChangeData = Create.CreateItem(player, 0, oldItem.objectID, 1, playerPos, oldItem.variation),
-                            playerEntity = player,
-                        });
+                    if (!godMode)
+                        GiveTileDrops(player, old.tileset, layer, playerPos, blob, inventoryChanges);
                 }
                 else
                 {
@@ -398,6 +410,24 @@ namespace BuildTools.Systems
             // Taking floor out from under a wall would remove the wall with it.
             if (_tileAccessor.HasType(pos, TileType.wall)) return false;
             return hasShovel;
+        }
+
+        /// <summary>
+        /// Gives what breaking the swapped-out tile drops in the game (DropLootSystem): a floor drops the
+        /// WALL item of its material (a dirt floor gives Dirt, never "Dirt Ground"), anything else drops its
+        /// own item, and nothing drops when that item is NonObtainable.
+        /// </summary>
+        private void GiveTileDrops(Entity player, int tileset, TileType layer, float3 playerPos,
+            BlobAssetReference<PugDatabase.PugDatabaseBank> blob, DynamicBuffer<InventoryChangeBuffer> changes)
+        {
+            var drop = PugDatabase.GetObjectData(tileset, layer == TileType.ground ? TileType.wall : layer, blob);
+            if (drop.objectID == ObjectID.None) return;
+            if (PugDatabase.GetEntityObjectInfo(drop.objectID, blob, drop.variation).objectType == ObjectType.NonObtainable) return;
+            changes.Add(new InventoryChangeBuffer
+            {
+                inventoryChangeData = Create.CreateItem(player, 0, drop.objectID, 1, playerPos, drop.variation),
+                playerEntity = player,
+            });
         }
 
         private bool HasToolType(Entity player, BlobAssetReference<PugDatabase.PugDatabaseBank> blob, ObjectType type)

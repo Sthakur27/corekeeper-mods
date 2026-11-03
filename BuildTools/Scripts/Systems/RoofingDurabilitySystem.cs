@@ -19,6 +19,7 @@ namespace BuildTools.Systems
     {
         private EntityQuery _players;
         private EntityQuery _changes;
+        private bool _loggedActive;
 
         protected override void OnCreate()
         {
@@ -42,15 +43,25 @@ namespace BuildTools.Systems
                 if (data.objectID != ObjectID.RoofingTool) continue;
                 if (held.equipmentPrefab == Entity.Null || !EntityManager.HasComponent<DurabilityCD>(held.equipmentPrefab)) continue;
 
-                int max = EntityManager.GetComponentData<DurabilityCD>(held.equipmentPrefab).maxDurability;
-                if (max <= 0 || data.amount >= max) continue;
+                var durability = EntityManager.GetComponentData<DurabilityCD>(held.equipmentPrefab);
+                int max = durability.maxDurability;
+                if (max <= 0) continue;
+                // A reinforced tool holds up to twice its normal durability (DurabilityCD.IsReinforced:
+                // amount above max). Keep it at its own ceiling, or it would wear down to the normal max.
+                int target = durability.IsReinforced(data.amount) ? max * 2 : max;
+                if (data.amount >= target) continue;
 
                 var changes = EntityManager.GetBuffer<InventoryChangeBuffer>(_changes.GetSingletonEntity());
                 changes.Add(new InventoryChangeBuffer
                 {
                     playerEntity = player,
-                    inventoryChangeData = Create.SetAmount(player, held.equippedSlotIndex, ObjectID.RoofingTool, max),
+                    inventoryChangeData = Create.SetAmount(player, held.equippedSlotIndex, ObjectID.RoofingTool, target),
                 });
+                if (!_loggedActive)
+                {
+                    _loggedActive = true;
+                    UnityEngine.Debug.Log($"[{BuildToolsMod.Name}] Roofing gadget durability topped up {data.amount} -> {target} (max {max}{(target > max ? ", reinforced" : "")}).");
+                }
             }
             players.Dispose();
         }

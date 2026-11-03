@@ -30,7 +30,7 @@ namespace BuildTools
     public sealed class BuildToolsMod : IMod
     {
         public const string Name = "BuildTools";
-        public const string Version = "0.6.3";
+        public const string Version = "0.6.4";
 
         public const string IncreaseKeyBind = "BuildTools_IncreaseSize";
         public const string DecreaseKeyBind = "BuildTools_DecreaseSize";

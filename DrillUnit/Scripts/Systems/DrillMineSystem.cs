@@ -8,7 +8,7 @@ using Unity.Transforms;
 namespace DrillUnit.Systems
 {
     /// <summary>
-    /// The unit drills whatever it drives into (server): while the rider steers, a 3-wide, 2-deep block of
+    /// The unit drills whatever it drives into (server): while the rider holds the use button and steers, a 3-wide, 2-deep block of
     /// wall tiles ahead plus the tiles beside the unit take <see cref="Damage"/> every <see cref="IntervalSeconds"/>
     /// (driving diagonally, both axes' blocks), through the game's TileDamageBuffer, like an explosion or a
     /// charging boss would. The second row starts breaking before the unit reaches it, so it keeps speed. Floors, bridges and
@@ -51,7 +51,9 @@ namespace DrillUnit.Systems
                 var rider = EntityManager.GetComponentData<ControlledByOtherEntityCD>(unit).controlledByEntity;
                 if (!DrillUnitMod.IsRiding(EntityManager, rider, out var ridden) || ridden != unit) continue;
                 if (!EntityManager.HasComponent<ClientInput>(rider)) continue;
-                float2 dir = EntityManager.GetComponentData<ClientInput>(rider).movementDirection;
+                var input = EntityManager.GetComponentData<ClientInput>(rider);
+                if (!InputBits.Drilling(input.buttonSetMask)) continue;
+                float2 dir = input.movementDirection;
                 if (math.lengthsq(dir) < 0.01f) continue;
                 if (_next.TryGetValue(rider, out double next) && now < next) continue;
                 _next[rider] = now + IntervalSeconds;

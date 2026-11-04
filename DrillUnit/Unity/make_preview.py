@@ -8,6 +8,8 @@
   Drill Unit bottom row. Left is the right view flipped, as the XScaler does. The rider is a rough grey
   placeholder only to show what the front layer covers.
 - icons.png: vanilla icon / smallIcon vs Drill Unit icon / smallIcon.
+- icon_compare.png: our icon + smallIcon in a row with vanilla late-game icons (Art/vanilla/6581_icon.png and
+  icon_*.png from extract_skin.py), at 8x on top and 2x below (roughly inventory size).
 """
 from pathlib import Path
 from PIL import Image, ImageDraw
@@ -110,6 +112,23 @@ def icons(pairs, name):
     out.save(OUT / name)
 
 
+def icon_compare(name):
+    ours = [ART / 'DrillUnit_icon.png', ART / 'DrillUnit_smallIcon.png']
+    vanilla = [ART / 'vanilla' / '6581_icon.png'] + sorted((ART / 'vanilla').glob('icon_*.png'))
+    imgs = [Image.open(p).convert('RGBA') for p in ours + vanilla]
+    pad, cell = 12, 16 * Z
+    w = pad + len(imgs) * (cell + pad)
+    out = Image.new('RGBA', (w, cell + pad * 3 + 32), BG)
+    d = ImageDraw.Draw(out)
+    for i, im in enumerate(imgs):
+        x = pad + i * (cell + pad)
+        out.alpha_composite(up(im), (x, pad))
+        out.alpha_composite(up(im, 2), (x + (cell - 32) // 2, cell + pad * 2))
+        if i < len(ours):
+            d.rectangle((x - 4, pad - 4, x + cell + 3, pad + cell + 3), outline=(232, 190, 80, 255))
+    out.save(OUT / name)
+
+
 def main():
     OUT.mkdir(exist_ok=True)
     vf = Image.open(ART / 'vanilla' / '6581_front.png').convert('RGBA')
@@ -121,6 +140,7 @@ def main():
     views([(vf, vb), (nf, nb)], 'views.png')
     icons([ART / 'vanilla' / '6581_icon.png', ART / 'vanilla' / '6581_smallIcon.png',
            ART / 'DrillUnit_icon.png', ART / 'DrillUnit_smallIcon.png'], 'icons.png')
+    icon_compare('icon_compare.png')
     print('wrote', *sorted(p.name for p in OUT.glob('*.png')))
 
 

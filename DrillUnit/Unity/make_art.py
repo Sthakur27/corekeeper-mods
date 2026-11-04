@@ -2,83 +2,126 @@
 
     python -I DrillUnit/Unity/make_art.py
 
-Same look as the in-world sheets (make_skin.py, whose palette and drill-bit generator are reused): the pod
-seen from the side with its teal glass canopy, gold trim, teal energy band and hover glow, spiral drill bit
-pointing right. Like the vanilla boats, `icon` is the full-size inventory icon and `smallIcon` a smaller
-version of the same object (vanilla Speeder Boat: Art/vanilla/6581_icon.png / 6581_smallIcon.png).
-Opaque pixels only (alpha 0 or 255), as in vanilla icons.
+The pod seen from the side, bow to the right, like the vanilla drill tools: plated steel hull with an open
+cockpit, gold trim band, teal running lights and hover emitters, and a steel spiral drill bit on a gold collar.
+Rendered like the vanilla late-game icons (vanilla Speeder Boat Art/vanilla/6581_icon.png, drill tools,
+minecart): colours from the game's own item palette (the steel ramp 35,40,30 .. 215,220,251, the gold ramp,
+muted steel-blue teal instead of flat saturated cyan), 4-5 step ramps lit from the top-left, tinted dark
+outlines (dark olive-steel round metal, brown round gold), small highlights.
+`icon` is the full-size inventory icon, `smallIcon` a smaller version of the same object, as in vanilla.
+Opaque pixels only (alpha 0 or 255).
 """
-import importlib.util
 from pathlib import Path
 from PIL import Image
 
 HERE = Path(__file__).resolve().parent
 
+PALETTE = {
+    '.': None,
+    'K': (35, 40, 30),       # outline round metal (vanilla machinery outline)
+    'k': (14, 37, 34),       # cockpit interior
+    'D': (42, 78, 74),       # steel dark
+    'H': (71, 103, 126),     # steel
+    'L': (103, 127, 174),    # steel light
+    'P': (161, 174, 221),    # steel pale
+    'X': (215, 220, 251),    # steel shine
+    'b': (57, 52, 31),       # outline round gold
+    'y': (145, 91, 38),      # gold dark
+    'g': (226, 161, 44),     # gold
+    'G': (242, 223, 58),     # gold light
+    'e': (20, 62, 80),       # teal dark
+    'c': (57, 114, 139),     # teal
+    'C': (89, 157, 187),     # teal light
+    'E': (165, 202, 218),    # teal glint
+}
 
-def _skin():
-    spec = importlib.util.spec_from_file_location('make_skin', HERE / 'make_skin.py')
-    mod = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(mod)
-    return mod
-
-
-# Hull only; the drill bit is drawn by make_skin.add_drill from the spec below.
+# Hull; the bit (columns right of the collar) is drawn by add_bit.
 ICON = [
     '................',
-    '...ooooo........',
-    '..oWCccto.......',
-    '.oWCcccccto.....',
-    '.oCccccctto.....',
-    'oGGGGGGGGGG.....',
-    'olwwllllllh.....',
-    'WhChhdhhChd.....',
-    'odhhhdhhhdd.....',
-    'otcCcccCcto.....',
-    '.oddddddddo.....',
-    '..otcCWCcto.....',
-    '...otcccto......',
-    '....ooooo.......',
     '................',
+    '................',
+    '..KKKKK.........',
+    '.KPXPPLK........',
+    'KLDkkkkDK.......',
+    'KHkkcCkHK.......',
+    'KygGGGggy.......',
+    'KPXLLLLHD.......',
+    'KHEHHDHEH.......',
+    'KDHHHDHHD.......',
+    'KeCcccCce.......',
+    '.KDDDDDDK.......',
+    '..KeCEeK........',
+    '...KKKK.........',
     '................',
 ]
-ICON_DRILL = dict(axis='h', centre=7.5, front=True,
-                  collar={11: (4, 11)}, cone={12: (4, 11), 13: (5, 10), 14: (6, 9)})
+ICON_BIT = dict(collar_x=9, rows=(4, 12), cone={10: (4, 12), 11: (4, 12), 12: (5, 11), 13: (6, 10), 14: (7, 9)})
 
 SMALL = [
     '................',
     '................',
     '................',
     '................',
-    '.....oooo.......',
-    '....oWCcto......',
-    '...oCccccto.....',
-    '..oGGGGGGGG.....',
-    '..olwlllllh.....',
-    '..WhChhhChd.....',
-    '..otcCccCto.....',
-    '...odddddo......',
-    '....otWWto......',
-    '.....oooo.......',
     '................',
+    '...KKKK.........',
+    '..KPXPLK........',
+    '.KDkcCkDK.......',
+    '.KygGGgy........',
+    '.KPLLLHD........',
+    '.KHEHEHD........',
+    '.KeCccCe........',
+    '..KDDDDK........',
+    '...KeEK.........',
+    '....KK..........',
     '................',
 ]
-SMALL_DRILL = dict(axis='h', centre=9, front=True,
-                   collar={11: (6, 12)}, cone={12: (6, 12), 13: (7, 11), 14: (8, 10)})
+SMALL_BIT = dict(collar_x=8, rows=(6, 12), cone={9: (6, 12), 10: (7, 11), 11: (7, 11), 12: (8, 10), 13: (9, 9)})
+
+RAMP = 'XPLHD'  # bit steel, light to dark
 
 
-def draw(skin, rows, drill):
+def add_bit(grid, spec):
+    """Gold collar plus a spiral bit pointing right, shaded like the vanilla drill tools: lit from the top,
+    alternating light/dark ridges that shift along the bit (the spiral), tinted outline."""
+    y0, y1 = spec['rows']
+    cx = spec['collar_x']
+    for y in range(y0, y1 + 1):
+        t = (y - y0) / (y1 - y0)
+        grid[y][cx] = 'G' if t < 0.2 else ('g' if t < 0.7 else 'y')
+    grid[y0 - 1][cx] = 'b'
+    grid[y1 + 1][cx] = 'b'
+    cells = set()
+    for x, (a, b) in spec['cone'].items():
+        for y in range(a, b + 1):
+            cells.add((x, y))
+    for x, y in cells:
+        t = (y - y0) / max(1, y1 - y0)            # 0 top .. 1 bottom
+        level = 1 if t < 0.25 else (2 if t < 0.75 else 3)
+        if (x + (y - y0) // 3) % 2:               # ridge in shadow
+            level += 1
+        elif level > 0:                           # ridge catching light
+            level -= 1
+        grid[y][x] = RAMP[min(level, len(RAMP) - 1)]
+    for x, y in cells:
+        for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+            nx, ny = x + dx, y + dy
+            if 0 <= nx < 16 and 0 <= ny < 16 and (nx, ny) not in cells and grid[ny][nx] == '.':
+                grid[ny][nx] = 'K'
+
+
+def draw(rows, bit):
+    assert len(rows) == 16 and all(len(r) == 16 for r in rows), 'icon grids are 16x16'
     grid = [list(r) for r in rows]
-    mask = [['.'] * 16 for _ in rows]
-    assert len(grid) == 16 and all(len(r) == 16 for r in grid)
-    skin.add_drill(grid, mask, drill)
+    add_bit(grid, bit)
     img = Image.new('RGBA', (16, 16), (0, 0, 0, 0))
-    skin.paste(img, grid, (0, 0))
+    for y, row in enumerate(grid):
+        for x, ch in enumerate(row):
+            if PALETTE[ch] is not None:
+                img.putpixel((x, y), PALETTE[ch] + (255,))
     return img
 
 
 def render():
-    skin = _skin()
-    return draw(skin, ICON, ICON_DRILL), draw(skin, SMALL, SMALL_DRILL)
+    return draw(ICON, ICON_BIT), draw(SMALL, SMALL_BIT)
 
 
 def main():

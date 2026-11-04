@@ -2,7 +2,8 @@
 
     python -I DrillUnit/Unity/verify_bundle.py [bundle ...]
 
-Defaults to DrillUnit/Bundles/DrillUnit_Windows.assetbundle. Fails when the unit prefab is missing or not
+Defaults to DrillUnit/Bundles/DrillUnit_Windows.assetbundle; any other bundle (the Overhaul's combined
+SidsStorageAssets) is checked for the Drill Unit prefab only. Fails when the unit prefab is missing or not
 named DrillUnit_* (a ghost prefab named like a vanilla one shares its ghost type), when a ghost prefab
 has no prefabId, or when the ObjectAuthoring/BoatAuthoring/recipe values are not what the builder sets.
 """
@@ -16,6 +17,7 @@ RECIPE = [('PandoriumBar', 300), ('SolariteBar', 100)]
 
 def check(path):
     env = UnityPy.load(path, *glob.glob(GAME + '/*monoscripts*'))
+    combined = not os.path.basename(path).startswith('DrillUnit_')
     units = {}
     textures = {o.read().m_Name for o in env.objects if o.type.name == 'Texture2D'}
     for o in env.objects:
@@ -28,6 +30,8 @@ def check(path):
             if p.type.name == 'MonoBehaviour':
                 comps[p.read().m_Script.read().m_ClassName] = p.read_typetree()
         if 'GhostAuthoringComponent' in comps:
+            if combined and not go.m_Name.startswith('DrillUnit_'):
+                continue  # the Overhaul's combined bundle also holds other mods' prefabs
             if not go.m_Name.startswith('DrillUnit_'):
                 sys.exit(f'{path}: ghost prefab {go.m_Name} is not named DrillUnit_*')
             if not comps['GhostAuthoringComponent'].get('prefabId'):

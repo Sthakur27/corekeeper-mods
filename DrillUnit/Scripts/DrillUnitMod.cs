@@ -17,9 +17,10 @@ namespace DrillUnit
     /// <see cref="Systems.HoverColliderSystem"/> lets the rider cross water and land,
     /// <see cref="Systems.StuckGuardSystem"/> stops the game's "stuck" rescue from pulling the rider back
     /// (or killing them) over terrain a boat could not be on, and <see cref="Patches.SendInputPatch"/> drops
-    /// attack input for anything that is not a mining tool. The lay-ground key (default G, rebind under
-    /// Controls) toggles <see cref="Systems.LayGroundSystem"/>, which floors water, lava and pits under the
-    /// rider with blocks from the inventory.
+    /// attack input for anything that is not a mining tool. The ground key (default G, rebind under
+    /// Controls) cycles off -> lay floor (<see cref="Systems.LayGroundSystem"/>: floors water, lava and pits
+    /// around the rider with blocks from the inventory) -> dig (<see cref="Systems.DigGroundSystem"/>: digs
+    /// floors and ground around the rider down to pits) -> off.
     /// </summary>
     public sealed class DrillUnitMod : IMod
     {
@@ -39,8 +40,10 @@ namespace DrillUnit
             }
         }
 
-        /// <summary>Client: the lay-ground toggle, sent to the server in the input bits.</summary>
-        public static bool LayGround;
+        public enum GroundMode { Off, Lay, Dig }
+
+        /// <summary>Client: the ground mode, sent to the server in the input bits.</summary>
+        public static GroundMode Ground;
 
         private static Player _rewiredPlayer;
 
@@ -60,7 +63,7 @@ namespace DrillUnit
                 CoreLibMod.LoadSubmodule(typeof(LocalizationModule));
                 LocalizationModule.AddTerm("ControlMapper/Drill UnitCategory", "Drill Unit");
                 LocalizationModule.AddTerm("ControlMapper/Drill UnitDescription", "Keys while riding the Drill Unit.");
-                LocalizationModule.AddTerm($"ControlMapper/{GroundKeyBind}", "Lay ground on / off");
+                LocalizationModule.AddTerm($"ControlMapper/{GroundKeyBind}", "Ground mode: off / lay floor / dig");
             }
             catch (Exception e)
             {
@@ -75,8 +78,10 @@ namespace DrillUnit
             if (_rewiredPlayer == null || !_rewiredPlayer.GetButtonDown(GroundKeyBind) || !KeysAllowed()) return;
             var player = Manager.main != null ? Manager.main.player : null;
             if (player == null || player.world == null || !IsRiding(player.world.EntityManager, player.entity, out _)) return;
-            LayGround = !LayGround;
-            ChatNote.Show(LayGround ? "Drill Unit: laying ground over water, lava and pits" : "Drill Unit: lay ground off");
+            Ground = Ground == GroundMode.Off ? GroundMode.Lay : Ground == GroundMode.Lay ? GroundMode.Dig : GroundMode.Off;
+            ChatNote.Show(Ground == GroundMode.Lay ? "Drill Unit: hold left click to lay floor over water, lava and pits"
+                : Ground == GroundMode.Dig ? "Drill Unit: hold left click to dig floor and ground into pits"
+                : "Drill Unit: ground mode off");
         }
 
         private static bool KeysAllowed()

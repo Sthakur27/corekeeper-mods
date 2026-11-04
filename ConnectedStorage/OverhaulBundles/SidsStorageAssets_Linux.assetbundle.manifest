@@ -9,6 +9,34 @@
             "guid": "9a7be0588ae0d2041bba2a0d7088859e"
         },
         {
+            "path": "Assets/DrillUnit/Textures/DrillUnit_smallIcon.png",
+            "guid": "d1a1e7b0c3f84e2a9b6dd0117a170002"
+        },
+        {
+            "path": "Assets/DrillUnit/Textures/DrillUnit_icon.png",
+            "guid": "d1a1e7b0c3f84e2a9b6dd0117a170001"
+        },
+        {
+            "path": "Assets/DrillUnit/Textures/DrillUnit_front.png",
+            "guid": "d1a1e7b0c3f84e2a9b6dd0117a170003"
+        },
+        {
+            "path": "Assets/DrillUnit/Textures/DrillUnit_back.png",
+            "guid": "d1a1e7b0c3f84e2a9b6dd0117a170004"
+        },
+        {
+            "path": "Assets/DrillUnit/Prefabs/DrillUnit_UnitEntity.prefab",
+            "guid": "726fa17af755eab4da0bac77055d9136"
+        },
+        {
+            "path": "Assets/DrillUnit/Data/TextDataBlock/Items/DrillUnit_Unit.asset",
+            "guid": "d1a1e7b0c3f84e2a9b6dd0117a170100"
+        },
+        {
+            "path": "Assets/DrillUnit/Data/EntityAuthoringDataBlock/DrillUnit_UnitEntity.asset",
+            "guid": "40b5f848bfc56a345a0dc7525d1563f4"
+        },
+        {
             "path": "Assets/WormholePotion/Textures/WormholePotion_icon.png",
             "guid": "b7e3c2a19d4f4e8a8c5b6a0f1e2d0001"
         },

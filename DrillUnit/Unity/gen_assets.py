@@ -17,7 +17,7 @@ GUID = 'd1a1e7b0c3f84e2a9b6dd0117a17{:04x}'  # + running index; fixed forever
 
 TEXTURES = ['DrillUnit_icon', 'DrillUnit_smallIcon', 'DrillUnit_front', 'DrillUnit_back']
 TITLE = 'Drill Unit'
-DESCRIPTION = 'A hovering mining craft from the Rift. Crosses water, lava and land. Mine with your pickaxe or drill from the seat; weapons do not work while riding.'
+DESCRIPTION = 'A hovering mining craft from the Rift. Crosses water, lava, pits and land, and grinds through any wall it drives into. Press the ground key (G) to lay floor or dig the ground around you. Weapons do not work while riding.'
 
 
 def address(g):

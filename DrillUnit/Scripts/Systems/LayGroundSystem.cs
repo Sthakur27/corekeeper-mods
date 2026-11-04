@@ -11,7 +11,7 @@ using Unity.Transforms;
 namespace DrillUnit.Systems
 {
     /// <summary>
-    /// Lay-ground mode (server): while a Drill Unit rider has it on (<see cref="InputBits.GroundBit"/>), the
+    /// Lay-ground mode (server): while a Drill Unit rider in lay mode holds the use button (<see cref="InputBits.Laying"/>), the
     /// water, lava and pit cells within <see cref="Radius"/> of the rider (a 3x3 area) become floor. The floor is
     /// the ground version of the first
     /// block in the rider's inventory that has one (Dirt -> dirt floor), placed the way vanilla places a
@@ -61,7 +61,7 @@ namespace DrillUnit.Systems
                 var rider = EntityManager.GetComponentData<ControlledByOtherEntityCD>(unit).controlledByEntity;
                 if (!DrillUnitMod.IsRiding(EntityManager, rider, out var ridden) || ridden != unit) continue;
                 if (!EntityManager.HasComponent<ClientInput>(rider)) continue;
-                if ((EntityManager.GetComponentData<ClientInput>(rider).buttonSetMask & InputBits.GroundBit) == 0)
+                if (!InputBits.Laying(EntityManager.GetComponentData<ClientInput>(rider).buttonSetMask))
                 {
                     _lastCell.Remove(rider);
                     continue;
@@ -125,7 +125,7 @@ namespace DrillUnit.Systems
             return _tileAccessor.HasType(cell, TileType.water) || _tileAccessor.HasType(cell, TileType.pit);
         }
 
-        private static bool IsCoreCell(int2 p)
+        internal static bool IsCoreCell(int2 p)
         {
             return (p.x == 0 && p.y == 0) || (p.x == 0 && p.y == 1) || (p.x == -1 && p.y == 1) || (p.x == 1 && p.y == 1);
         }

@@ -8,7 +8,7 @@ namespace DrillUnit.Patches
     /// <summary>
     /// After the game's SendClientInputSystem (managed, client) has written this frame's input, and after
     /// Build Tools' own postfix (Priority.Last), edits the local player's ClientInputData before NetCode
-    /// sends it: sets or clears <see cref="InputBits.GroundBit"/>, and while riding a Drill Unit drops the
+    /// sends it: sets or clears <see cref="InputBits.GroundBit"/> / <see cref="InputBits.DigBit"/>, and while riding a Drill Unit drops the
     /// attack buttons unless a mining tool is held. The server and the client's prediction both act on this
     /// input, so a weapon simply does nothing from the seat. ClientInputData is ClientInput as raw uints;
     /// buttonSetMask is the uint at byte 60, checked once against the typed copy (as in Build Tools).
@@ -36,7 +36,7 @@ namespace DrillUnit.Patches
             Entity player = main.player.entity;
             if (player == Entity.Null || !em.Exists(player) || !em.HasComponent<ClientInputData>(player)) return;
             bool riding = DrillUnitMod.IsRiding(em, player, out _);
-            if (!riding && !DrillUnitMod.LayGround) return;
+            if (!riding && DrillUnitMod.Ground == DrillUnitMod.GroundMode.Off) return;
 
             var data = em.GetComponentData<ClientInputData>(player);
             if (_layoutState == 0)
@@ -59,12 +59,18 @@ namespace DrillUnit.Patches
             uint mask = data.dataOffset60;
             if (!riding)
             {
-                DrillUnitMod.LayGround = false; // off again once the player gets out
-                mask &= ~InputBits.GroundBit;
+                DrillUnitMod.Ground = DrillUnitMod.GroundMode.Off; // off again once the player gets out
+                mask &= ~InputBits.ActionBits;
             }
             else
             {
-                mask = DrillUnitMod.LayGround ? mask | InputBits.GroundBit : mask & ~InputBits.GroundBit;
+                // The unit only acts while the use button (left click) is held; read it before the weapon lock below.
+                bool held = (mask & (uint)CommandInputButtonStateNames.Interact_HeldDown) != 0;
+                mask &= ~InputBits.ActionBits;
+                if (held)
+                    mask |= DrillUnitMod.Ground == DrillUnitMod.GroundMode.Lay ? InputBits.GroundBit
+                        : DrillUnitMod.Ground == DrillUnitMod.GroundMode.Dig ? InputBits.DigBit
+                        : InputBits.ActionBits;
                 if (!HoldsMiningTool(em, player, out bool eatable))
                 {
                     mask &= ~AttackButtons;

@@ -59,6 +59,7 @@ namespace SidsOverhaul
             { "ItemSpawner", "Item Spawner" },
             { "CoinDrops", "Coin Drops" },
             { "WormholePotion", "Wormhole Potion" },
+            { "DrillUnit", "Drill Unit (Alpha)" },
         };
 
         public const string Hint = "Turn whole sub-mods on or off. Changes take effect after restarting the game. "

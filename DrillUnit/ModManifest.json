@@ -1,7 +1,7 @@
 {
     "guid": "d1a1e7b0c3f84e2a9b6d5c4e3f2a1b09",
     "name": "DrillUnit",
-    "displayName": "Drill Unit",
+    "displayName": "Drill Unit (Alpha)",
     "skipSafetyChecks": false,
     "disableScripts": false,
     "accessesExtraAssemblies": true,
@@ -42,6 +42,10 @@
         },
         {
             "path": "Scripts/Systems/DrillMineSystem.cs",
+            "guid": ""
+        },
+        {
+            "path": "Scripts/Systems/DigGroundSystem.cs",
             "guid": ""
         },
         {

@@ -4,7 +4,8 @@
 
 Writes <boatID>_front.png / <boatID>_back.png for every skin plus the prefab's default sprite sheets, and
 6581_icon.png / 6581_smallIcon.png (the Speeder Boat item's ObjectInfo icon / smallIcon sprites, which live in
-the bottom row of its back sheet), as references for make_skin.py / make_art.py. Re-run after a game update.
+the bottom row of its back sheet), plus icon_<Prefab>.png for a few late-game items (REF_ICONS, the style references in
+preview/icon_compare.png), as references for make_skin.py / make_art.py. Re-run after a game update.
 """
 import glob, os
 import UnityPy
@@ -37,7 +38,12 @@ def main():
     export_icons(env)
 
 
-def export_icons(env, prefabs={'SpeederBoatEntity': 6581}):
+REF_ICONS = ['DrillToolEntity', 'DrillToolScarletEntity', 'LaserDrillToolEntity', 'GalaxiteTurretForwardEntity',
+             'MinecartEntity', 'OctarineBar', 'PandoriumAxeEntity', 'MechanicalPart']
+
+
+def export_icons(env, prefabs=None):
+    prefabs = prefabs or {'SpeederBoatEntity': '6581_', **{n: 'icon_' + n for n in REF_ICONS}}
     for o in env.objects:
         if o.type.name != 'GameObject':
             continue
@@ -54,9 +60,10 @@ def export_icons(env, prefabs={'SpeederBoatEntity': 6581}):
                     continue
             except Exception:
                 continue
-            for field in ('icon', 'smallIcon'):
+            fields = ('icon', 'smallIcon') if prefabs[go.m_Name].endswith('_') else ('icon',)
+            for field in fields:
                 sprite = getattr(mb.objectInfo, field).read()
-                name = f"{prefabs[go.m_Name]}_{field}.png"
+                name = prefabs[go.m_Name] + (field if len(fields) > 1 else '') + '.png'
                 sprite.image.save(os.path.join(OUT, name))
                 print('  wrote', name, sprite.m_Name)
 

@@ -35,10 +35,16 @@ from PIL import Image
 
 HERE = Path(__file__).resolve().parent
 
-# Core Keeper style: hue-tinted dark outline, short ramps, light from the top.
+# Core Keeper style: no black outlines. Each outline pixel takes a dark, saturated shade of the part it
+# borders (vanilla boats: navy round the hull, dark purple round the trim, brown round the motor), see
+# tint_outline. Short ramps, light from the top.
 PALETTE = {
     '.': None,
-    'o': (20, 22, 36),       # outline
+    'o': (28, 38, 72),       # outline placeholder (resolved by tint_outline; hull shade if alone)
+    'O': (28, 38, 72),       # hull outline (dark steel blue)
+    'Y': (96, 58, 22),       # gold outline (dark amber)
+    'T': (10, 64, 78),       # energy outline (deep teal)
+    'M': (42, 50, 82),       # drill steel outline
     'k': (30, 34, 50),       # cockpit interior / deep shadow
     'd': (46, 52, 72),       # hull dark
     'h': (72, 80, 104),      # hull
@@ -54,6 +60,7 @@ PALETTE = {
     's': (82, 88, 110),      # drill steel dark
     'm': (146, 154, 176),    # drill steel
     'S': (214, 220, 234),    # drill steel light
+    'n': (56, 62, 84),       # drill steel deep shadow (flute bottoms)
 }
 
 
@@ -193,30 +200,50 @@ D_FRONT = sym([
 #   axis 'v': rows -> (x0, x1) inclusive spans; band from row + distance to the centre column (chevrons)
 #   axis 'h': cols -> (y0, y1) spans; band from column + distance to the centre row
 DRILLS = {
-    'U': dict(axis='v', centre=7.5, front=False,
-              collar={5: (5, 10)}, cone={4: (5, 10), 3: (6, 9), 2: (6, 9), 1: (7, 8)}),
+    # U: bit behind the rider pointing away (up); wide enough that its flanks show beside the rider.
+    'U': dict(axis='v', centre=7.5, front=False, twist=True,
+              collar={6: (1, 14)}, cone={5: (2, 13), 4: (3, 12), 3: (4, 11), 2: (5, 10), 1: (6, 9), 0: (7, 8)}),
     'R': dict(axis='h', centre=8, front=True,
               collar={14: (4, 12)}, cone={15: (4, 12), 16: (5, 11), 17: (6, 10), 18: (7, 9), 19: (8, 8)}),
-    'D': dict(axis='v', centre=7.5, front=True,
-              collar={11: (4, 11)}, cone={12: (5, 10), 13: (5, 10), 14: (6, 9), 15: (6, 9), 16: (7, 8)}),
+    # D: big bit pointing at the camera, foreshortened, in front of the rider's legs.
+    'D': dict(axis='v', centre=7.5, front=True, twist=True,
+              collar={10: (1, 14)}, cone={11: (2, 13), 12: (3, 12), 13: (4, 11), 14: (5, 10), 15: (6, 9), 16: (7, 8)}),
 }
 BANDS = 'Sms'           # light, mid, dark steel
 COLLAR = 'Gggy'         # gold ramp along the collar, lit end first
+FLUTE = 'Smsn'          # twisted-flute ramp for the U/D bits: edge highlight .. flute bottom
+
+
+def twist_shade(x, y, x0, x1, centre):
+    """Spiral flutes on a bit seen end-on: '/' grooves two pixels wide (highlight, steel, deep groove),
+    one step lighter on the lit left flank and darker on the right."""
+    if x1 - x0 <= 1:
+        return 'S' if x <= centre else 'm'  # the point
+    u = (x - centre) / ((x1 - x0 + 1) / 2)
+    step = (0, 1, 3)[((x + y) // 2) % 3]
+    if u < -0.5 and step:
+        step -= 1
+    elif u > 0.5 and step < 3:
+        step += 1
+    return FLUTE[step]
 
 
 def add_drill(grid, mask, spec):
     """Draw a drill bit into grid (list of lists) and mark it in mask if it is in front of the rider."""
     h, w = len(grid), len(grid[0])
     cells = {}
-    for a, (b0, b1) in spec['collar'].items():
+    for row_i, (a, (b0, b1)) in enumerate(sorted(spec['collar'].items())):
         n = b1 - b0 + 1
         for i, b in enumerate(range(b0, b1 + 1)):
-            ch = COLLAR[min(len(COLLAR) - 1, i * len(COLLAR) // n)]
+            ch = COLLAR[min(len(COLLAR) - 1, i * len(COLLAR) // n + row_i)]
             if i == n - 1:
                 ch = 'y'
             cells[(a, b) if spec['axis'] == 'h' else (b, a)] = ch
     for a, (b0, b1) in spec['cone'].items():
         for b in range(b0, b1 + 1):
+            if spec.get('twist'):
+                cells[(b, a)] = twist_shade(b, a, b0, b1, spec['centre'])
+                continue
             band = (a + int(abs(b - spec['centre']))) % 3
             if spec['axis'] == 'v':
                 x, y = b, a
@@ -268,7 +295,35 @@ def view(name):
     return g, m
 
 
+OUTLINE_OF = {**dict.fromkeys('kdhlw', 'O'), **dict.fromkeys('ygG', 'Y'),
+              **dict.fromkeys('tcCW', 'T'), **dict.fromkeys('smSn', 'M')}
+
+
+def tint_outline(grid):
+    """Each 'o' becomes the outline shade of the part it borders most (4-neighbours, then diagonals)."""
+    h, w = len(grid), len(grid[0])
+    out = [list(r) for r in grid]
+    for y in range(h):
+        for x in range(w):
+            if grid[y][x] != 'o':
+                continue
+            for ring in (((1, 0), (-1, 0), (0, 1), (0, -1)), ((1, 1), (-1, 1), (1, -1), (-1, -1))):
+                votes = {}
+                for dx, dy in ring:
+                    nx, ny = x + dx, y + dy
+                    if 0 <= nx < w and 0 <= ny < h and grid[ny][nx] in OUTLINE_OF:
+                        k = OUTLINE_OF[grid[ny][nx]]
+                        votes[k] = votes.get(k, 0) + 1
+                if votes:
+                    out[y][x] = max(votes, key=votes.get)
+                    break
+            else:
+                out[y][x] = 'O'
+    return out
+
+
 def paste(img, grid, origin, keep=lambda x, y: True, mirror=False):
+    grid = tint_outline(grid)
     ox, oy = origin
     w = len(grid[0])
     for y, row in enumerate(grid):

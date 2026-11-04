@@ -23,6 +23,7 @@ Use the Overhaul or the individual versions of its features. Installing both run
 | [Ender Stash](EnderStash/README.md) | Access your character's personal 40-slot stash through an Ender Chest. |
 | [Coin Pouch](CoinPouch/README.md) | Picked-up Ancient Coins go into their own slot under the vanity pants, up to 99,999; merchants take payment from it. |
 | [Wormhole Potion](WormholePotion/README.md) | A one-use recall to the Core that marks your spot on the map; teleport back to it once from any waypoint. 10 Gold Bars at an Ancient Hologram Pod. |
+| [Drill Unit (Alpha)](DrillUnit/README.md) | End-game hover craft from the Rift Statue: crosses water, lava and pits, drills through walls, lays floor or digs pits around you. Alpha, single player tested. |
 | [Armor Dye](ArmorDye/README.md) | Color individual armor pieces, weapons and tools. |
 | [Pet Editor](PetEditor/README.md) | Change a pet's level, talents and color. |
 | [Item Spawner](ItemSpawner/README.md) | Host/admin spawn browser: search every item (modded ones too), take one or a full stack, spawn gear and tools above their base level, and cook any dish from two ingredients. Requires CoreLib and Runic Storage. |

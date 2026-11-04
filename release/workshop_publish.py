@@ -63,6 +63,7 @@ MODS = [
     ("SolariteDrill", "Solarite Drill", "solaritedrill_logo.png", "Item"),
     ("CoinPouch", "Coin Pouch", "coinpouch_logo.png", "Quality of Life"),
     ("WormholePotion", "Wormhole Potion", "wormholepotion_logo.png", "Item"),
+    ("DrillUnit", "Drill Unit (Alpha)", "drillunit_logo.png", "Item"),
 ]
 OVERHAUL = ("SidsOverhaul", "Sid's Overhaul", "overhaul_logo.png", "Overhaul")
 # Standalone-only items: a mod that needs skipSafetyChecks (Slot Organizer uses the game's file system) cannot be
@@ -100,6 +101,7 @@ COVER_NOTES = {
     "SolariteDrill": "Cover is made from in-game screenshots of a placed Solarite Drill (enlarged, game pixels unchanged) and its crafting tooltip (HDR captures tone-mapped); title banner added.",
     "CoinPouch": "Cover is made from an in-game screenshot of the equipment panel with 20,405 coins in the coin slot, plus an enlarged view of that slot (HDR capture tone-mapped); title banner and highlight added.",
     "WormholePotion": "Cover is made from in-game screenshots (casting the potion, its return marker on the map, the waypoint teleport line and the Ancient Hologram Pod recipe; HDR captures tone-mapped) plus the potion's own inventory sprite enlarged; title banner, step numbers and labels added.",
+    "DrillUnit": "Cover is made from in-game screenshots (drilling a tunnel, hovering on lava, a dug pit trench beside a laid floor; HDR captures tone-mapped and brightened, mouse cursor painted out, the rider moved up onto the trench end in the third); title banner and labels added.",
     "MerchantRestock": "Cover is made from in-game screenshots of the Caveling and Fishing Merchants' shops and the Fishing Merchant (HDR captures tone-mapped); title banner and a stopwatch icon added.",
 }
 

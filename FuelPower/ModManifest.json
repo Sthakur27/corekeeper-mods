@@ -1,0 +1,29 @@
+{
+    "guid": "625c7c45bbe04212aaf8a04c786981de",
+    "name": "FuelPowerPrototype",
+    "displayName": "Fuel & Power Prototype (Observation Only)",
+    "skipSafetyChecks": false,
+    "disableScripts": false,
+    "accessesExtraAssemblies": true,
+    "disableHarmonyPatching": false,
+    "requiredOn": 3,
+    "files": [
+        {
+            "path": "Scripts/Core/CoalDrops.cs",
+            "guid": "cb90415ae9a8427d9d37975850931644"
+        },
+        {
+            "path": "Scripts/Core/FuelMachine.cs",
+            "guid": "370469ea42714cb79ce4e988f7f8c12d"
+        },
+        {
+            "path": "Scripts/FuelPowerMod.cs",
+            "guid": "0fadbff98b6b49d38f7e21452e4ff48b"
+        },
+        {
+            "path": "Scripts/Systems/FurnaceProbeSystem.cs",
+            "guid": "fb9f4e5caac447c8a56e7ea2b32fc6ab"
+        }
+    ],
+    "dependencies": []
+}

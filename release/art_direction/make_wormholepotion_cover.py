@@ -1,8 +1,10 @@
-"""Wormhole Potion cover: the mod as three numbered steps, from Sid's 2026-11-04 screenshots.
+"""Wormhole Potion cover: the potion and its recipe, then the mod as three numbered steps (Sid's 2026-11-04 screenshots).
 
     python release/art_direction/make_wormholepotion_cover.py [--out DIR]
 
-1. The player holding the potion out in the world (HDR capture 00.35.22.78).
+0. Crafting column: the potion's own 16 px inventory sprite blown up nearest-neighbour, the Ancient Hologram
+   Pod window ("Remnants") with the potion's recipe slot, and the 10 Gold Bar icon from its tooltip (capture 00.36.10.40).
+1. The player mid-cast with the potion: blue glow and cast bar (HDR capture 01.10.59.19).
 2. The potion-icon "Wormhole Return Point" on the map, with its hover title (capture 00.38.00.07).
 3. The map's teleport line from a waypoint to that marker (screenshot Sid pasted in chat, SDR).
 Panels, gold frames and the title banner come from make_screenshot_covers.py; step numbers, labels
@@ -21,19 +23,22 @@ GAIN = 1.7
 
 # (stamp, crop in 1280x720 preview pixels, gain, column x0, x1, label lines)
 STEPS = [
-    ('hdr:00.35.22.78', (490, 170, 810, 520), GAIN, 24, 300, ['DRINK IT ANYWHERE', 'YOU WARP HOME']),
-    ('hdr:00.38.00.07', (500, 170, 1045, 470), GAIN, 346, 732, ['YOUR SPOT GETS', 'A MAP MARKER']),
-    ('src:wormholepotion_map.png', (40, 150, 1000, 600), 1.0, 778, 1256, ['WARP BACK ONCE', 'FROM ANY WAYPOINT']),
+    ('hdr:01.10.59.19', (500, 250, 780, 620), GAIN, 352, 566, ['DRINK IT ANYWHERE', 'YOU WARP HOME']),
+    ('hdr:00.38.00.07', (500, 170, 1045, 470), GAIN, 604, 896, ['YOUR SPOT GETS', 'A MAP MARKER']),
+    ('src:wormholepotion_map.png', (40, 150, 1000, 600), 1.0, 934, 1256, ['WARP BACK ONCE', 'FROM ANY WAYPOINT']),
 ]
 # Gold frames on the subject of a step (preview pixels).
-FRAMES = {'hdr:00.35.22.78': [(600, 296, 668, 372)]}
+FRAMES = {'hdr:01.10.59.19': [(586, 286, 676, 386)], 'hdr:00.36.10.40': [(676, 286, 736, 346)]}
 PANEL_Y0, PANEL_Y1 = TOP + 16, 566
+ICON = covers.REPO / 'WormholePotion/Unity/Art/WormholePotion_icon.png'
+CRAFT = ('hdr:00.36.10.40', (540, 182, 740, 352), GAIN, 24, 314)   # the pod's window, below the big icon
+GOLD_BAR = ('hdr:00.36.10.40', (854, 661, 887, 699))                 # gold bar icon with its green "10"
 
 
-def pixel_text(s, size=8):
-    """1-bit text mask at quarter scale (spaces tripled, as in the banner caption)."""
+def pixel_text(s, size=8, gap=3):
+    """1-bit text mask at quarter scale (spaces widened, as in the banner caption)."""
     f = ImageFont.truetype('C:/Windows/Fonts/segoeuib.ttf', size)
-    s = s.replace(' ', '   ')
+    s = s.replace(' ', ' ' * gap)
     probe = ImageDraw.Draw(Image.new('L', (1, 1)))
     w = round(probe.textlength(s, font=f)) + 4
     m = Image.new('L', (w, size + 6))
@@ -87,12 +92,11 @@ def compose():
     bg = bg.resize((W, H), Image.LANCZOS).filter(ImageFilter.GaussianBlur(6))
     canvas = ImageEnhance.Brightness(bg).enhance(0.45 * GAIN)
 
-    centres = []
-    for stamp, box, gain, x0, x1, _ in STEPS:
+    def panel(stamp, box, gain, x0, x1, y0, y1):
         src = covers.crop(stamp, box)
         if gain != 1.0:
             src = ImageEnhance.Brightness(src).enhance(gain)
-        img, x, y, _ = covers.fit(src, (x0, PANEL_Y0, x1, PANEL_Y1))
+        img, x, y, _ = covers.fit(src, (x0, y0, x1, y1))
         shadow = Image.new('L', (W, H), 0)
         ImageDraw.Draw(shadow).rectangle((x + 8, y + 10, x + img.width + 8, y + img.height + 10), fill=170)
         canvas.paste('#000000', (0, 0), shadow.filter(ImageFilter.GaussianBlur(12)))
@@ -106,18 +110,43 @@ def compose():
                  x + round((hx1 - box[0]) * k), y + round((hy1 - box[1]) * k))
             d.rounded_rectangle((f[0] - 3, f[1] - 3, f[2] + 3, f[3] + 3), 13, outline=DARK, width=9)
             d.rounded_rectangle(f, 10, outline=GOLD, width=3)
-        centres.append(((x0 + x1) // 2, y + img.height // 2))
 
-    for i in range(len(STEPS) - 1):
-        gap = (STEPS[i][4] + STEPS[i + 1][3]) // 2
-        arrow(canvas, gap, (PANEL_Y0 + PANEL_Y1) // 2)
+    # Crafting column: big potion over a violet glow, the pod window under it.
+    cx = (CRAFT[3] + CRAFT[4]) // 2
+    icon = Image.open(ICON).convert('RGBA')
+    icon = icon.resize((icon.width * 11, icon.height * 11), Image.NEAREST)
+    iy = PANEL_Y0 - 6
+    glow = Image.new('L', (W, H), 0)
+    ImageDraw.Draw(glow).ellipse((cx - 95, iy + 10, cx + 95, iy + icon.height - 4), fill=200)
+    canvas.paste('#9a5cff', (0, 0), glow.filter(ImageFilter.GaussianBlur(28)))
+    shade = Image.new('L', icon.size, 0)
+    shade.paste(icon.split()[3].point(lambda v: 150 if v else 0), (0, 0))
+    canvas.paste('#000000', (cx - icon.width // 2 + 8, iy + 10), shade)
+    canvas.paste(icon, (cx - icon.width // 2, iy), icon)
+    panel(*CRAFT, iy + icon.height + 8, PANEL_Y1)
 
-    for n, ((_, _, _, x0, x1, lines), (cx, _)) in enumerate(zip(STEPS, centres), 1):
-        badge(canvas, n, cx, PANEL_Y1 + 30)
+    for stamp, box, gain, x0, x1, _ in STEPS:
+        panel(stamp, box, gain, x0, x1, PANEL_Y0, PANEL_Y1)
+    columns = [(CRAFT[3], CRAFT[4])] + [(st[3], st[4]) for st in STEPS]
+    for (_, a1), (b0, _) in zip(columns, columns[1:]):
+        arrow(canvas, (a1 + b0) // 2, (PANEL_Y0 + PANEL_Y1) // 2)
+
+    # Labels: the gold bar icon (with its "10") in place of a number under the crafting column.
+    bar = covers.crop(GOLD_BAR[0], GOLD_BAR[1])
+    bar = ImageEnhance.Brightness(bar).enhance(GAIN)
+    bar = bar.resize((round(bar.width * 52 / bar.height), 52), Image.LANCZOS)
+    # keep only the icon's bright pixels; the tooltip's dark backing drops out
+    keep = bar.convert('L').point(lambda v: 255 if v > 60 else 0).filter(ImageFilter.MaxFilter(3))
+    canvas.paste(bar, (cx - bar.width // 2, PANEL_Y1 + 4), keep)
+    paste_text(canvas, pixel_text('10 GOLD BARS', gap=2), cx, PANEL_Y1 + 62, '#ffffff')
+    paste_text(canvas, pixel_text('AT HOLOGRAM POD', gap=2), cx, PANEL_Y1 + 94, MINT)
+    for n, (_, _, _, x0, x1, lines) in enumerate(STEPS, 1):
+        c = (x0 + x1) // 2
+        badge(canvas, n, c, PANEL_Y1 + 30)
         for k, line in enumerate(lines):
-            paste_text(canvas, pixel_text(line), cx, PANEL_Y1 + 54 + k * 32, '#ffffff' if k == 0 else MINT)
+            paste_text(canvas, pixel_text(line, gap=2), c, PANEL_Y1 + 62 + k * 32, '#ffffff' if k == 0 else MINT)
 
-    covers.banner(canvas, 'WORMHOLE POTION', '10 GOLD BARS AT THE ANCIENT HOLOGRAM POD')
+    covers.banner(canvas, 'WORMHOLE POTION', 'A ONE-USE TRIP HOME, AND A WAY BACK')
     return canvas
 
 
@@ -127,7 +156,8 @@ if __name__ == '__main__':
     if '--out' in args:
         out_dir = Path(args[args.index('--out') + 1])
     out_dir.mkdir(parents=True, exist_ok=True)
-    out = out_dir / 'WormholePotion.png'
     c = compose()
-    c.save(out, optimize=True)
-    print(out, c.size, out.stat().st_size)
+    # Approved by Sid on 2026-11-04: also written to the release cover the publisher uses.
+    for out in (out_dir / 'WormholePotion.png', covers.REPO / 'release/wormholepotion_logo.png'):
+        c.save(out, optimize=True)
+        print(out, c.size, out.stat().st_size)

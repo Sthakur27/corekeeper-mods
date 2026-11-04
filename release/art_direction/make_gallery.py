@@ -39,30 +39,40 @@ GALLERY = {
     'SolariteDrill': ['hdr:17.28.26.19', 'hdr:17.22.48.91', 'hdr:17.22.26.49', 'hdr:17.43.22.67'],
     # The coin slot at 20,405 coins next to the inventory (no loose coins there), then the same slot at 407.
     'CoinPouch': ['hdr:00.40.00.79', 'hdr:00.39.50.40'],
+    'WormholePotion': ['hdr:01.10.59.19', 'src:wormholepotion_map.png', 'hdr:00.38.00.07'],
 }
 
 # HDR captures that still show the NVIDIA performance overlay (the Ender Stash ones do not).
 HDR_WITH_OVERLAY = {'hdr:00.23.31.80', 'hdr:00.23.58.85', 'hdr:14.21.40.31', 'hdr:14.21.54.44',
                     'hdr:14.32.51.61', 'hdr:14.41.28.59', 'hdr:14.41.49.61', 'hdr:14.41.05.93', 'hdr:15.53.04.82',
                     'hdr:17.28.26.19', 'hdr:17.22.48.91', 'hdr:17.22.26.49', 'hdr:17.43.22.67',
-                    'hdr:00.40.00.79', 'hdr:00.39.50.40'}
+                    'hdr:00.40.00.79', 'hdr:00.39.50.40', 'hdr:01.10.59.19', 'hdr:00.38.00.07'}
 
 # Dark HDR captures shown brighter in the gallery (same factor as their cover).
 GAIN = {'hdr:14.21.40.31': 1.7, 'hdr:14.21.54.44': 1.7, 'hdr:14.32.51.61': 1.7, 'hdr:14.41.28.59': 1.7,
         'hdr:14.41.49.61': 1.7, 'hdr:14.41.05.93': 1.7, 'hdr:15.53.04.82': 1.7,
         'hdr:17.28.26.19': 1.7, 'hdr:17.22.48.91': 1.7, 'hdr:17.22.26.49': 1.7, 'hdr:17.43.22.67': 1.7,
-        'hdr:00.40.00.79': 1.7, 'hdr:00.39.50.40': 1.7}
+        'hdr:00.40.00.79': 1.7, 'hdr:00.39.50.40': 1.7, 'hdr:01.10.59.19': 1.7, 'hdr:00.38.00.07': 1.7}
 
 # NVIDIA "Screenshot saved" toasts caught in a capture (4K pixel boxes), painted over like the overlay.
 TOASTS = {'19.57.17.40': [(3200, 190, 3840, 400)],
           'hdr:17.28.26.19': [(40, 1650, 1240, 1898)],  # another mod's "Swap mode on" message
-          'hdr:17.43.22.67': [(40, 1650, 1240, 1898)]}
+          'hdr:17.43.22.67': [(40, 1650, 1240, 1898)],
+          'hdr:01.10.59.19': [(40, 1650, 1240, 1910)]}  # Build Tools' "Swap mode on" message
 
 
 def clean(stamp):
     if stamp.startswith('cover:'):
         return compose(stamp[6:]).resize((1920, 1080), Image.LANCZOS)
     im = Image.open(shot(stamp)).convert('RGB')
+    if stamp.startswith('src:'):   # a screenshot Sid pasted in chat: no overlay; centre-crop to 16:9
+        h = round(im.width * 9 / 16)
+        if h > im.height:
+            w = round(im.height * 16 / 9)
+            im = im.crop(((im.width - w) // 2, 0, (im.width + w) // 2, im.height))
+        else:
+            im = im.crop((0, (im.height - h) // 2, im.width, (im.height + h) // 2))
+        return im.resize((1920, 1080), Image.LANCZOS)
     if not stamp.startswith('hdr:') or stamp in HDR_WITH_OVERLAY:
         # NVIDIA overlay: "FPS / GPU / CPU / LAT" text in the top-right corner.
         # Fill it by stretching the strip of game pixels just below, softened a little.

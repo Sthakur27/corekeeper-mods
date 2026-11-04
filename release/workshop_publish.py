@@ -62,6 +62,7 @@ MODS = [
     ("ItemSpawner", "Item Spawner", "itemspawner_logo.png", "Quality of Life"),
     ("SolariteDrill", "Solarite Drill", "solaritedrill_logo.png", "Item"),
     ("CoinPouch", "Coin Pouch", "coinpouch_logo.png", "Quality of Life"),
+    ("WormholePotion", "Wormhole Potion", "wormholepotion_logo.png", "Item"),
 ]
 OVERHAUL = ("SidsOverhaul", "Sid's Overhaul", "overhaul_logo.png", "Overhaul")
 # Standalone-only items: a mod that needs skipSafetyChecks (Slot Organizer uses the game's file system) cannot be
@@ -98,6 +99,7 @@ COVER_NOTES = {
     "FasterMushrooms": "Cover is an in-game screenshot of a mycelium field of grown mushrooms (HDR capture tone-mapped); title banner and a stopwatch icon added.",
     "SolariteDrill": "Cover is made from in-game screenshots of a placed Solarite Drill (enlarged, game pixels unchanged) and its crafting tooltip (HDR captures tone-mapped); title banner added.",
     "CoinPouch": "Cover is made from an in-game screenshot of the equipment panel with 20,405 coins in the coin slot, plus an enlarged view of that slot (HDR capture tone-mapped); title banner and highlight added.",
+    "WormholePotion": "Cover is made from in-game screenshots (casting the potion, its return marker on the map, the waypoint teleport line and the Ancient Hologram Pod recipe; HDR captures tone-mapped) plus the potion's own inventory sprite enlarged; title banner, step numbers and labels added.",
     "MerchantRestock": "Cover is made from in-game screenshots of the Caveling and Fishing Merchants' shops and the Fishing Merchant (HDR captures tone-mapped); title banner and a stopwatch icon added.",
 }
 

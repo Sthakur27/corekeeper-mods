@@ -1,5 +1,7 @@
 # Wormhole Potion
 
+![Wormhole Potion — mod cover from in-game screenshots](../release/wormholepotion_logo.png)
+
 A one-use way home that also gets you back. Craft a **Wormhole Potion** for **10 Gold Bars** at an **Ancient Hologram Pod**.
 
 Use it like a Recall Idol: after a three-second cast you teleport to the Core and the potion is used up. The spot where you drank it is marked on your map with the potion icon (**Wormhole Return Point**). Stand on any active waypoint, open the map and click that marker to teleport back, exactly like teleporting between waypoints. The marker disappears after that one trip.
@@ -9,6 +11,8 @@ Use it like a Recall Idol: after a three-second cast you teleport to the Core an
 - Drinking another potion in the same session replaces your previous marker. Markers from other players or earlier sessions stay until someone uses them.
 - Any player can use any return marker.
 - Return markers are saved with the world.
+
+Tested in single player: crafting, drinking, the map marker and the trip back (the marker is removed after use). Multiplayer and keeping a marker across a save and reload have not been tested yet.
 
 No settings and no library dependencies. Install on both the host and clients in multiplayer.
 

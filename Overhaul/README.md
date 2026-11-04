@@ -4,7 +4,9 @@
 
 Spend less time repeating chores and more time exploring. Sid's Overhaul brings the individual mods in this repository into one package: easier farming and fishing, equipment tools, merchant supplies, and adjustable combat and progression.
 
-**New in 1.10.4: Relucite storage and bigger units.** Runic Storage 0.10.0 adds a ninth tier, Relucite, and every tier now holds 40 more slots than the last: Copper units start at 40 and Relucite units hold 360. Upgrade gems cost 40 bars of their material (Copper units still cost 30 Copper Bars). Units you already placed grow to their new size and keep their items.
+**New in 1.11.0: Coin Pouch, Coin Drops and Wormhole Potion.** Coin Pouch adds a coin slot under the vanity pants: picked-up Ancient Coins go there automatically, up to 99,999, and merchants take payment from it. Coin Drops makes every enemy drop Ancient Coins (more for tougher enemies, a big pile from bosses). The Wormhole Potion (10 Gold Bars at an Ancient Hologram Pod) recalls you to the Core and marks a one-use return point you can teleport back to from any waypoint.
+
+**1.10.4: Relucite storage and bigger units.** Relucite storage and bigger units.** Runic Storage 0.10.0 adds a ninth tier, Relucite, and every tier now holds 40 more slots than the last: Copper units start at 40 and Relucite units hold 360. Upgrade gems cost 40 bars of their material (Copper units still cost 30 Copper Bars). Units you already placed grow to their new size and keep their items.
 
 **1.10.5:** Vehicle Speed 1.2.0: boats and go-karts now default to 1.5x. Speeds you already chose are kept.
 
@@ -56,9 +58,11 @@ Prefer to pick individual mods? Use [Sid's Core Keeper Mods collection](https://
 |---|---|
 | Shared Loadout Gear & Vanity + Five Loadouts | Fill empty equipment slots from lower loadouts, use separate vanity outfits, and add two loadout tabs. |
 | Ender Stash | A personal 40-slot stash accessed through an Ender Chest bought from the Fishing Merchant; travels with your character and stays safe on death. |
+| Coin Pouch | A coin slot under the vanity pants: picked-up Ancient Coins go there automatically, up to 99,999, shared by every loadout; merchants take payment from it. |
 | Runic Storage | Craft a storage workbench, connect storage units, and upgrade them through nine tiers from 40 to 360 slots per unit. One-click category tabs (Materials, Weapons, Tools, Armor, Blocks, Furniture and more) filter the shared inventory, and Sort groups it by category. Inspired by Magic Storage for Terraria. |
 | Solarite Drill | A gold stationary drill one tier above the Scarlet Drill with 3x its mining damage. Craft for 10 Galaxite + 10 Solarite Bars at a Solarite Workbench. |
 | Magic Mirror | Reusable three-second return to the Core. Craft for 50 Solarite Bars + 10 Recall Idols at a Solarite Workbench, or get one from Omoroth with a 20% chance per defeat. |
+| Wormhole Potion | One-use recall to the Core that marks your spot on the map; teleport back to it once from any waypoint. Craft for 10 Gold Bars at an Ancient Hologram Pod. |
 | Armor Dye | Color individual armor, weapons and tools with an inventory palette. |
 | Pet Editor | Change pet levels, talents and colors through the pet window. |
 | Item Spawner | Host/admin spawn browser (Z): search every item, one or a full stack to your cursor or bag, gear and tools spawned above their base level, and any cooked dish from two ingredients. |
@@ -81,6 +85,7 @@ Prefer to pick individual mods? Use [Sid's Core Keeper Mods collection](https://
 | Difficulty Tuning | Separate enemy and boss settings for Hard and Normal worlds. |
 | Mushroom Slayer | Configurable gray brute armor: hits below 200 deal 1; hits of 200 or more deal 10%. Red phase unchanged. |
 | Boss Bonus Loot | Extra drops from selected bosses and enemies. |
+| Coin Drops | Every enemy drops Ancient Coins when it dies, scaled by its max health; bosses drop a big pile. |
 | Skill XP & Talent Points | Adjust experience gains per skill and the talent points each skill gives. |
 | Keep Minions On Teleport | Bring summoned minions with you through teleports. |
 | Vehicle Speed | Adjust boat and go-kart speeds. |
@@ -101,7 +106,7 @@ Version 1.3.6 includes Golden Chance 2.2.0: native inventory processing keeps Bu
 
 Version 1.3.5 fixed repeated Longer Buffs (then Buff Duration Floor) scans caused by live items loading and unloading. Duration updates now target item templates only. This update does not change the game's automation or sound-pool behavior.
 
-The **Turn Sub-Mods On/Off** page disables whole features after a restart. Shared Loadout Gear & Vanity, Five Loadouts, Ender Stash and Runic Storage stay enabled because they hold items in added inventory slots. Empty the stash and extra equipment slots before removing mods that provide them.
+The **Turn Sub-Mods On/Off** page disables whole features after a restart. Shared Loadout Gear & Vanity, Five Loadouts, Ender Stash, Coin Pouch and Runic Storage stay enabled because they hold items in added inventory slots. Empty the stash and extra equipment slots before removing mods that provide them.
 
 ## Credits and license
 

@@ -21,6 +21,7 @@ Use the Overhaul or the individual versions of its features. Installing both run
 | [Shared Loadout Gear & Vanity](LoadoutSharing/README.md) | Empty equipment and vanity slots borrow from earlier loadouts (formerly Loadout Fallback). |
 | [Five Loadouts](FiveLoadouts/README.md) | Add two more equipment loadouts, with optional direct keys. Requires CoreLib and Shared Loadout Gear & Vanity. |
 | [Ender Stash](EnderStash/README.md) | Access your character's personal 40-slot stash through an Ender Chest. |
+| [Coin Pouch](CoinPouch/README.md) | Picked-up Ancient Coins go into their own slot under the vanity pants, up to 99,999; merchants take payment from it. |
 | [Armor Dye](ArmorDye/README.md) | Color individual armor pieces, weapons and tools. |
 | [Pet Editor](PetEditor/README.md) | Change a pet's level, talents and color. |
 | [Item Spawner](ItemSpawner/README.md) | Host/admin spawn browser: search every item (modded ones too), take one or a full stack, spawn gear and tools above their base level, and cook any dish from two ingredients. Requires CoreLib and Runic Storage. |

@@ -1,0 +1,24 @@
+{
+    "assets": [
+        {
+            "path": "Assets/Enchanting/Textures/EnchantingTable_smallIcon.png",
+            "guid": "3e9c0b7a51d24f8e8a6e3c1d0b9a0002"
+        },
+        {
+            "path": "Assets/Enchanting/Textures/EnchantingTable_icon.png",
+            "guid": "3e9c0b7a51d24f8e8a6e3c1d0b9a0001"
+        },
+        {
+            "path": "Assets/Enchanting/Prefabs/Enchanting_TableEntity.prefab",
+            "guid": "8f7b7f743515f8848b2d7b082951ba68"
+        },
+        {
+            "path": "Assets/Enchanting/Data/TextDataBlock/Items/Enchanting_Table.asset",
+            "guid": "3e9c0b7a51d24f8e8a6e3c1d0b9a0100"
+        },
+        {
+            "path": "Assets/Enchanting/Data/EntityAuthoringDataBlock/Enchanting_TableEntity.asset",
+            "guid": "921b139efa07b6842b23d45374f91043"
+        }
+    ]
+}

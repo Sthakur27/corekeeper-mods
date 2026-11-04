@@ -1,0 +1,30 @@
+{
+    "guid": "7f2c9e41b8d34a6e9c05a1d7e3b48f26",
+    "name": "CoinDrops",
+    "displayName": "Coin Drops",
+    "skipSafetyChecks": false,
+    "disableScripts": false,
+    "accessesExtraAssemblies": true,
+    "disableHarmonyPatching": false,
+    "requiredOn": 3,
+    "files": [
+        {
+            "path": "Scripts/CoinDropsMod.cs",
+            "guid": "7f2c9e41b8d34a6e9c05a1d7e3b48f27"
+        },
+        {
+            "path": "Scripts/Systems/CoinDropSystem.cs",
+            "guid": "7f2c9e41b8d34a6e9c05a1d7e3b48f28"
+        }
+    ],
+    "dependencies": [
+        {
+            "modName": "CoreLib",
+            "required": true
+        },
+        {
+            "modName": "ModOptions",
+            "required": true
+        }
+    ]
+}

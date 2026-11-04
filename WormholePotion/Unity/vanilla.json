@@ -1,0 +1,260 @@
+{
+ "prefabs": {
+  "Marker": [
+   {
+    "class": "#Transform"
+   },
+   {
+    "class": "EntityMonoBehaviourData",
+    "values": {
+     "objectInfo": {
+      "objectID": 2402,
+      "initialAmount": 1,
+      "variation": 20,
+      "variationIsDynamic": 0,
+      "variationToToggleTo": 0,
+      "objectType": 1,
+      "tags": [],
+      "rarity": 0,
+      "salvageMultiplier": 1.0,
+      "level": 0,
+      "sellValue": -1,
+      "buyValueMultiplier": 1.0,
+      "icon": {
+       "ref": null
+      },
+      "iconOffset": {
+       "x": 0.0,
+       "y": 0.0
+      },
+      "iconSkinAssetRef": {
+       "m_address": {
+        "m_low": 0,
+        "m_high": 0
+       }
+      },
+      "smallIcon": {
+       "ref": null
+      },
+      "isStackable": 1,
+      "prefabTileSize": {
+       "x": 1,
+       "y": 1
+      },
+      "prefabCornerOffset": {
+       "x": 0,
+       "y": 0
+      },
+      "centerIsAtEntityPosition": 0,
+      "additionalSprites": [],
+      "tileset": 0,
+      "tileType": 0,
+      "prefabInfo": {
+       "graphicalRef": {
+        "m_address": {
+         "m_low": 0,
+         "m_high": 0
+        }
+       },
+       "authoringRef": {
+        "m_address": {
+         "m_low": -4768010697225742125,
+         "m_high": -4496380371985538296
+        }
+       },
+       "prefab": {
+        "ref": null
+       },
+       "authoring": {
+        "ref": null
+       }
+      },
+      "craftingSettings": {
+       "canOnlyUseAnyMaterialsWithTag": 0,
+       "iconType": 0
+      },
+      "requiredObjectsToCraft": [],
+      "craftingTime": 0.0,
+      "appearInMapUI": 0,
+      "mapColor": {
+       "r": 0.0,
+       "g": 0.0,
+       "b": 0.0,
+       "a": 0.0
+      },
+      "isCustomScenePrefab": 0,
+      "languageGenders": []
+     },
+     "optionalPreviewPrefab": {
+      "ref": null
+     }
+    }
+   },
+   {
+    "class": "MapMarkerAuthoring",
+    "values": {
+     "mapMarkerType": 7,
+     "uniqueMarkerId": 0,
+     "hideWhenDiscovered": 0
+    }
+   },
+   {
+    "class": "NameAuthoring",
+    "values": {}
+   },
+   {
+    "class": "GhostAuthoringComponent",
+    "values": {
+     "DefaultGhostMode": 0,
+     "SupportedGhostModes": 3,
+     "OptimizationMode": 1,
+     "Importance": 1,
+     "prefabId": "51809951ea0324947aa5678e537497e7",
+     "HasOwner": 0,
+     "SupportAutoCommandTarget": 0,
+     "TrackInterpolationDelay": 0,
+     "GhostGroup": 0,
+     "UsePreSerialization": 0,
+     "DontUsePredictionBackup": 0
+    }
+   },
+   {
+    "class": "CustomDisableAuthoring",
+    "values": {
+     "alwaysEnabled": 1
+    }
+   },
+   {
+    "class": "LinkedEntityGroupAuthoring",
+    "values": {}
+   },
+   {
+    "class": "OverrideClientSyncScreenDistanceAuthoring",
+    "values": {
+     "alwaysSyncToClient": 1,
+     "distanceToScreenEdge": {
+      "x": 0.0,
+      "y": 0.0
+     }
+    }
+   },
+   {
+    "class": "DontSerializeAuthoring",
+    "values": {}
+   }
+  ],
+  "Potion": [
+   {
+    "class": "#Transform"
+   },
+   {
+    "class": "EntityMonoBehaviourData",
+    "values": {
+     "objectInfo": {
+      "objectID": 8200,
+      "initialAmount": 1,
+      "variation": 0,
+      "variationIsDynamic": 0,
+      "variationToToggleTo": 0,
+      "objectType": 602,
+      "tags": [
+       25
+      ],
+      "rarity": 3,
+      "salvageMultiplier": 1.0,
+      "level": 0,
+      "sellValue": -1,
+      "buyValueMultiplier": 1.0,
+      "icon": {
+       "ref": null
+      },
+      "iconOffset": {
+       "x": 0.0,
+       "y": 0.0
+      },
+      "iconSkinAssetRef": {
+       "m_address": {
+        "m_low": 0,
+        "m_high": 0
+       }
+      },
+      "smallIcon": {
+       "ref": null
+      },
+      "isStackable": 1,
+      "prefabTileSize": {
+       "x": 1,
+       "y": 1
+      },
+      "prefabCornerOffset": {
+       "x": 0,
+       "y": 0
+      },
+      "centerIsAtEntityPosition": 0,
+      "additionalSprites": [],
+      "tileset": 0,
+      "tileType": 0,
+      "prefabInfo": {
+       "graphicalRef": {
+        "m_address": {
+         "m_low": 0,
+         "m_high": 0
+        }
+       },
+       "authoringRef": {
+        "m_address": {
+         "m_low": -2980037850371291233,
+         "m_high": -6911571171894866200
+        }
+       },
+       "prefab": {
+        "ref": null
+       },
+       "authoring": {
+        "ref": null
+       }
+      },
+      "craftingSettings": {
+       "canOnlyUseAnyMaterialsWithTag": 0,
+       "iconType": 0
+      },
+      "requiredObjectsToCraft": [
+       {
+        "objectID": 1600,
+        "amount": 1
+       },
+       {
+        "objectID": 1647,
+        "amount": 1
+       }
+      ],
+      "craftingTime": 0.0,
+      "appearInMapUI": 0,
+      "mapColor": {
+       "r": 0.0,
+       "g": 0.0,
+       "b": 0.0,
+       "a": 0.0
+      },
+      "isCustomScenePrefab": 0,
+      "languageGenders": []
+     },
+     "optionalPreviewPrefab": {
+      "ref": null
+     }
+    }
+   },
+   {
+    "class": "CastItemAuthoring",
+    "values": {
+     "castTime": 3.0,
+     "useType": 3,
+     "achievement": 0,
+     "castCompleteEffect": 0,
+     "allowHoldToRepeat": 0,
+     "hasUniqueCombineTooltip": 0
+    }
+   }
+  ]
+ }
+}

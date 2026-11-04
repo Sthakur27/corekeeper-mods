@@ -61,6 +61,7 @@ MODS = [
     ("BuildTools", "Build Tools", "buildtools_logo.png", "Quality of Life"),
     ("ItemSpawner", "Item Spawner", "itemspawner_logo.png", "Quality of Life"),
     ("SolariteDrill", "Solarite Drill", "solaritedrill_logo.png", "Item"),
+    ("CoinPouch", "Coin Pouch", "coinpouch_logo.png", "Quality of Life"),
 ]
 OVERHAUL = ("SidsOverhaul", "Sid's Overhaul", "overhaul_logo.png", "Overhaul")
 # Standalone-only items: a mod that needs skipSafetyChecks (Slot Organizer uses the game's file system) cannot be
@@ -96,6 +97,7 @@ COVER_NOTES = {
     "BuffDurationFloor": "Cover is an in-game screenshot of the buff bar (HDR capture tone-mapped); title banner and a clock icon added.",
     "FasterMushrooms": "Cover is an in-game screenshot of a mycelium field of grown mushrooms (HDR capture tone-mapped); title banner and a stopwatch icon added.",
     "SolariteDrill": "Cover is made from in-game screenshots of a placed Solarite Drill (enlarged, game pixels unchanged) and its crafting tooltip (HDR captures tone-mapped); title banner added.",
+    "CoinPouch": "Cover is made from an in-game screenshot of the equipment panel with 20,405 coins in the coin slot, plus an enlarged view of that slot (HDR capture tone-mapped); title banner and highlight added.",
     "MerchantRestock": "Cover is made from in-game screenshots of the Caveling and Fishing Merchants' shops and the Fishing Merchant (HDR captures tone-mapped); title banner and a stopwatch icon added.",
 }
 

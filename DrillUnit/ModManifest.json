@@ -1,0 +1,78 @@
+{
+    "guid": "d1a1e7b0c3f84e2a9b6d5c4e3f2a1b09",
+    "name": "DrillUnit",
+    "displayName": "Drill Unit",
+    "skipSafetyChecks": false,
+    "disableScripts": false,
+    "accessesExtraAssemblies": true,
+    "disableHarmonyPatching": false,
+    "requiredOn": 3,
+    "files": [
+        {
+            "path": "Scripts/DrillUnitMod.cs",
+            "guid": ""
+        },
+        {
+            "path": "Scripts/RiftRecipe.cs",
+            "guid": ""
+        },
+        {
+            "path": "Scripts/InputBits.cs",
+            "guid": ""
+        },
+        {
+            "path": "Scripts/ChatNote.cs",
+            "guid": ""
+        },
+        {
+            "path": "Scripts/Systems/HoverColliderSystem.cs",
+            "guid": ""
+        },
+        {
+            "path": "Scripts/Systems/StuckGuardSystem.cs",
+            "guid": ""
+        },
+        {
+            "path": "Scripts/Systems/LayGroundSystem.cs",
+            "guid": ""
+        },
+        {
+            "path": "Scripts/Systems/UnitKeepSystem.cs",
+            "guid": ""
+        },
+        {
+            "path": "Scripts/Systems/DrillMineSystem.cs",
+            "guid": ""
+        },
+        {
+            "path": "Scripts/Patches/SendInputPatch.cs",
+            "guid": ""
+        },
+        {
+            "path": "Scripts/Patches/UnitVisualPatch.cs",
+            "guid": ""
+        },
+        {
+            "path": "Bundles/DrillUnit_Windows.assetbundle",
+            "guid": ""
+        },
+        {
+            "path": "Bundles/DrillUnit_Windows.assetbundle.manifest",
+            "guid": ""
+        },
+        {
+            "path": "Bundles/DrillUnit_Linux.assetbundle",
+            "guid": ""
+        },
+        {
+            "path": "Bundles/DrillUnit_Linux.assetbundle.manifest",
+            "guid": ""
+        }
+    ],
+    "dependencies": [
+        {
+            "modName": "CoreLib",
+            "required": true
+        }
+    ]
+}

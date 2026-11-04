@@ -1,0 +1,32 @@
+{
+    "assets": [
+        {
+            "path": "Assets/WormholePotion/Textures/WormholePotion_icon.png",
+            "guid": "b7e3c2a19d4f4e8a8c5b6a0f1e2d0001"
+        },
+        {
+            "path": "Assets/WormholePotion/Prefabs/WormholePotion_Potion.prefab",
+            "guid": "d585771b8aefc2f4982b77be3d193e89"
+        },
+        {
+            "path": "Assets/WormholePotion/Prefabs/WormholePotion_MarkerEntity.prefab",
+            "guid": "3db06ce8b0b8819409b22abb4755c6d7"
+        },
+        {
+            "path": "Assets/WormholePotion/Data/TextDataBlock/Items/WormholePotion_Potion.asset",
+            "guid": "b7e3c2a19d4f4e8a8c5b6a0f1e2d0101"
+        },
+        {
+            "path": "Assets/WormholePotion/Data/TextDataBlock/Items/WormholePotion_Marker.asset",
+            "guid": "b7e3c2a19d4f4e8a8c5b6a0f1e2d0102"
+        },
+        {
+            "path": "Assets/WormholePotion/Data/EntityAuthoringDataBlock/WormholePotion_Potion.asset",
+            "guid": "4edc7071f1df00a4f8d7ffdee091d4fc"
+        },
+        {
+            "path": "Assets/WormholePotion/Data/EntityAuthoringDataBlock/WormholePotion_MarkerEntity.asset",
+            "guid": "e5a81c7701f1dd54bbae8da90f9e44f6"
+        }
+    ]
+}

@@ -220,6 +220,12 @@ COVERS = {
         title='MUSHROOM SLAYER', caption="STRONG HITS BREAK A BRUTE'S ARMOR", gain=1.6,
         bg=('hdr:11.27.54.23', (480, 160, 1120, 520), 6),
         panels=[('hdr:11.27.54.23', (560, 250, 1000, 430), (40, TOP + 12, W - 40, H - 14), [])]),
+    # 2026-11-04: the equipment window with 20405 coins in the coin slot under the vanity pants, plus a zoom.
+    'CoinPouch': dict(
+        title='COIN POUCH', caption='PICKED-UP COINS STACK HERE, UP TO 99,999', gain=1.7,
+        bg=('hdr:00.40.00.79', (330, 100, 970, 460), 6),
+        panels=[('hdr:00.40.00.79', (665, 58, 1000, 352), (24, TOP + 8, 700, H - 14), [(713, 285, 769, 341)]),
+                ('hdr:00.40.00.79', (711, 283, 771, 343), (724, TOP + 30, W - 24, H - 36), [])]),
 }
 
 
@@ -334,10 +340,11 @@ def compose(key):
             d.ellipse((px - r + 4, py - r + 4, px + r - 4, py + r - 4), outline='#e8b85a', width=2)
 
     frames = []
-    for stamp, box, target, highlights in c['panels']:
+    for stamp, box, target, highlights, *panel_gain in c['panels']:   # optional 5th item: gain for this panel
         src = crop(stamp, box)
-        if gain != 1.0:
-            src = ImageEnhance.Brightness(src).enhance(gain)
+        g = panel_gain[0] if panel_gain else gain
+        if g != 1.0:
+            src = ImageEnhance.Brightness(src).enhance(g)
         img, x, y, s = fit(src, target)
         s *= src.width / (box[2] - box[0])        # preview pixels -> canvas pixels
         shadow = Image.new('L', (W, H), 0)
@@ -358,6 +365,8 @@ def compose(key):
         canvas = Image.composite(Image.new('RGB', (W, H), '#ffb347'), canvas, glow.point(lambda v: v // 3))
         d = ImageDraw.Draw(canvas)
         for f in frames:
+            if c.get('frame_outline'):   # dark edge so the frame reads on gold/sand backgrounds
+                d.rounded_rectangle((f[0] - 3, f[1] - 3, f[2] + 3, f[3] + 3), 13, outline='#1a0f08', width=9)
             d.rounded_rectangle(f, 10, outline='#e8b85a', width=3)
 
     banner(canvas, c['title'], c['caption'])

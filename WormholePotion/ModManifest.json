@@ -1,0 +1,49 @@
+{
+    "guid": "b7e3c2a19d4f4e8a8c5b6a0f1e2d3c40",
+    "name": "WormholePotion",
+    "displayName": "Wormhole Potion",
+    "skipSafetyChecks": false,
+    "disableScripts": false,
+    "accessesExtraAssemblies": true,
+    "disableHarmonyPatching": false,
+    "requiredOn": 3,
+    "files": [
+        {
+            "path": "Scripts/WormholePotionMod.cs",
+            "guid": ""
+        },
+        {
+            "path": "Scripts/PotionRecipeAuthoring.cs",
+            "guid": ""
+        },
+        {
+            "path": "Scripts/PotionCastSystem.cs",
+            "guid": ""
+        },
+        {
+            "path": "Scripts/ReturnMarkerSystem.cs",
+            "guid": ""
+        },
+        {
+            "path": "Scripts/MarkerIconPatch.cs",
+            "guid": ""
+        },
+        {
+            "path": "Bundles/WormholePotion_Windows.assetbundle",
+            "guid": ""
+        },
+        {
+            "path": "Bundles/WormholePotion_Windows.assetbundle.manifest",
+            "guid": ""
+        },
+        {
+            "path": "Bundles/WormholePotion_Linux.assetbundle",
+            "guid": ""
+        },
+        {
+            "path": "Bundles/WormholePotion_Linux.assetbundle.manifest",
+            "guid": ""
+        }
+    ],
+    "dependencies": []
+}

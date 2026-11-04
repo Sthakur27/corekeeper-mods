@@ -1,0 +1,33 @@
+{
+    "guid": "3b8e6f2a9c1d4e7f8a05b6c3d2e1f4a9",
+    "name": "CoinPouch",
+    "displayName": "Coin Pouch",
+    "skipSafetyChecks": false,
+    "disableScripts": false,
+    "accessesExtraAssemblies": true,
+    "disableHarmonyPatching": false,
+    "requiredOn": 3,
+    "files": [
+        {
+            "path": "Scripts/CoinPouchMod.cs",
+            "guid": ""
+        },
+        {
+            "path": "Scripts/CoinLayout.cs",
+            "guid": ""
+        },
+        {
+            "path": "Scripts/CoinSlotUI.cs",
+            "guid": ""
+        },
+        {
+            "path": "Scripts/Systems/CoinPouchSystem.cs",
+            "guid": ""
+        },
+        {
+            "path": "Scripts/Patches/CoinPatches.cs",
+            "guid": ""
+        }
+    ],
+    "dependencies": []
+}

@@ -57,6 +57,8 @@ namespace SidsOverhaul
             { "BuildTools", "Build Tools" },
             { "FasterMachines", "Faster Machines" },
             { "ItemSpawner", "Item Spawner" },
+            { "CoinDrops", "Coin Drops" },
+            { "WormholePotion", "Wormhole Potion" },
         };
 
         public const string Hint = "Turn whole sub-mods on or off. Changes take effect after restarting the game. "

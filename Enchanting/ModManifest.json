@@ -1,0 +1,70 @@
+{
+    "guid": "7b1e4c2a9d3f4e6a8c5b0d2e1f3a4b6c",
+    "name": "Enchanting",
+    "displayName": "Enchanting",
+    "skipSafetyChecks": false,
+    "disableScripts": false,
+    "accessesExtraAssemblies": true,
+    "disableHarmonyPatching": false,
+    "requiredOn": 3,
+    "files": [
+        {
+            "path": "Scripts/EnchantingMod.cs",
+            "guid": ""
+        },
+        {
+            "path": "Scripts/Enchants.cs",
+            "guid": ""
+        },
+        {
+            "path": "Scripts/EnchantStorage.cs",
+            "guid": ""
+        },
+        {
+            "path": "Scripts/EnchantRoll.cs",
+            "guid": ""
+        },
+        {
+            "path": "Scripts/EnchantEffectSystem.cs",
+            "guid": ""
+        },
+        {
+            "path": "Scripts/EnchantCommand.cs",
+            "guid": ""
+        },
+        {
+            "path": "Scripts/EnchantTooltip.cs",
+            "guid": ""
+        },
+        {
+            "path": "Scripts/EnchantRecipe.cs",
+            "guid": ""
+        },
+        {
+            "path": "Scripts/EnchantTable.cs",
+            "guid": ""
+        },
+        {
+            "path": "Bundles/Enchanting_Windows.assetbundle",
+            "guid": ""
+        },
+        {
+            "path": "Bundles/Enchanting_Windows.assetbundle.manifest",
+            "guid": ""
+        },
+        {
+            "path": "Bundles/Enchanting_Linux.assetbundle",
+            "guid": ""
+        },
+        {
+            "path": "Bundles/Enchanting_Linux.assetbundle.manifest",
+            "guid": ""
+        }
+    ],
+    "dependencies": [
+        {
+            "modName": "CoreLib",
+            "required": true
+        }
+    ]
+}

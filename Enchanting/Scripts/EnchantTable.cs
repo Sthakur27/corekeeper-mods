@@ -67,7 +67,8 @@ namespace Enchanting
             return true;
         }
 
-        public static void SendRoll(CraftingBuilding building)
+        /// <summary>"/enchant table x z" (roll) or "/enchant tableclear x z" (remove the top enchant) for this table.</summary>
+        public static void SendCommand(CraftingBuilding building, string sub)
         {
             var comm = CommandModule.ClientCommSystem;
             if (comm == null)
@@ -76,7 +77,7 @@ namespace Enchanting
                 return;
             }
             Vector3 p = building.WorldPosition;
-            comm.SendCommand($"/enchant table {Mathf.RoundToInt(p.x)} {Mathf.RoundToInt(p.z)}", CommandFlags.None);
+            comm.SendCommand($"/enchant {sub} {Mathf.RoundToInt(p.x)} {Mathf.RoundToInt(p.z)}", CommandFlags.None);
         }
     }
 
@@ -96,10 +97,11 @@ namespace Enchanting
     [HarmonyPatch(typeof(UpgradeForgeButton), nameof(UpgradeForgeButton.GetRequiredMaterials))]
     public static class EnchantTableMaterialsPatch
     {
-        public static bool Prefix(ref List<PugDatabase.MaterialInfo> __result)
+        public static bool Prefix(UpgradeForgeButton __instance, ref List<PugDatabase.MaterialInfo> __result)
         {
             if (!EnchantTableUI.IsTableOpen(out _)) return true;
-            __result = EnchantTableUI.Materials(EnchantTableItemPatch.Item);
+            // Removing is free: no materials list.
+            __result = EnchantRemoveButton.IsRemove(__instance) ? null : EnchantTableUI.Materials(EnchantTableItemPatch.Item);
             return false;
         }
     }
@@ -107,10 +109,12 @@ namespace Enchanting
     [HarmonyPatch(typeof(UpgradeForgeButton), nameof(UpgradeForgeButton.ShouldBeActive))]
     public static class EnchantTableActivePatch
     {
-        public static bool Prefix(ref bool __result)
+        public static bool Prefix(UpgradeForgeButton __instance, ref bool __result)
         {
             if (!EnchantTableUI.IsTableOpen(out _)) return true;
-            __result = EnchantTableUI.CanPay(EnchantTableUI.Materials(EnchantTableItemPatch.Item));
+            __result = EnchantRemoveButton.IsRemove(__instance)
+                ? EnchantRemoveButton.CanClick()
+                : EnchantTableUI.CanPay(EnchantTableUI.Materials(EnchantTableItemPatch.Item));
             return false;
         }
     }
@@ -120,9 +124,12 @@ namespace Enchanting
     {
         public static void Postfix(UpgradeForgeButton __instance, ref TextAndFormatFields __result)
         {
-            if (__result == null || !EnchantTableUI.IsTableOpen(out _)) return;
-            // Hover titles are always localized, so this uses a term registered in EnchantingMod.EarlyInit.
-            __result = new TextAndFormatFields { text = EnchantingMod.ButtonTerm };
+            if (!EnchantTableUI.IsTableOpen(out _)) return;
+            // Hover titles are always localized, so these use terms registered in EnchantingMod.EarlyInit.
+            if (EnchantRemoveButton.IsRemove(__instance))
+                __result = EnchantRemoveButton.CanClick() ? new TextAndFormatFields { text = EnchantRemoveButton.TitleTerm } : null;
+            else if (__result != null)
+                __result = new TextAndFormatFields { text = EnchantingMod.ButtonTerm };
         }
     }
 
@@ -132,7 +139,7 @@ namespace Enchanting
         public static bool Prefix()
         {
             if (!EnchantTableUI.IsTableOpen(out var building)) return true;
-            EnchantTableUI.SendRoll(building);
+            EnchantTableUI.SendCommand(building, "table");
             return false;
         }
     }
@@ -157,6 +164,53 @@ namespace Enchanting
 
         public static string Roll(EntityManager em, Entity player, int x, int z)
         {
+            string error = FindTableItem(em, player, x, z, out int upgradeSlot, out var item, out var aux);
+            if (error != null) return error;
+            var kind = Enchants.SlotOf(item.objectID);
+            if (kind == EnchantSlot.None) return $"{item.objectID} can't be enchanted.";
+
+            var current = EnchantStorage.Read(em, aux, item);
+            EnchantRoll.Cost(current.Count, out int gold, out int coins);
+            bool free = em.HasComponent<PlayerGhost>(player) && IsCreative(em, player);
+            if (!free && (Count(em, player, ObjectID.GoldBar) < gold || Count(em, player, ObjectID.AncientCoin) < coins))
+                return $"you need {gold} Gold Bars and {coins} Ancient Coins.";
+
+            string result = EnchantRoll.Roll(current, kind);
+            if (result == null) return "nothing can be rolled for this item.";
+            string err = EnchantStorage.Write(em, player, upgradeSlot, current);
+            if (err != null) return err;
+            if (!free)
+            {
+                Take(em, player, ObjectID.GoldBar, gold);
+                Take(em, player, ObjectID.AncientCoin, coins);
+            }
+            return result + " Now: " + EnchantStorage.Describe(current) + ".";
+        }
+
+        /// <summary>The table's remove button: removes the item's top enchant (first in the tooltip; free).</summary>
+        public static string Clear(EntityManager em, Entity player, int x, int z)
+        {
+            string error = FindTableItem(em, player, x, z, out int upgradeSlot, out var item, out var aux);
+            if (error != null) return error;
+            var current = EnchantStorage.Read(em, aux, item);
+            if (current.Count == 0) return $"{item.objectID} has no enchantments.";
+            string removed = EnchantStorage.Describe(new List<EnchantEntry> { current[0] });
+            current.RemoveAt(0);
+            string err = EnchantStorage.Write(em, player, upgradeSlot, current);
+            return err ?? $"removed {removed} from {item.objectID}.";
+        }
+
+        /// <summary>
+        /// Checks there is an Enchanting Table near the player (matching the client-sent position generously) and
+        /// returns the item in the forge slot, which vanilla keeps in a hidden slot of the player's own inventory
+        /// (UpgradeSlotCD.slotIndex, see UpgradeSlotHandler). Returns an error text, or null.
+        /// </summary>
+        private static string FindTableItem(EntityManager em, Entity player, int x, int z, out int upgradeSlot,
+            out ContainedObjectsBuffer item, out InventoryAuxDataSystemDataCD aux)
+        {
+            upgradeSlot = -1;
+            item = default;
+            aux = default;
             var tableId = EnchantRecipe.TableId;
             if (tableId == ObjectID.None) return "the Enchanting Table is not loaded.";
             if (!em.HasComponent<LocalTransform>(player)) return "no player position.";
@@ -188,35 +242,15 @@ namespace Enchanting
             }
             if (math.distance(em.GetComponentData<LocalTransform>(table).Position.xz, playerPos) > MaxPlayerDistance)
                 return "you are too far from the Enchanting Table.";
-            if (!em.HasBuffer<ContainedObjectsBuffer>(table))
-            {
-                Debug.Log($"[{EnchantingMod.Name}] table entity {table} has no ContainedObjectsBuffer");
-                return "the table has no item slot (please report).";
-            }
-            if (!EnchantStorage.TryGetAux(em, out var aux)) return "inventory aux data not ready.";
+            if (!em.HasComponent<UpgradeSlotCD>(player)) return "no upgrade slot on the player (please report).";
+            upgradeSlot = em.GetComponentData<UpgradeSlotCD>(player).slotIndex;
+            if (!EnchantStorage.TryGetAux(em, out aux)) return "inventory aux data not ready.";
 
-            var slots = em.GetBuffer<ContainedObjectsBuffer>(table, true);
-            if (slots.Length == 0 || slots[0].objectID == ObjectID.None) return "put an item in the table first.";
-            var item = slots[0];
-            var kind = Enchants.SlotOf(item.objectID);
-            if (kind == EnchantSlot.None) return $"{item.objectID} can't be enchanted.";
-
-            var current = EnchantStorage.Read(em, aux, item);
-            EnchantRoll.Cost(current.Count, out int gold, out int coins);
-            bool free = em.HasComponent<PlayerGhost>(player) && IsCreative(em, player);
-            if (!free && (Count(em, player, ObjectID.GoldBar) < gold || Count(em, player, ObjectID.AncientCoin) < coins))
-                return $"you need {gold} Gold Bars and {coins} Ancient Coins.";
-
-            string result = EnchantRoll.Roll(current, kind);
-            if (result == null) return "nothing can be rolled for this item.";
-            string err = EnchantStorage.Write(em, table, 0, current);
-            if (err != null) return err;
-            if (!free)
-            {
-                Take(em, player, ObjectID.GoldBar, gold);
-                Take(em, player, ObjectID.AncientCoin, coins);
-            }
-            return result + " Now: " + EnchantStorage.Describe(current) + ".";
+            var slots = em.GetBuffer<ContainedObjectsBuffer>(player, true);
+            if (upgradeSlot < 0 || upgradeSlot >= slots.Length || slots[upgradeSlot].objectID == ObjectID.None)
+                return "put an item in the table first.";
+            item = slots[upgradeSlot];
+            return null;
         }
 
         private static bool IsCreative(EntityManager em, Entity player)

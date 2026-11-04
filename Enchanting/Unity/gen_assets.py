@@ -15,7 +15,8 @@ sdk = Path(sys.argv[1]) if len(sys.argv) > 1 else Path(r'C:/Users/Sid/CoreKeeper
 root = sdk / 'Assets/Enchanting'
 GUID = '3e9c0b7a51d24f8e8a6e3c1d0b9a{:04x}'  # + running index; fixed forever
 
-TEXTURES = ['EnchantingTable_icon', 'EnchantingTable_smallIcon']
+TEXTURES = ['EnchantingTable_icon', 'EnchantingTable_smallIcon',
+            'EnchantingTable_front', 'EnchantingTable_side', 'EnchantingTable_side2', 'EnchantingTable_up']  # append only
 TITLE = 'Enchanting Table'
 DESCRIPTION = 'Place a weapon, tool or armor piece inside and pay gold and ancient coins to bind a random enchantment to it.'
 
@@ -46,7 +47,7 @@ def flatten(values, path, out):
 
 
 def main():
-    for p in ('Textures', 'Data/TextDataBlock/Items', 'Data/EntityAuthoringDataBlock', 'Prefabs'):
+    for p in ('Textures', 'Data/TextDataBlock/Items', 'Data/EntityAuthoringDataBlock', 'Data/SpriteAssetSkin', 'Prefabs'):
         (root / p).mkdir(parents=True, exist_ok=True)
     for i, name in enumerate(TEXTURES):
         shutil.copy2(HERE / 'Art' / (name + '.png'), root / 'Textures' / (name + '.png'))

@@ -1,7 +1,7 @@
 {
     "guid": "7b1e4c2a9d3f4e6a8c5b0d2e1f3a4b6c",
     "name": "Enchanting",
-    "displayName": "Enchanting",
+    "displayName": "Enchanting (Alpha)",
     "skipSafetyChecks": false,
     "disableScripts": false,
     "accessesExtraAssemblies": true,
@@ -14,6 +14,10 @@
         },
         {
             "path": "Scripts/Enchants.cs",
+            "guid": ""
+        },
+        {
+            "path": "Scripts/EnchantMath.cs",
             "guid": ""
         },
         {
@@ -37,11 +41,35 @@
             "guid": ""
         },
         {
+            "path": "Scripts/EnchantSlotBorder.cs",
+            "guid": ""
+        },
+        {
             "path": "Scripts/EnchantRecipe.cs",
             "guid": ""
         },
         {
             "path": "Scripts/EnchantTable.cs",
+            "guid": ""
+        },
+        {
+            "path": "Scripts/EnchantTableRemove.cs",
+            "guid": ""
+        },
+        {
+            "path": "Scripts/EnchantTableSkin.cs",
+            "guid": ""
+        },
+        {
+            "path": "Scripts/EnchantDebug.cs",
+            "guid": ""
+        },
+        {
+            "path": "Scripts/EnchantSelfTest.cs",
+            "guid": ""
+        },
+        {
+            "path": "Scripts/EnchantCombatTest.cs",
             "guid": ""
         },
         {

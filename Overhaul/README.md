@@ -4,6 +4,8 @@
 
 Spend less time repeating chores and more time exploring. Sid's Overhaul brings the individual mods in this repository into one package: easier farming and fishing, equipment tools, merchant supplies, and adjustable combat and progression.
 
+**New in 1.13.0: Enchanting (Alpha).** Build an Enchanting Table (Galaxite Workbench: 20 Octarine + 15 Gold Bars), put a weapon, tool or armor piece in it and pay Gold Bars + Ancient Coins for a random enchantment, up to three per item. Alpha: tested in single player only; balance will change.
+
 **New in 1.12.0: Drill Unit (Alpha).** An end-game hover craft from the Rift Statue (300 Pandorium + 100 Solarite Bars): it crosses water, lava and pits, drills through walls while you hold left click, and can lay floor or dig pits around you (G cycles the mode). Alpha: tested in single player only.
 
 **New in 1.11.0: Coin Pouch, Coin Drops and Wormhole Potion.** Coin Pouch adds a coin slot under the vanity pants: picked-up Ancient Coins go there automatically, up to 99,999, and merchants take payment from it. Coin Drops makes every enemy drop Ancient Coins (more for tougher enemies, a big pile from bosses). The Wormhole Potion (10 Gold Bars at an Ancient Hologram Pod) recalls you to the Core and marks a one-use return point you can teleport back to from any waypoint.
@@ -66,6 +68,7 @@ Prefer to pick individual mods? Use [Sid's Core Keeper Mods collection](https://
 | Magic Mirror | Reusable three-second return to the Core. Craft for 50 Solarite Bars + 10 Recall Idols at a Solarite Workbench, or get one from Omoroth with a 20% chance per defeat. |
 | Wormhole Potion | One-use recall to the Core that marks your spot on the map; teleport back to it once from any waypoint. Craft for 10 Gold Bars at an Ancient Hologram Pod. |
 | Drill Unit (Alpha) | End-game hover craft (Rift Statue: 300 Pandorium + 100 Solarite Bars) that crosses water, lava and pits, drills through walls and lays floor or digs pits around you. Tested in single player only. |
+| Enchanting (Alpha) | Random enchantments for weapons, tools and armor from an Enchanting Table (Galaxite Workbench), paid with Gold Bars and Ancient Coins; up to three per item. Tested in single player only. |
 | Armor Dye | Color individual armor, weapons and tools with an inventory palette. |
 | Pet Editor | Change pet levels, talents and colors through the pet window. |
 | Item Spawner | Host/admin spawn browser (Z): search every item, one or a full stack to your cursor or bag, gear and tools spawned above their base level, and any cooked dish from two ingredients. |

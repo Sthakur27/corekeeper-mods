@@ -23,7 +23,8 @@ guesses meant to go into Mod Options.
   press the button: the item gets a **random enchant** from the pool for its item type.
 - Enchants are per item (two identical swords can differ), survive save/reload and upgrades,
   and work in multiplayer.
-- Weapon/tool/rod enchants apply while the item is **held**; armor enchants while **equipped**.
+- Weapon/tool enchants apply while the item is **held**; armor enchants while **equipped**; a summoning tome's
+  while it is the last tome held and still in the inventory (carried rule).
 
 ## Station
 
@@ -58,58 +59,92 @@ Materials are taken from the player's inventory and nearby chests, like vanilla 
   (gamble to fish for a better set). *Alternative to decide: full items cannot be rolled.*
 - The roll happens on the server only.
 
-## Enchant pools (v1)
+## Enchant pools (alpha, 2026-11-04 balance rework)
 
-Values are per level (I / II / III). Condition value units still have to be checked against
-vanilla items (e.g. a ring's "+X% melee damage" value) before numbers are final.
+Balance model: `docs/balance-model.md`. Three kinds of value (`EnchantMode`):
 
-### Melee weapons (`MeleeWeapon`)
-| Enchant | Condition | I / II / III *tune* |
-|---|---|---|
-| Sharpness | `PhysicalMeleeDamageIncrease` | 5 / 10 / 15 % |
-| Fire Aspect | `ApplyBurning` | burn on hit |
-| Knockback | `ChanceOnHitToKnockback` | 10 / 20 / 30 % |
-| Lifesteal | `LifeOnHit` | 2 / 4 / 6 hp |
-| Venom | `ChanceToApplyPoisoned` | 10 / 20 / 30 % |
-| Stunning | `ChanceOnMeleeHitToStun` | 5 / 10 / 15 % |
-| Swiftblade | `MeleeAttackSpeedIncrease` | 5 / 10 / 15 % |
-| Keen | `CritChance` | 3 / 6 / 9 % |
-| Bossbane | `IncreasedDamageAgainstBosses` | 5 / 10 / 15 % |
+- **Multiplier (Model B)**: the enchant multiplies the player's whole bucket ("x1.12 melee damage"). Each server
+  tick the raw value is `p × (1000 + others)`, where `others` is the bucket (from the vanilla summary) minus our own
+  entry. Rewritten on a change of more than max(2 raw, 2%), at most every 15 ticks (enchant or item changes write at once).
+- **Item level (Model A)**: a percent of the vanilla value at the enchanted item's level (`variation`, or the
+  prefab `LevelCD` when variation is 0), so it rises when the item is upgraded at the forge.
+- **Flat**: fixed displayed value (×10 for tenths conditions, `EnchantUnits.TenthsWithoutUI`).
 
-### Ranged weapons (`RangeWeapon`)
-| Enchant | Condition | I / II / III *tune* |
-|---|---|---|
-| Power | `PhysicalRangeDamageIncrease` | 5 / 10 / 15 % |
-| Quick Draw | `RangeAttackSpeedIncrease` | 5 / 10 / 15 % |
-| Frost | `ChanceOnRangeShotToApplySlowedBySlime` | 10 / 20 / 30 % |
-| Stunshot | `ChanceOnRangeShotToStun` | 5 / 10 / 15 % |
-| Keen | `CritChance` | 3 / 6 / 9 % |
-| Bossbane | `IncreasedDamageAgainstBosses` | 5 / 10 / 15 % |
+Costs stay flat per roll (section above). Save ids never change meaning; ids 44, 68, 80-82 are retired.
+
+### Melee weapons (`MeleeWeapon`, non-range beams)
+| Id | Enchant | Condition | I / II / III | Kind |
+|---|---|---|---|---|
+| 1 | Sharpness | `PhysicalMeleeDamageIncrease` | x1.04 / x1.08 / x1.12 damage | multiplier, bucket AllDamage + PhysicalMelee + Melee |
+| 2 | Fire Aspect | `ApplyBurning` | 50 / 75 / 100 % of vanilla (10 + 3L) | item level |
+| 3 | Knockback | `ChanceOnHitToKnockback` | 10 / 20 / 30 % | flat |
+| 4 | Lifesteal | `LifeOnHit` | 50 / 100 / 150 % of vanilla max(1, 0.5L) hp | item level |
+| 5 | Venom | `ChanceToApplyPoisoned` | 10 / 20 / 30 % | flat |
+| 6 | Stunning | `ChanceOnMeleeHitToStun` | 3 / 6 / 9 % | flat |
+| 7 | Swiftblade | `MeleeAttackSpeedIncrease` | x1.03 / x1.06 / x1.10 attack rate | multiplier, bucket MeleeAttackSpeed + AttackSpeed |
+| 8 | Keen | `CritChance` | 3 / 6 / 9 % | flat (melee, ranged, magic) |
+| 9 | Bossbane | `IncreasedDamageAgainstBosses` | 5 / 10 / 15 % | flat (melee, ranged, magic) |
+
+### Ranged weapons (`RangeWeapon`, non-stackable `ThrowingWeapon`, range beams; not magic)
+| Id | Enchant | Condition | I / II / III | Kind |
+|---|---|---|---|---|
+| 20 | Power | `PhysicalRangeDamageIncrease` | x1.04 / x1.08 / x1.12 | multiplier, bucket AllDamage + PhysicalRange + Range |
+| 21 | Quick Draw | Range- or `MeleeAttackSpeedIncrease` (by the weapon's cooldown) | x1.03 / x1.06 / x1.10 | multiplier (ranged and magic) |
+| 22 | Frost | `ChanceOnRangeShotToApplySlowedBySlime` | −10 / −20 / −30 (tenths) | flat |
+| 23 | Stunshot | `ChanceOnRangeShotToStun` | 3 / 6 / 9 % | flat |
+| 8, 9 | Keen, Bossbane | | as melee | |
+
+Stackable throwables (grenades, bombs) are not enchantable (aux data is shared per stack).
+
+### Magic weapons (`RangeWeapon` / `BeamWeapon` / `ThrowingWeapon` with `HasWeaponDamageCD.isMagic`)
+| Id | Enchant | Condition | I / II / III | Kind |
+|---|---|---|---|---|
+| 100 | Arcane Power | `IncreasedMagicDamagePercentage` | x1.04 / x1.08 / x1.12 | multiplier, bucket AllDamage + Magic + Range/Melee |
+| 101 | Frugality | `ReduceManaCostByPercentage` | 5 / 10 / 15 % less mana | flat |
+| 102 | Spellsurge | `GainMagicDamagePercentageBoostAfterCrit` | +10 / 20 / 30 % magic damage for 6 s after a crit | flat |
+| 103 | Clarity | `GainManaCostOnCrit` | 25 / 50 / 75 % of the shot's mana back on crit | flat |
+| 104 | Frostbite | `ApplySlowedByCold` | −5 / −10 / −15 % move speed for 4 s, every hit (tenths, must be negative) | flat |
+| 21, 8, 9 | Quick Draw, Keen, Bossbane | | as ranged | |
+
+Existing magic items that rolled Ranged enchants keep them (Power is inert on magic).
+
+### Summoning tomes (`SummoningWeapon`), carried rule
+The last tome the player held keeps applying its enchants while it is anywhere in the player's inventory
+(tracked per player on the server; forgotten when it leaves the inventory).
+| Id | Enchant | Condition | I / II / III | Kind |
+|---|---|---|---|---|
+| 120 | Pack Leader | `IncreasedMinionDamagePercentage` | x1.04 / x1.08 / x1.12 minion damage | multiplier, bucket MinionDamagePercentage (+ magic share) |
+| 121 | Frenzy | `IncreasedMinionAttackSpeed` | x1.03 / x1.06 / x1.10 minion attack rate | multiplier, bucket MinionAttackSpeed |
+| 122 | Keen Fangs | `IncreasedMinionCritChance` | 5 / 10 / 15 % | flat |
+| 123 | Slayer | `IncreasedMinionBossDamagePercentage` | 10 / 20 / 30 % | flat |
+
+No Legion (max minions): extra minions are dismissed whenever the bonus drops.
 
 ### Tools (`MiningPick`, `Shovel`, `Sledge`, `DrillTool`, `Hoe`)
-| Enchant | Condition | I / II / III *tune* |
-|---|---|---|
-| Efficiency | `MiningIncrease` (mining damage) | 10 / 20 / 30 % |
-| Unbreaking | `ToolDurabilityLastsLonger` | 15 / 30 / 45 % |
-| Fortune | `ChanceForRandomLootFromWall` | 2 / 4 / 6 % |
-| Mending | `DurabilityIncreaseAfterMiningOre` | small / med / large |
+| Id | Enchant | Condition | I / II / III | Kind |
+|---|---|---|---|---|
+| 40 | Efficiency | `MiningPercentageIncrease` | ×1.10 / 1.20 / 1.30 mining damage (separate factor) | flat |
+| 41 | Unbreaking | `ToolDurabilityLastsLonger` | 15 / 30 / 45 % | flat |
+| 42 | Fortune | `ChanceForRandomLootFromWall` | 2 / 4 / 6 % | flat |
+| 43 | Mending | `DurabilityIncreaseAfterMiningOre` | 1 / 2 / 3 | flat |
 
 ### Armor (`Helm`, `BreastArmor`, `PantsArmor`)
-| Enchant | Condition | I / II / III *tune* |
-|---|---|---|
-| Protection | `ArmorIncrease` | 2 / 4 / 6 |
-| Thorns | `ThornsDamage` | 10 / 20 / 30 |
-| Vitality | `IncreasedMaxHealth` | 10 / 20 / 30 hp |
-| Regeneration | `IncreasedHealthRegenEffectiveness` | 10 / 20 / 30 % |
-| Evasion | `DodgeChance` | 2 / 4 / 6 % |
-| Bosswarden | `ReducedDamageFromBosses` | 3 / 6 / 9 % |
-| Unbreaking | `EquipmentDurabilityLastsLonger` | 15 / 30 / 45 % |
-| Swiftness (pants only) | `MovementSpeedIncrease` | 3 / 6 / 9 % |
+| Id | Enchant | Condition | I / II / III | Kind |
+|---|---|---|---|---|
+| 60 | Resilience (key `protection`) | `ReducedDamageTakenPercentage` | −3 / −5 / −8 % damage taken per piece (tenths); our total clamped at −25 % | flat |
+| 61 | Thorns | `ThornsDamage` | 100 / 200 / 300 % of vanilla (1 + 2L) | item level (per piece) |
+| 62 | Vitality | `IncreasedMaxHealthPercentage` | 3 / 6 / 10 % max HP | flat |
+| 63 | Regeneration | `IncreasedHealthRegenEffectiveness` | 10 / 20 / 30 % | flat |
+| 64 | Evasion | `DodgeChance` | 2 / 4 / 6 % | flat |
+| 65 | Bosswarden | `ReducedDamageFromBosses` | 3 / 6 / 9 % | flat |
+| 66 | Unbreaking | `EquipmentDurabilityLastsLonger` | 15 / 30 / 45 % | flat |
+| 67 | Swiftness (pants only) | `MovementSpeedIncrease` | 3 / 6 / 9 % | flat |
+| 69 | Blast Protection | `ReducedDamageFromExplosions` | 10 / 20 / 30 % less damage from friendly (own/allied) explosions; vanilla cap 90 | flat |
 
 Removed 2026-11-04 (Sid): Lure, Luck of the Sea, Reach (so fishing rods take no enchants), Magnetism, Prospector.
 
-Not in v1: fishing rods, rings, necklaces, offhands, magic/summon/beam weapons, Minecraft enchants that need
-Burst-only logic (Multishot, Piercing, Infinity, Silk Touch, Looting, Loyalty, Vanishing).
+Not yet: fishing rods, rings, necklaces, offhands, Legion, Piercing/Punch, minion on-hit enchants, Minecraft
+enchants that need Burst-only logic (Multishot, Infinity, Silk Touch, Looting, Loyalty, Vanishing).
 
 ## How it works (implementation)
 
@@ -143,3 +178,27 @@ Burst-only logic (Multishot, Piercing, Infinity, Silk Touch, Looting, Loyalty, V
 3. Condition value units per ID (percent vs. tenths) against vanilla items.
 4. Upgrade Forge prefab copy: UI opens, slot works, our Harmony redirect fires.
 5. On-hit conditions (`ApplyBurning` etc.) trigger from conditions on the player, not only from gear.
+
+## Verification matrix (how to prove each enchant works)
+
+Setup: `/enchant debug on`, two copies of the same item at the same level, one enchanted with
+`/enchant set <key> 3`. `/enchant reset` between runs, `/enchant report` to read results (also in Player.log).
+`/enchant stats` shows the raw value each enchant adds and the player's total for that stat.
+Every enchant first needs `/enchant stats` to list its condition while the item is held/worn.
+
+| Enchant | Proof | Pass when |
+|---|---|---|
+| Sharpness, Power, Arcane Power | report: hit avg per item on the training dummy (20+ non-crit hits each) | enchanted avg ≈ plain avg × 1.04/1.08/1.12 (any buff level) |
+| Bossbane (vs boss) | same, against a boss | enchanted avg ≈ plain avg × (1 + bonus) |
+| Keen | report: crit rate per item (50+ hits) | crit rate higher by ≈ the bonus |
+| Swiftblade, Quick Draw | character stats window attack speed; hits per 10 s in Player.log | stat window number rises |
+| Unbreaking (tools, armor) | report: durability lost per drop over 30+ uses | fewer points lost / fewer drops |
+| Mending | Player.log durability lines while mining ore | durability goes up after ore |
+| Efficiency | character stats window mining damage; mining hits in log | mining number rises |
+| Vitality, Evasion, Regeneration, Swiftness | character stats window (max HP, dodge, regen, speed) | number rises with the piece on |
+| Resilience | take the same hit with/without the piece | damage × 0.97/0.95/0.92 |
+| Pack Leader, Frenzy, Keen Fangs, Slayer | character stats window (minion damage/speed/crit) with the tome carried | number rises |
+| Thorns, Bosswarden | take hits from an enemy/boss, compare damage numbers on you | reflected damage / less damage |
+| Fire Aspect, Venom, Stunning, Frost, Stunshot, Knockback | visual: burn/poison/stun/slow icon or knockback on the target | effect seen on hits |
+| Lifesteal | your HP number rising on hits | heal per hit |
+| Fortune | mine walls with/without, count bonus drops | more drops (noisy, needs many walls) |

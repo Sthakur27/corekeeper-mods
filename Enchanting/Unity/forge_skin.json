@@ -1,0 +1,81 @@
+{
+ "address": {
+  "m_low": -5736376753203836180,
+  "m_high": -7773432486191806821
+ },
+ "target": {
+  "m_address": {
+   "m_low": -327424426716516072,
+   "m_high": -4755147118118979239
+  }
+ },
+ "static": {
+  "guid": "",
+  "sprite": {
+   "texture": "upgradeForge_",
+   "emissive": null,
+   "normal": null,
+   "pivot": {
+    "x": 0.25,
+    "y": 0.0625
+   },
+   "inheritPivot": 1,
+   "positionalData": 0
+  },
+  "variants": [
+   {
+    "texture": "upgradeForge_side2",
+    "emissive": null,
+    "normal": null,
+    "pivot": {
+     "x": 0.46666666865348816,
+     "y": 0.0
+    },
+    "inheritPivot": 0,
+    "positionalData": 0
+   },
+   {
+    "texture": "upgradeForge_up",
+    "emissive": null,
+    "normal": null,
+    "pivot": {
+     "x": 0.25,
+     "y": 0.0625
+    },
+    "inheritPivot": 1,
+    "positionalData": 0
+   },
+   {
+    "texture": "upgradeForge_side",
+    "emissive": null,
+    "normal": null,
+    "pivot": {
+     "x": 0.46666666865348816,
+     "y": 0.03125
+    },
+    "inheritPivot": 0,
+    "positionalData": 0
+   }
+  ]
+ },
+ "replacements": [],
+ "other_keys": [
+  "m_GameObject",
+  "m_Enabled",
+  "m_Script",
+  "m_Name",
+  "m_overload",
+  "m_address",
+  "m_dynamicCollections",
+  "m_defaultPrimaryGradientMap",
+  "m_defaultSecondaryGradientMap",
+  "m_defaultTertiaryGradientMap",
+  "m_defaultPrimaryGradientMapRef",
+  "m_defaultSecondaryGradientMapRef",
+  "m_defaultTertiaryGradientMapRef",
+  "m_editorHideEmissive",
+  "m_targetAsset",
+  "m_targetAssetRef",
+  "references"
+ ]
+}

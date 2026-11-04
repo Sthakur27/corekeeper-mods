@@ -60,6 +60,7 @@ namespace SidsOverhaul
             { "CoinDrops", "Coin Drops" },
             { "WormholePotion", "Wormhole Potion" },
             { "DrillUnit", "Drill Unit (Alpha)" },
+            { "Enchanting", "Enchanting (Alpha)" },
         };
 
         public const string Hint = "Turn whole sub-mods on or off. Changes take effect after restarting the game. "

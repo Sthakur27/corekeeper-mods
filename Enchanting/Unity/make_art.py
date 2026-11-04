@@ -30,7 +30,18 @@ def recolor(im):
     return im
 
 
+FORGE_SHEETS = {  # vanilla skin texture (Art/forge, from extract_forge_skin.py) -> our skin texture
+    'upgradeForge_': 'EnchantingTable_front',
+    'upgradeForge_side': 'EnchantingTable_side',
+    'upgradeForge_side2': 'EnchantingTable_side2',
+    'upgradeForge_up': 'EnchantingTable_up',
+}
+
+
 def main():
+    for src, dst in FORGE_SHEETS.items():
+        recolor(Image.open(os.path.join(ART, 'forge', src + '.png')).convert('RGBA')).save(os.path.join(ART, dst + '.png'))
+        print('wrote', dst)
     for src, dst, sparkle in (('forge_icon', 'EnchantingTable_icon', True), ('forge_smallIcon', 'EnchantingTable_smallIcon', False)):
         im = recolor(Image.open(os.path.join(ART, src + '.png')).convert('RGBA'))
         if sparkle:

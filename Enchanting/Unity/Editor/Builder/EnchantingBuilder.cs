@@ -32,6 +32,7 @@ public static class EnchantingBuilder
             AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport);
             var vanilla = Vanilla.Load(Path.Combine(Directory.GetCurrentDirectory(), "EnchantingVanilla.txt"));
             ConfigureTextures();
+            BuildSkin();
             BuildEntity(vanilla, Sprite("EnchantingTable_icon"), Sprite("EnchantingTable_smallIcon"));
             AssetDatabase.SaveAssets();
             BuildMod("Enchanting", ModGuid);
@@ -45,14 +46,16 @@ public static class EnchantingBuilder
         {
             var p = path.Replace('\\', '/');
             var ti = (TextureImporter)AssetImporter.GetAtPath(p);
+            bool icon = p.Contains("_icon") || p.Contains("_smallIcon");
             ti.textureShape = TextureImporterShape.Texture2D;
-            ti.textureType = TextureImporterType.Sprite;
+            ti.textureType = icon ? TextureImporterType.Sprite : TextureImporterType.Default;
             ti.npotScale = TextureImporterNPOTScale.None;
             ti.maxTextureSize = 2048;
             ti.textureCompression = TextureImporterCompression.Uncompressed;
             ti.filterMode = FilterMode.Point;
             ti.mipmapEnabled = false;
             ti.alphaIsTransparency = true;
+            if (!icon) { ti.SaveAndReimport(); continue; }
             ti.spriteImportMode = SpriteImportMode.Single;
             ti.spritePixelsPerUnit = 16;
             var ts = new TextureImporterSettings(); ti.ReadTextureSettings(ts);
@@ -61,6 +64,40 @@ public static class EnchantingBuilder
             ti.SetTextureSettings(ts);
             ti.SaveAndReimport();
         }
+    }
+
+    // Vanilla Upgrade Forge skin "upgradeForge" (extract_forge_skin.py -> forge_skin.json): target SpriteAsset and
+    // its static replacement (front sprite + variants side2, up, side) with these pivots.
+    static readonly (long lo, long hi) ForgeAsset = (-327424426716516072, -4755147118118979239);
+
+    static void BuildSkin()
+    {
+        CreateBlock("SpriteAssetSkin", Root + "/Data/SpriteAssetSkin/Enchanting_TableSkin.asset", so =>
+        {
+            SetAddress(so.FindProperty("m_targetAssetRef"), ForgeAsset);
+            var data = so.FindProperty("m_staticReplacementData");
+            data.FindPropertyRelative("m_guid").stringValue = "";
+            SetSpriteData(data.FindPropertyRelative("m_spriteData"), "EnchantingTable_front", .25f, .0625f, true);
+            var variants = data.FindPropertyRelative("m_variants");
+            variants.arraySize = 3;
+            SetSpriteData(variants.GetArrayElementAtIndex(0), "EnchantingTable_side2", .46666666865348816f, 0f, false);
+            SetSpriteData(variants.GetArrayElementAtIndex(1), "EnchantingTable_up", .25f, .0625f, true);
+            SetSpriteData(variants.GetArrayElementAtIndex(2), "EnchantingTable_side", .46666666865348816f, .03125f, false);
+            so.FindProperty("m_replacementData").arraySize = 0;
+        });
+    }
+
+    static void SetSpriteData(SerializedProperty d, string tex, float px, float py, bool inheritPivot)
+    {
+        var t = AssetDatabase.LoadAssetAtPath<Texture2D>(Root + "/Textures/" + tex + ".png");
+        if (t == null) throw new Exception("missing texture " + tex);
+        d.FindPropertyRelative("texture").objectReferenceValue = t;
+        d.FindPropertyRelative("emissiveTexture").objectReferenceValue = null;
+        d.FindPropertyRelative("normalTexture").objectReferenceValue = null;
+        d.FindPropertyRelative("pivot").vector2Value = new Vector2(px, py);
+        d.FindPropertyRelative("positionalData").arraySize = 0;
+        var inherit = d.FindPropertyRelative("inheritPivot");
+        if (inherit.propertyType == SerializedPropertyType.Boolean) inherit.boolValue = inheritPivot; else inherit.intValue = inheritPivot ? 1 : 0;
     }
 
     static Sprite Sprite(string name) => AssetDatabase.LoadAllAssetsAtPath(Root + "/Textures/" + name + ".png").OfType<Sprite>().First();
@@ -93,6 +130,17 @@ public static class EnchantingBuilder
                     else if (long.TryParse(line.value, NumberStyles.Integer, CultureInfo.InvariantCulture, out long whole)
                              && p.propertyType == SerializedPropertyType.Integer) p.longValue = whole;
                     else SetNum(p, double.Parse(line.value, CultureInfo.InvariantCulture));
+                }
+                // Vanilla keeps the real footprint (forge: 2x1) in EntityMonoBehaviourData.objectInfo and leaves
+                // PlaceableObjectAuthoring at 1x1; ObjectAuthoring-based mod objects take it from the latter, so
+                // without this the placement preview is 1x1.
+                if (block.cls == "PlaceableObjectAuthoring")
+                {
+                    foreach (var key in new[] { "prefabTileSize.x", "prefabTileSize.y", "prefabCornerOffset.x", "prefabCornerOffset.y", "centerIsAtEntityPosition" })
+                    {
+                        var src = vanilla.Blocks.First(b => b.cls == "EntityMonoBehaviourData").lines.First(l => l.path == "objectInfo." + key);
+                        SetNum(so.FindProperty(key), double.Parse(src.value, CultureInfo.InvariantCulture));
+                    }
                 }
                 so.ApplyModifiedPropertiesWithoutUndo();
             }

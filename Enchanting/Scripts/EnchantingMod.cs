@@ -18,12 +18,15 @@ namespace Enchanting
         public const string Version = "0.1.0";
         public const string TableObjectName = "Enchanting_Table"; // objectName in the bundle (EnchantingBuilder)
         public const string ButtonTerm = "Enchanting/EnchantButton";
+        public const string PlainTerm = "Enchanting/Plain"; // "{0}": shows its format field as-is
 
         public void EarlyInit()
         {
             Debug.Log($"[{Name}] v{Version}");
             CoreLibMod.LoadSubmodule(typeof(CommandModule), typeof(LocalizationModule));
             LocalizationModule.AddTerm(ButtonTerm, "Enchant (random)");
+            LocalizationModule.AddTerm(PlainTerm, "{0}");
+            LocalizationModule.AddTerm(EnchantRemoveButton.TitleTerm, "Remove top enchantment");
             if (!InOverhaul(this)) // the overhaul registers every command in its assembly once
             {
                 var info = API.ModLoader.LoadedMods.FirstOrDefault(m => m.Handlers.Contains(this));
@@ -34,7 +37,11 @@ namespace Enchanting
 
         public void Init() { }
         public void Shutdown() { }
-        public void ModObjectLoaded(Object obj) { }
+        public void ModObjectLoaded(Object obj)
+        {
+            if (obj is Pug.Sprite.SpriteAssetSkin skin && skin.name == EnchantTableSkinPatch.SkinName)
+                EnchantTableSkinPatch.Skin = skin;
+        }
         public void Update() { }
 
         /// <summary>True when this feature is running inside Sid's Overhaul (one combined mod).</summary>

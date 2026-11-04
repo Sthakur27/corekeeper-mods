@@ -62,6 +62,9 @@ def check(path):
         for need in ('CraftingAuthoring', 'LocalizationAuthoring', 'PlaceableObjectAuthoring'):
             if need not in c:
                 errors.append('missing component ' + need)
+        size = c.get('PlaceableObjectAuthoring', {}).get('prefabTileSize', {})
+        if (size.get('x'), size.get('y')) != (2, 1):
+            errors.append(f'footprint {size}, expected 2x1 like the Upgrade Forge')
         print(os.path.basename(path), 'ghost prefabs:', len(ghosts), 'recipe:', recipe)
     if errors:
         sys.exit('FAIL\n  ' + '\n  '.join(errors))

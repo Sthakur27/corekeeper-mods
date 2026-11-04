@@ -117,38 +117,70 @@ namespace Enchanting
     }
 
     /// <summary>
-    /// Converts displayed values to raw condition values. Conditions flagged showDecimal store tenths
-    /// ("+1.5%" = 15). The flag lives in the UI table, so a dedicated server without UI uses the values as-is.
+    /// Converts displayed values to raw condition values for Flat enchants. Conditions the game applies as tenths
+    /// of a percent (value/1000 in the damage, cooldown, armor and damage-taken code) store "+1.5%" as 15.
+    /// <see cref="TenthsWithoutUI"/> is authoritative (it comes from the code that applies each stat, so a dedicated
+    /// server without UI gets the same values). The UI's showDecimal flag is only cross-checked and logged once as
+    /// "[Enchanting] units: ..." so a wrong entry shows up in Player.log.
     /// </summary>
     public static class EnchantUnits
     {
-        private static readonly Dictionary<ConditionID, int> Scale = new Dictionary<ConditionID, int>();
+        private static bool _logged;
 
+        // Tenths conditions among our enchants. Evidence: tooltips "+15.0%", "+5.0%", "by 10.0%" and Swiftness raw 90
+        // (2026-11-04); EntityUtility.CalculateDamage /1000 (damage %, magic 102), ×(1000 + v)/1000 (DamageTaken 97);
+        // cooldowns /1000 (40/41/65); MinionExtensions /1000 (105) and TouchAttackStateSystem /1000 (114);
+        // movement-speed effects (cap −900) for the slow conditions.
+        // Whole-percent (not listed): MiningPercentageIncrease (/100), ReduceManaCostByPercentage (/100),
+        // GainManaCostOnCrit, GainMagicDamagePercentageBoostAfterCrit (game ×10s it), minion crit/boss %,
+        // ReducedDamageFromExplosions (/100), crit, dodge, boss %, chances.
+        private static readonly HashSet<ConditionID> TenthsWithoutUI = new HashSet<ConditionID>
+        {
+            ConditionID.PhysicalMeleeDamageIncrease, ConditionID.PhysicalRangeDamageIncrease,
+            ConditionID.MeleeAttackSpeedIncrease, ConditionID.RangeAttackSpeedIncrease,
+            ConditionID.ArmorPercentageIncrease, ConditionID.MovementSpeedIncrease,
+            ConditionID.ChanceOnRangeShotToApplySlowedBySlime,
+            ConditionID.IncreasedMagicDamagePercentage, ConditionID.ReducedDamageTakenPercentage,
+            ConditionID.IncreasedMinionDamagePercentage, ConditionID.IncreasedMinionAttackSpeed,
+            ConditionID.ApplySlowedByCold,
+            ConditionID.ChanceForRandomLootFromWall, // Fortune: confirmed tenths by the in-game units check 2026-11-04
+        };
+
+        public static bool IsTenths(ConditionID id) => TenthsWithoutUI.Contains(id);
+
+        /// <summary>Flat enchants: displayed value × unit scale. (ItemLevel/Relative: see EnchantMath.)</summary>
         public static int Raw(EnchantDef def, int level)
         {
             int lvl = Mathf.Clamp(level, 1, def.MaxLevel);
-            return def.Values[lvl - 1] * ScaleOf(def.Condition);
+            LogTableOnce();
+            return def.Values[lvl - 1] * (IsTenths(def.Condition) ? 10 : 1);
         }
 
-        private static int ScaleOf(ConditionID id)
+        // Logs the UI's showDecimal flag for every condition an enchant can write, once, and any mismatch with the
+        // built-in table. Silent on a dedicated server (no UI).
+        private static void LogTableOnce()
         {
-            if (Scale.TryGetValue(id, out int s)) return s;
-            s = 1;
-            bool known = false;
+            if (_logged) return;
             try
             {
-                if (Manager.ui != null && Manager.ui.conditionsIconsTable != null)
+                if (Manager.ui == null || Manager.ui.conditionsIconsTable == null) return;
+                _logged = true;
+                var tenths = new List<string>();
+                var mismatch = new List<string>();
+                var seen = new HashSet<ConditionID>();
+                foreach (var id in EnchantMath.AllWrittenConditions())
                 {
-                    s = Manager.ui.conditionsIconsTable.GetConditionInfo(id).showDecimal ? 10 : 1;
-                    known = true;
+                    if (!seen.Add(id)) continue;
+                    bool dec = Manager.ui.conditionsIconsTable.GetConditionInfo(id).showDecimal;
+                    if (dec) tenths.Add(id.ToString());
+                    if (dec != IsTenths(id)) mismatch.Add($"{id} (UI {(dec ? "tenths" : "whole")}, built-in {(IsTenths(id) ? "tenths" : "whole")})");
                 }
+                Debug.Log($"[{EnchantingMod.Name}] units: tenths = {string.Join(", ", tenths)}; built-in table mismatches: {(mismatch.Count == 0 ? "none" : string.Join(", ", mismatch))}");
             }
             catch (System.Exception)
             {
-                // no UI (dedicated server)
+                // UI not ready: try again next time
             }
-            if (known) Scale[id] = s;
-            return s;
         }
     }
 }

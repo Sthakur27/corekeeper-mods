@@ -9,6 +9,46 @@
             "guid": "9a7be0588ae0d2041bba2a0d7088859e"
         },
         {
+            "path": "Assets/Enchanting/Textures/EnchantingTable_up.png",
+            "guid": "3e9c0b7a51d24f8e8a6e3c1d0b9a0006"
+        },
+        {
+            "path": "Assets/Enchanting/Textures/EnchantingTable_smallIcon.png",
+            "guid": "3e9c0b7a51d24f8e8a6e3c1d0b9a0002"
+        },
+        {
+            "path": "Assets/Enchanting/Textures/EnchantingTable_side2.png",
+            "guid": "3e9c0b7a51d24f8e8a6e3c1d0b9a0005"
+        },
+        {
+            "path": "Assets/Enchanting/Textures/EnchantingTable_side.png",
+            "guid": "3e9c0b7a51d24f8e8a6e3c1d0b9a0004"
+        },
+        {
+            "path": "Assets/Enchanting/Textures/EnchantingTable_icon.png",
+            "guid": "3e9c0b7a51d24f8e8a6e3c1d0b9a0001"
+        },
+        {
+            "path": "Assets/Enchanting/Textures/EnchantingTable_front.png",
+            "guid": "3e9c0b7a51d24f8e8a6e3c1d0b9a0003"
+        },
+        {
+            "path": "Assets/Enchanting/Prefabs/Enchanting_TableEntity.prefab",
+            "guid": "8f7b7f743515f8848b2d7b082951ba68"
+        },
+        {
+            "path": "Assets/Enchanting/Data/TextDataBlock/Items/Enchanting_Table.asset",
+            "guid": "3e9c0b7a51d24f8e8a6e3c1d0b9a0100"
+        },
+        {
+            "path": "Assets/Enchanting/Data/SpriteAssetSkin/Enchanting_TableSkin.asset",
+            "guid": "013bfea8f2548484eabb7b606d461bcc"
+        },
+        {
+            "path": "Assets/Enchanting/Data/EntityAuthoringDataBlock/Enchanting_TableEntity.asset",
+            "guid": "921b139efa07b6842b23d45374f91043"
+        },
+        {
             "path": "Assets/DrillUnit/Textures/DrillUnit_smallIcon.png",
             "guid": "d1a1e7b0c3f84e2a9b6dd0117a170002"
         },

@@ -41,11 +41,44 @@ namespace Enchanting
 
             if (sub == "list") return Info(ListAll());
             if (sub == "stats") return Info(Stats(em, player));
+            if (sub == "selftest")
+            {
+                if (args.Count > 1 && args[1].ToLowerInvariant() == "status") return Info(EnchantSelfTestSystem.Status());
+                if (!IsAdmin(em, player)) return Error("only admins can run the selftest.");
+                return Info(EnchantSelfTestSystem.Start(em, player));
+            }
+            if (sub == "combattest")
+            {
+                if (args.Count > 1 && args[1].ToLowerInvariant() == "status") return Info(EnchantCombatTestSystem.Status());
+                if (!IsAdmin(em, player)) return Error("only admins can run the combat test.");
+                float seconds = 20f;
+                if (args.Count > 1) float.TryParse(args[1], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out seconds);
+                return Info(EnchantCombatTestSystem.Start(em, player, seconds <= 0 ? 20f : seconds));
+            }
+            if (sub == "debug")
+            {
+                EnchantDebug.On = args.Count < 2 || args[1].ToLowerInvariant() != "off";
+                return Info(EnchantDebug.On
+                    ? "debug on: hits and durability loss are recorded per item. Hit things, then /enchant report."
+                    : "debug off.");
+            }
+            if (sub == "report") return Info(EnchantDebug.Report() + " Stats now: " + Stats(em, player));
+            if (sub == "reset")
+            {
+                EnchantDebug.Reset();
+                return Info("debug measurements cleared.");
+            }
             // Sent by the Enchanting Table button (EnchantTableUI): /enchant table <x> <z>
             if (sub == "table")
             {
                 if (args.Count < 3 || !int.TryParse(args[1], out int x) || !int.TryParse(args[2], out int z)) return Hint();
                 return Info(EnchantTableServer.Roll(em, player, x, z));
+            }
+            // Sent by the table's remove button (EnchantRemoveButton): /enchant tableclear <x> <z>
+            if (sub == "tableclear")
+            {
+                if (args.Count < 3 || !int.TryParse(args[1], out int x) || !int.TryParse(args[2], out int z)) return Hint();
+                return Info(EnchantTableServer.Clear(em, player, x, z));
             }
 
             if (!TryGetSlot(em, player, target, out int slot, out string err)) return Error(err);
@@ -156,7 +189,18 @@ namespace Enchanting
 
         private static string ListAll()
         {
-            return string.Join("; ", Enchants.All.Select(d => $"{d.Key} [{d.Slots}] {d.Condition} {string.Join("/", d.Values)}"));
+            return string.Join("; ", Enchants.All.Select(d => $"{d.Key} [{d.Slots}] {d.Condition} {Describe(d)}"));
+        }
+
+        // Flat: displayed values; Relative: multiplier per level; ItemLevel: percent of the vanilla value at the item's level.
+        private static string Describe(EnchantDef d)
+        {
+            switch (d.Mode)
+            {
+                case EnchantMode.Relative: return string.Join("/", d.Values.Select(v => "x" + (1 + v / 100f).ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)));
+                case EnchantMode.ItemLevel: return string.Join("/", d.Values.Select(v => v + "%")) + " of vanilla at item level";
+                default: return string.Join("/", d.Values);
+            }
         }
 
         private static bool TryTarget(string word, out Target target)
@@ -203,7 +247,7 @@ namespace Enchanting
 
         public string GetDescription()
         {
-            return "/enchant [list|stats|set <key> <lvl>|remove <key>|clear|roll [n]|cost] [held|helm|chest|pants]";
+            return "/enchant [list|stats|selftest [status]|combattest [seconds|status]|debug [off]|report|reset|set <key> <lvl>|remove <key>|clear|roll [n]|cost] [held|helm|chest|pants]";
         }
 
         public string[] GetTriggerNames()

@@ -15,14 +15,15 @@ namespace CoinDrops
     public sealed class CoinDropsMod : IMod
     {
         public const string Name = "CoinDrops";
-        public const string Version = "1.0.1";
+        public const string Version = "1.1.0";
 
-        public const string SettingsHint = "Enemies drop Ancient Coins on death: the square root of their max health "
-            + "(100 HP = 10 coins, 2500 HP = 50), about 20% random spread, at least 1. Bosses get the boss multiplier on top. "
+        public const string SettingsHint = "Enemies killed by a player (or their pets, minions and bombs) drop Ancient Coins: "
+            + "half the square root of their max health at the default 0.5x "
+            + "(100 HP = 5 coins, 2500 HP = 25), about 20% random spread, at least 1. Bosses get the boss multiplier on top. "
             + "Applies right away; in multiplayer the host's values count.";
 
         private static readonly string[] AmountLadder = { "Off", "0.5x", "0.75x", "1x", "1.5x", "2x", "3x", "5x" };
-        private const string DefaultAmount = "1x";
+        private const string DefaultAmount = "0.5x";
 
         private static readonly string[] BossLadder = { "1x", "2x", "3x", "5x", "10x" };
         private const string DefaultBoss = "3x";
@@ -31,7 +32,7 @@ namespace CoinDrops
         private static Setting<string> _boss;
 
         /// <summary>Coins per sqrt(max HP); 0 = off. Read by CoinDropSystem.</summary>
-        public static float AmountMultiplier { get; private set; } = 1f;
+        public static float AmountMultiplier { get; private set; } = 0.5f;
 
         /// <summary>Extra multiplier for entities with BossCD.</summary>
         public static int BossMultiplier { get; private set; } = 3;

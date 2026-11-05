@@ -5,6 +5,7 @@
 A coin slot in the equipment window, in the empty corner under the vanity pants. Ancient Coins you pick up go straight into it, so they stop taking up an inventory slot. It holds up to **99,999** coins, well past the normal 9,999 stack.
 
 - **Automatic:** picked-up coins go into the slot. Coins that end up in your inventory anyway (selling to a merchant, taking them from a chest, dragging them out) are moved back into it right away.
+- **Visible at merchants and chests:** when the equipment window is hidden (a shop, a chest, a crafting station), the coin slot shows next to the hotbar row of your inventory instead, so you can always see how many coins you have.
 - **Shared by every loadout:** switching equipment tabs keeps the same coins.
 - **Merchants:** buying works the same as with coins in your inventory. Prices show as affordable and payment comes out of the slot.
 - **Only coins fit:** anything else shakes the slot like a wrong armor piece.

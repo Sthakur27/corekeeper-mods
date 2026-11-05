@@ -9,7 +9,8 @@ using UnityEngine;
 namespace CoinDrops.Systems
 {
     /// <summary>
-    /// Server side. When an enemy (EnemyCD) dies (EntityDestroyedCD enabled, health 0), drops
+    /// Server side. When an enemy (EnemyCD) is killed by a player (EntityDestroyedCD enabled, health 0,
+    /// KilledByPlayerCD enabled), drops
     /// sqrt(maxHealth) x AmountMultiplier Ancient Coins (x0.8..1.2, x BossMultiplier for BossCD, at least 1)
     /// at the body, pulled towards the killing player like vanilla loot. Same death hook as
     /// BossBonusLoot. Each entity is handled once; the first death of every enemy type is logged
@@ -26,6 +27,7 @@ namespace CoinDrops.Systems
 
         private readonly HashSet<Entity> _handled = new HashSet<Entity>();
         private readonly HashSet<ObjectID> _logged = new HashSet<ObjectID>();
+        private readonly HashSet<ObjectID> _skipLogged = new HashSet<ObjectID>();
         private System.Predicate<Entity> _gone; // cached so pruning allocates nothing
         private EntityQuery _deadEnemies;
         private EntityQuery _database;
@@ -65,14 +67,21 @@ namespace CoinDrops.Systems
                 if (healths[i].health > 0 || _handled.Contains(entities[i])) continue;
                 _handled.Add(entities[i]);
 
+                // Player kills only. The game sets KilledByPlayerCD when the killing blow traces back to a
+                // player through owner references (the player, their projectiles, bombs, minions, pets);
+                // traps, enemy-on-enemy and environment kills leave it off.
+                if (!EntityManager.HasComponent<KilledByPlayerCD>(entities[i])
+                    || !EntityManager.IsComponentEnabled<KilledByPlayerCD>(entities[i]))
+                {
+                    if (_skipLogged.Add(objects[i].objectID))
+                        Debug.Log($"[{CoinDropsMod.Name}] {objects[i].objectID} died without a player kill: no coins");
+                    continue;
+                }
+                Entity killer = EntityManager.GetComponentData<KilledByPlayerCD>(entities[i]).playerEntity;
+                if (killer != Entity.Null && !EntityManager.Exists(killer)) killer = Entity.Null; // still pays, just no pull
+
                 bool boss = EntityManager.HasComponent<BossCD>(entities[i]);
                 int coins = Roll(healths[i].maxHealth, amount * (boss ? CoinDropsMod.BossMultiplier : 1));
-
-                Entity killer = Entity.Null;
-                if (EntityManager.HasComponent<KilledByPlayerCD>(entities[i])
-                    && EntityManager.IsComponentEnabled<KilledByPlayerCD>(entities[i]))
-                    killer = EntityManager.GetComponentData<KilledByPlayerCD>(entities[i]).playerEntity;
-                if (killer != Entity.Null && !EntityManager.Exists(killer)) killer = Entity.Null;
 
                 float3 pos = EntityManager.GetComponentData<LocalTransform>(entities[i]).Position;
                 EntityUtility.DropNewEntity(World, new ContainedObjectsBuffer

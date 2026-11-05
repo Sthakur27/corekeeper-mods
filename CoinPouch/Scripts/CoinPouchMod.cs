@@ -15,7 +15,7 @@ namespace CoinPouch
     public sealed class CoinPouchMod : IMod
     {
         public const string Name = "CoinPouch";
-        public const string Version = "1.0.1";
+        public const string Version = "1.1.0";
 
         private int _frames;
         private bool _subscribed;

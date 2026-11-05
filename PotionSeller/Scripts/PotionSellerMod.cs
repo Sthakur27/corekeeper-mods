@@ -24,7 +24,7 @@ namespace PotionSeller
     public sealed class PotionSellerMod : IMod
     {
         public const string Name = "PotionSeller";
-        public const string Version = "1.4.2";
+        public const string Version = "1.5.0";
 
         private static bool _appliedViaDatabase;
 
@@ -104,12 +104,14 @@ namespace PotionSeller
             if (!_appliedViaDatabase || authoring.TryGetComponent<PugDatabaseAuthoring>(out _))
             {
                 _appliedViaDatabase = true;
+                PotionPrices.ResolveOptional(final: false);
                 ApplyViaDatabase();
             }
 
             // The merchant prefab entity (already converted: ModPostConverter is a PostConverter).
             if (entity != Entity.Null && em.Exists(entity) && MerchantStock.IsTarget(em, entity))
             {
+                PotionPrices.ResolveOptional(final: false);
                 if (MerchantStock.Apply(em, entity, PotionSellerConfig.Stock, out _))
                 {
                     Debug.Log($"[{Name}] {em.GetComponentData<ObjectDataCD>(entity).objectID} prefab: {em.GetBuffer<MerchantItemInfoBuffer>(entity, true).Length} items, {em.GetBuffer<ContainedObjectsBuffer>(entity, true).Length} slots ({em.World.Name}).");

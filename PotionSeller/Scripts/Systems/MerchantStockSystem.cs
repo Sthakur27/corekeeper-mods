@@ -103,6 +103,7 @@ namespace PotionSeller.Systems
             if (_merchants.IsEmptyIgnoreFilter) return;
 
             int stock = PotionSellerConfig.Stock;
+            PotionPrices.ResolveOptional();
             RefreshBeaten();
             var entities = _merchants.ToEntityArray(Allocator.Temp);
             for (int i = 0; i < entities.Length; i++)

@@ -30,9 +30,9 @@ namespace PotionSeller
         }
 
         /// <summary>Merchant order: cheap first. Edit prices here.</summary>
-        public static readonly Entry[] Potions =
+        private static readonly Entry[] BasePotions =
         {
-            new Entry(ObjectID.HealingPotion, 50),
+            new Entry(ObjectID.HealingPotion, 100),
             new Entry(ObjectID.ManaPotion, 50),
             new Entry(ObjectID.PoisonAidPotion, 75),
             new Entry(ObjectID.BurnResistancePotion, 75),
@@ -46,8 +46,45 @@ namespace PotionSeller
             new Entry(ObjectID.GreaterManaPotion, 300),
             new Entry(ObjectID.UnusualPotion, 500),
             // Not a potion, but sold by the same merchant on request: teleports you home.
-            new Entry(ObjectID.RecallIdol, 200),
+            new Entry(ObjectID.RecallIdol, 500),
         };
+
+        /// <summary>
+        /// Items from Sid's other mods, sold by the Caveling Merchant only when that mod is installed. Looked
+        /// up by object name, so neither mod depends on the other. Prices must be multiples of 5.
+        /// </summary>
+        private static readonly (string name, int buyPrice)[] OptionalPotions =
+        {
+            ("WormholePotion_Potion", 800),   // Potion of Return
+        };
+
+        /// <summary>The Caveling Merchant's list: <see cref="BasePotions"/> plus installed optional items.</summary>
+        public static Entry[] Potions { get; private set; } = BasePotions;
+
+        private static bool _optionalResolved;
+
+        /// <summary>
+        /// Adds the installed <see cref="OptionalPotions"/> to <see cref="Potions"/> and <see cref="All"/>.
+        /// Tried while prefabs are converted (so the merchant prefab already lists them and a loaded merchant
+        /// isn't restocked every session) and, with <paramref name="final"/>, from the systems once a world
+        /// exists: by then every mod's object IDs are assigned, so a miss means the mod isn't installed.
+        /// </summary>
+        public static void ResolveOptional(bool final = true)
+        {
+            if (_optionalResolved) return;
+            var extra = new System.Collections.Generic.List<Entry>();
+            foreach (var (name, buyPrice) in OptionalPotions)
+            {
+                var id = PugMod.API.Authoring.GetObjectID(name);
+                if (id != ObjectID.None) extra.Add(new Entry(id, buyPrice));
+            }
+            if (extra.Count < OptionalPotions.Length && !final) return;
+            _optionalResolved = true;
+            if (extra.Count == 0) return;
+            Potions = Concat(BasePotions, extra.ToArray());
+            All = Concat(Concat(Potions, Explosives), TitanSummons);
+            UnityEngine.Debug.Log($"[{PotionSellerMod.Name}] {extra.Count} item(s) from other installed mods added to the Caveling Merchant.");
+        }
 
         /// <summary>
         /// The Slime Merchant sells every grenade and bomb, cheap to end game. Prices must be multiples of 5
@@ -97,7 +134,7 @@ namespace PotionSeller
         }
 
         /// <summary>Every item whose price this mod sets (all merchants).</summary>
-        public static readonly Entry[] All = Concat(Concat(Potions, Explosives), TitanSummons);
+        public static Entry[] All { get; private set; } = Concat(Concat(BasePotions, Explosives), TitanSummons);
 
         /// <summary>The list a merchant sells, or null for merchants this mod leaves alone.</summary>
         public static Entry[] ForMerchant(ObjectID merchant)

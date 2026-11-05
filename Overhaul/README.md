@@ -4,6 +4,8 @@
 
 Spend less time repeating chores and more time exploring. Sid's Overhaul brings the individual mods in this repository into one package: easier farming and fishing, equipment tools, merchant supplies, and adjustable combat and progression.
 
+**New in 1.15.0: coins and prices.** Coin Drops now only pays for your kills (including your pets, minions, arrows and bombs; traps and enemy-on-enemy kills drop nothing) and drops half as many coins by default. The Coin Pouch slot now also shows next to the hotbar at merchants, chests and crafting stations. Potion Seller: the Caveling Merchant also sells the Potion of Return (800 coins); Healing Potions now cost 100 and Recall Idols 500.
+
 **New in 1.14.1:** Auto Replant: replanting from seeds on the ground no longer floods the game log with conveyor warnings.
 
 **New in 1.14.0: performance pass.** Many features do less work per tick: fewer scans of the world, read-only access where nothing changes, and staggered timers. Enchanting can now roll small enchantments onto rings, necklaces and offhands, and totals from all your gear are capped so stacking one defence everywhere stops paying off. Fixes: Fast Auto Fishing now really stops when you switch it off in the Overhaul settings, Armor Dye no longer leaks your weapon dye onto enemy projectiles, and the Coin Pouch slot shows up again after changing worlds. The Wormhole Potion is now called the Potion of Return and the Drill Unit is now the Drill Pod; existing items and saves carry over.
@@ -66,7 +68,7 @@ Prefer to pick individual mods? Use [Sid's Core Keeper Mods collection](https://
 |---|---|
 | Shared Loadout Gear & Vanity + Five Loadouts | Fill empty equipment slots from lower loadouts, use separate vanity outfits, and add two loadout tabs. |
 | Ender Stash | A personal 40-slot stash accessed through an Ender Chest bought from the Fishing Merchant; travels with your character and stays safe on death. |
-| Coin Pouch | A coin slot under the vanity pants: picked-up Ancient Coins go there automatically, up to 99,999, shared by every loadout; merchants take payment from it. |
+| Coin Pouch | A coin slot under the vanity pants: picked-up Ancient Coins go there automatically, up to 99,999, shared by every loadout; merchants take payment from it, and it shows next to the hotbar while you shop. |
 | Runic Storage | Craft a storage workbench, connect storage units, and upgrade them through nine tiers from 40 to 360 slots per unit. One-click category tabs (Materials, Weapons, Tools, Armor, Blocks, Furniture and more) filter the shared inventory, and Sort groups it by category. Inspired by Magic Storage for Terraria. |
 | Solarite Drill | A gold stationary drill one tier above the Scarlet Drill with 3x its mining damage. Craft for 10 Galaxite + 10 Solarite Bars at a Solarite Workbench. |
 | Magic Mirror | Reusable three-second return to the Core. Craft for 50 Solarite Bars + 10 Recall Idols at a Solarite Workbench, or get one from Omoroth with a 20% chance per defeat. |
@@ -95,7 +97,7 @@ Prefer to pick individual mods? Use [Sid's Core Keeper Mods collection](https://
 | Difficulty Tuning | Separate enemy and boss settings for Hard and Normal worlds. |
 | Mushroom Slayer | Configurable gray brute armor: hits below 200 deal 1; hits of 200 or more deal 10%. Red phase unchanged. |
 | Boss Bonus Loot | Extra drops from selected bosses and enemies. |
-| Coin Drops | Every enemy drops Ancient Coins when it dies, scaled by its max health; bosses drop a big pile. |
+| Coin Drops | Every enemy you kill (yourself, or your pets, minions, arrows and bombs) drops Ancient Coins, scaled by its max health; bosses drop a big pile. |
 | Skill XP & Talent Points | Adjust experience gains per skill and the talent points each skill gives. |
 | Keep Minions On Teleport | Bring summoned minions with you through teleports. |
 | Vehicle Speed | Adjust boat and go-kart speeds. |

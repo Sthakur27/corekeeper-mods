@@ -8,7 +8,7 @@ Spend Ancient Coins to restock potions, explosives and unlocked Titan summoning 
 
 | Merchant | Added stock | Default price and quantity |
 |---|---|---|
-| Caveling Merchant | 13 potions and the Recall Idol | Potions: 50–500 coins; Recall Idol: 200. 20 of each per restock. |
+| Caveling Merchant | 13 potions and the Recall Idol, plus the Potion of Return when that mod is installed | Potions: 50–500 coins; Recall Idol: 500; Potion of Return: 800. 20 of each per restock. |
 | Slime Merchant | 15 grenades and bombs | 10–100 coins. 20 of each per restock. |
 | Fishing Merchant | Azeos, Omoroth and Ra-Akar summoning items | 2,000 coins each. 3 of each per restock. |
 

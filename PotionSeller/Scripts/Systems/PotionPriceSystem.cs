@@ -28,6 +28,7 @@ namespace PotionSeller.Systems
         {
             float mult = PotionSellerConfig.PriceMultiplier;
             if (_appliedMultiplier == mult || _database.IsEmptyIgnoreFilter) return;
+            PotionPrices.ResolveOptional();
 
             var bank = _database.GetSingleton<PugDatabase.DatabaseBankCD>();
             if (!bank.databaseBankBlob.IsCreated) return;

@@ -10,6 +10,7 @@ Use it like a Recall Idol: after a three-second cast you teleport to the Core an
 - Drinking within 12 tiles of the Core takes you home but leaves no marker.
 - Drinking another potion in the same session replaces your previous marker. Markers from other players or earlier sessions stay until someone uses them.
 - Any player can use any return marker.
+- With Potion Seller installed, the Caveling Merchant also sells it for 800 Ancient Coins.
 - Return markers are saved with the world.
 
 Tested in single player: crafting, drinking, the map marker and the trip back (the marker is removed after use). Multiplayer and keeping a marker across a save and reload have not been tested yet.

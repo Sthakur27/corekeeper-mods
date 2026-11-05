@@ -19,6 +19,8 @@ namespace CoinPouch
 
         private static bool _injected;
         private static bool _failed;
+        private static Transform _equip;      // CharacterEquipment, cached so waiting for it to open is one check per frame
+        private static Transform _equipRoot;
         private static SpriteRenderer _ghost;
         private static InventoryHandler _handler;
         private static PlayerController _handlerPlayer;
@@ -41,13 +43,23 @@ namespace CoinPouch
             }
         }
 
-        public static bool Is(object slot) => Slot != null && ReferenceEquals(slot, Slot);
+        // Called for every slot UI every frame: the reference compare rejects every other slot before the
+        // (slower) Unity null check.
+        public static bool Is(object slot) => ReferenceEquals(slot, Slot) && Slot != null;
 
         public static void Update()
         {
             if (_failed) return;
             try
             {
+                if (_injected && Slot == null)
+                {
+                    // The character window was rebuilt and our clone destroyed with it: add it again.
+                    _injected = false;
+                    Slot = null;
+                    _ghost = null;
+                    _equip = _equipRoot = null;
+                }
                 if (!_injected) TryInject();
                 else UpdateGhost();
             }
@@ -61,12 +73,17 @@ namespace CoinPouch
         private static void TryInject()
         {
             if (!CoinLayout.Ready) return;
-            var window = Manager.ui != null ? Manager.ui.characterWindow : null;
-            if (window == null) return;
-            Transform windowRoot = window.transform.Find("root");
-            Transform equip = windowRoot != null ? windowRoot.Find("CharacterEquipment") : null;
-            Transform equipRoot = equip != null ? equip.Find("root") : null;
-            if (equipRoot == null || !equip.gameObject.activeInHierarchy) return;
+            if (_equipRoot == null)
+            {
+                var window = Manager.ui != null ? Manager.ui.characterWindow : null;
+                if (window == null) return;
+                Transform windowRoot = window.transform.Find("root");
+                _equip = windowRoot != null ? windowRoot.Find("CharacterEquipment") : null;
+                _equipRoot = _equip != null ? _equip.Find("root") : null;
+                if (_equipRoot == null) return;
+            }
+            if (!_equip.gameObject.activeInHierarchy) return; // wait until the window is first shown
+            Transform equipRoot = _equipRoot;
             Transform pants = equipRoot.Find("pantsSlot");
             Transform breast = equipRoot.Find("breastSlot");
             if (pants == null || breast == null) return; // layout not ready yet; retry next frame
@@ -127,7 +144,7 @@ namespace CoinPouch
 
         private static void UpdateGhost()
         {
-            if (Slot == null || _ghost == null) return;
+            if (Slot == null || _ghost == null || !Slot.isActiveAndEnabled) return; // nothing to show while the window is closed
             bool empty = Slot.GetObjectData().objectID == ObjectID.None;
             if (_ghost.enabled != empty) _ghost.enabled = empty;
         }

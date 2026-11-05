@@ -5,7 +5,8 @@ Three layers, cheapest first. Layers 1–2 exist (0.1.x); layer 3 and the new we
 
 ## Layer 1 — stat check (`/enchant selftest`, ~30 s, automatic)
 
-For every enchant in the pools of the held item and worn helm/chest/pants, at levels I and III:
+For every enchant in the pools of the held item, worn helm/chest/pants and worn ring1/ring2/necklace/offhand, at
+levels I and III:
 put only that enchant on the item, let the game re-sum stats, compare the player's summed condition value
 with the same item enchant-free. PASS = it rose by exactly the enchant's raw value, computed by the same
 function the effect system uses (`EnchantMath.Raw`; item-level procs use the item's level). Multiplier
@@ -18,6 +19,25 @@ again: the carried tome is tested while not held (carried rule).
 - Doesn't prove: that the stat does something in combat (Frost passed layer 1 while the game ignored it).
 - Coverage: run once per weapon class held (melee, ranged, tool, + new classes) with armor worn.
 - Result 2026-11-04: 62/62 PASS (Battle Axe + Miner helm/chest/pants). Bow pending.
+
+### Accessories (2026-11-04, accessory pool ids 140-152)
+
+Wear two rings, a necklace and a (non-bait) offhand, hold a melee weapon, `/enchant selftest`:
+- Each slot's baseline step clears the enchants of **every** tested item (so a copy on another accessory can't hide
+  a Max enchant under test); originals are restored at the end.
+- Every accessory runs the shared pool (10 enchants × I/III); the offhand also runs offhand Vitality/Resilience/
+  Swiftness. Might/Haste are multipliers on the held weapon's bucket: PASS as for Sharpness (`AllDamage` / `AttackSpeed`
+  effect rises by exactly our entry). Radiance: the glow colour our entry went to rises by 1/3.
+- **Max rule** (only with both rings worn): Precision III on ring1 + I on ring2 → CritChance +3 (not +4);
+  III + III → +3 (not +6); Might III + III → our `AllDamageIncrease` entry = the x1.03 value (not x1.06). Lines start
+  with "Max rule" and always go to `/enchant selftest status`.
+- Then hold a bow and run Might/Haste again (`/enchant set might 3 ring1`): Haste must show "attack speed" and the
+  stats window ranged attack speed must rise (bucket follows the held weapon).
+- Player.log `[Enchanting] units:` must list no mismatches for AllDamageIncrease, AttackSpeed, CritChance,
+  CriticalDamagePercentageIncrease, IncreasedMaxHealthPercentage, ExtraHarvestChance, IncreasedFishing,
+  ChanceToGainExtraCookedFood or the glow conditions.
+- Manual: tooltips on accessories end with "Doesn't stack: only your highest copy counts"; Radiance gives a small
+  light without a lantern and a larger one with a lantern (same colour); Gourmet/Green Thumb/Angler by use.
 
 ## Layer 2 — combat check (`/enchant combattest [seconds]`, ~10 min per weapon at 20 s, hands off)
 

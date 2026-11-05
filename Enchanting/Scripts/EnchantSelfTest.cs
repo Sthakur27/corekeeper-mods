@@ -8,15 +8,19 @@ using UnityEngine;
 namespace Enchanting
 {
     /// <summary>
-    /// "/enchant selftest": checks every enchant in the pools of the held item, the worn helm/chest/pants and the
-    /// carried summoning tome against the game's own stat totals. Per enchant and level (I and III): put only that
-    /// enchant on the item, wait a few ticks for EnchantEffectSystem + the vanilla SummarizeConditionsSystem, read
-    /// the player's summed value for the condition the enchant writes, and compare it with the same item
-    /// enchant-free (baseline). The expected value comes from the same functions the effect system uses:
+    /// "/enchant selftest": checks every enchant in the pools of the held item, the worn helm/chest/pants, the worn
+    /// accessories (ring1, ring2, necklace, offhand) and the carried summoning tome against the game's own stat
+    /// totals. Per enchant and level (I and III): put only that enchant on the item, wait a few ticks for
+    /// EnchantEffectSystem + the vanilla SummarizeConditionsSystem, read the player's summed value for the condition
+    /// the enchant writes, and compare it with every tested item enchant-free (baseline). The expected value comes
+    /// from the same functions the effect system uses:
     ///   Flat / ItemLevel: EnchantMath.Raw (item-level procs use this item's level).
     ///   Relative (Model B): EnchantEffectSystem.RelativeRaw from the player's current bucket. PASS needs our entry
     ///   to match it (within the effect system's hysteresis), and both the condition total and the effect bucket
     ///   to rise by exactly our entry (the latter proves the ConditionID lands in the bucket we multiply).
+    /// Each slot's baseline step clears the enchants of every tested item, so "doesn't stack" (Stack = Max)
+    /// enchants on another accessory can't hide a copy under test. With two rings worn, Max-rule steps follow: the
+    /// same enchant on both rings must add only the higher copy (Precision III + I, III + III, Might III + III).
     /// Each item's own enchants are restored at the end. Results go to Player.log ("[Enchanting] selftest ...") and
     /// "/enchant selftest status". Server side; single player / host.
     /// Carried rule: hold a tome once, switch to another item (the tome stays in the inventory), run the selftest:
@@ -34,8 +38,14 @@ namespace Enchanting
         {
             public int Slot;
             public ObjectID Item;
-            public EnchantDef Def;   // null = baseline for this slot
+            public EnchantDef Def;   // null = baseline for this slot (clears every tested item first)
             public int Level;
+            // Max-rule check: the same enchant also goes on Slot2 at Level2; only the higher level may count.
+            public int Slot2 = -1;
+            public ObjectID Item2;
+            public int Level2;
+
+            public int ExpectLevel => Slot2 >= 0 ? Mathf.Max(Level, Level2) : Level;
         }
 
         private static Entity _player = Entity.Null;
@@ -47,10 +57,24 @@ namespace Enchanting
         private static int _index, _wait, _pass, _fail;
         private static bool _running, _applied;
 
+        // A new server world: drop state from a selftest that was running when the old world closed.
+        protected override void OnCreate()
+        {
+            base.OnCreate();
+            _running = false;
+            _applied = false;
+            _player = Entity.Null;
+            Steps.Clear();
+            Originals.Clear();
+            BaseConds.Clear();
+            BaseEffects.Clear();
+            _index = _wait = 0;
+        }
+
         public static string Status()
         {
             if (_running) return $"selftest running: step {_index + 1}/{Steps.Count}, {_pass} pass, {_fail} fail so far.";
-            if (Results.Count == 0) return "no selftest run yet. Hold a weapon/tool, wear armor, then /enchant selftest.";
+            if (Results.Count == 0) return "no selftest run yet. Hold a weapon/tool, wear armor and accessories, then /enchant selftest.";
             return $"selftest done: {_pass} pass, {_fail} fail. " + string.Join(" | ", Results);
         }
 
@@ -70,14 +94,20 @@ namespace Enchanting
             Results.Clear();
             _pass = _fail = _index = 0;
             int carried = EnchantEffectSystem.CarriedSlot(player);
-            foreach (int slot in new[] { held, equipment.helmSlotIndex, equipment.breastSlotIndex, equipment.pantsSlotIndex, carried })
+            var slots = new[]
+            {
+                held, equipment.helmSlotIndex, equipment.breastSlotIndex, equipment.pantsSlotIndex,
+                equipment.ring1SlotIndex, equipment.ring2SlotIndex, equipment.necklaceSlotIndex, equipment.offHandIndex,
+                carried,
+            };
+            foreach (int slot in slots)
             {
                 if (slot < 0 || slot >= items.Length || Originals.ContainsKey(slot)) continue;
                 var item = items[slot];
                 var kind = Enchants.SlotOf(item.objectID);
                 if (kind == EnchantSlot.None) continue;
                 bool summon = kind == EnchantSlot.Summon;
-                if (slot == held && !summon && !Enchants.IsHeldSlot(kind)) continue;   // armor held in hand gives nothing
+                if (slot == held && !summon && !Enchants.IsHeldSlot(kind)) continue;   // armor/rings held in hand give nothing
                 if (slot != held && Enchants.IsHeldSlot(kind)) continue;
                 if (summon && slot != held && slot != carried) continue;
                 Originals[slot] = EnchantStorage.Read(em, aux, item);
@@ -86,12 +116,31 @@ namespace Enchanting
                     foreach (int level in Levels)
                         if (level <= def.MaxLevel) Steps.Add(new Step { Slot = slot, Item = item.objectID, Def = def, Level = level });
             }
-            if (Steps.Count == 0) return "nothing to test: hold a weapon/tool/tome and/or wear armor.";
+            AddMaxRuleSteps(items, equipment.ring1SlotIndex, equipment.ring2SlotIndex);
+            if (Steps.Count == 0) return "nothing to test: hold a weapon/tool/tome and/or wear armor or accessories.";
             _player = player;
             _running = true;
             _applied = false;
             Debug.Log($"[{EnchantingMod.Name}] selftest start: {Steps.Count} steps over {Originals.Count} items");
             return $"selftest started: {Steps.Count} steps (~{Steps.Count * SettleTicks / 60 + 1} s). Don't switch items. /enchant selftest status";
+        }
+
+        // Two rings worn: the same enchant on both must count once, at the higher level (Stack = Max).
+        private static void AddMaxRuleSteps(DynamicBuffer<ContainedObjectsBuffer> items, int ring1, int ring2)
+        {
+            if (!Originals.ContainsKey(ring1) || !Originals.ContainsKey(ring2)) return;
+            var precision = Enchants.Find("precision");
+            var might = Enchants.Find("might");
+            var a = items[ring1].objectID;
+            var b = items[ring2].objectID;
+            Steps.Add(new Step { Slot = ring1, Item = a });
+            if (precision != null)
+            {
+                Steps.Add(new Step { Slot = ring1, Item = a, Def = precision, Level = 3, Slot2 = ring2, Item2 = b, Level2 = 1 });
+                Steps.Add(new Step { Slot = ring1, Item = a, Def = precision, Level = 3, Slot2 = ring2, Item2 = b, Level2 = 3 });
+            }
+            if (might != null)
+                Steps.Add(new Step { Slot = ring1, Item = a, Def = might, Level = 3, Slot2 = ring2, Item2 = b, Level2 = 3 });
         }
 
         protected override void OnUpdate()
@@ -101,13 +150,25 @@ namespace Enchanting
             if (_player == Entity.Null || !em.Exists(_player)) { Finish(em, "player gone"); return; }
             var step = Steps[_index];
             var items = em.GetBuffer<ContainedObjectsBuffer>(_player, true);
-            if (step.Slot >= items.Length || items[step.Slot].objectID != step.Item) { Finish(em, "item moved"); return; }
+            if (Moved(items, step.Slot, step.Item) || (step.Slot2 >= 0 && Moved(items, step.Slot2, step.Item2))) { Finish(em, "item moved"); return; }
 
             if (!_applied)
             {
-                var list = new List<EnchantEntry>();
-                if (step.Def != null) list.Add(new EnchantEntry { Id = step.Def.Id, Level = step.Level });
-                string err = EnchantStorage.Write(em, _player, step.Slot, list);
+                string err = null;
+                if (step.Def == null)
+                {
+                    // Baseline: every tested item enchant-free, so no copy elsewhere (Max rule, caps) skews the delta.
+                    foreach (var slot in Originals.Keys)
+                    {
+                        err = EnchantStorage.Write(em, _player, slot, new List<EnchantEntry>());
+                        if (err != null) break;
+                    }
+                }
+                else
+                {
+                    err = EnchantStorage.Write(em, _player, step.Slot, One(step.Def, step.Level));
+                    if (err == null && step.Slot2 >= 0) err = EnchantStorage.Write(em, _player, step.Slot2, One(step.Def, step.Level2));
+                }
                 if (err != null) { Finish(em, err); return; }
                 _applied = true;
                 _wait = SettleTicks;
@@ -115,6 +176,7 @@ namespace Enchanting
             }
             if (--_wait > 0) return;
 
+            items = em.GetBuffer<ContainedObjectsBuffer>(_player, true);
             var sum = em.GetBuffer<SummarizedConditionsBuffer>(_player, true);
             var fx = em.GetBuffer<SummarizedConditionEffectsBuffer>(_player, true);
             if (step.Def == null)
@@ -126,37 +188,53 @@ namespace Enchanting
             {
                 var item = items[step.Slot];
                 var def = step.Def;
-                var cond = def.Mode == EnchantMode.Relative ? EnchantMath.WriteCondition(def, item.objectID) : def.Condition;
+                int level = step.ExpectLevel;
+                int heldSlot = em.GetComponentData<EquippedObjectCD>(_player).equippedSlotIndex;
+                var held = heldSlot >= 0 && heldSlot < items.Length ? items[heldSlot].objectID : ObjectID.None;
+                var weapon = EnchantMath.BucketWeapon(def, item.objectID, held);
+                ConditionID cond;
+                if (def.Mode == EnchantMode.Relative) cond = EnchantMath.WriteCondition(def, weapon);
+                else if (def.FollowsLight) cond = LightEntry(em, _player);
+                else cond = def.Condition;
                 int baseline = At(BaseConds[step.Slot], (int)cond);
                 int now = (int)cond < sum.Length ? sum[(int)cond].value : 0;
+                string prefix = step.Slot2 >= 0
+                    ? $"Max rule (two rings {def.Name} {Enchants.Roman(step.Level)} + {Enchants.Roman(step.Level2)}, only {Enchants.Roman(level)} may count): "
+                    : "";
                 bool ok;
                 string line;
                 if (def.Mode == EnchantMode.Relative)
                 {
                     int ours = OurEntry(em, _player, cond);
-                    int expected = EnchantEffectSystem.RelativeRaw(em, _player, def, item.objectID, cond, EnchantMath.Permille(def, step.Level), ours);
+                    int expected = EnchantEffectSystem.RelativeRaw(em, _player, def, weapon, cond, EnchantMath.Permille(def, level), ours);
                     var effect = EnchantMath.EffectOf(cond);
                     int fxBase = At(BaseEffects[step.Slot], (int)effect);
                     int fxNow = (int)effect < fx.Length ? fx[(int)effect].value : 0;
                     ok = ours != 0 && (ours == expected || EnchantMath.CloseEnough(ours, expected)) && now - baseline == ours && fxNow - fxBase == ours;
-                    line = $"{(ok ? "PASS" : "FAIL")} {step.Item} {def.Name} {Enchants.Roman(step.Level)}: {EnchantMath.MultiplierText(def, step.Level, item.objectID)} -> {cond} entry {ours} (expected {expected}), total +{now - baseline}, {effect} +{fxNow - fxBase}";
+                    line = $"{(ok ? "PASS" : "FAIL")} {prefix}{step.Item} {def.Name} {Enchants.Roman(level)}: {EnchantMath.MultiplierText(def, level, weapon)} -> {cond} entry {ours} (expected {expected}), total +{now - baseline}, {effect} +{fxNow - fxBase}";
                 }
                 else
                 {
-                    int expected = EnchantMath.Raw(def, step.Level, item.objectData);
+                    int expected = EnchantMath.Raw(def, level, item.objectData);
                     ok = now - baseline == expected;
                     string lvl = def.Mode == EnchantMode.ItemLevel ? $" at item level {EnchantMath.ItemLevel(item.objectData)}" : "";
-                    line = $"{(ok ? "PASS" : "FAIL")} {step.Item} {def.Name} {Enchants.Roman(step.Level)}: {cond} +{now - baseline} (expected +{expected}{lvl}, total {baseline}->{now})";
+                    line = $"{(ok ? "PASS" : "FAIL")} {prefix}{step.Item} {def.Name} {Enchants.Roman(level)}: {cond} +{now - baseline} (expected +{expected}{lvl}, total {baseline}->{now})";
                 }
                 if (ok) _pass++; else _fail++;
                 Debug.Log($"[{EnchantingMod.Name}] selftest {line}");
-                if (!ok || step.Level == Levels[Levels.Length - 1]) Results.Add(line);
+                if (!ok || step.Slot2 >= 0 || step.Level == Levels[Levels.Length - 1]) Results.Add(line);
             }
 
             _index++;
             _applied = false;
             if (_index >= Steps.Count) Finish(em, null);
         }
+
+        private static List<EnchantEntry> One(EnchantDef def, int level) =>
+            new List<EnchantEntry> { new EnchantEntry { Id = def.Id, Level = level } };
+
+        private static bool Moved(DynamicBuffer<ContainedObjectsBuffer> items, int slot, ObjectID item) =>
+            slot < 0 || slot >= items.Length || items[slot].objectID != item;
 
         private static int[] Copy(DynamicBuffer<SummarizedConditionsBuffer> b)
         {
@@ -184,6 +262,14 @@ namespace Enchanting
                 if (EnchantEffectSystem.IsOurs(c) && c.conditionData.conditionID == id) return c.conditionData.value;
             }
             return 0;
+        }
+
+        // Radiance: the glow colour our entry was written to (falls back to the colour the effect system would pick).
+        private static ConditionID LightEntry(EntityManager em, Entity player)
+        {
+            foreach (var id in EnchantMath.GlowConditions)
+                if (OurEntry(em, player, id) != 0) return id;
+            return EnchantEffectSystem.LightCondition(em, player);
         }
 
         private static void Finish(EntityManager em, string error)

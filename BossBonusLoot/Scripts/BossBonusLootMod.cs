@@ -14,7 +14,7 @@ namespace BossBonusLoot
     public sealed class BossBonusLootMod : IMod
     {
         public const string Name = "BossBonusLoot";
-        public const string Version = "1.6.0";
+        public const string Version = "1.6.1";
 
         public const string SettingsHint = "Multiplies the Larva Meat every monster drops (1x = vanilla). "
             + "Ghorm's fixed bonus is not scaled. Applies right away; in multiplayer the host's value counts.";

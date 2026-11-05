@@ -31,33 +31,67 @@ namespace Enchanting
             return true;
         }
 
-        /// <summary>Server (or any world with the aux singleton): enchants of an item.</summary>
+        /// <summary>Server (or any world with the aux singleton): enchants of an item (new list).</summary>
         public static List<EnchantEntry> Read(EntityManager em, InventoryAuxDataSystemDataCD aux, ContainedObjectsBuffer item)
         {
             var list = new List<EnchantEntry>();
-            if (item.objectID == ObjectID.None || item.auxDataIndex == 0) return list;
-            if (!aux.TryGetExtraInventoryBufferData(em, item.auxDataIndex, out DynamicBuffer<PetTalentBuffer> buffer)) return list;
-            Decode(buffer, list);
+            ReadInto(em, aux, item, list);
             return list;
         }
 
-        /// <summary>Client UI: enchants of an item shown in a slot.</summary>
+        /// <summary>Per-tick server path: decodes into <paramref name="list"/> (cleared first), no allocation.</summary>
+        public static void ReadInto(EntityManager em, InventoryAuxDataSystemDataCD aux, ContainedObjectsBuffer item, List<EnchantEntry> list)
+        {
+            list.Clear();
+            if (item.objectID == ObjectID.None || item.auxDataIndex == 0) return;
+            if (!aux.TryGetExtraInventoryBufferData(em, item.auxDataIndex, out DynamicBuffer<PetTalentBuffer> buffer)) return;
+            Decode(buffer, list);
+        }
+
+        // Client aux system, cached per client world (InventoryHandler.TryGetExtraInventoryBuffer looks it up per call).
+        private static World _clientWorld;
+        private static InventoryAuxDataSystem _clientAux;
+
+        private static bool TryGetClientBuffer(ContainedObjectsBuffer item, out DynamicBuffer<PetTalentBuffer> buffer)
+        {
+            buffer = default;
+            if (item.objectID == ObjectID.None || item.auxDataIndex == 0) return false;
+            if (Enchants.SlotOf(item.objectID) == EnchantSlot.None) return false;
+            var world = Manager.ecs != null ? Manager.ecs.ClientWorld : null;
+            if (world == null || !world.IsCreated) return false;
+            if (world != _clientWorld || _clientAux == null)
+            {
+                _clientWorld = world;
+                _clientAux = world.GetExistingSystemManaged<InventoryAuxDataSystem>();
+            }
+            if (_clientAux == null) return false;
+            var data = _clientAux.SystemData;
+            if (!data._typeHashToLookup.IsCreated) return false; // client world not ready (menus)
+            return data.TryGetExtraInventoryBufferData(world.EntityManager, item.auxDataIndex, out buffer);
+        }
+
+        /// <summary>Client UI: enchants of an item shown in a slot (new list; tooltips, debug).</summary>
         public static List<EnchantEntry> ReadClient(ContainedObjectsBuffer item)
         {
             var list = new List<EnchantEntry>();
-            if (item.objectID == ObjectID.None || item.auxDataIndex == 0) return list;
-            if (Enchants.SlotOf(item.objectID) == EnchantSlot.None) return list;
-            try
-            {
-                if (!InventoryHandler.TryGetExtraInventoryBuffer(item, out DynamicBuffer<PetTalentBuffer> buffer)) return list;
-                Decode(buffer, list);
-            }
-            catch (System.Exception)
-            {
-                // client world not ready (menus)
-            }
+            if (TryGetClientBuffer(item, out var buffer)) Decode(buffer, list);
             return list;
         }
+
+        /// <summary>Client UI, non-allocating: number of enchants on an item (slot borders, table cost, remove button).</summary>
+        public static int CountClient(ContainedObjectsBuffer item)
+        {
+            if (!TryGetClientBuffer(item, out var buffer)) return 0;
+            int n = 0;
+            for (int i = 0; i < buffer.Length; i++)
+            {
+                int id = (int)buffer[i].petTalentID - IdOffset;
+                if (id > 0 && buffer[i].points > 0 && Enchants.Get(id) != null) n++;
+            }
+            return n;
+        }
+
+        public static bool HasAnyClient(ContainedObjectsBuffer item) => CountClient(item) > 0;
 
         private static void Decode(DynamicBuffer<PetTalentBuffer> buffer, List<EnchantEntry> list)
         {
@@ -131,9 +165,16 @@ namespace Enchanting
         // (2026-11-04); EntityUtility.CalculateDamage /1000 (damage %, magic 102), ×(1000 + v)/1000 (DamageTaken 97);
         // cooldowns /1000 (40/41/65); MinionExtensions /1000 (105) and TouchAttackStateSystem /1000 (114);
         // movement-speed effects (cap −900) for the slow conditions.
+        // Accessory pool (2026-11-04): AllDamageIncrease → effect 33, /1000 in GetAttackerDamageIncrease (Desert Hydra
+        // soul gives 100 = +10%); AttackSpeed → effect 65, /1000 in every cooldown divisor; ExtraHarvestChance → 23,
+        // /1000 (UpdateHealthFromBufferSystem:352, EntityUtility:671); ChanceToGainExtraCookedFood → 54, /1000
+        // (InventoryUtility:2809). MovementSpeedIncrease and ReducedDamageTakenPercentage are listed already.
         // Whole-percent (not listed): MiningPercentageIncrease (/100), ReduceManaCostByPercentage (/100),
         // GainManaCostOnCrit, GainMagicDamagePercentageBoostAfterCrit (game ×10s it), minion crit/boss %,
         // ReducedDamageFromExplosions (/100), crit, dodge, boss %, chances.
+        // Accessory whole units: CritChance (NextInt(100)), CriticalDamagePercentageIncrease (effect 57, /100 in the
+        // crit multiplier 1.5 + v/100), IncreasedMaxHealthPercentage (effect 34, /100), IncreasedFishing (skill
+        // points, compared with skillNeeded), glow conditions (light range in tiles).
         private static readonly HashSet<ConditionID> TenthsWithoutUI = new HashSet<ConditionID>
         {
             ConditionID.PhysicalMeleeDamageIncrease, ConditionID.PhysicalRangeDamageIncrease,
@@ -144,6 +185,8 @@ namespace Enchanting
             ConditionID.IncreasedMinionDamagePercentage, ConditionID.IncreasedMinionAttackSpeed,
             ConditionID.ApplySlowedByCold,
             ConditionID.ChanceForRandomLootFromWall, // Fortune: confirmed tenths by the in-game units check 2026-11-04
+            ConditionID.AllDamageIncrease, ConditionID.AttackSpeed,            // Might, Haste (multipliers)
+            ConditionID.ExtraHarvestChance, ConditionID.ChanceToGainExtraCookedFood, // Green Thumb, Gourmet
         };
 
         public static bool IsTenths(ConditionID id) => TenthsWithoutUI.Contains(id);

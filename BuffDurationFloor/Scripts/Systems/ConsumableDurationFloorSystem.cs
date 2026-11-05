@@ -46,7 +46,7 @@ namespace BuffDurationFloor.Systems
                 All = new[]
                 {
                     ComponentType.ReadOnly<Prefab>(),
-                    ComponentType.ReadWrite<GivesConditionsWhenConsumedBuffer>()
+                    ComponentType.ReadOnly<GivesConditionsWhenConsumedBuffer>() // writes go through EntityManager.GetBuffer
                 },
                 Options = EntityQueryOptions.IncludePrefab | EntityQueryOptions.IncludeDisabledEntities
             });

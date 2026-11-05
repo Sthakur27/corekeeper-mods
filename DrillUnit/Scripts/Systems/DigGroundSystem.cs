@@ -14,7 +14,8 @@ namespace DrillUnit.Systems
     /// Drops are pulled to the rider. Pits, water, fences and bridges are left alone, immune tiles stay immune.
     /// The tiles a placed object stands on (its whole footprint: chest, table, plant, ...) are skipped, as losing
     /// their ground would pop it back into an item; creatures, critters and pets walking about don't count. That
-    /// check scans placed objects at <see cref="IntervalSeconds"/>, only while digging.
+    /// check scans placed objects, so it is cached per rider and redone only when the rider enters another
+    /// cell or after <see cref="RescanSeconds"/> (objects placed or removed meanwhile), and only while digging.
     /// </summary>
     [UpdateInGroup(typeof(PredictedSimulationSystemGroup))]
     [UpdateBefore(typeof(TileDamageSystem))]
@@ -24,16 +25,23 @@ namespace DrillUnit.Systems
         private const int Damage = 400;
         private const double IntervalSeconds = 0.15;
         private const float Reach = 4f; // objects further than this from the rider can't cover the 3x3 (largest footprints ~3x3)
+        private const double RescanSeconds = 1.0;
 
         private EntityQuery _units, _tileDamage, _placed, _database;
         private readonly Dictionary<Entity, double> _next = new Dictionary<Entity, double>();
-        private readonly HashSet<int2> _covered = new HashSet<int2>();
+        private sealed class Cover
+        {
+            public int2 Cell;
+            public double Until = double.MinValue;
+            public readonly HashSet<int2> Cells = new HashSet<int2>();
+        }
+
+        private readonly Dictionary<Entity, Cover> _covers = new Dictionary<Entity, Cover>();
 
         protected override void OnCreate()
         {
             base.OnCreate();
-            _units = GetEntityQuery(ComponentType.ReadOnly<BoatCD>(), ComponentType.ReadOnly<ObjectDataCD>(),
-                ComponentType.ReadOnly<ControlledByOtherEntityCD>());
+            _units = RiddenUnits.Query(this);
             _tileDamage = GetEntityQuery(ComponentType.ReadWrite<TileDamageBuffer>());
             _placed = GetEntityQuery(ComponentType.ReadOnly<DestroyEntityIfNotOnTileCD>(), ComponentType.ReadOnly<LocalTransform>(),
                 ComponentType.ReadOnly<ObjectDataCD>());
@@ -43,30 +51,35 @@ namespace DrillUnit.Systems
 
         protected override void OnUpdate()
         {
-            var id = DrillUnitMod.Id;
-            if (id == ObjectID.None || _tileDamage.IsEmptyIgnoreFilter || _database.IsEmptyIgnoreFilter) return;
+            var ridden = RiddenUnits.Get(this, _units);
+            if (ridden.Count == 0 || _tileDamage.IsEmptyIgnoreFilter || _database.IsEmptyIgnoreFilter) return;
             double now = World.Time.ElapsedTime;
-            var units = _units.ToEntityArray(Allocator.Temp);
-            for (int i = 0; i < units.Length; i++)
+            foreach (var (unit, rider) in ridden)
             {
-                var unit = units[i];
-                if (EntityManager.GetComponentData<ObjectDataCD>(unit).objectID != id) continue;
-                var rider = EntityManager.GetComponentData<ControlledByOtherEntityCD>(unit).controlledByEntity;
-                if (!DrillUnitMod.IsRiding(EntityManager, rider, out var ridden) || ridden != unit) continue;
                 if (!EntityManager.HasComponent<ClientInput>(rider)) continue;
-                if (!InputBits.Digging(EntityManager.GetComponentData<ClientInput>(rider).buttonSetMask)) continue;
+                if (!InputBits.Digging(EntityManager.GetComponentData<ClientInput>(rider).buttonSetMask))
+                {
+                    _covers.Remove(rider);
+                    continue;
+                }
                 if (_next.TryGetValue(rider, out double next) && now < next) continue;
                 _next[rider] = now + IntervalSeconds;
 
                 float3 p = EntityManager.GetComponentData<LocalTransform>(rider).Position;
                 var centre = new int2((int)math.round(p.x), (int)math.round(p.z));
-                CoveredCells(p, unit);
+                if (!_covers.TryGetValue(rider, out var cover)) _covers[rider] = cover = new Cover();
+                if (!cover.Cell.Equals(centre) || now >= cover.Until)
+                {
+                    CoveredCells(p, unit, cover.Cells);
+                    cover.Cell = centre;
+                    cover.Until = now + RescanSeconds;
+                }
                 var buffer = EntityManager.GetBuffer<TileDamageBuffer>(_tileDamage.GetSingletonEntity());
                 for (int dx = -1; dx <= 1; dx++)
                     for (int dy = -1; dy <= 1; dy++)
                     {
                         var cell = centre + new int2(dx, dy);
-                        if (LayGroundSystem.IsCoreCell(cell) || _covered.Contains(cell)) continue;
+                        if (LayGroundSystem.IsCoreCell(cell) || cover.Cells.Contains(cell)) continue;
                         buffer.Add(new TileDamageBuffer
                         {
                             position = cell,
@@ -79,13 +92,12 @@ namespace DrillUnit.Systems
                         });
                     }
             }
-            units.Dispose();
         }
 
-        /// <summary>Fills <see cref="_covered"/> with the footprint tiles of placed objects near the rider (not the unit).</summary>
-        private void CoveredCells(float3 p, Entity unit)
+        /// <summary>Fills <paramref name="covered"/> with the footprint tiles of placed objects near the rider (not the unit).</summary>
+        private void CoveredCells(float3 p, Entity unit, HashSet<int2> covered)
         {
-            _covered.Clear();
+            covered.Clear();
             var blob = _database.GetSingleton<PugDatabase.DatabaseBankCD>().databaseBankBlob;
             var entities = _placed.ToEntityArray(Allocator.Temp);
             var transforms = _placed.ToComponentDataArray<LocalTransform>(Allocator.Temp);
@@ -103,7 +115,7 @@ namespace DrillUnit.Systems
                 var origin = new int2((int)math.round(q.x), (int)math.round(q.z));
                 for (int x = 0; x < size.x; x++)
                     for (int y = 0; y < size.y; y++)
-                        _covered.Add(origin + offset + new int2(x, y));
+                        covered.Add(origin + offset + new int2(x, y));
             }
             entities.Dispose();
             transforms.Dispose();

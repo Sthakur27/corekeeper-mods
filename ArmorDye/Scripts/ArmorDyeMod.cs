@@ -21,7 +21,7 @@ namespace ArmorDye
     public sealed class ArmorDyeMod : IMod
     {
         public const string Name = "ArmorDye";
-        public const string Version = "0.5.4";
+        public const string Version = "0.5.5";
 
         public void EarlyInit()
         {

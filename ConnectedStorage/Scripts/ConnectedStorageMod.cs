@@ -12,7 +12,7 @@ namespace ConnectedStorage
 {
     public sealed class ConnectedStorageMod : IMod
     {
-        public const string Version = "0.10.0";
+        public const string Version = "0.10.1";
         private GameObject ui;
         public void EarlyInit()
         {
@@ -229,7 +229,9 @@ namespace ConnectedStorage
     public partial class StorageRecipeSystem : PugSimulationSystemBase
     {
         private EntityQuery stations, storageInventories;
-        private double next;
+        // Start offset 0.53 s so this once-a-second pass doesn't land on the same tick as other mods' timers
+        // (Solarite Drill 0.71, Enchanting 0.37).
+        private double next = 0.53;
         protected override void OnCreate()
         {
             base.OnCreate();

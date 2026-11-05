@@ -51,7 +51,7 @@ namespace DrillUnit.Patches
                 _layoutState = same ? 1 : -1;
                 if (_layoutState < 0)
                 {
-                    Debug.LogError($"[{DrillUnitMod.Name}] Client input layout changed; Drill Unit keys and weapon lock disabled.");
+                    Debug.LogError($"[{DrillUnitMod.Name}] Client input layout changed; Drill Pod keys and weapon lock disabled.");
                     return;
                 }
             }

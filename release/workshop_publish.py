@@ -62,8 +62,8 @@ MODS = [
     ("ItemSpawner", "Item Spawner", "itemspawner_logo.png", "Quality of Life"),
     ("SolariteDrill", "Solarite Drill", "solaritedrill_logo.png", "Item"),
     ("CoinPouch", "Coin Pouch", "coinpouch_logo.png", "Quality of Life"),
-    ("WormholePotion", "Wormhole Potion", "wormholepotion_logo.png", "Item"),
-    ("DrillUnit", "Drill Unit (Alpha)", "drillunit_logo.png", "Item"),
+    ("WormholePotion", "Potion of Return", "wormholepotion_logo.png", "Item"),
+    ("DrillUnit", "Drill Pod (Alpha)", "drillunit_logo.png", "Item"),
     ("Enchanting", "Enchanting (Alpha)", "enchanting_logo.png", "Item"),
 ]
 OVERHAUL = ("SidsOverhaul", "Sid's Overhaul", "overhaul_logo.png", "Overhaul")

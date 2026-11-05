@@ -104,7 +104,9 @@ namespace Enchanting
     public partial class EnchantRecipeSystem : PugSimulationSystemBase
     {
         private EntityQuery _stations;
-        private double _next;
+        // First scan at 0.37 s, then once a second: staggered so it doesn't share a tick with other mods'
+        // once-a-second station scans (they start at 0).
+        private double _next = 0.37;
 
         protected override void OnCreate()
         {

@@ -34,6 +34,9 @@ namespace BoulderMover.Systems
         private EntityQuery _healthChanges;
         private EntityQuery _boulders;
         private EntityQuery _database;
+        private EntityQuery _lootObjects; // same shape IsBoulder checks: every object that can be an ore boulder
+        private int _lootOrderVersion = -1;
+        private bool _anyOreBoulder;
         private readonly Dictionary<Entity, int> _progress = new Dictionary<Entity, int>();
         private int _tick;
 
@@ -48,6 +51,32 @@ namespace BoulderMover.Systems
                 ComponentType.ReadOnly<DropsLootWhenDamagedCD>(),
                 ComponentType.ReadWrite<DamageReductionCD>());
             _database = GetEntityQuery(ComponentType.ReadOnly<PugDatabase.DatabaseBankCD>());
+            _lootObjects = GetEntityQuery(
+                ComponentType.ReadOnly<ObjectDataCD>(),
+                ComponentType.ReadOnly<DropsLootWhenDamagedCD>());
+        }
+
+        /// <summary>
+        /// True while any ore boulder is loaded in this world. Recounted only when an entity with
+        /// DropsLootWhenDamagedCD is created/destroyed or changes archetype (order version), so the
+        /// usual tick costs one int compare instead of reading the HealthChangeBuffer singleton.
+        /// </summary>
+        private bool AnyOreBoulderLoaded()
+        {
+            int version = EntityManager.GetComponentOrderVersion<DropsLootWhenDamagedCD>();
+            if (version == _lootOrderVersion) return _anyOreBoulder;
+            _lootOrderVersion = version;
+            _anyOreBoulder = false;
+            if (_lootObjects.IsEmpty) return false;
+            var objects = _lootObjects.ToComponentDataArray<ObjectDataCD>(Allocator.Temp);
+            for (int i = 0; i < objects.Length; i++)
+            {
+                if (!MazeBlock.IsOreBoulder(objects[i].objectID)) continue;
+                _anyOreBoulder = true;
+                break;
+            }
+            objects.Dispose();
+            return _anyOreBoulder;
         }
 
         protected override void OnUpdate()
@@ -65,7 +94,9 @@ namespace BoulderMover.Systems
                 }
             }
 
-            if (_healthChanges.IsEmpty) return;
+            // The HealthChangeBuffer holder is a singleton that always exists, so its IsEmpty never skips;
+            // gate on "any ore boulder loaded" first (cheap, cached on the order version).
+            if (!AnyOreBoulderLoaded() || _healthChanges.IsEmpty) return;
             var holder = _healthChanges.GetSingletonEntity();
             // Read-only first: a read-write GetBuffer waits for every job writing health changes,
             // and most ticks nothing touches a boulder.

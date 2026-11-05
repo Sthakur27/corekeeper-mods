@@ -21,17 +21,18 @@ namespace MerchantRestock.Systems
         private const float IntervalSeconds = 1f;
 
         private EntityQuery _merchants;
-        private float _timer;
+        // Staggered so the merchant mods' timers don't all fire on the same tick.
+        private float _timer = 0.41f;
 
         protected override void OnCreate()
         {
             base.OnCreate();
-            _merchants = GetEntityQuery(ComponentType.ReadOnly<MerchantCD>(), ComponentType.ReadWrite<ObjectDataCD>());
+            _merchants = GetEntityQuery(ComponentType.ReadOnly<MerchantCD>(), ComponentType.ReadOnly<ObjectDataCD>());
         }
 
         protected override void OnUpdate()
         {
-            if (!World.IsServer()) return;
+            if (!World.IsServer() || !RestockSettings.AnyCap) return; // all vanilla (default): nothing to cap
             _timer -= World.Time.DeltaTime;
             if (_timer > 0f) return;
             _timer = IntervalSeconds;

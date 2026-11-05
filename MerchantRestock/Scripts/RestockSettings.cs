@@ -29,7 +29,16 @@ namespace MerchantRestock
         /// <summary>Longest restock time in seconds for that merchant, 0 = vanilla.</summary>
         public static int CapFor(ObjectID merchant) => _caps.TryGetValue(merchant, out int s) ? s : 0;
 
-        public static void SetCap(ObjectID merchant, int seconds) => _caps[merchant] = seconds;
+        /// <summary>True when at least one merchant has a cap; false (the default, all vanilla) lets the system idle.</summary>
+        public static bool AnyCap { get; private set; }
+
+        public static void SetCap(ObjectID merchant, int seconds)
+        {
+            _caps[merchant] = seconds;
+            bool any = false;
+            foreach (var cap in _caps.Values) if (cap > 0) { any = true; break; }
+            AnyCap = any;
+        }
 
         /// <summary>"5 min" -> 300, "30 sec" -> 30; vanilla or unknown -> 0.</summary>
         public static int ParseSeconds(string token)

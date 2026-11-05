@@ -17,21 +17,27 @@ namespace MagicMirror
         private readonly System.Random random = new System.Random();
         private readonly HashSet<Entity> handled = new HashSet<Entity>();
         private EntityQuery dying, databaseQuery;
+        private System.Predicate<Entity> gone;
 
         protected override void OnCreate()
         {
             base.OnCreate();
             // EntityDestroyedCD is enableable: this query only matches entities
             // whose death/destruction flag is enabled. Health excludes despawns.
+            // EnemyCD + BossCD keep plants, chests, stations and regular enemies out:
+            // OctopusBossEntity has EnemyAuthoring (EnemyCD) and BossAuthoring (BossCD).
             dying = GetEntityQuery(ComponentType.ReadOnly<ObjectDataCD>(),
                 ComponentType.ReadOnly<HealthCD>(), ComponentType.ReadOnly<LocalTransform>(),
+                ComponentType.ReadOnly<EnemyCD>(), ComponentType.ReadOnly<BossCD>(),
                 ComponentType.ReadOnly<EntityDestroyedCD>());
             databaseQuery = GetEntityQuery(ComponentType.ReadOnly<PugDatabase.DatabaseBankCD>());
+            gone = entity => !EntityManager.Exists(entity); // cached: no delegate allocation per tick
+            RequireForUpdate(dying);
         }
 
         protected override void OnUpdate()
         {
-            handled.RemoveWhere(entity => !EntityManager.Exists(entity));
+            if (handled.Count > 0) handled.RemoveWhere(gone);
             var mirror = MagicMirrorMod.Id;
             if (mirror == ObjectID.None || dying.IsEmpty || databaseQuery.IsEmpty) return;
             var bank = databaseQuery.GetSingleton<PugDatabase.DatabaseBankCD>().databaseBankBlob;

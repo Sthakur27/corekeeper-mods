@@ -30,7 +30,7 @@ namespace BuildTools
     public sealed class BuildToolsMod : IMod
     {
         public const string Name = "BuildTools";
-        public const string Version = "0.6.4";
+        public const string Version = "0.6.5";
 
         public const string IncreaseKeyBind = "BuildTools_IncreaseSize";
         public const string DecreaseKeyBind = "BuildTools_DecreaseSize";
@@ -230,7 +230,7 @@ namespace BuildTools
             int ceiling = CeilingOf(world, held.containedObject.objectData);
             if (ceiling <= 1) return known ? Mathf.Clamp(wish, 0, ToolSizes.MaxVariation) : InputBits.NoSize;
 
-            int current = em.GetBuffer<PlacementSizeByEquipmentTypeBuffer>(player).GetElementForEquipment(slot).sizeVariationToPlace;
+            int current = em.GetBuffer<PlacementSizeByEquipmentTypeBuffer>(player, true).GetElementForEquipment(slot).sizeVariationToPlace;
             int from = known ? wish : current == PlacementSizeByEquipmentTypeBuffer.UNINITIALIZED_SIZE ? ceiling - 1 : current;
             // The stored value can be above this item's ceiling (shared category); step from what is shown.
             int shown = ToolSizes.EdgeFor(from, ceiling) - 1;
@@ -239,26 +239,54 @@ namespace BuildTools
             return next;
         }
 
+        private static World _bankWorld;
+        private static EntityQuery _bankQuery;
+
+        /// <summary>
+        /// The database bank singleton of <paramref name="world"/>. The query is created once per world (it used to be
+        /// created every frame while holding a tool or block and never disposed); the world disposes it on shutdown.
+        /// </summary>
+        private static bool TryGetBank(World world, out PugDatabase.DatabaseBankCD bank)
+        {
+            bank = default;
+            if (world == null || !world.IsCreated) return false;
+            if (!ReferenceEquals(_bankWorld, world))
+            {
+                _bankQuery = world.EntityManager.CreateEntityQuery(ComponentType.ReadOnly<PugDatabase.DatabaseBankCD>());
+                _bankWorld = world;
+            }
+            if (_bankQuery.IsEmptyIgnoreFilter) return false;
+            bank = _bankQuery.GetSingleton<PugDatabase.DatabaseBankCD>();
+            return true;
+        }
+
         private static int CeilingOf(World world, ObjectDataCD data)
         {
-            var query = world.EntityManager.CreateEntityQuery(ComponentType.ReadOnly<PugDatabase.DatabaseBankCD>());
-            if (query.IsEmptyIgnoreFilter) return 0;
-            var bank = query.GetSingleton<PugDatabase.DatabaseBankCD>();
+            if (!TryGetBank(world, out var bank)) return 0;
             return PugDatabase.GetEntityObjectInfo(data.objectID, bank.databaseBankBlob, data.variation).prefabTileSize.x;
         }
 
         // ------------------------------------------------------------------ brush
 
+        // Same strings as $"Brush.{category}.shape"/".edge", built once instead of every frame.
+        private static readonly string[] BrushShapeKeys = BrushKeys("shape");
+        private static readonly string[] BrushEdgeKeys = BrushKeys("edge");
+
+        private static string[] BrushKeys(string suffix)
+        {
+            var keys = new string[(int)BrushCategory.Objects + 1];
+            for (int i = 0; i < keys.Length; i++) keys[i] = "Brush." + (BrushCategory)i + "." + suffix;
+            return keys;
+        }
+
         private static void UpdateBrush(World world, EquippedObjectCD held, int delta, bool shapeKey, bool modeKey, bool replace, ref InputBits bits)
         {
-            var query = world.EntityManager.CreateEntityQuery(ComponentType.ReadOnly<PugDatabase.DatabaseBankCD>());
-            if (query.IsEmptyIgnoreFilter) return;
-            var bank = query.GetSingleton<PugDatabase.DatabaseBankCD>();
+            if (!TryGetBank(world, out var bank)) return;
             var data = held.containedObject.objectData;
             ref var info = ref PugDatabase.GetEntityObjectInfo(data.objectID, bank.databaseBankBlob, data.variation);
             if (!Brush.TryClassify(world.EntityManager, held.equipmentPrefab, ref info, out var category)) return;
 
-            string shapeKeyName = $"Brush.{category}.shape", edgeKeyName = $"Brush.{category}.edge";
+            string shapeKeyName = BrushShapeKeys[(int)category], edgeKeyName = BrushEdgeKeys[(int)category];
             var shape = (BrushShape)Mathf.Clamp(SizeMemory.Get(shapeKeyName, 0), 0, (int)BrushShape.Column);
             int edge = Mathf.Clamp(SizeMemory.Get(edgeKeyName, DefaultBrushEdge), 2, Brush.MaxEdge);
             bool on = shape != BrushShape.Off;

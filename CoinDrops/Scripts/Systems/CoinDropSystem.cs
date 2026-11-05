@@ -26,6 +26,7 @@ namespace CoinDrops.Systems
 
         private readonly HashSet<Entity> _handled = new HashSet<Entity>();
         private readonly HashSet<ObjectID> _logged = new HashSet<ObjectID>();
+        private System.Predicate<Entity> _gone; // cached so pruning allocates nothing
         private EntityQuery _deadEnemies;
         private EntityQuery _database;
 
@@ -38,19 +39,22 @@ namespace CoinDrops.Systems
                 ComponentType.ReadOnly<HealthCD>(),
                 ComponentType.ReadOnly<EntityDestroyedCD>());
             _database = GetEntityQuery(ComponentType.ReadOnly<PugDatabase.DatabaseBankCD>());
+            _gone = e => !EntityManager.Exists(e);
             base.OnCreate();
         }
 
         protected override void OnUpdate()
         {
-            if (_handled.Count > 0)
-                _handled.RemoveWhere(e => !EntityManager.Exists(e));
             float amount = CoinDropsMod.AmountMultiplier;
             if (amount <= 0f || _deadEnemies.IsEmpty || _database.IsEmpty)
             {
+                // Nothing dying: forget paid entities that have been destroyed (only does work after kills).
+                if (_handled.Count > 0) _handled.RemoveWhere(_gone);
                 base.OnUpdate();
                 return;
             }
+            // Long fights never reach the quiet branch; keep the set bounded anyway.
+            if (_handled.Count > 256) _handled.RemoveWhere(_gone);
 
             var bank = _database.GetSingleton<PugDatabase.DatabaseBankCD>().databaseBankBlob;
             var entities = _deadEnemies.ToEntityArray(Allocator.Temp);

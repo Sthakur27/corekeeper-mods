@@ -31,6 +31,7 @@ namespace Enchanting
                 _logged++;
                 UnityEngine.Debug.Log($"[{EnchantingMod.Name}] table graphics: skin {(Skin != null ? "loaded" : "MISSING")}, objectID {info.objectID}, applying violet: {table}");
             }
+            if (table) PruneDestroyed();
             foreach (var sprite in __instance.GetComponentsInChildren<SpriteObject>(true))
             {
                 if (sprite == null) continue;
@@ -47,6 +48,18 @@ namespace Enchanting
                     sprite.ApplyVisualChange();
                 }
             }
+        }
+
+        // Graphics destroyed with a closed world leave dead keys behind; drop them before adding new ones.
+        private static readonly List<SpriteObject> Dead = new List<SpriteObject>();
+
+        private static void PruneDestroyed()
+        {
+            foreach (var key in Originals.Keys)
+                if (key == null) Dead.Add(key);
+            if (Dead.Count == 0) return;
+            foreach (var key in Dead) Originals.Remove(key);
+            Dead.Clear();
         }
     }
 }

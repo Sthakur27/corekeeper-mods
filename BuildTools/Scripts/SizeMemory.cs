@@ -25,9 +25,19 @@ namespace BuildTools
         /// <summary>False = "Remember sizes" off: values live for this session only (nothing read or written).</summary>
         public static bool Persist = true;
 
-        public static bool TryGet(EquipmentSlotType slot, out int variation) => TryGet(slot.ToString(), out variation);
+        public static bool TryGet(EquipmentSlotType slot, out int variation) => TryGet(SlotKey(slot), out variation);
 
-        public static void Set(EquipmentSlotType slot, int variation) => Set(slot.ToString(), variation);
+        public static void Set(EquipmentSlotType slot, int variation) => Set(SlotKey(slot), variation);
+
+        // slot.ToString() allocated a string every frame while a tool was held; cache one per slot type.
+        private static readonly Dictionary<int, string> SlotKeys = new Dictionary<int, string>();
+
+        private static string SlotKey(EquipmentSlotType slot)
+        {
+            int id = (int)slot;
+            if (!SlotKeys.TryGetValue(id, out var key)) SlotKeys[id] = key = slot.ToString();
+            return key;
+        }
 
         public static int Get(string key, int fallback) => TryGet(key, out int value) ? value : fallback;
 

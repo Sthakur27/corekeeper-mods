@@ -1,4 +1,4 @@
-"""Drill Unit cover draft from Sid's 2026-11-04 HDR captures: three things it does, side by side.
+"""Drill Pod (formerly Drill Unit) cover from Sid's 2026-11-04 HDR captures: three things it does, side by side.
 
     python release/art_direction/make_drillunit_cover.py [--out DIR]   # default: release/drillunit_logo.png
 
@@ -125,7 +125,7 @@ def compose():
         cx = (x0 + x1) // 2
         for i, line in enumerate(label):
             wp.paste_text(canvas, wp.pixel_text(line), cx, PANEL_Y1 + 6 + i * 32, MINT if i else '#ffd36a')
-    covers.banner(canvas, 'DRILL UNIT (ALPHA)', 'A HOVERING MINING CRAFT FROM THE RIFT')
+    covers.banner(canvas, 'DRILL POD (ALPHA)', 'A HOVERING MINING CRAFT FROM THE RIFT')
     return canvas
 
 

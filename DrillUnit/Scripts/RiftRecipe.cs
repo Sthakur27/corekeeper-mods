@@ -62,18 +62,27 @@ namespace DrillUnit
     {
         private EntityQuery _stations;
         private double _next;
+        private int _scannedOrder = -1;
+        private double _nextFull;
 
         protected override void OnCreate()
         {
             base.OnCreate();
             _stations = GetEntityQuery(ComponentType.ReadOnly<ObjectDataCD>(), ComponentType.ReadOnly<CanCraftObjectsBuffer>());
+            RequireForUpdate(_stations);
         }
 
         protected override void OnUpdate()
         {
-            // Once a second: placed statues loaded from a save keep their saved recipe buffer.
+            // Placed statues loaded from a save keep their saved recipe buffer. Checked once a second, but the
+            // stations are only walked when the set of crafting stations changed (one placed, loaded or removed),
+            // plus every 30 s in case a recipe buffer was rewritten in place.
             if (World.Time.ElapsedTime < _next || DrillUnitMod.Id == ObjectID.None) return;
             _next = World.Time.ElapsedTime + 1;
+            int order = _stations.GetCombinedComponentOrderVersion();
+            if (order == _scannedOrder && World.Time.ElapsedTime < _nextFull) return;
+            _scannedOrder = order;
+            _nextFull = World.Time.ElapsedTime + 30;
             using (var entities = _stations.ToEntityArray(Allocator.Temp))
                 foreach (var entity in entities) RiftRecipe.EnsureRecipe(entity, EntityManager);
         }

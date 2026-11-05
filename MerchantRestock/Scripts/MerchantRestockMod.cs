@@ -13,7 +13,7 @@ namespace MerchantRestock
     public sealed class MerchantRestockMod : IMod
     {
         public const string Name = "MerchantRestock";
-        public const string Version = "1.1.0";
+        public const string Version = "1.1.1";
 
         public const string SettingsHint = "How often merchants refill their stock (vanilla: every 25-35 min). "
             + "'All merchants' applies to every merchant set to 'Same as all'. Applies right away, including to the current countdown. "

@@ -1,10 +1,10 @@
-# Wormhole Potion
+# Potion of Return
 
-![Wormhole Potion — mod cover from in-game screenshots](../release/wormholepotion_logo.png)
+![Potion of Return — mod cover from in-game screenshots](../release/wormholepotion_logo.png)
 
-A one-use way home that also gets you back. Craft a **Wormhole Potion** for **10 Gold Bars** at an **Ancient Hologram Pod**.
+A one-use way home that also gets you back. Craft a **Potion of Return** for **10 Gold Bars** at an **Ancient Hologram Pod**. (Released as Wormhole Potion; only the name changed, and potions and markers you already have keep working.)
 
-Use it like a Recall Idol: after a three-second cast you teleport to the Core and the potion is used up. The spot where you drank it is marked on your map with the potion icon (**Wormhole Return Point**). Stand on any active waypoint, open the map and click that marker to teleport back, exactly like teleporting between waypoints. The marker disappears after that one trip.
+Use it like a Recall Idol: after a three-second cast you teleport to the Core and the potion is used up. The spot where you drank it is marked on your map with the potion icon (**Return Point**). Stand on any active waypoint, open the map and click that marker to teleport back, exactly like teleporting between waypoints. The marker disappears after that one trip.
 
 - Moving, switching items or taking enough damage interrupts the cast, just like a Recall Idol. The potion is only used up when the cast finishes.
 - Drinking within 12 tiles of the Core takes you home but leaves no marker.
@@ -18,7 +18,7 @@ No settings and no library dependencies. Install on both the host and clients in
 
 ## Install
 
-Subscribe to the Workshop item, or extract the manual archive into `CoreKeeper_Data/StreamingAssets/Mods/WormholePotion` so `ModManifest.json` sits directly inside that folder. Restart Core Keeper. Ancient Hologram Pods already in your world gain the recipe automatically. Do not run the standalone version alongside an Overhaul version that already includes Wormhole Potion.
+Subscribe to the Workshop item, or extract the manual archive into `CoreKeeper_Data/StreamingAssets/Mods/WormholePotion` so `ModManifest.json` sits directly inside that folder. Restart Core Keeper. Ancient Hologram Pods already in your world gain the recipe automatically. Do not run the standalone version alongside an Overhaul version that already includes Potion of Return.
 
 The recipe uses the pod's empty recipe slot. If another mod has already filled it, this mod leaves that recipe alone and cannot add its own.
 

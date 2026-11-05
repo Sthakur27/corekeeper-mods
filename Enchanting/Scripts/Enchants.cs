@@ -17,7 +17,23 @@ namespace Enchanting
         Rod = 64,
         Magic = 128,   // RangeWeapon / BeamWeapon / ThrowingWeapon with HasWeaponDamageCD.isMagic
         Summon = 256,  // SummoningWeapon (tomes): "carried" rule, see EnchantEffectSystem
+        Ring = 512,     // both ring slots (worn)
+        Necklace = 1024,
+        Offhand = 2048, // non-stackable offhands (shields, dash items, ...); bait is excluded
         Armor = Helm | Chest | Pants,
+        Accessory = Ring | Necklace | Offhand,
+    }
+
+    /// <summary>How copies of one enchant on several worn/held items combine (per enchant id).</summary>
+    public enum EnchantStack
+    {
+        /// <summary>Every copy adds (weapons, tools, armor: balanced per piece).</summary>
+        Sum,
+        /// <summary>
+        /// "Doesn't stack": only the highest copy among all items counts (accessory pool; two rings with
+        /// Precision III give +3%, not +6%). Different enchants that write the same condition still add.
+        /// </summary>
+        Max,
     }
 
     /// <summary>How an enchant's level turns into the raw condition value (docs/balance-model.md).</summary>
@@ -42,6 +58,8 @@ namespace Enchanting
         AttackSpeed,     // MeleeAttackSpeed or RangeAttackSpeed (by the held weapon) + AttackSpeed
         MinionDamage,    // MinionDamagePercentage (+ magic-to-minion share)
         MinionAttackSpeed,
+        AllDamage,       // AllDamage + type + class of the HELD weapon (accessory Might: multiplies all damage)
+        AllAttackSpeed,  // AttackSpeed + Melee- or RangeAttackSpeed of the HELD weapon (accessory Haste)
     }
 
     /// <summary>Vanilla per-level curves (ConditionExtensions) used by ItemLevel enchants.</summary>
@@ -64,6 +82,9 @@ namespace Enchanting
         public EnchantMode Mode = EnchantMode.Flat;
         public RelBucket Bucket = RelBucket.None;
         public ItemCurve Curve = ItemCurve.None;
+        public EnchantStack Stack = EnchantStack.Sum;
+        /// <summary>Radiance: writes the glow colour the player already shines brightest in (EnchantEffectSystem).</summary>
+        public bool FollowsLight;
 
         public int MaxLevel => Values.Length;
     }
@@ -87,7 +108,7 @@ namespace Enchanting
             Rel(1, "sharpness", "Sharpness", EnchantSlot.Melee, ConditionID.PhysicalMeleeDamageIncrease, RelBucket.Damage, 4, 8, 12);
             Lvl(2, "fireaspect", "Fire Aspect", EnchantSlot.Melee, ConditionID.ApplyBurning, ItemCurve.Burning, 50, 75, 100);
             Add(3, "knockback", "Knockback", EnchantSlot.Melee, ConditionID.ChanceOnHitToKnockback, 10, 20, 30);
-            Lvl(4, "lifesteal", "Lifesteal", EnchantSlot.Melee, ConditionID.LifeOnHit, ItemCurve.LifeOnHit, 50, 100, 150);
+            Lvl(4, "lifesteal", "Lifesteal", EnchantSlot.Melee, ConditionID.LifeOnHit, ItemCurve.LifeOnHit, 50, 75, 100); // was 50/100/150 (combo audit 2026-11-05)
             Add(5, "venom", "Venom", EnchantSlot.Melee, ConditionID.ChanceToApplyPoisoned, 10, 20, 30);
             Add(6, "stunning", "Stunning", EnchantSlot.Melee, ConditionID.ChanceOnMeleeHitToStun, 3, 6, 9);
             Rel(7, "swiftblade", "Swiftblade", EnchantSlot.Melee, ConditionID.MeleeAttackSpeedIncrease, RelBucket.AttackSpeed, 3, 6, 10);
@@ -126,7 +147,7 @@ namespace Enchanting
             // Magic (staffs, scepters, magic beams): ids 100-119
             Rel(100, "arcanepower", "Arcane Power", EnchantSlot.Magic, ConditionID.IncreasedMagicDamagePercentage, RelBucket.Damage, 4, 8, 12);
             Add(101, "frugality", "Frugality", EnchantSlot.Magic, ConditionID.ReduceManaCostByPercentage, 5, 10, 15);
-            Add(102, "spellsurge", "Spellsurge", EnchantSlot.Magic, ConditionID.GainMagicDamagePercentageBoostAfterCrit, 10, 20, 30);
+            Add(102, "spellsurge", "Spellsurge", EnchantSlot.Magic, ConditionID.GainMagicDamagePercentageBoostAfterCrit, 5, 10, 15); // was 10/20/30 (combo audit)
             Add(103, "clarity", "Clarity", EnchantSlot.Magic, ConditionID.GainManaCostOnCrit, 25, 50, 75);
             // Movement slow on every hit for 4 s; must be negative (EntityUtility applies it only when < 0).
             // Vanilla gear uses -25 raw per item level, so -50..-150 raw is mid-game strength.
@@ -137,6 +158,32 @@ namespace Enchanting
             Rel(121, "frenzy", "Frenzy", EnchantSlot.Summon, ConditionID.IncreasedMinionAttackSpeed, RelBucket.MinionAttackSpeed, 3, 6, 10);
             Add(122, "keenfangs", "Keen Fangs", EnchantSlot.Summon, ConditionID.IncreasedMinionCritChance, 5, 10, 15);
             Add(123, "slayer", "Slayer", EnchantSlot.Summon, ConditionID.IncreasedMinionBossDamagePercentage, 10, 20, 30);
+
+            // Accessories (rings, necklace, offhand): ids 140-169, one shared pool, Stack = Max ("doesn't stack":
+            // only the highest copy among all worn accessories counts). Micro stats plus a few utility perks.
+            const EnchantSlot Acc = EnchantSlot.Accessory;
+            Uniq(Rel(140, "might", "Might", Acc, ConditionID.AllDamageIncrease, RelBucket.AllDamage, 1, 2, 3));
+            Uniq(Add(141, "precision", "Precision", Acc, ConditionID.CritChance, 1, 2, 3));
+            Uniq(Add(142, "ferocity", "Ferocity", Acc, ConditionID.CriticalDamagePercentageIncrease, 2, 4, 6));
+            Uniq(Rel(143, "haste", "Haste", Acc, ConditionID.AttackSpeed, RelBucket.AllAttackSpeed, 1, 2, 3));
+            Uniq(Add(144, "fleetfoot", "Fleetfoot", Acc, ConditionID.MovementSpeedIncrease, 1, 2, 3));
+            Uniq(Add(145, "hardiness", "Hardiness", Acc, ConditionID.IncreasedMaxHealthPercentage, 1, 2, 3));
+            Uniq(Add(146, "greenthumb", "Green Thumb", Acc, ConditionID.ExtraHarvestChance, 5, 10, 15));
+            Uniq(Add(147, "angler", "Angler", Acc, ConditionID.IncreasedFishing, 10, 20, 30));
+            Uniq(Add(148, "gourmet", "Gourmet", Acc, ConditionID.ChanceToGainExtraCookedFood, 5, 10, 15));
+            // Light range in tiles, added to the glow colour the player already has (a lantern's); OrangeGlow if none.
+            Uniq(Add(149, "radiance", "Radiance", Acc, ConditionID.OrangeGlow, 1, 2, 3)).FollowsLight = true;
+            // Offhand-only defensive set: own ids (armor's 60/62/67 stay Sum and armor-only). They add to the armor
+            // versions (same conditions as Vitality/Resilience/Swiftness); damage taken stays under the -25% clamp.
+            Uniq(Add(150, "offvitality", "Vitality", EnchantSlot.Offhand, ConditionID.IncreasedMaxHealthPercentage, 2, 4, 6));
+            Uniq(Add(151, "offresilience", "Resilience", EnchantSlot.Offhand, ConditionID.ReducedDamageTakenPercentage, -2, -3, -5));
+            Uniq(Add(152, "offswiftness", "Swiftness", EnchantSlot.Offhand, ConditionID.MovementSpeedIncrease, 2, 4, 6));
+        }
+
+        private static EnchantDef Uniq(EnchantDef def)
+        {
+            def.Stack = EnchantStack.Max;
+            return def;
         }
 
         private static EnchantDef Add(int id, string key, string name, EnchantSlot slots, ConditionID condition, params int[] values)
@@ -148,11 +195,12 @@ namespace Enchanting
             return def;
         }
 
-        private static void Rel(int id, string key, string name, EnchantSlot slots, ConditionID condition, RelBucket bucket, params int[] percent)
+        private static EnchantDef Rel(int id, string key, string name, EnchantSlot slots, ConditionID condition, RelBucket bucket, params int[] percent)
         {
             var def = Add(id, key, name, slots, condition, percent);
             def.Mode = EnchantMode.Relative;
             def.Bucket = bucket;
+            return def;
         }
 
         private static void Lvl(int id, string key, string name, EnchantSlot slots, ConditionID condition, ItemCurve curve, params int[] percentOfVanilla)
@@ -196,7 +244,18 @@ namespace Enchanting
                 case ObjectType.Helm: slot = EnchantSlot.Helm; break;
                 case ObjectType.BreastArmor: slot = EnchantSlot.Chest; break;
                 case ObjectType.PantsArmor: slot = EnchantSlot.Pants; break;
-                default: slot = EnchantSlot.None; break; // fishing rods: no enchants since 2026-11-04; CastingItem is a recipe scroll
+                case ObjectType.Ring: slot = EnchantSlot.Ring; break;
+                case ObjectType.Necklace: slot = EnchantSlot.Necklace; break;
+                // Stackable offhands and bait share aux data per stack (same rule as grenades): not enchantable.
+                case ObjectType.Offhand:
+                    slot = info.isStackable || (PugDatabase.TryGetComponent<OffHandCD>(id, out var off) && off.mechanic == OffHandMechanic.Bait)
+                        ? EnchantSlot.None : EnchantSlot.Offhand;
+                    break;
+                // Pet (802) must NEVER be enchantable: its PetTalentBuffer is the pet's real talent list and the
+                // Burst summary indexes it without a lookup check (docs/gear-slot-enchants.md section 7).
+                // Bags, lanterns and pouches are not enchantable for now.
+                // Fishing rods: no enchants since 2026-11-04; CastingItem is a recipe scroll.
+                default: slot = EnchantSlot.None; break;
             }
             SlotCache[id] = slot;
             return slot;
@@ -228,6 +287,9 @@ namespace Enchanting
             }
         }
 
+        /// <summary>HasWeaponDamageCD.isMagic of the weapon (decides the damage type effect for Might).</summary>
+        public static bool IsMagicDamage(ObjectID id) => PugDatabase.TryGetComponent<HasWeaponDamageCD>(id, out var w) && w.isMagic;
+
         /// <summary>HasWeaponDamageCD.isRange of the weapon (decides the melee/range damage class effect).</summary>
         public static bool IsRangeDamage(ObjectID id)
         {
@@ -241,6 +303,9 @@ namespace Enchanting
         /// not "held" items: they use the carried rule in EnchantEffectSystem.
         /// </summary>
         public static bool IsHeldSlot(EnchantSlot s) => (s & (EnchantSlot.Melee | EnchantSlot.Ranged | EnchantSlot.Magic | EnchantSlot.Tool | EnchantSlot.Rod)) != 0;
+
+        /// <summary>Worn accessories (rings, necklace, offhand): apply while equipped, like armor.</summary>
+        public static bool IsAccessory(EnchantSlot s) => (s & EnchantSlot.Accessory) != 0;
 
         public static List<EnchantDef> PoolFor(EnchantSlot slot)
         {

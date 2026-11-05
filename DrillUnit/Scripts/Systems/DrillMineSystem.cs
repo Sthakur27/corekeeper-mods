@@ -32,24 +32,18 @@ namespace DrillUnit.Systems
         protected override void OnCreate()
         {
             base.OnCreate();
-            _units = GetEntityQuery(ComponentType.ReadOnly<BoatCD>(), ComponentType.ReadOnly<ObjectDataCD>(),
-                ComponentType.ReadOnly<ControlledByOtherEntityCD>());
+            _units = RiddenUnits.Query(this);
             _tileDamage = GetEntityQuery(ComponentType.ReadWrite<TileDamageBuffer>());
             RequireForUpdate(_units);
         }
 
         protected override void OnUpdate()
         {
-            var id = DrillUnitMod.Id;
-            if (id == ObjectID.None || _tileDamage.IsEmptyIgnoreFilter) return;
+            var ridden = RiddenUnits.Get(this, _units);
+            if (ridden.Count == 0 || _tileDamage.IsEmptyIgnoreFilter) return;
             double now = World.Time.ElapsedTime;
-            var units = _units.ToEntityArray(Allocator.Temp);
-            for (int i = 0; i < units.Length; i++)
+            foreach (var (_, rider) in ridden)
             {
-                var unit = units[i];
-                if (EntityManager.GetComponentData<ObjectDataCD>(unit).objectID != id) continue;
-                var rider = EntityManager.GetComponentData<ControlledByOtherEntityCD>(unit).controlledByEntity;
-                if (!DrillUnitMod.IsRiding(EntityManager, rider, out var ridden) || ridden != unit) continue;
                 if (!EntityManager.HasComponent<ClientInput>(rider)) continue;
                 var input = EntityManager.GetComponentData<ClientInput>(rider);
                 if (!InputBits.Drilling(input.buttonSetMask)) continue;
@@ -67,7 +61,6 @@ namespace DrillUnit.Systems
                 var buffer = EntityManager.GetBuffer<TileDamageBuffer>(_tileDamage.GetSingletonEntity());
                 foreach (var cell in _cells) Hit(buffer, rider, cell);
             }
-            units.Dispose();
         }
 
         /// <summary>Rows 1..Depth ahead along <paramref name="forward"/>, 3 wide, plus the two cells beside the unit.</summary>

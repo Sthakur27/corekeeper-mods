@@ -14,8 +14,37 @@ namespace Enchanting
     /// </summary>
     public static class EnchantMath
     {
-        /// <summary>Lower clamp for our total ReducedDamageTakenPercentage (vanilla has no lower cap): −25%.</summary>
-        public const int MinDamageTaken = -250;
+        /// <summary>
+        /// Conditions whose total of OUR entries (armor Sum + accessory Max, folded together) is clamped by
+        /// <see cref="Cap"/>, so stacked defence stays near the damage budget (docs/balance-combos.md: best build
+        /// ~+44% DPS / ~+44% effective HP late). Vanilla gear, food and skills come on top. Sid approved 2026-11-05.
+        /// </summary>
+        public static readonly ConditionID[] CappedConditions =
+        {
+            ConditionID.ReducedDamageTakenPercentage, ConditionID.IncreasedMaxHealthPercentage, ConditionID.DodgeChance,
+            ConditionID.MovementSpeedIncrease, ConditionID.IncreasedHealthRegenEffectiveness, ConditionID.ReducedDamageFromBosses,
+        };
+
+        /// <summary>Our summed raw value for a condition after the caps above (raw units).</summary>
+        public static int Cap(ConditionID id, int value)
+        {
+            switch (id)
+            {
+                case ConditionID.ReducedDamageTakenPercentage: return Mathf.Max(value, -120);      // tenths: −12% damage taken
+                case ConditionID.IncreasedMaxHealthPercentage: return Mathf.Min(value, 15);        // whole: Vitality + Hardiness +15%
+                case ConditionID.DodgeChance: return Mathf.Min(value, 8);                          // whole: +8 dodge
+                case ConditionID.MovementSpeedIncrease: return Mathf.Min(value, 120);              // tenths: Swiftness + Fleetfoot +12%
+                case ConditionID.IncreasedHealthRegenEffectiveness: return Mathf.Min(value, 60);   // whole: +60% regen
+                case ConditionID.ReducedDamageFromBosses: return Mathf.Min(value, 9);              // whole: −9% boss damage
+                default: return value;
+            }
+        }
+
+        /// <summary>Glow conditions the player light reads (ConditionsEffectsHandler.UpdateCombinedLight), for Radiance.</summary>
+        public static readonly ConditionID[] GlowConditions =
+        {
+            ConditionID.OrangeGlow, ConditionID.BlueGlow, ConditionID.PinkGlow, ConditionID.GreenGlow, ConditionID.VoidGlow,
+        };
 
         /// <summary>
         /// The item's level as the stat system uses it (SummarizeConditionsSystem): variation if set (capped at
@@ -67,6 +96,20 @@ namespace Enchanting
             return def.Condition;
         }
 
+        /// <summary>
+        /// The item whose type decides a Relative enchant's bucket: the enchanted weapon itself, or for accessory
+        /// buckets (Might, Haste) the weapon the player currently holds.
+        /// </summary>
+        public static ObjectID BucketWeapon(EnchantDef def, ObjectID item, ObjectID held) =>
+            def.Bucket == RelBucket.AllDamage || def.Bucket == RelBucket.AllAttackSpeed ? held : item;
+
+        /// <summary>Damage type effect the damage code adds for this weapon (EntityUtility.GetAttackerDamageIncrease).</summary>
+        public static ConditionEffect DamageTypeEffect(ObjectID weapon)
+        {
+            if (Enchants.IsMagicDamage(weapon)) return ConditionEffect.MagicDamage;
+            return Enchants.IsRangeDamage(weapon) ? ConditionEffect.PhysicalRangeDamage : ConditionEffect.PhysicalMeleeDamage;
+        }
+
         /// <summary>The ConditionEffect a write condition lands in (from the ConditionsTable by name; selftest checks it).</summary>
         public static ConditionEffect EffectOf(ConditionID id)
         {
@@ -79,6 +122,8 @@ namespace Enchanting
                 case ConditionID.RangeAttackSpeedIncrease: return ConditionEffect.RangeAttackSpeed;
                 case ConditionID.IncreasedMinionDamagePercentage: return ConditionEffect.MinionDamagePercentage;
                 case ConditionID.IncreasedMinionAttackSpeed: return ConditionEffect.MinionAttackSpeed;
+                case ConditionID.AllDamageIncrease: return ConditionEffect.AllDamage;
+                case ConditionID.AttackSpeed: return ConditionEffect.AttackSpeed;
                 default: return ConditionEffect.None;
             }
         }
@@ -105,6 +150,16 @@ namespace Enchanting
                 }
                 case RelBucket.MinionAttackSpeed:
                     return Fx(fx, ConditionEffect.MinionAttackSpeed);
+                // Accessory Might: AllDamage (33) + type (8 / 22 / 102) + class (116 / 117) of the held weapon, the
+                // same terms EntityUtility.GetAttackerDamageIncrease adds before x(1 + sum/1000).
+                case RelBucket.AllDamage:
+                    return Fx(fx, ConditionEffect.AllDamage) + Fx(fx, DamageTypeEffect(weapon))
+                        + Fx(fx, Enchants.IsRangeDamage(weapon) ? ConditionEffect.RangeDamage : ConditionEffect.MeleeDamage);
+                // Accessory Haste: AttackSpeed (65) + Melee- (40) or RangeAttackSpeed (41) of the held weapon, the two
+                // terms of the cooldown divisor (MeleeWeaponSlot / RangeWeaponSlot / BeamWeaponSlot).
+                case RelBucket.AllAttackSpeed:
+                    return Fx(fx, ConditionEffect.AttackSpeed)
+                        + Fx(fx, Enchants.UsesRangeCooldown(weapon) ? ConditionEffect.RangeAttackSpeed : ConditionEffect.MeleeAttackSpeed);
                 default:
                     return 0;
             }
@@ -161,6 +216,8 @@ namespace Enchanting
                 case RelBucket.AttackSpeed: return Enchants.UsesRangeCooldown(weapon) ? "attack speed (ranged)" : "attack speed (melee)";
                 case RelBucket.MinionDamage: return "minion damage";
                 case RelBucket.MinionAttackSpeed: return "minion attack speed";
+                case RelBucket.AllDamage: return "damage";
+                case RelBucket.AllAttackSpeed: return "attack speed";
                 default: return "";
             }
         }
@@ -171,6 +228,8 @@ namespace Enchanting
             foreach (var def in Enchants.All)
             {
                 yield return def.Condition;
+                if (def.FollowsLight)
+                    foreach (var glow in GlowConditions) yield return glow;
                 if (def.Bucket == RelBucket.AttackSpeed)
                 {
                     yield return ConditionID.MeleeAttackSpeedIncrease;

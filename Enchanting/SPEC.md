@@ -14,7 +14,7 @@ guesses meant to go into Mod Options.
 - **Looks**: in the world the table is the vanilla Upgrade Forge sprite (shared graphics); only the item icon
   is the violet recolor. A real skin comes later.
 - **Debug**: `/enchant` (show), `list`, `set <key> <lvl>`, `remove <key>`, `clear`, `roll [n]`, `cost`, each with
-  an optional trailing `helm|chest|pants` (default: held item). Changing commands need admin privileges.
+  an optional trailing `helm|chest|pants|ring1|ring2|necklace|offhand` (default: held item). Changing commands need admin privileges.
 
 ## Player-facing summary
 
@@ -78,7 +78,7 @@ Costs stay flat per roll (section above). Save ids never change meaning; ids 44,
 | 1 | Sharpness | `PhysicalMeleeDamageIncrease` | x1.04 / x1.08 / x1.12 damage | multiplier, bucket AllDamage + PhysicalMelee + Melee |
 | 2 | Fire Aspect | `ApplyBurning` | 50 / 75 / 100 % of vanilla (10 + 3L) | item level |
 | 3 | Knockback | `ChanceOnHitToKnockback` | 10 / 20 / 30 % | flat |
-| 4 | Lifesteal | `LifeOnHit` | 50 / 100 / 150 % of vanilla max(1, 0.5L) hp | item level |
+| 4 | Lifesteal | `LifeOnHit` | 50 / 75 / 100 % of vanilla max(1, 0.5L) hp | item level |
 | 5 | Venom | `ChanceToApplyPoisoned` | 10 / 20 / 30 % | flat |
 | 6 | Stunning | `ChanceOnMeleeHitToStun` | 3 / 6 / 9 % | flat |
 | 7 | Swiftblade | `MeleeAttackSpeedIncrease` | x1.03 / x1.06 / x1.10 attack rate | multiplier, bucket MeleeAttackSpeed + AttackSpeed |
@@ -101,7 +101,7 @@ Stackable throwables (grenades, bombs) are not enchantable (aux data is shared p
 |---|---|---|---|---|
 | 100 | Arcane Power | `IncreasedMagicDamagePercentage` | x1.04 / x1.08 / x1.12 | multiplier, bucket AllDamage + Magic + Range/Melee |
 | 101 | Frugality | `ReduceManaCostByPercentage` | 5 / 10 / 15 % less mana | flat |
-| 102 | Spellsurge | `GainMagicDamagePercentageBoostAfterCrit` | +10 / 20 / 30 % magic damage for 6 s after a crit | flat |
+| 102 | Spellsurge | `GainMagicDamagePercentageBoostAfterCrit` | +5 / 10 / 15 % magic damage for 6 s after a crit | flat |
 | 103 | Clarity | `GainManaCostOnCrit` | 25 / 50 / 75 % of the shot's mana back on crit | flat |
 | 104 | Frostbite | `ApplySlowedByCold` | −5 / −10 / −15 % move speed for 4 s, every hit (tenths, must be negative) | flat |
 | 21, 8, 9 | Quick Draw, Keen, Bossbane | | as ranged | |
@@ -131,7 +131,7 @@ No Legion (max minions): extra minions are dismissed whenever the bonus drops.
 ### Armor (`Helm`, `BreastArmor`, `PantsArmor`)
 | Id | Enchant | Condition | I / II / III | Kind |
 |---|---|---|---|---|
-| 60 | Resilience (key `protection`) | `ReducedDamageTakenPercentage` | −3 / −5 / −8 % damage taken per piece (tenths); our total clamped at −25 % | flat |
+| 60 | Resilience (key `protection`) | `ReducedDamageTakenPercentage` | −3 / −5 / −8 % damage taken per piece (tenths); our total clamped at −12 % | flat |
 | 61 | Thorns | `ThornsDamage` | 100 / 200 / 300 % of vanilla (1 + 2L) | item level (per piece) |
 | 62 | Vitality | `IncreasedMaxHealthPercentage` | 3 / 6 / 10 % max HP | flat |
 | 63 | Regeneration | `IncreasedHealthRegenEffectiveness` | 10 / 20 / 30 % | flat |
@@ -143,7 +143,33 @@ No Legion (max minions): extra minions are dismissed whenever the bonus drops.
 
 Removed 2026-11-04 (Sid): Lure, Luck of the Sea, Reach (so fishing rods take no enchants), Magnetism, Prospector.
 
-Not yet: fishing rods, rings, necklaces, offhands, Legion, Piercing/Punch, minion on-hit enchants, Minecraft
+### Accessories (`Ring` both slots, `Necklace`, non-stackable `Offhand`): one shared pool, ids 140-169
+Worn rule (like armor). **Stack = Max** for every enchant here: per enchant id only the highest copy among all
+items counts (`EnchantDef.Stack`, folded in `EnchantEffectSystem.FoldMax`); two rings with Precision III give +3%.
+Different enchants writing the same condition still add (Hardiness + Vitality, Fleetfoot + Swiftness), and our
+totals pass `EnchantMath.Cap` (Sid approved 2026-11-05, `docs/balance-combos.md`): our own total is capped at damage taken −12%, max HP +15% (Vitality + Hardiness), dodge +8, move speed +12% (Swiftness + Fleetfoot), regen +60%, boss damage −9%.
+Multipliers here use the bucket of the weapon the player **holds** (`EnchantMath.BucketWeapon`).
+| Id | Enchant | Condition | I / II / III | Units / kind |
+|---|---|---|---|---|
+| 140 | Might | `AllDamageIncrease` (→ AllDamage 33) | x1.01 / x1.02 / x1.03 all damage | multiplier, bucket AllDamage + type + class of the held weapon |
+| 141 | Precision | `CritChance` | +1 / 2 / 3 % | whole % |
+| 142 | Ferocity | `CriticalDamagePercentageIncrease` (→ 57, /100) | +2 / 4 / 6 % crit damage | whole % |
+| 143 | Haste | `AttackSpeed` (→ 65, melee and range cooldowns) | x1.01 / x1.02 / x1.03 | multiplier, bucket AttackSpeed + Melee/RangeAttackSpeed of the held weapon |
+| 144 | Fleetfoot | `MovementSpeedIncrease` | +1 / 2 / 3 % | tenths |
+| 145 | Hardiness | `IncreasedMaxHealthPercentage` (→ 34, /100) | +1 / 2 / 3 % | whole % |
+| 146 | Green Thumb | `ExtraHarvestChance` (→ 23, /1000) | +5 / 10 / 15 % | tenths |
+| 147 | Angler | `IncreasedFishing` (→ 36) | +10 / 20 / 30 fishing | whole points |
+| 148 | Gourmet | `ChanceToGainExtraCookedFood` (→ 54, /1000) | +5 / 10 / 15 % | tenths |
+| 149 | Radiance | the glow colour the player already shines brightest in (`OrangeGlow` without a light) | +1 / 2 / 3 light range | whole tiles |
+| 150 | Vitality (offhand only, key `offvitality`) | `IncreasedMaxHealthPercentage` | +2 / 4 / 6 % | whole % |
+| 151 | Resilience (offhand only, key `offresilience`) | `ReducedDamageTakenPercentage` | −2 / −3 / −5 % | tenths |
+| 152 | Swiftness (offhand only, key `offswiftness`) | `MovementSpeedIncrease` | +2 / 4 / 6 % | tenths |
+
+Offhand defensive enchants are own ids (not armor's 60/62/67) so armor keeps Sum and its armor-only pool.
+Pets (`ObjectType.Pet` 802) are never enchantable (their `PetTalentBuffer` is the real talent list). Bait and
+stackable offhands, bags, lanterns and pouches are not enchantable. Ids 153-169 are free for accessories.
+
+Not yet: fishing rods, bags, lanterns, pouches, Legion, Piercing/Punch, minion on-hit enchants, Minecraft
 enchants that need Burst-only logic (Multishot, Infinity, Silk Touch, Looting, Loyalty, Vanishing).
 
 ## How it works (implementation)
@@ -169,6 +195,17 @@ enchants that need Burst-only logic (Multishot, Infinity, Silk Touch, Looting, L
   bar (or show one "Enchanted" icon) via a UI patch.
 - Mod Options: costs, max enchants, level weights, full-item rule.
 - requiredOn: 3 (server rolls + applies; clients need tooltips and the station prefab).
+
+## Follow-ups
+
+- **Self-expiring bonus entries** (known limit today: switching Enchanting off in the Overhaul or removing it can
+  leave the last active bonuses on the character, because our `ConditionsBuffer` entries have duration +Infinity).
+  Plan: finite duration (~60 s) with a real `removeTick` (server tick + duration × tick rate), refreshed when less
+  than ~30 s remain (one write per ~30 s per player); `IsOurs` = marker 0.4242 + our duration; legacy infinite
+  entries rewritten as finite on first sight. Death: `ConditionsSystem.RemoveConditionsFromDeadEntitiesJob` cuts
+  timed conditions to 1 s every tick while dead, so skip writes while health <= 0 and re-add after respawn.
+  Check the table's `isPermanent` for our conditions (those never expire) and whether any has a buff-bar icon
+  (`ConditionsContainerUI` would then show a draining timer).
 
 ## Risks to check first (prototype order)
 

@@ -11,7 +11,7 @@ namespace KeepMinions
     public sealed class KeepMinionsMod : IMod
     {
         public const string Name = "KeepMinions";
-        public const string Version = "1.0.1";
+        public const string Version = "1.0.2";
 
         public void EarlyInit()
         {

@@ -1,6 +1,7 @@
 # Enchanting (Alpha)
 
-Random enchantments for your gear. Build an **Enchanting Table**, put a weapon, tool or armor piece in it,
+Random enchantments for your gear. Build an **Enchanting Table**, put a weapon, tool, armor piece, ring,
+necklace or offhand in it,
 pay **Gold Bars and Ancient Coins**, and the item gains a random enchantment — up to three per item.
 
 **Alpha:** it works in single player and is still being tuned. Expect balance changes, and report anything odd.
@@ -11,8 +12,10 @@ pay **Gold Bars and Ancient Coins**, and the item gains a random enchantment —
 - **Rolls:** a new enchantment usually lands at level I (60%), sometimes II (30%) or III (10%). Rolling one the
   item already has raises it a level. An item with three enchantments swaps a random one for a new one.
 - **Removing:** the **red down arrow** removes the item's top enchantment (free, no refund).
-- **Where they apply:** weapons, tools and staffs while **held**; armor while **worn**; summoning tomes while
-  they are **in your inventory** (the last tome you held).
+- **Where they apply:** weapons, tools and staffs while **held**; armor, rings, necklaces and offhands while
+  **worn**; summoning tomes while they are **in your inventory** (the last tome you held).
+- **Accessories don't stack with themselves:** if the same enchantment is on several rings/necklace/offhand,
+  only your highest copy counts (two rings with Precision III give +3%, not +6%).
 - **What you see:** enchanted items get a **violet slot border**, and their tooltips list each enchantment and
   its effect. Enchantments stay on the item through upgrades and dyes.
 
@@ -29,8 +32,14 @@ Damage and speed enchantments multiply what you already have, so they matter at 
 | Summoning tomes | Pack Leader (x1.04-1.12 minion damage), Frenzy (minion attack speed), Keen Fangs (minion crit), Slayer (minion boss damage) |
 | Pickaxes, shovels, hoes, sledges, drills | Efficiency (+10-30% mining), Unbreaking, Fortune, Mending |
 | Helm, chest, pants | Resilience (less damage taken), Vitality (+3-10% max health), Regeneration, Evasion, Bosswarden, Thorns, Unbreaking, Blast Protection; Swiftness on pants |
+| Rings, necklaces, offhands (one shared pool) | Might (x1.01-1.03 all damage), Haste (x1.01-1.03 attack speed), Precision (+1-3% crit chance), Ferocity (+2-6% crit damage), Fleetfoot (+1-3% movement speed), Hardiness (+1-3% max health), Green Thumb (+5-15% extra harvest), Angler (+10-30 fishing), Gourmet (+5-15% extra cooked dish), Radiance (+1-3 light range) |
+| Offhands only (extra) | Vitality (+2-6% max health), Resilience (2-5% less damage taken), Swiftness (+2-6% movement speed) |
 
 Fire Aspect, Lifesteal and Thorns grow with the item's level.
+
+**Caps:** enchantments from all your gear together add at most −12% damage taken, +15% max health, +8 dodge,
++12% move speed, +60% regeneration and −9% boss damage, so stacking the same defence on every piece stops paying off. Accessory enchantments are small on purpose and
+only your highest copy of each one counts. Your total from enchantments is capped at 25% less damage taken.
 
 ## What's tested (alpha)
 
@@ -49,7 +58,9 @@ Fire Aspect, Lifesteal and Thorns grow with the item's level.
 ## Limits
 
 - Alpha: tested in single player only. Multiplayer is untested.
-- Fishing rods, rings, necklaces, offhands, grenades and other stackable throwables can't be enchanted.
+- Fishing rods, bags, lanterns, pouches, pets, bait, grenades and other stackable items can't be enchanted.
+- The ring, necklace and offhand enchantments are new and only stat-checked by the self-test so far.
+- Switching Enchanting off or removing it can leave the last active bonuses on the character.
 - Summoning tome enchantments work while that tome is the last one you held and stays in your inventory.
 - In the world the table uses the Upgrade Forge's shape with a violet glow, and its window is the Upgrade
   Forge's window.
@@ -57,7 +68,8 @@ Fire Aspect, Lifesteal and Thorns grow with the item's level.
 
 ## Commands (host/admin)
 
-- `/enchant` — show the held item's enchantments; add `helm`, `chest` or `pants` for armor.
+- `/enchant` — show the held item's enchantments; add `helm`, `chest`, `pants`, `ring1`, `ring2`, `necklace`
+  or `offhand` for worn gear.
 - `/enchant set <name> <level>`, `/enchant remove <name>`, `/enchant clear`, `/enchant roll [n]` — testing.
 - `/enchant selftest` — checks every enchantment of what you hold and wear against the game's stat totals.
 - `/enchant combattest [seconds]` — stand next to a training dummy: attacks it with each enchantment in turn

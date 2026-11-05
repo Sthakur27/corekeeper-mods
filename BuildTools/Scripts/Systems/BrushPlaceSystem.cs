@@ -188,18 +188,36 @@ namespace BuildTools.Systems
             return false;
         }
 
+        /// <summary>Vanilla's own add of the aimed cell (same tileset; same tile type, or ground for a wall block's floor).</summary>
+        private static bool IsAnchorAdd(TileUpdateBuffer u, int2 anchor, ref PugDatabase.EntityObjectInfo info)
+        {
+            if (u.command != TileUpdateBuffer.Command.Add || !u.position.Equals(anchor) || u.tile.tileset != info.tileset) return false;
+            return u.tile.tileType == info.tileType || u.tile.tileType == TileType.ground;
+        }
+
+        private static bool HasAnchorAdd(DynamicBuffer<TileUpdateBuffer> updates, int2 anchor, ref PugDatabase.EntityObjectInfo info)
+        {
+            for (int i = 0; i < updates.Length; i++)
+                if (IsAnchorAdd(updates[i], anchor, ref info)) return true;
+            return false;
+        }
+
         /// <summary>Takes vanilla's own placement of the aimed cell (tile add + item use) back out of this tick's queues.</summary>
         private void StripVanillaAnchor(Entity player, EquippedObjectCD held, ref PugDatabase.EntityObjectInfo info)
         {
             int3 anchor = EntityManager.GetComponentData<PlacementCD>(player).bestPositionToPlaceAt;
             var anchor2 = new int2(anchor.x, anchor.z);
-            var updates = EntityManager.GetBuffer<TileUpdateBuffer>(_tileUpdates.GetSingletonEntity());
+            var tileUpdatesEntity = _tileUpdates.GetSingletonEntity();
+            // Read-only scan first: read-write access completes every job using TileUpdateBuffer, and this runs
+            // every tick while a brush/swap/block mode is active, mostly with nothing of ours to remove.
+            if (!HasAnchorAdd(EntityManager.GetBuffer<TileUpdateBuffer>(tileUpdatesEntity, true), anchor2, ref info)) return;
+
+            var updates = EntityManager.GetBuffer<TileUpdateBuffer>(tileUpdatesEntity);
             bool removed = false;
             for (int i = updates.Length - 1; i >= 0; i--)
             {
                 var u = updates[i];
-                if (u.command != TileUpdateBuffer.Command.Add || !u.position.Equals(anchor2) || u.tile.tileset != info.tileset) continue;
-                if (u.tile.tileType != info.tileType && u.tile.tileType != TileType.ground) continue;
+                if (!IsAnchorAdd(u, anchor2, ref info)) continue;
 
                 // EntityUtility.AddTile queues side effects right after the add: a floor also removes the pit
                 // and water there, a wall the roof hole. Taking out only the add left those behind, so over a

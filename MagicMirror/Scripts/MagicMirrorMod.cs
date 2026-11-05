@@ -8,7 +8,7 @@ namespace MagicMirror
 {
     public sealed class MagicMirrorMod : IMod
     {
-        public const string Version = "1.0.4";
+        public const string Version = "1.0.5";
         public const string ObjectName = "MagicMirror_Mirror";
         internal static bool Active;
         private static ObjectID _id;
@@ -87,8 +87,11 @@ namespace MagicMirror
     [UpdateAfter(typeof(PredictedSimulationSystemGroup))]
     public partial class MirrorRecipeSystem : PugSimulationSystemBase
     {
+        private const double CheckInterval = 1, SafetyRescan = 30;
         private EntityQuery stations;
-        private double next;
+        // Offset start so this does not share a tick with other mods' timers.
+        private double next = 0.89, nextFullScan;
+        private int lastOrder = -1;
         protected override void OnCreate()
         {
             base.OnCreate();
@@ -96,8 +99,15 @@ namespace MagicMirror
         }
         protected override void OnUpdate()
         {
-            if (World.Time.ElapsedTime < next || MagicMirrorMod.Id == ObjectID.None) return;
-            next = World.Time.ElapsedTime + 1;
+            double now = World.Time.ElapsedTime;
+            if (now < next || MagicMirrorMod.Id == ObjectID.None) return;
+            next = now + CheckInterval;
+            // Stations only need the recipe when one appears (placed, loaded, streamed in): that is a
+            // structural change, which bumps the order version. A slow full rescan stays as a safety net.
+            int order = EntityManager.GetComponentOrderVersion<CanCraftObjectsBuffer>();
+            if (order == lastOrder && now < nextFullScan) return;
+            lastOrder = order;
+            nextFullScan = now + SafetyRescan;
             using (var entities = stations.ToEntityArray(Allocator.Temp))
                 foreach (var entity in entities) MagicMirrorMod.EnsureRecipe(entity, EntityManager);
         }

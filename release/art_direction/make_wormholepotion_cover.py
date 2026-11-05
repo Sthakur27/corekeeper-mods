@@ -1,4 +1,4 @@
-"""Wormhole Potion cover: the potion and its recipe, then the mod as three numbered steps (Sid's 2026-11-04 screenshots).
+"""Potion of Return (folder WormholePotion) cover: the potion and its recipe, then the mod as three numbered steps (Sid's 2026-11-04 screenshots).
 
     python release/art_direction/make_wormholepotion_cover.py [--out DIR]
 
@@ -146,7 +146,7 @@ def compose():
         for k, line in enumerate(lines):
             paste_text(canvas, pixel_text(line, gap=2), c, PANEL_Y1 + 62 + k * 32, '#ffffff' if k == 0 else MINT)
 
-    covers.banner(canvas, 'WORMHOLE POTION', 'A ONE-USE TRIP HOME, AND A WAY BACK')
+    covers.banner(canvas, 'POTION OF RETURN', 'A ONE-USE TRIP HOME, AND A WAY BACK')
     return canvas
 
 

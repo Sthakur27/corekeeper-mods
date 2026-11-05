@@ -58,8 +58,8 @@ namespace SidsOverhaul
             { "FasterMachines", "Faster Machines" },
             { "ItemSpawner", "Item Spawner" },
             { "CoinDrops", "Coin Drops" },
-            { "WormholePotion", "Wormhole Potion" },
-            { "DrillUnit", "Drill Unit (Alpha)" },
+            { "WormholePotion", "Potion of Return" },
+            { "DrillUnit", "Drill Pod (Alpha)" },
             { "Enchanting", "Enchanting (Alpha)" },
         };
 

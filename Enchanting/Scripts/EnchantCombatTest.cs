@@ -40,6 +40,23 @@ namespace Enchanting
         private static bool _running;
         private static bool _magic; // staffs: mana is refilled every tick while attacking
         private static string _summary = "";
+        private static bool _debugBefore; // EnchantDebug.On before the test, restored in Finish
+
+        // A new server world: drop state from a test that was running when the old world closed.
+        protected override void OnCreate()
+        {
+            base.OnCreate();
+            if (_running) EnchantDebug.On = _debugBefore;
+            _running = false;
+            _player = Entity.Null;
+            _slot = -1;
+            _original = null;
+            Queue.Clear();
+            _index = 0;
+            Attacking = false;
+            HasTarget = false;
+            EnchantDebug.RunTag = "";
+        }
 
         // Per run: Apply (enchant + half HP) -> Cooldown (target free of statuses, stacking buffs worn off) -> Attack.
         private enum Phase { Apply, Cooldown, Attack }
@@ -79,6 +96,7 @@ namespace Enchanting
             _index = 0;
             _phase = Phase.Apply;
             _running = true;
+            _debugBefore = EnchantDebug.On;
             EnchantDebug.On = true;
             EnchantDebug.Reset();
             Debug.Log($"[{EnchantingMod.Name}] combattest start: {item.objectID}, {Queue.Count} runs x {_seconds:0} s");
@@ -207,6 +225,7 @@ namespace Enchanting
                     EnchantStorage.Write(em, _player, _slot, _original);
             }
             _running = false;
+            EnchantDebug.On = _debugBefore;
             _summary = (error != null ? "combattest ABORTED (" + error + "). " : "combattest done. ") + EnchantDebug.Report();
             Debug.Log($"[{EnchantingMod.Name}] {_summary}");
         }

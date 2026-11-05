@@ -1,4 +1,4 @@
-"""Write the Wormhole Potion source assets into the Mod SDK project (Assets/WormholePotion).
+"""Write the Potion of Return source assets into the Mod SDK project (Assets/WormholePotion).
 
     python -I WormholePotion/Unity/gen_assets.py [sdk_path]
 
@@ -15,10 +15,10 @@ sdk = Path(sys.argv[1]) if len(sys.argv) > 1 else Path(r'C:/Users/Sid/CoreKeeper
 root = sdk / 'Assets/WormholePotion'
 GUID = 'b7e3c2a19d4f4e8a8c5b6a0f1e2d{:04x}'  # + running index; fixed forever
 TEXTS = [
-    ('WormholePotion_Potion', 'Wormhole Potion', 0x101,
-     'Returns you to the Core after a short cast and marks this spot on the map. Teleport back once from any active waypoint.'),
-    ('WormholePotion_Marker', 'Wormhole Return Point', 0x102,
-     'Where a Wormhole Potion was drunk. Teleport here once from any active waypoint.'),
+    ('WormholePotion_Potion', 'Potion of Return', 0x101,
+     'Returns you to the Core after a short cast and marks where you drank it on the map. Teleport back there once from any active waypoint.'),
+    ('WormholePotion_Marker', 'Return Point', 0x102,
+     'Where a Potion of Return was drunk. Teleport here once from any active waypoint.'),
 ]
 
 

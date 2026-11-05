@@ -8,7 +8,8 @@ namespace Enchanting
 {
     /// <summary>
     /// Server: keeps one ConditionsBuffer entry per enchant condition on each player, summed from the held item
-    /// (weapons, tools), the equipped armor and the carried summoning tome. Entries are marked by an infinite
+    /// (weapons, tools), the equipped armor, the worn accessories (ring1, ring2, necklace, offhand) and the carried
+    /// summoning tome. Entries are marked by an infinite
     /// duration plus <see cref="Marker"/> as valueMultiplier: infinite conditions never expire and survive death,
     /// and the vanilla summary (SummarizeConditionsSystem) adds every entry's value to the stats.
     ///
@@ -19,6 +20,11 @@ namespace Enchanting
     /// have passed since our last write to them. Relative drift (buffs changing the bucket) is rewritten only past
     /// the hysteresis (EnchantMath.CloseEnough) and at most every <see cref="DriftInterval"/> updates. Writes touch
     /// only the entries that changed, since any ConditionsBuffer write makes the game re-summarize that player.
+    ///
+    /// Stack modes (EnchantDef.Stack): Sum enchants add per copy. Max enchants (the accessory pool) keep only the
+    /// highest copy per enchant id across all items (<see cref="_maxFlat"/>, <see cref="_maxRel"/>), then fold into
+    /// the per-condition totals like one more item. Our totals are then clamped by EnchantMath.Cap.
+    /// Accessory multipliers (Might, Haste) use the bucket of the weapon the player holds.
     ///
     /// Carried rule (summoning tomes): the last SummoningWeapon the player held keeps applying its enchants while
     /// it is anywhere in the player's inventory (minion stats are read live from the owner; a held-only rule would
@@ -52,11 +58,23 @@ namespace Enchanting
 
         private static readonly Dictionary<Entity, PlayerState> States = new Dictionary<Entity, PlayerState>();
         private EntityQuery _players;
+        private EntityQuery _auxQuery;
+        private readonly List<EnchantEntry> _entries = new List<EnchantEntry>(); // reused per item (no per-tick lists)
         private long _update;
         private readonly Dictionary<ConditionID, int> _flat = new Dictionary<ConditionID, int>();
         private readonly Dictionary<ConditionID, RelWant> _rel = new Dictionary<ConditionID, RelWant>();
         private readonly Dictionary<ConditionID, int> _ours = new Dictionary<ConditionID, int>();
         private readonly Dictionary<ConditionID, int> _wanted = new Dictionary<ConditionID, int>();
+        // Stack = Max: best copy per enchant id (raw value for Flat/ItemLevel, permille for Relative).
+        private readonly Dictionary<int, MaxPick> _maxFlat = new Dictionary<int, MaxPick>();
+        private readonly Dictionary<int, MaxPick> _maxRel = new Dictionary<int, MaxPick>();
+        private ObjectID _held;
+
+        private struct MaxPick
+        {
+            public EnchantDef Def;
+            public int Value;
+        }
 
         public static bool IsOurs(in Condition c) =>
             float.IsPositiveInfinity(c.conditionData.duration) && Mathf.Approximately(c.conditionData.valueMultiplier, Marker);
@@ -75,14 +93,16 @@ namespace Enchanting
                 ComponentType.ReadOnly<ContainedObjectsBuffer>(),
                 ComponentType.ReadOnly<SummarizedConditionEffectsBuffer>(),
                 ComponentType.ReadOnly<SummarizedConditionsBuffer>(),
-                ComponentType.ReadWrite<ConditionsBuffer>());
+                ComponentType.ReadOnly<ConditionsBuffer>()); // written through EntityManager only when something changed
+            _auxQuery = GetEntityQuery(ComponentType.ReadOnly<InventoryAuxDataSystemDataCD>());
             RequireForUpdate(_players);
         }
 
         protected override void OnUpdate()
         {
             _update++;
-            if (!EnchantStorage.TryGetAux(EntityManager, out var aux)) return;
+            if (_auxQuery.IsEmptyIgnoreFilter) return;
+            var aux = _auxQuery.GetSingleton<InventoryAuxDataSystemDataCD>();
             var players = _players.ToEntityArray(Allocator.Temp);
             foreach (var player in players)
             {
@@ -107,21 +127,77 @@ namespace Enchanting
         {
             _flat.Clear();
             _rel.Clear();
-            var items = EntityManager.GetBuffer<ContainedObjectsBuffer>(player);
+            _maxFlat.Clear();
+            _maxRel.Clear();
+            var items = EntityManager.GetBuffer<ContainedObjectsBuffer>(player, true);
             var equipment = EntityManager.GetComponentData<EquipmentCD>(player);
             int held = EntityManager.GetComponentData<EquippedObjectCD>(player).equippedSlotIndex;
 
             if (EnchantDebug.On && held >= 0 && held < items.Length) EnchantDebug.TrackDurability(EntityManager, player, items[held], aux);
             TrackCarried(items, held, state);
+            _held = held >= 0 && held < items.Length ? items[held].objectID : ObjectID.None;
 
             AddFrom(items, held, aux, heldSlot: true);
             AddFrom(items, equipment.helmSlotIndex, aux, heldSlot: false);
             AddFrom(items, equipment.breastSlotIndex, aux, heldSlot: false);
             AddFrom(items, equipment.pantsSlotIndex, aux, heldSlot: false);
+            AddFrom(items, equipment.ring1SlotIndex, aux, heldSlot: false);
+            AddFrom(items, equipment.ring2SlotIndex, aux, heldSlot: false);
+            AddFrom(items, equipment.necklaceSlotIndex, aux, heldSlot: false);
+            AddFrom(items, equipment.offHandIndex, aux, heldSlot: false);
             if (state.CarriedSlot >= 0) AddItem(items[state.CarriedSlot], aux);
 
-            if (_flat.TryGetValue(ConditionID.ReducedDamageTakenPercentage, out int dt) && dt < EnchantMath.MinDamageTaken)
-                _flat[ConditionID.ReducedDamageTakenPercentage] = EnchantMath.MinDamageTaken;
+            FoldMax(player);
+            foreach (var id in EnchantMath.CappedConditions)
+                if (_flat.TryGetValue(id, out int v)) _flat[id] = EnchantMath.Cap(id, v);
+        }
+
+        // Stack = Max enchants join the per-condition totals once, with their best copy.
+        private void FoldMax(Entity player)
+        {
+            foreach (var kv in _maxFlat)
+            {
+                var def = kv.Value.Def;
+                var cond = def.FollowsLight ? LightCondition(EntityManager, player) : def.Condition;
+                _flat[cond] = _flat.TryGetValue(cond, out int v) ? v + kv.Value.Value : kv.Value.Value;
+            }
+            foreach (var kv in _maxRel)
+            {
+                var def = kv.Value.Def;
+                var weapon = EnchantMath.BucketWeapon(def, ObjectID.None, _held);
+                var cond = EnchantMath.WriteCondition(def, weapon);
+                var want = _rel.TryGetValue(cond, out var r) ? r : new RelWant { Def = def, Weapon = weapon };
+                want.Permille += kv.Value.Value;
+                _rel[cond] = want;
+            }
+        }
+
+        /// <summary>
+        /// Radiance: the glow colour the player already shines brightest in (without our own entries), so our light
+        /// adds to that colour's range (the light uses the largest range across colours). OrangeGlow without a light.
+        /// Public so the selftest finds the same condition.
+        /// </summary>
+        public static ConditionID LightCondition(EntityManager em, Entity player)
+        {
+            var sum = em.GetBuffer<SummarizedConditionsBuffer>(player, true);
+            var mine = em.GetBuffer<ConditionsBuffer>(player, true);
+            var best = ConditionID.OrangeGlow;
+            int bestValue = 0;
+            foreach (var id in EnchantMath.GlowConditions)
+            {
+                int v = (int)id < sum.Length ? sum[(int)id].value : 0;
+                for (int i = 0; i < mine.Length; i++)
+                {
+                    var c = mine[i].condition;
+                    if (IsOurs(c) && c.conditionData.conditionID == id) v -= c.conditionData.value;
+                }
+                if (v > bestValue)
+                {
+                    best = id;
+                    bestValue = v;
+                }
+            }
+            return best;
         }
 
         // The held tome becomes the carried one; a carried tome that moved is found again by its aux index.
@@ -165,14 +241,26 @@ namespace Enchanting
             // Broken gear gives no stats in vanilla either.
             if (item.amount <= 0 && PugDatabase.HasComponent<DurabilityCD>(item.objectData)) return;
 
-            foreach (var e in EnchantStorage.Read(EntityManager, aux, item))
+            EnchantStorage.ReadInto(EntityManager, aux, item, _entries);
+            foreach (var e in _entries)
             {
                 var def = e.Def;
                 if (def == null) continue;
+                if (def.Stack == EnchantStack.Max)
+                {
+                    // Highest copy wins: permille for multipliers, largest magnitude otherwise (Resilience is negative).
+                    bool rel = def.Mode == EnchantMode.Relative;
+                    int value = rel ? EnchantMath.Permille(def, e.Level) : EnchantMath.Raw(def, e.Level, item.objectData);
+                    var picks = rel ? _maxRel : _maxFlat;
+                    if (!picks.TryGetValue(def.Id, out var best) || System.Math.Abs(value) > System.Math.Abs(best.Value))
+                        picks[def.Id] = new MaxPick { Def = def, Value = value };
+                    continue;
+                }
                 if (def.Mode == EnchantMode.Relative)
                 {
-                    var cond = EnchantMath.WriteCondition(def, item.objectID);
-                    var want = _rel.TryGetValue(cond, out var r) ? r : new RelWant { Def = def, Weapon = item.objectID };
+                    var weapon = EnchantMath.BucketWeapon(def, item.objectID, _held);
+                    var cond = EnchantMath.WriteCondition(def, weapon);
+                    var want = _rel.TryGetValue(cond, out var r) ? r : new RelWant { Def = def, Weapon = weapon };
                     want.Permille += EnchantMath.Permille(def, e.Level);
                     _rel[cond] = want;
                 }
@@ -242,7 +330,7 @@ namespace Enchanting
             if (!structural && !flatChanged && !relChanged) return;
             if (!structural && !flatChanged && _update - state.LastWrite < DriftInterval) return;
 
-            if (structural || flatChanged)
+            if (EnchantDebug.On && (structural || flatChanged))
             {
                 var parts = new List<string>();
                 foreach (var kv in _wanted) parts.Add($"{kv.Key}={kv.Value}{(_rel.ContainsKey(kv.Key) ? "(x)" : "")}");

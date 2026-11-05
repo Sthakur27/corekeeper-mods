@@ -31,6 +31,7 @@ namespace FasterMushrooms.Systems
         private EntityQuery _table;
         private EntityQuery _requests;
         private EntityQuery _players;
+        private EntityArchetype _requestArchetype;
 
         private float _timer = 10f;
         private bool _pending;
@@ -46,6 +47,7 @@ namespace FasterMushrooms.Systems
             _table = GetEntityQuery(ComponentType.ReadWrite<EnvironmentSpawnObjectBuffer>());
             _requests = GetEntityQuery(ComponentType.ReadOnly<SpawnEnvironmentObjectsCD>());
             _players = GetEntityQuery(ComponentType.ReadOnly<PlayerGhost>(), ComponentType.ReadOnly<LocalTransform>());
+            _requestArchetype = EntityManager.CreateArchetype(typeof(SpawnEnvironmentObjectsCD));
         }
 
         protected override void OnUpdate()
@@ -92,11 +94,12 @@ namespace FasterMushrooms.Systems
                 return;
             }
 
+            // One structural change for all requests instead of one per area.
+            var requests = EntityManager.CreateEntity(_requestArchetype, areas.Count, Allocator.Temp);
+            int n = 0;
             foreach (int2 pos in areas)
-            {
-                Entity e = EntityManager.CreateEntity(typeof(SpawnEnvironmentObjectsCD));
-                EntityManager.SetComponentData(e, new SpawnEnvironmentObjectsCD { respawn = true, position = pos });
-            }
+                EntityManager.SetComponentData(requests[n++], new SpawnEnvironmentObjectsCD { respawn = true, position = pos });
+            requests.Dispose();
             _pending = true;
             _pendingFrames = 0;
         }

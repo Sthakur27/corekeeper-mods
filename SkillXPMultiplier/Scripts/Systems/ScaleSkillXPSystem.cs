@@ -26,7 +26,7 @@ namespace SkillXPMultiplier.Systems
         protected override void OnCreate()
         {
             base.OnCreate();
-            _grants = GetEntityQuery(ComponentType.ReadWrite<AddSkillValueCD>());
+            _grants = GetEntityQuery(ComponentType.ReadOnly<AddSkillValueCD>()); // writes go through SetComponentData
             RequireForUpdate(_grants);
         }
 

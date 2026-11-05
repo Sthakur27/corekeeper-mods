@@ -28,7 +28,7 @@ namespace FishSeller
     public sealed class FishSellerMod : IMod
     {
         public const string Name = "FishSeller";
-        public const string Version = "1.1.1";
+        public const string Version = "1.1.2";
 
         private static Setting<string> _price;
         private static Setting<int> _stock;
@@ -120,7 +120,7 @@ namespace FishSeller
             changed |= MerchantRoom.EnsureRoom(em, entity);
             if (changed)
             {
-                Debug.Log($"[{Name}] {merchant} prefab: {em.GetBuffer<MerchantItemInfoBuffer>(entity).Length} items, {em.GetBuffer<ContainedObjectsBuffer>(entity).Length} slots ({em.World.Name}).");
+                Debug.Log($"[{Name}] {merchant} prefab: {em.GetBuffer<MerchantItemInfoBuffer>(entity, true).Length} items, {em.GetBuffer<ContainedObjectsBuffer>(entity, true).Length} slots ({em.World.Name}).");
             }
         }
     }

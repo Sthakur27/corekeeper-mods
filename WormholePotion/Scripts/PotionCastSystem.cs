@@ -23,11 +23,12 @@ namespace WormholePotion
         protected override void OnCreate()
         {
             base.OnCreate();
-            players = GetEntityQuery(ComponentType.ReadOnly<Simulate>(), ComponentType.ReadWrite<CastingStateCD>(),
-                ComponentType.ReadWrite<PlayerStateCD>(), ComponentType.ReadOnly<EquippedObjectCD>(),
+            // Read-only: writes happen only while a potion is being cast, through EntityManager.
+            players = GetEntityQuery(ComponentType.ReadOnly<Simulate>(), ComponentType.ReadOnly<CastingStateCD>(),
+                ComponentType.ReadOnly<PlayerStateCD>(), ComponentType.ReadOnly<EquippedObjectCD>(),
                 ComponentType.ReadOnly<HealthCD>(), ComponentType.ReadOnly<PlayerMovementCD>(),
-                ComponentType.ReadWrite<TeleportingStateCD>(), ComponentType.ReadOnly<SummarizedConditionEffectsBuffer>(),
-                ComponentType.ReadWrite<AnimationBuffer>(), ComponentType.ReadWrite<AnimationBufferPointer>(),
+                ComponentType.ReadOnly<TeleportingStateCD>(), ComponentType.ReadOnly<SummarizedConditionEffectsBuffer>(),
+                ComponentType.ReadOnly<AnimationBuffer>(), ComponentType.ReadOnly<AnimationBufferPointer>(),
                 ComponentType.ReadOnly<LocalTransform>());
             time = GetEntityQuery(ComponentType.ReadOnly<NetworkTime>());
             rate = GetEntityQuery(ComponentType.ReadOnly<ClientServerTickRate>());
@@ -57,7 +58,7 @@ namespace WormholePotion
                 cast.itemIsInProcessOfBeingUsed = true;
                 var equipped = EntityManager.GetComponentData<EquippedObjectCD>(entity);
                 var health = EntityManager.GetComponentData<HealthCD>(entity);
-                int maxHealth = health.GetMaxHealthWithConditions(EntityManager.GetBuffer<SummarizedConditionEffectsBuffer>(entity));
+                int maxHealth = health.GetMaxHealthWithConditions(EntityManager.GetBuffer<SummarizedConditionEffectsBuffer>(entity, true));
                 // Same damage pushback as vanilla Casting.UpdateState.
                 if (cast.previousHealth > health.health && cast.previousMaxHealth == maxHealth && maxHealth > 0)
                 {

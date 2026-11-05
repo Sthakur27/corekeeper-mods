@@ -1,7 +1,7 @@
 {
     "guid": "b7e3c2a19d4f4e8a8c5b6a0f1e2d3c40",
     "name": "WormholePotion",
-    "displayName": "Wormhole Potion",
+    "displayName": "Potion of Return",
     "skipSafetyChecks": false,
     "disableScripts": false,
     "accessesExtraAssemblies": true,

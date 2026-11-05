@@ -34,7 +34,7 @@ namespace Enchanting
 
             var item = __instance.GetContainedObject();
             bool enchanted = item.objectID != ObjectID.None && item.auxDataIndex != 0
-                             && EnchantStorage.ReadClient(item).Count > 0;
+                             && EnchantStorage.HasAnyClient(item);
             bool had = State.TryGetValue(__instance, out var tinted);
             bool sameItem = had && tinted.Id == item.objectID && tinted.Aux == item.auxDataIndex;
 

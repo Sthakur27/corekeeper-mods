@@ -41,6 +41,9 @@ namespace WormholePotion
             Debug.Log($"[WormholePotion] Return marker {created} at {position.x:0.#}, {position.z:0.#}");
         }
 
+        // A new or closing server world: entities from the old one mean nothing there.
+        public static void Reset() => owned.Clear();
+
         public static bool IsMarker(EntityManager em, Entity e) =>
             e != Entity.Null && em.Exists(e) && em.HasComponent<ObjectDataCD>(e)
             && em.GetComponentData<ObjectDataCD>(e).objectID == WormholePotionMod.Marker;
@@ -48,47 +51,87 @@ namespace WormholePotion
 
     // Server only. Keeps return markers active (a loaded save starts them inactive) and
     // removes a marker once a player's teleport targets it: the trip is used up.
+    // The marker query also matches every vanilla waypoint and portal marker, so the scan
+    // only runs when a player is teleporting, when map markers were added or removed, or
+    // on a slow safety pass.
     [WorldSystemFilter(WorldSystemFilterFlags.ServerSimulation)]
     [UpdateInGroup(typeof(SimulationSystemGroup))]
     [UpdateAfter(typeof(PredictedSimulationSystemGroup))]
     public partial class ReturnMarkerSystem : PugSimulationSystemBase
     {
         private const float Tolerance = 0.5f;
+        private const double RescanSeconds = 5;
         private EntityQuery markers, players;
+        private int markerOrder = -1;
+        private double nextRescan;
 
         protected override void OnCreate()
         {
             base.OnCreate();
+            // Read-only: the activation write is rare and goes through EntityManager.
             markers = GetEntityQuery(ComponentType.ReadOnly<MapMarkerCD>(), ComponentType.ReadOnly<ObjectDataCD>(),
-                ComponentType.ReadOnly<LocalTransform>(), ComponentType.ReadWrite<MapMarkerActivatedCD>());
+                ComponentType.ReadOnly<LocalTransform>(), ComponentType.ReadOnly<MapMarkerActivatedCD>());
             players = GetEntityQuery(ComponentType.ReadOnly<PlayerGhost>(), ComponentType.ReadOnly<PlayerStateCD>(),
                 ComponentType.ReadOnly<TeleportingStateCD>());
+            ReturnMarkers.Reset();
+        }
+
+        protected override void OnDestroy()
+        {
+            ReturnMarkers.Reset();
+            base.OnDestroy();
         }
 
         protected override void OnUpdate()
         {
             var marker = WormholePotionMod.Marker;
-            if (marker == ObjectID.None || !WormholePotionMod.Active || markers.IsEmpty) return;
-            using (var entities = markers.ToEntityArray(Allocator.Temp))
+            if (marker == ObjectID.None || !WormholePotionMod.Active) return;
+
+            // Teleport targets first: there are only a few players.
+            var targets = new NativeList<float3>(Allocator.Temp);
             using (var people = players.ToEntityArray(Allocator.Temp))
-            foreach (var entity in entities)
-            {
-                if (EntityManager.GetComponentData<ObjectDataCD>(entity).objectID != marker) continue;
-                var active = EntityManager.GetComponentData<MapMarkerActivatedCD>(entity);
-                if (!active.Value || active.Hidden)
-                    EntityManager.SetComponentData(entity, new MapMarkerActivatedCD { Value = true, Hidden = false });
-                float3 landing = EntityManager.GetComponentData<LocalTransform>(entity).Position + ReturnMarkers.LandingOffset;
                 foreach (var player in people)
                 {
                     var state = EntityManager.GetComponentData<PlayerStateCD>(player);
-                    if (!state.HasAnyState(PlayerStateEnum.Teleporting) && state.nextState != PlayerStateEnum.Teleporting) continue;
-                    Vector3 target = EntityManager.GetComponentData<TeleportingStateCD>(player).targetPosition;
-                    if (math.abs(target.x - landing.x) > Tolerance || math.abs(target.z - landing.z) > Tolerance) continue;
-                    EntityManager.DestroyEntity(entity);
-                    Debug.Log("[WormholePotion] Return marker used.");
-                    break;
+                    if (state.HasAnyState(PlayerStateEnum.Teleporting) || state.nextState == PlayerStateEnum.Teleporting)
+                        targets.Add(EntityManager.GetComponentData<TeleportingStateCD>(player).targetPosition);
                 }
+
+            int order = EntityManager.GetComponentOrderVersion<MapMarkerCD>();
+            double now = World.Time.ElapsedTime;
+            bool activate = order != markerOrder || now >= nextRescan;
+            if ((!activate && targets.Length == 0) || markers.IsEmpty)
+            {
+                targets.Dispose();
+                return;
             }
+            if (activate)
+            {
+                markerOrder = order;
+                nextRescan = now + RescanSeconds;
+            }
+
+            using (var entities = markers.ToEntityArray(Allocator.Temp))
+                foreach (var entity in entities)
+                {
+                    if (EntityManager.GetComponentData<ObjectDataCD>(entity).objectID != marker) continue;
+                    if (activate)
+                    {
+                        var active = EntityManager.GetComponentData<MapMarkerActivatedCD>(entity);
+                        if (!active.Value || active.Hidden)
+                            EntityManager.SetComponentData(entity, new MapMarkerActivatedCD { Value = true, Hidden = false });
+                    }
+                    if (targets.Length == 0) continue;
+                    float3 landing = EntityManager.GetComponentData<LocalTransform>(entity).Position + ReturnMarkers.LandingOffset;
+                    foreach (var target in targets)
+                    {
+                        if (math.abs(target.x - landing.x) > Tolerance || math.abs(target.z - landing.z) > Tolerance) continue;
+                        EntityManager.DestroyEntity(entity);
+                        Debug.Log("[WormholePotion] Return marker used.");
+                        break;
+                    }
+                }
+            targets.Dispose();
         }
     }
 }

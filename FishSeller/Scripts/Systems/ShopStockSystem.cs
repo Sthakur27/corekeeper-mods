@@ -23,7 +23,9 @@ namespace FishSeller.Systems
 
         private EntityQuery _merchants;
         private EntityQuery _database;
-        private float _timer;
+        // Writes go through EntityManager.GetBuffer(e) only when something changes; the query is read-only.
+        // Staggered start so the merchant mods' 2 s timers don't share a tick.
+        private float _timer = 0.6f;
         private readonly HashSet<Entity> _checked = new HashSet<Entity>();
         private readonly HashSet<ObjectID> _loggedList = new HashSet<ObjectID>();
         private readonly Dictionary<ObjectID, int> _amounts = new Dictionary<ObjectID, int>();
@@ -38,9 +40,9 @@ namespace FishSeller.Systems
                 {
                     ComponentType.ReadOnly<MerchantCD>(),
                     ComponentType.ReadOnly<ObjectDataCD>(),
-                    ComponentType.ReadWrite<MerchantItemInfoBuffer>(),
-                    ComponentType.ReadWrite<ContainedObjectsBuffer>(),
-                    ComponentType.ReadWrite<InventoryBuffer>()
+                    ComponentType.ReadOnly<MerchantItemInfoBuffer>(),
+                    ComponentType.ReadOnly<ContainedObjectsBuffer>(),
+                    ComponentType.ReadOnly<InventoryBuffer>()
                 },
                 Options = EntityQueryOptions.IncludeDisabledEntities | EntityQueryOptions.IncludePrefab
             });

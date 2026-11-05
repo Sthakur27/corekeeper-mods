@@ -166,7 +166,7 @@ namespace Enchanting
         }
 
         /// <summary>Clickable when the item in the slot has at least one enchant.</summary>
-        internal static bool CanClick() => EnchantStorage.ReadClient(EnchantTableItemPatch.Item).Count > 0;
+        internal static bool CanClick() => EnchantStorage.HasAnyClient(EnchantTableItemPatch.Item);
     }
 
     [HarmonyPatch(typeof(UpgradeForgeUI), nameof(UpgradeForgeUI.ShowContainerUI))]

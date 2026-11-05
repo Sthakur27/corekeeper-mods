@@ -1,9 +1,10 @@
-# Drill Unit (Alpha)
+# Drill Pod (Alpha)
 
 An end-game hover craft for Core Keeper. Craft it at the **Rift Statue** for **300 Pandorium Bars and
 100 Solarite Bars**, place it on land or water and hop in.
 
 **Alpha:** it works in single player and is still being tuned. Expect changes, and report anything odd.
+Formerly called Drill Unit; placed units and saves carry over.
 
 - **Goes anywhere flat:** drives over water, lava, pits and land alike, at 1.6x boat speed (Speeder Boat: 1.3x).
 - **Drills what it drives into:** hold **left click** and steer into a wall, and the unit grinds through a 3-wide, 2-deep area ahead plus the
@@ -17,7 +18,7 @@ An end-game hover craft for Core Keeper. Craft it at the **Rift Statue** for **3
   - *Dig:* the 3x3 area around you is dug like a shovel does: placed floors, rugs and rails come up first,
     then the ground, leaving pits (water next to them flows in). The dug-up items come to you. The tiles placed
     objects (chests, tables, plants, ...) stand on are left alone.
-  - Rebind under Controls → Drill Unit. Getting out turns the mode off.
+  - Rebind under Controls → Drill Pod. Getting out turns the mode off.
 
 Get in and out like a boat (interact). You can only get out next to a walkable tile.
 

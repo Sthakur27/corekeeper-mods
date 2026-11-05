@@ -9,7 +9,8 @@ using Unity.Entities;
 namespace Enchanting
 {
     /// <summary>
-    /// Debug/admin command, runs on the server. Target = the held item unless the last word is helm, chest or pants.
+    /// Debug/admin command, runs on the server. Target = the held item unless the last word is helm, chest, pants,
+    /// ring1, ring2, necklace or offhand.
     ///   /enchant                      show the target's enchants
     ///   /enchant list                 all enchants (keys, slots, values)
     ///   /enchant set &lt;key&gt; &lt;lvl&gt;     add or change one enchant (lvl 0 removes it)
@@ -20,7 +21,7 @@ namespace Enchanting
     /// </summary>
     public sealed class EnchantCommand : IServerCommandHandler
     {
-        private enum Target { Held, Helm, Chest, Pants }
+        private enum Target { Held, Helm, Chest, Pants, Ring1, Ring2, Necklace, Offhand }
 
         public CommandOutput Execute(string[] parameters, Entity sender)
         {
@@ -189,7 +190,7 @@ namespace Enchanting
 
         private static string ListAll()
         {
-            return string.Join("; ", Enchants.All.Select(d => $"{d.Key} [{d.Slots}] {d.Condition} {Describe(d)}"));
+            return string.Join("; ", Enchants.All.Select(d => $"{d.Key} [{d.Slots}] {d.Condition} {Describe(d)}{(d.Stack == EnchantStack.Max ? " (highest copy counts)" : "")}"));
         }
 
         // Flat: displayed values; Relative: multiplier per level; ItemLevel: percent of the vanilla value at the item's level.
@@ -211,6 +212,10 @@ namespace Enchanting
                 case "helm": case "head": case "helmet": target = Target.Helm; return true;
                 case "chest": case "body": case "breast": target = Target.Chest; return true;
                 case "pants": case "legs": target = Target.Pants; return true;
+                case "ring1": case "ring": target = Target.Ring1; return true;
+                case "ring2": target = Target.Ring2; return true;
+                case "necklace": case "neck": case "amulet": target = Target.Necklace; return true;
+                case "offhand": case "shield": target = Target.Offhand; return true;
                 default: target = Target.Held; return false;
             }
         }
@@ -230,12 +235,16 @@ namespace Enchanting
                 case Target.Helm: slot = equipment.helmSlotIndex; break;
                 case Target.Chest: slot = equipment.breastSlotIndex; break;
                 case Target.Pants: slot = equipment.pantsSlotIndex; break;
+                case Target.Ring1: slot = equipment.ring1SlotIndex; break;
+                case Target.Ring2: slot = equipment.ring2SlotIndex; break;
+                case Target.Necklace: slot = equipment.necklaceSlotIndex; break;
+                case Target.Offhand: slot = equipment.offHandIndex; break;
                 default: slot = em.GetComponentData<EquippedObjectCD>(player).equippedSlotIndex; break;
             }
             var items = em.GetBuffer<ContainedObjectsBuffer>(player);
             if (slot < 0 || slot >= items.Length || items[slot].objectID == ObjectID.None)
             {
-                error = target == Target.Held ? "hold the item you want to enchant." : $"no {target.ToString().ToLowerInvariant()} armor equipped.";
+                error = target == Target.Held ? "hold the item you want to enchant." : $"nothing equipped in {target.ToString().ToLowerInvariant()}.";
                 return false;
             }
             return true;
@@ -247,7 +256,7 @@ namespace Enchanting
 
         public string GetDescription()
         {
-            return "/enchant [list|stats|selftest [status]|combattest [seconds|status]|debug [off]|report|reset|set <key> <lvl>|remove <key>|clear|roll [n]|cost] [held|helm|chest|pants]";
+            return "/enchant [list|stats|selftest [status]|combattest [seconds|status]|debug [off]|report|reset|set <key> <lvl>|remove <key>|clear|roll [n]|cost] [held|helm|chest|pants|ring1|ring2|necklace|offhand]";
         }
 
         public string[] GetTriggerNames()

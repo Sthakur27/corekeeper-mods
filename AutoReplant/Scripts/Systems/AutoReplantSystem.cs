@@ -98,6 +98,7 @@ namespace AutoReplant.Systems
             public double time;
         }
         private readonly Dictionary<(Entity, int), Claim> _claims = new Dictionary<(Entity, int), Claim>();
+        private readonly List<(Entity, int)> _staleClaims = new List<(Entity, int)>();
         private double _now;
 
         protected override void OnCreate()
@@ -120,7 +121,7 @@ namespace AutoReplant.Systems
                 ComponentType.ReadOnly<ObjectDataCD>(),
                 ComponentType.ReadOnly<PickUpItemCD>(),
                 ComponentType.ReadOnly<LocalTransform>(),
-                ComponentType.ReadWrite<ContainedObjectsBuffer>());
+                ComponentType.ReadOnly<ContainedObjectsBuffer>());
             RequireForUpdate(_database);
         }
 
@@ -131,6 +132,7 @@ namespace AutoReplant.Systems
             if (!AutoReplantMod.Enabled)
             {
                 _pending.Clear();
+                _claims.Clear(); // _now stops advancing while off, so stale claims would never expire
                 PruneSeen();
                 return;
             }
@@ -260,7 +262,7 @@ namespace AutoReplant.Systems
                 {
                     Entity e = items[i];
                     if (EntityManager.GetComponentData<ObjectDataCD>(e).objectID != ObjectID.DroppedItem) continue;
-                    var contents = EntityManager.GetBuffer<ContainedObjectsBuffer>(e);
+                    var contents = EntityManager.GetBuffer<ContainedObjectsBuffer>(e, true);
                     if (contents.Length == 0 || contents[0].objectID != p.seed.seed || contents[0].amount <= 0) continue;
                     float3 pos = EntityManager.GetComponentData<LocalTransform>(e).Position;
                     float d = math.distancesq(new float2(pos.x, pos.z), new float2(p.position.x, p.position.z));
@@ -268,11 +270,11 @@ namespace AutoReplant.Systems
                 }
                 if (best == Entity.Null) return false;
 
-                var buffer = EntityManager.GetBuffer<ContainedObjectsBuffer>(best);
-                var item = buffer[0];
+                var item = EntityManager.GetBuffer<ContainedObjectsBuffer>(best, true)[0];
                 if (item.amount > 1)
                 {
                     item.objectData.amount -= 1;
+                    var buffer = EntityManager.GetBuffer<ContainedObjectsBuffer>(best); // read-write only to write
                     buffer[0] = item;
                 }
                 else
@@ -335,7 +337,7 @@ namespace AutoReplant.Systems
             float chance = AutoReplantMod.GoldenOverride ? AutoReplantMod.GoldenChancePercent : 3f; // vanilla base is 3%
             if (EntityManager.HasBuffer<SummarizedConditionsBuffer>(player))
             {
-                var conditions = EntityManager.GetBuffer<SummarizedConditionsBuffer>(player);
+                var conditions = EntityManager.GetBuffer<SummarizedConditionsBuffer>(player, true);
                 if (conditions.Length > CondChanceToGainRarePlant)
                     chance += conditions[CondChanceToGainRarePlant].value;
             }
@@ -348,7 +350,7 @@ namespace AutoReplant.Systems
         /// <summary>Seeds of that kind in the inventory, minus the ones already claimed by queued replants.</summary>
         private int CountSeeds(Entity player, ObjectID seed)
         {
-            var items = EntityManager.GetBuffer<ContainedObjectsBuffer>(player);
+            var items = EntityManager.GetBuffer<ContainedObjectsBuffer>(player, true);
             int total = 0;
             for (int i = 0; i < items.Length; i++)
                 if (items[i].objectID == seed) total += Available(player, i, items[i].amount);
@@ -369,7 +371,7 @@ namespace AutoReplant.Systems
 
         private void AddClaim(Entity player, int slot)
         {
-            int amount = EntityManager.GetBuffer<ContainedObjectsBuffer>(player)[slot].amount;
+            int amount = EntityManager.GetBuffer<ContainedObjectsBuffer>(player, true)[slot].amount;
             if (_claims.TryGetValue((player, slot), out Claim c) && c.amountAtClaim == amount)
                 c.claimed++;
             else
@@ -381,7 +383,7 @@ namespace AutoReplant.Systems
         /// <summary>First slot holding that seed. Plain seeds (variation 0) are preferred over odd variations.</summary>
         private int FindSeedSlot(Entity player, ObjectID seed, out int variation)
         {
-            var items = EntityManager.GetBuffer<ContainedObjectsBuffer>(player);
+            var items = EntityManager.GetBuffer<ContainedObjectsBuffer>(player, true);
             int fallback = -1;
             variation = 0;
             for (int i = 0; i < items.Length; i++)
@@ -443,10 +445,10 @@ namespace AutoReplant.Systems
         {
             if (_claims.Count > 0)
             {
-                var stale = new List<(Entity, int)>();
+                _staleClaims.Clear();
                 foreach (var kv in _claims)
-                    if (_now - kv.Value.time > 1.0) stale.Add(kv.Key);
-                foreach (var key in stale) _claims.Remove(key);
+                    if (_now - kv.Value.time > 1.0) _staleClaims.Add(kv.Key);
+                for (int i = 0; i < _staleClaims.Count; i++) _claims.Remove(_staleClaims[i]);
             }
             if (_seen.Count == 0) return;
             _seenScratch.Clear();

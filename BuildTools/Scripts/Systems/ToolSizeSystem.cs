@@ -23,7 +23,7 @@ namespace BuildTools.Systems
         {
             base.OnCreate();
             _players = GetEntityQuery(ComponentType.ReadOnly<EquipmentSlotCD>(), ComponentType.ReadOnly<ClientInput>(),
-                ComponentType.ReadWrite<PlacementSizeByEquipmentTypeBuffer>());
+                ComponentType.ReadOnly<PlacementSizeByEquipmentTypeBuffer>());
         }
 
         protected override void OnUpdate()
@@ -47,10 +47,15 @@ namespace BuildTools.Systems
                 var bits = InputBits.Decode(EntityManager.GetComponentData<ClientInput>(player).buttonSetMask);
                 if (!bits.Present || bits.Size == InputBits.NoSize) continue;
 
+                // Read-only first: read-write access completes every job touching this buffer type and bumps
+                // its change version, and in steady state the size is already right.
+                var current = EntityManager.GetBuffer<PlacementSizeByEquipmentTypeBuffer>(player, true);
+                if (current.Length < PlacementSizeByEquipmentTypeBuffer.EquipmentWithPlacementSize) continue;
+                if (current.GetElementForEquipment(slot).sizeVariationToPlace == bits.Size) continue;
+
                 var buffer = EntityManager.GetBuffer<PlacementSizeByEquipmentTypeBuffer>(player);
-                if (buffer.Length < PlacementSizeByEquipmentTypeBuffer.EquipmentWithPlacementSize) continue;
                 ref var element = ref buffer.GetElementForEquipment(slot);
-                if (element.sizeVariationToPlace != bits.Size) element.sizeVariationToPlace = (byte)bits.Size;
+                element.sizeVariationToPlace = (byte)bits.Size;
             }
             players.Dispose();
         }

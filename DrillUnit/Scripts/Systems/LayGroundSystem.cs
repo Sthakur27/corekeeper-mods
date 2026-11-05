@@ -38,8 +38,7 @@ namespace DrillUnit.Systems
         protected override void OnCreate()
         {
             base.OnCreate();
-            _units = GetEntityQuery(ComponentType.ReadOnly<BoatCD>(), ComponentType.ReadOnly<ObjectDataCD>(),
-                ComponentType.ReadOnly<ControlledByOtherEntityCD>());
+            _units = RiddenUnits.Query(this);
             _database = GetEntityQuery(ComponentType.ReadOnly<PugDatabase.DatabaseBankCD>());
             _worldInfo = GetEntityQuery(ComponentType.ReadOnly<WorldInfoCD>());
             _inventoryChanges = GetEntityQuery(ComponentType.ReadWrite<InventoryChangeBuffer>());
@@ -50,16 +49,9 @@ namespace DrillUnit.Systems
 
         protected override void OnUpdate()
         {
-            var id = DrillUnitMod.Id;
-            if (id == ObjectID.None) return;
             _jobs.Clear();
-            var units = _units.ToEntityArray(Allocator.Temp);
-            for (int i = 0; i < units.Length; i++)
+            foreach (var (_, rider) in RiddenUnits.Get(this, _units))
             {
-                var unit = units[i];
-                if (EntityManager.GetComponentData<ObjectDataCD>(unit).objectID != id) continue;
-                var rider = EntityManager.GetComponentData<ControlledByOtherEntityCD>(unit).controlledByEntity;
-                if (!DrillUnitMod.IsRiding(EntityManager, rider, out var ridden) || ridden != unit) continue;
                 if (!EntityManager.HasComponent<ClientInput>(rider)) continue;
                 if (!InputBits.Laying(EntityManager.GetComponentData<ClientInput>(rider).buttonSetMask))
                 {
@@ -71,11 +63,13 @@ namespace DrillUnit.Systems
                 if (_lastCell.TryGetValue(rider, out var last) && last.Equals(cell)) continue;
                 _jobs.Add((rider, cell));
             }
-            units.Dispose();
             if (_jobs.Count == 0 || _database.IsEmptyIgnoreFilter || _worldInfo.IsEmptyIgnoreFilter
                 || _inventoryChanges.IsEmptyIgnoreFilter || _tileUpdates.IsEmptyIgnoreFilter || _tileMap.IsEmptyIgnoreFilter) return;
 
-            EntityManager.CompleteAllTrackedJobs();
+            // TileAccessor reads the sub-map tile buffers on the main thread: finish only the jobs that write them
+            // (the inventory/tile-update buffers below are fetched through EntityManager, which syncs those itself).
+            EntityManager.CompleteDependencyBeforeRO<SubMapLayerBuffer>();
+            EntityManager.CompleteDependencyBeforeRO<SubMapRegistry>();
             if (!_ready)
             {
                 _tileAccessor = new TileAccessor(this);

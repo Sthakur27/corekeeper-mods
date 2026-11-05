@@ -49,6 +49,8 @@ namespace DurabilityMultiplier.Systems
         {
             float rate = DurabilityRate.Value;
             if (rate >= 1f) return; // vanilla: leave every request untouched, consume no randomness
+            // RequireAnyForUpdate does not reliably honour enable bits; IsEmpty does (no pending loss = no work).
+            if (_heldTriggers.IsEmpty && _armorTriggers.IsEmpty) return;
 
             var held = _heldTriggers.ToEntityArray(Allocator.Temp);
             for (int i = 0; i < held.Length; i++)

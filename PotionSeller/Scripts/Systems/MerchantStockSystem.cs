@@ -25,7 +25,9 @@ namespace PotionSeller.Systems
         private EntityQuery _souls;
         private readonly System.Collections.Generic.HashSet<ObjectID> _beaten = new System.Collections.Generic.HashSet<ObjectID>();
         private readonly System.Collections.Generic.HashSet<ObjectID> _loggedUnlock = new System.Collections.Generic.HashSet<ObjectID>();
-        private float _timer;
+        // Writes go through EntityManager.GetBuffer(e) only when something changes; the query is read-only.
+        // Staggered start so the merchant mods' 2 s timers don't share a tick.
+        private float _timer = 1.3f;
         private readonly System.Collections.Generic.HashSet<Entity> _checked = new System.Collections.Generic.HashSet<Entity>();
 
         private bool HasAnyStocked(Entity e, PotionPrices.Entry[] list)
@@ -83,9 +85,9 @@ namespace PotionSeller.Systems
                 {
                     ComponentType.ReadOnly<MerchantCD>(),
                     ComponentType.ReadOnly<ObjectDataCD>(),
-                    ComponentType.ReadWrite<MerchantItemInfoBuffer>(),
-                    ComponentType.ReadWrite<ContainedObjectsBuffer>(),
-                    ComponentType.ReadWrite<InventoryBuffer>()
+                    ComponentType.ReadOnly<MerchantItemInfoBuffer>(),
+                    ComponentType.ReadOnly<ContainedObjectsBuffer>(),
+                    ComponentType.ReadOnly<InventoryBuffer>()
                 },
                 Options = EntityQueryOptions.IncludeDisabledEntities | EntityQueryOptions.IncludePrefab
             });

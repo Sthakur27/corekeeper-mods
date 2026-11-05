@@ -15,7 +15,7 @@ namespace CoinDrops
     public sealed class CoinDropsMod : IMod
     {
         public const string Name = "CoinDrops";
-        public const string Version = "1.0.0";
+        public const string Version = "1.0.1";
 
         public const string SettingsHint = "Enemies drop Ancient Coins on death: the square root of their max health "
             + "(100 HP = 10 coins, 2500 HP = 50), about 20% random spread, at least 1. Bosses get the boss multiplier on top. "

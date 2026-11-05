@@ -13,11 +13,18 @@ namespace ConnectedStorage
         public static readonly string[] Tiers = { "Copper", "Tin", "Iron", "Scarlet", "Octarine", "Galaxite", "Solarite", "Pandorium", "Relucite" };
         public static readonly int[] Capacities = { 40, 80, 120, 160, 200, 240, 280, 320, 360 };
         private static ObjectID terminal;
-        public static ObjectID Workbench => API.Authoring.GetObjectID("ConnectedStorage_Workbench");
+        private static ObjectID workbench;
+        // Cached like Terminal/Chest: retried while still None (IDs are assigned at load), never re-looked-up after.
+        public static ObjectID Workbench => workbench != ObjectID.None ? workbench : (workbench = API.Authoring.GetObjectID("ConnectedStorage_Workbench"));
         private static readonly ObjectID[] chests = new ObjectID[Tiers.Length];
         public static ObjectID Terminal => terminal != ObjectID.None ? terminal : (terminal = API.Authoring.GetObjectID("ConnectedStorage_Terminal"));
         public static ObjectID Chest(int tier) => chests[tier] != ObjectID.None ? chests[tier] : (chests[tier] = API.Authoring.GetObjectID("ConnectedStorage_" + Tiers[tier] + "Chest"));
-        public static ObjectID Gem(int tier) => tier > 0 && tier < Tiers.Length ? API.Authoring.GetObjectID("ConnectedStorage_" + Tiers[tier] + "Gem") : ObjectID.None;
+        private static readonly ObjectID[] gems = new ObjectID[Tiers.Length];
+        public static ObjectID Gem(int tier)
+        {
+            if (tier <= 0 || tier >= Tiers.Length) return ObjectID.None;
+            return gems[tier] != ObjectID.None ? gems[tier] : (gems[tier] = API.Authoring.GetObjectID("ConnectedStorage_" + Tiers[tier] + "Gem"));
+        }
         public static int Tier(ObjectID id)
         {
             if (id != ObjectID.None) for (int i = 0; i < Tiers.Length; i++) if (id == Chest(i)) return i;

@@ -1,6 +1,14 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 /*
  * Copyright 2024-2026 Jiamu Sun <barroit@linux.com>
+ * Additions Copyright 2026 Sid.
+ *
+ * Hand-written EntityManager version of the original SystemAPI system (no Scripts/Generated
+ * code any more), so OnUpdate is the method that actually runs. That matters for Sid's Overhaul:
+ * its "Turn Sub-Mods On/Off" guard is injected into OnUpdate, and with the generated
+ * __OnUpdate_* method in place that guard never ran, so the auto-press kept going with the
+ * feature switched off. Cheap checks (switch, rod equipped) come first and only read; the
+ * player's ClientInputData is read and written only while actually spoofing.
  */
 
 using System;
@@ -30,6 +38,8 @@ public static Entity ent;
 public static EntityManager entctl;
 
 EntityQuery player_query;
+EntityQuery time_query;
+EntityQuery tick_rate_query;
 
 protected override void OnCreate()
 {
@@ -59,43 +69,57 @@ protected override void OnCreate()
 
 	player_query = GetEntityQuery(hw_input_rw, hotbar_slot_ro,
 				      fishing_state_ro, local_ghost_ro);
+	time_query = GetEntityQuery(new EntityQueryDesc {
+		All = new[] { ComponentType.ReadOnly<NetworkTime>() },
+		Options = EntityQueryOptions.IncludeSystems,
+	});
+	tick_rate_query = GetEntityQuery(new EntityQueryDesc {
+		All = new[] { ComponentType.ReadOnly<ClientServerTickRate>() },
+		Options = EntityQueryOptions.IncludeSystems,
+	});
 	RequireForUpdate(player_query);
 }
 
 protected override void OnUpdate()
 {
-	var time = SystemAPI.GetSingleton<NetworkTime>();
-	var tick = time.ServerTick;
+	if (!EntityManager.Exists(ent))
+		return;
 
-	var tps = SystemAPI.GetSingleton<ClientServerTickRate>();
-	var sim_tps = (uint)tps.SimulationTickRate;
-
-	var player = player_query.GetSingletonEntity();
-
-	var __spoof = SystemAPI.GetSingletonRW<spoof_cd>();
-	ref var spoof = ref __spoof.ValueRW;
-
-	var __input_view = SystemAPI.GetComponentRW<ClientInputData>(player);
-	ref var input_view = ref __input_view.ValueRW;
-	var input = UnsafeUtility.As<ClientInputData, ClientInput>(ref input_view);
-
-	var slot = SystemAPI.GetComponent<EquipmentSlotCD>(player);
-	var state = SystemAPI.GetComponent<FishingStateCD>(player);
-
+	var spoof = EntityManager.GetComponentData<spoof_cd>(ent);
 	if (!spoof.enabled)
 		return;
 
+	if (player_query.CalculateEntityCount() != 1)
+		return;
+
+	var player = player_query.GetSingletonEntity();
+	var slot = EntityManager.GetComponentData<EquipmentSlotCD>(player);
 	if (slot.slotType != EquipmentSlotType.FishingRodSlot)
 		return;
 
-	input.useFishingMiniGame = false;
+	if (time_query.IsEmptyIgnoreFilter)
+		return;
+	var tick = time_query.GetSingleton<NetworkTime>().ServerTick;
 
 	if (Manager.ui.isAnyInventoryShowing || Manager.menu.IsAnyMenuActive()) {
-		if (spoof.tmr.isRunning)
+		if (spoof.tmr.isRunning) {
 			spoof.tmr.Stop(tick);
+			EntityManager.SetComponentData(ent, spoof);
+		}
 
 		return;
 	}
+
+	uint sim_tps = 60;
+	if (!tick_rate_query.IsEmptyIgnoreFilter)
+		sim_tps = (uint)tick_rate_query.GetSingleton<ClientServerTickRate>().SimulationTickRate;
+
+	var input_view = EntityManager.GetComponentData<ClientInputData>(player);
+	var input = UnsafeUtility.As<ClientInputData, ClientInput>(ref input_view);
+	var fishing = EntityManager.GetComponentData<FishingStateCD>(player);
+	bool timer_changed = false;
+
+	input.useFishingMiniGame = false;
 
 	if (input.IsButtonStateSet(CommandInputButtonStateNames.SecondInteract_HeldDown))
 		goto done;
@@ -107,18 +131,26 @@ protected override void OnUpdate()
 		}
 
 		spoof.tmr.Stop(tick);
+		timer_changed = true;
 	}
 
-	if (state.fishIsNibbling && !state.isFishingAtOctopusBoss)
+	if (fishing.fishIsNibbling && !fishing.isFishingAtOctopusBoss) {
 		spoof.tmr.Start(tick, spoof.hold, sim_tps);
+		timer_changed = true;
+	}
 
 done:
-	__input_view.ValueRW = UnsafeUtility.As<ClientInput, ClientInputData>(ref input);
+	if (timer_changed)
+		EntityManager.SetComponentData(ent, spoof);
+	EntityManager.SetComponentData(player, UnsafeUtility.As<ClientInput, ClientInputData>(ref input));
 }
 
 protected override void OnDestroy()
 {
-	var spoof = SystemAPI.GetSingleton<spoof_cd>();
+	if (!EntityManager.Exists(ent) || !EntityManager.HasComponent<spoof_cd>(ent))
+		return;
+
+	var spoof = EntityManager.GetComponentData<spoof_cd>(ent);
 	var spoof_in = state.load();
 
 	spoof_in.__enabled = spoof.enabled;

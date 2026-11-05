@@ -60,25 +60,32 @@ namespace BossBonusLoot.Systems
         private static readonly System.Random Rng = new System.Random();
 
         private readonly HashSet<Entity> _handled = new HashSet<Entity>();
+        private System.Predicate<Entity> _isGone; // cached: a lambda here would allocate every tick
         private EntityQuery _deadBosses;
         private EntityQuery _database;
 
         protected override void OnCreate()
         {
-            // Any dying entity, not just BossCD ones: the table also lists regular enemies (Mimite).
+            // Dying enemies, not just BossCD ones: the table also lists regular enemies (Mimite, Orbital
+            // Turret, Void Larva). EnemyCD keeps plants, chests, stations and other destructibles out of
+            // the query. Every entity in Bonus has EnemyAuthoring on its prefab (BossLarvaEntity,
+            // BirdBossEntity, OctopusBossEntity, ScarabBossEntity, MimiteEntity, OrbitalTurretEntity,
+            // VoidLarvaEntity). A new non-enemy entry in Bonus would need its own query.
             _deadBosses = GetEntityQuery(
+                ComponentType.ReadOnly<EnemyCD>(),
                 ComponentType.ReadOnly<ObjectDataCD>(),
                 ComponentType.ReadOnly<LocalTransform>(),
                 ComponentType.ReadOnly<HealthCD>(),
                 ComponentType.ReadOnly<EntityDestroyedCD>());
             _database = GetEntityQuery(ComponentType.ReadOnly<PugDatabase.DatabaseBankCD>());
+            _isGone = e => !EntityManager.Exists(e);
             base.OnCreate();
         }
 
         protected override void OnUpdate()
         {
             if (_handled.Count > 0)
-                _handled.RemoveWhere(e => !EntityManager.Exists(e));
+                _handled.RemoveWhere(_isGone);
             if (_deadBosses.IsEmpty || _database.IsEmpty)
             {
                 base.OnUpdate();
@@ -86,8 +93,8 @@ namespace BossBonusLoot.Systems
             }
 
             var bank = _database.GetSingleton<PugDatabase.DatabaseBankCD>().databaseBankBlob;
-            // The query matches every dying destructible (chests, plants, stations...), so only the entity and
-            // ObjectID arrays are built; health and position are read just for the few listed types.
+            // The query matches every dying enemy, so only the entity and ObjectID arrays are built; health
+            // and position are read just for the few listed types.
             var entities = _deadBosses.ToEntityArray(Allocator.Temp);
             var objects = _deadBosses.ToComponentDataArray<ObjectDataCD>(Allocator.Temp);
             for (int i = 0; i < entities.Length; i++)
@@ -112,7 +119,10 @@ namespace BossBonusLoot.Systems
                         objectData = new ObjectDataCD { objectID = item, amount = amount, variation = 0 }
                     }, pos, bank, killer);
                 }
-                Debug.Log($"[{BossBonusLootMod.Name}] {objects[i].objectID} died: bonus loot rolled.");
+                // Log real boss kills only: Mimites, turrets and Void Larvae can die often, and every
+                // Debug.Log writes a stack trace to Player.log.
+                if (EntityManager.HasComponent<BossCD>(entities[i]))
+                    Debug.Log($"[{BossBonusLootMod.Name}] {objects[i].objectID} died: bonus loot rolled.");
             }
             entities.Dispose();
             objects.Dispose();

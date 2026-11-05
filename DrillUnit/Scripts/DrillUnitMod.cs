@@ -25,7 +25,7 @@ namespace DrillUnit
     public sealed class DrillUnitMod : IMod
     {
         public const string Name = "DrillUnit";
-        public const string Version = "0.1.0";
+        public const string Version = "0.1.1";
         public const string ObjectName = "DrillUnit_Unit";
         public const string GroundKeyBind = "DrillUnit_LayGround";
 
@@ -61,8 +61,8 @@ namespace DrillUnit
                 ControlMappingModule.rewiredStart += () => _rewiredPlayer = ReInput.players.GetPlayer(0);
 
                 CoreLibMod.LoadSubmodule(typeof(LocalizationModule));
-                LocalizationModule.AddTerm("ControlMapper/Drill UnitCategory", "Drill Unit");
-                LocalizationModule.AddTerm("ControlMapper/Drill UnitDescription", "Keys while riding the Drill Unit.");
+                LocalizationModule.AddTerm("ControlMapper/Drill UnitCategory", "Drill Pod"); // category id kept, so rebinds survive
+                LocalizationModule.AddTerm("ControlMapper/Drill UnitDescription", "Keys while riding the Drill Pod.");
                 LocalizationModule.AddTerm($"ControlMapper/{GroundKeyBind}", "Ground mode: off / lay floor / dig");
             }
             catch (Exception e)
@@ -79,9 +79,9 @@ namespace DrillUnit
             var player = Manager.main != null ? Manager.main.player : null;
             if (player == null || player.world == null || !IsRiding(player.world.EntityManager, player.entity, out _)) return;
             Ground = Ground == GroundMode.Off ? GroundMode.Lay : Ground == GroundMode.Lay ? GroundMode.Dig : GroundMode.Off;
-            ChatNote.Show(Ground == GroundMode.Lay ? "Drill Unit: hold left click to lay floor over water, lava and pits"
-                : Ground == GroundMode.Dig ? "Drill Unit: hold left click to dig floor and ground into pits"
-                : "Drill Unit: ground mode off");
+            ChatNote.Show(Ground == GroundMode.Lay ? "Drill Pod: hold left click to lay floor over water, lava and pits"
+                : Ground == GroundMode.Dig ? "Drill Pod: hold left click to dig floor and ground into pits"
+                : "Drill Pod: ground mode off");
         }
 
         private static bool KeysAllowed()

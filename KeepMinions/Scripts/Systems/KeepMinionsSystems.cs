@@ -22,11 +22,21 @@ namespace KeepMinions.Systems
     {
         internal static readonly List<Entity> Hidden = new List<Entity>();
 
+        /// <summary>
+        /// Server game time (World.Time.ElapsedTime) until which <see cref="BringMinionsAlongSystem"/> keeps
+        /// checking minion distances. Pushed to now + <see cref="TeleportWindowSeconds"/> on every update in
+        /// which some player has DisablePhysicsCD switched on (portal, waypoint and Recall Idol teleports all
+        /// do that for the whole sequence), so the window ends ~10 s after the player has landed.
+        /// </summary>
+        internal static double TeleportSeenUntil = -1.0;
+        internal const double TeleportWindowSeconds = 10.0;
+
         private EntityQuery _players;
 
         protected override void OnCreate()
         {
             UpdatesInRunGroup();
+            TeleportSeenUntil = -1.0; // new world: forget the previous session's game time
             _players = GetEntityQuery(new EntityQueryDesc
             {
                 All = new[]
@@ -49,6 +59,7 @@ namespace KeepMinions.Systems
                 base.OnUpdate();
                 return;
             }
+            TeleportSeenUntil = World.Time.ElapsedTime + TeleportWindowSeconds;
             var entities = _players.ToEntityArray(Allocator.Temp);
             var states = _players.ToComponentDataArray<PlayerStateCD>(Allocator.Temp);
             var healths = _players.ToComponentDataArray<HealthCD>(Allocator.Temp);
@@ -95,6 +106,10 @@ namespace KeepMinions.Systems
     /// After the teleport jump the minions would be left at the old location, so any minion that
     /// ends up more than <see cref="MaxDistance"/> tiles from its living owner is moved next to them.
     /// Normal fighting never takes minions that far away.
+    ///
+    /// Only does the distance pass while a teleport was seen in the last ~10 s
+    /// (<see cref="HideTeleportFromMinionsSystem.TeleportSeenUntil"/>), plus a slow safety pass every
+    /// <see cref="SafetyIntervalSeconds"/>, instead of reading every minion's transform every tick.
     /// </summary>
     [UpdateInGroup(typeof(RunSimulationSystemGroup))]
     [UpdateAfter(typeof(RestoreTeleportAfterMinionsSystem))]
@@ -102,12 +117,16 @@ namespace KeepMinions.Systems
     public partial class BringMinionsAlongSystem : PugSimulationSystemBase
     {
         private const float MaxDistance = 32f;
+        private const double SafetyIntervalSeconds = 2.0;
+
+        private double _nextSafetyPass;
 
         private EntityQuery _minions;
 
         protected override void OnCreate()
         {
             UpdatesInRunGroup();
+            _nextSafetyPass = 0.0;
             _minions = GetEntityQuery(new EntityQueryDesc
             {
                 All = new[]
@@ -123,11 +142,15 @@ namespace KeepMinions.Systems
 
         protected override void OnUpdate()
         {
-            if (_minions.IsEmpty)
+            double now = World.Time.ElapsedTime;
+            bool teleportWindow = now <= HideTeleportFromMinionsSystem.TeleportSeenUntil;
+            bool safetyPass = now >= _nextSafetyPass;
+            if ((!teleportWindow && !safetyPass) || _minions.IsEmpty)
             {
                 base.OnUpdate();
                 return;
             }
+            if (safetyPass) _nextSafetyPass = now + SafetyIntervalSeconds;
             var entities = _minions.ToEntityArray(Allocator.Temp);
             var owners = _minions.ToComponentDataArray<OwnerReferenceCD>(Allocator.Temp);
             var transforms = _minions.ToComponentDataArray<LocalTransform>(Allocator.Temp);

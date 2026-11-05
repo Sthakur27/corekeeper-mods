@@ -20,22 +20,14 @@ namespace DrillUnit.Systems
         protected override void OnCreate()
         {
             base.OnCreate();
-            _units = GetEntityQuery(ComponentType.ReadOnly<BoatCD>(), ComponentType.ReadOnly<ObjectDataCD>(),
-                ComponentType.ReadOnly<ControlledByOtherEntityCD>());
+            _units = RiddenUnits.Query(this);
             RequireForUpdate(_units);
         }
 
         protected override void OnUpdate()
         {
-            var id = DrillUnitMod.Id;
-            if (id == ObjectID.None) return;
-            var units = _units.ToEntityArray(Allocator.Temp);
-            for (int i = 0; i < units.Length; i++)
+            foreach (var (_, rider) in RiddenUnits.Get(this, _units))
             {
-                var unit = units[i];
-                if (EntityManager.GetComponentData<ObjectDataCD>(unit).objectID != id) continue;
-                var rider = EntityManager.GetComponentData<ControlledByOtherEntityCD>(unit).controlledByEntity;
-                if (!DrillUnitMod.IsRiding(EntityManager, rider, out var ridden) || ridden != unit) continue;
                 if (!EntityManager.HasComponent<PlayerUnstuckCD>(rider)) continue;
                 var unstuck = EntityManager.GetComponentData<PlayerUnstuckCD>(rider);
                 if (!unstuck.stuckTimer.isRunning && !unstuck.killIfStuckTimer.isRunning) continue;
@@ -43,7 +35,6 @@ namespace DrillUnit.Systems
                 unstuck.killIfStuckTimer.ClearStart();
                 EntityManager.SetComponentData(rider, unstuck);
             }
-            units.Dispose();
         }
     }
 }

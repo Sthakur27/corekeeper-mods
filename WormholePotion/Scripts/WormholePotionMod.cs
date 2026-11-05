@@ -1,14 +1,12 @@
 using PugMod;
-using Unity.Collections;
 using Unity.Entities;
-using Unity.NetCode;
 using UnityEngine;
 
 namespace WormholePotion
 {
     public sealed class WormholePotionMod : IMod
     {
-        public const string Version = "1.1.0";
+        public const string Version = "1.1.1";
         public const string PotionName = "WormholePotion_Potion";
         public const string MarkerName = "WormholePotion_Marker";
         internal static bool Active;
@@ -66,25 +64,6 @@ namespace WormholePotion
             Debug.Log("[WormholePotion] Ancient Hologram Pod recipe registered.");
         }
     }
-
-    [WorldSystemFilter(WorldSystemFilterFlags.ServerSimulation | WorldSystemFilterFlags.ClientSimulation)]
-    [UpdateInGroup(typeof(SimulationSystemGroup))]
-    [UpdateAfter(typeof(PredictedSimulationSystemGroup))]
-    public partial class PotionRecipeSystem : PugSimulationSystemBase
-    {
-        private EntityQuery stations;
-        private double next;
-        protected override void OnCreate()
-        {
-            base.OnCreate();
-            stations = GetEntityQuery(ComponentType.ReadOnly<ObjectDataCD>(), ComponentType.ReadOnly<CanCraftObjectsBuffer>());
-        }
-        protected override void OnUpdate()
-        {
-            if (World.Time.ElapsedTime < next || WormholePotionMod.Potion == ObjectID.None) return;
-            next = World.Time.ElapsedTime + 1;
-            using (var entities = stations.ToEntityArray(Allocator.Temp))
-                foreach (var entity in entities) WormholePotionMod.EnsureRecipe(entity, EntityManager);
-        }
-    }
+    // No periodic recipe system: PotionRecipeAuthoring puts the recipe in at conversion, so the
+    // game's own recipe repair keeps it, and OnObjectTypeAdded covers the live prefab.
 }

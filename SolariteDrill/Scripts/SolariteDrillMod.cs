@@ -15,7 +15,7 @@ namespace SolariteDrill
     /// </summary>
     public sealed class SolariteDrillMod : IMod
     {
-        public const string Version = "1.0.0";
+        public const string Version = "1.0.1";
         public const string ObjectName = "SolariteDrill_Drill";
         // SpriteAssetSkin data blocks in the bundle, in the order of the vanilla drill's spritesToReskin.
         public const string DrillSkinName = "SolariteDrill_DrillSkin";
@@ -108,7 +108,9 @@ namespace SolariteDrill
     public partial class DrillRecipeSystem : PugSimulationSystemBase
     {
         private EntityQuery stations;
-        private double next;
+        // Start offset 0.71 s so this once-a-second pass doesn't share a tick with other mods' timers
+        // (Runic Storage 0.53, Enchanting 0.37).
+        private double next = 0.71;
         protected override void OnCreate()
         {
             base.OnCreate();

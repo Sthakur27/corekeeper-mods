@@ -39,8 +39,8 @@ namespace FasterMushrooms.Systems
         /// <summary>Property hash the game uses for a plant's seconds-per-growth-stage (see PlantsGrowingSystem).</summary>
         private const int StageTimePropertyHash = -965595447;
         private const float Epsilon = 0.0005f;
-        /// <summary>Full pass at least this often even when nothing structural changed (~0.25 s at 60 Hz).</summary>
-        private const int RescanTicks = 15;
+        /// <summary>Full pass at least this often even when nothing structural changed (~3 s at 60 Hz).</summary>
+        private const int RescanTicks = 180;
 
         private struct SpreadWindow
         {

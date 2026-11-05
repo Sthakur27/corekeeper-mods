@@ -32,6 +32,9 @@ namespace StimHits
         private static readonly Dictionary<Entity, float> RecentTargets = new Dictionary<Entity, float>();
         private static readonly Dictionary<Entity, float> HitProjectiles = new Dictionary<Entity, float>();
         private const float Memory = 1.5f;
+        private const int PruneAbove = 256;
+        private static readonly List<Entity> Expired = new List<Entity>();
+        private static World _world; // entity keys are per world: forget them when the client world changes
         private static int _logged;
 
         // Objects show no damage numbers and OnTakeDamage carries no attacker, so object dings only
@@ -87,6 +90,12 @@ namespace StimHits
             var player = LocalPlayer;
             if (player == null || !Enabled(SoundBank.Kind.Hit)) return;
             var world = Manager.ecs.ClientWorld;
+            if (!ReferenceEquals(world, _world))
+            {
+                RecentTargets.Clear();
+                HitProjectiles.Clear();
+                _world = world;
+            }
             var targetMono = Manager.memory.GetEntityMono(target);
             if (targetMono == null || targetMono == player) return;
 
@@ -106,7 +115,8 @@ namespace StimHits
             if (why == null) return;
 
             RecentTargets[target] = Time.unscaledTime;
-            if (RecentTargets.Count > 256) Prune();
+            // Either map can grow on its own (projectiles are new entities every shot), so check both.
+            if (RecentTargets.Count > PruneAbove || HitProjectiles.Count > PruneAbove) Prune();
             if (_logged < 5)
             {
                 _logged++;
@@ -118,12 +128,16 @@ namespace StimHits
         private static void Prune()
         {
             var now = Time.unscaledTime;
-            foreach (var map in new[] { RecentTargets, HitProjectiles })
-            {
-                var old = new List<Entity>();
-                foreach (var kv in map) if (now - kv.Value >= Memory) old.Add(kv.Key);
-                foreach (var e in old) map.Remove(e);
-            }
+            PruneMap(RecentTargets, now);
+            PruneMap(HitProjectiles, now);
+        }
+
+        private static void PruneMap(Dictionary<Entity, float> map, float now)
+        {
+            Expired.Clear();
+            foreach (var kv in map) if (now - kv.Value >= Memory) Expired.Add(kv.Key);
+            foreach (var e in Expired) map.Remove(e);
+            Expired.Clear();
         }
     }
 

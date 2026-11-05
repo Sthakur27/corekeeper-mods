@@ -24,9 +24,15 @@ namespace ArmorDye
             try
             {
                 if (__instance == null || __instance is PlayerController) return;
-                if (!TryGetShooter(__instance, out PlayerController pc, out bool isProjectile)) return;
-                int dye = isProjectile ? ArmorRecolor.HeldDye(pc) : 0;
+                // Look the tag up first: pooled graphics are reused, so one dyed for a player's shot can come
+                // back for an enemy's (no player shooter). Reset it to vanilla before bailing out.
                 var tag = __instance.GetComponent<DyedProjectile>();
+                if (!TryGetShooter(__instance, out PlayerController pc, out bool isProjectile))
+                {
+                    if (tag != null && tag.Dye != 0) tag.SetDye(0, Color.white);
+                    return;
+                }
+                int dye = isProjectile ? ArmorRecolor.HeldDye(pc) : 0;
                 if (isProjectile) Describe(__instance, isProjectile, dye);
                 if (dye == 0 && tag == null) return;
                 if (tag == null) tag = __instance.gameObject.AddComponent<DyedProjectile>();
@@ -115,6 +121,9 @@ namespace ArmorDye
         private readonly Dictionary<ParticleSystem, ParticleSystem.MinMaxGradient> _lifetimeColors = new Dictionary<ParticleSystem, ParticleSystem.MinMaxGradient>();
         private readonly Dictionary<Object, Gradient> _gradients = new Dictionary<Object, Gradient>();
         private readonly Dictionary<Light, Color> _lightColors = new Dictionary<Light, Color>();
+
+        /// <summary>The dye this object was last set to (0 = vanilla).</summary>
+        public int Dye => _dye;
 
         public void SetDye(int dye, Color tint)
         {

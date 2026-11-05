@@ -37,7 +37,7 @@ namespace Enchanting
         public static List<PugDatabase.MaterialInfo> Materials(ContainedObjectsBuffer item)
         {
             if (item.objectID == ObjectID.None || Enchants.SlotOf(item.objectID) == EnchantSlot.None) return null;
-            EnchantRoll.Cost(EnchantStorage.ReadClient(item).Count, out int gold, out int coins);
+            EnchantRoll.Cost(EnchantStorage.CountClient(item), out int gold, out int coins);
             return new List<PugDatabase.MaterialInfo>
             {
                 new PugDatabase.MaterialInfo(ObjectID.GoldBar, gold, CountOnPlayer(ObjectID.GoldBar), Entity.Null, null),

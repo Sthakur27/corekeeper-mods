@@ -1,7 +1,7 @@
 {
     "guid": "5e7a0c1f2b9d4c6e8a31f04d7b2c9e15",
     "name": "SlotOrganizer",
-    "displayName": "Slot Organizer",
+    "displayName": "Slot Manager",
     "skipSafetyChecks": true,
     "disableScripts": false,
     "accessesExtraAssemblies": true,
@@ -15,6 +15,14 @@
         {
             "path": "Scripts/SlotArrows.cs",
             "guid": "c4f19b7e2a6d48e5b0d3a91f6e7c2b84"
+        },
+        {
+            "path": "Scripts/SlotCopy.cs",
+            "guid": "7d2e4a91c05b4f68a3e1b97c2d6f0a35"
+        },
+        {
+            "path": "Scripts/SlotEdit.cs",
+            "guid": "e93b1c7f4a2d4e05b86f0d1a7c3e9b42"
         }
     ],
     "dependencies": []

@@ -8,7 +8,7 @@ using Object = UnityEngine.Object;
 namespace SlotOrganizer
 {
     /// <summary>
-    /// Reorder worlds and characters in the main menu. Hover/select a slot and press
+    /// Reorder, copy and rename worlds and characters in the main menu. Hover/select a slot and press
     /// Ctrl+Up / Ctrl+Down (or Page Up / Page Down) to swap it with the slot above/below;
     /// moving into an empty slot just moves it. A slot number is only the file name
     /// (characters link to worlds by GUID), so swapping the files is all it takes.
@@ -16,7 +16,7 @@ namespace SlotOrganizer
     public sealed class SlotOrganizerMod : IMod
     {
         public const string Name = "SlotOrganizer";
-        public const string Version = "1.0.1";
+        public const string Version = "1.1.0";
 
         // Selection as of the previous frame. The menu also reads the arrow keys, so by the time
         // Update runs it may already have moved the selection; the last frame's slot is the one meant.
@@ -56,6 +56,13 @@ namespace SlotOrganizer
             {
                 pendingFrames--;
                 if (pendingMenu == menu) Select(menu, pendingSlot);
+            }
+
+            if (Manager.input.textInputIsActive)
+            {
+                SlotArrows.Sync(menu);
+                lastMenu = null;
+                return;
             }
 
             int dir = 0;

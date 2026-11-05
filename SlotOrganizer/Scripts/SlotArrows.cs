@@ -6,9 +6,10 @@ using Object = UnityEngine.Object;
 namespace SlotOrganizer
 {
     /// <summary>
-    /// Up/down arrow buttons on each world and character slot, right of the trash can. They are
-    /// clones of the slot's delete button (so hover, highlight and click behave like vanilla) with
-    /// an arrow icon; their activation is intercepted below and moves the slot instead.
+    /// Buttons on each world and character slot, right of the trash can: move up, move down, copy,
+    /// and (characters only; worlds have the game's own "..." settings) edit name and looks. They are clones of
+    /// the slot's delete button (so hover, highlight and click behave like vanilla) with their own
+    /// icon; their activation is intercepted below.
     /// </summary>
     internal static class SlotArrows
     {
@@ -19,8 +20,11 @@ namespace SlotOrganizer
             public RadicalMenuOption option;
             public RadicalMenuOption source;   // the row's vanilla delete button
             public Transform row;              // WorldSlot / SaveSlot
-            public int dir;
+            public Kind kind;
+            public int dir => kind == Kind.Up ? -1 : kind == Kind.Down ? 1 : 0;
         }
+
+        private enum Kind { Up, Down, Copy, Edit }
 
         private static readonly Dictionary<RadicalMenu, List<Arrow>> byMenu = new Dictionary<RadicalMenu, List<Arrow>>();
         private static readonly Dictionary<RadicalMenuOption, Arrow> byOption = new Dictionary<RadicalMenuOption, Arrow>();
@@ -68,12 +72,27 @@ namespace SlotOrganizer
             RadicalMenu menu = Manager.menu.GetTopMenu();
             if (menu == null || !SlotOrganizerMod.IsSlotMenu(menu)) return true;
             int slot = RowIndex(menu, a.row);
+            if (a.kind == Kind.Copy)
+            {
+                int copy = SlotCopy.Copy(menu, slot);
+                if (copy >= 0)
+                {
+                    Sync(menu);
+                    SlotOrganizerMod.Select(menu, copy);
+                }
+                return true;
+            }
+            if (a.kind == Kind.Edit)
+            {
+                if (menu is ChooseCharacterMenu charMenu) SlotEdit.Begin(charMenu, slot);
+                return true;
+            }
             if (SlotOrganizerMod.Move(menu, slot, a.dir))
             {
                 Sync(menu);
                 // Keep the highlight on the same arrow of the moved slot, so Enter (or a click
                 // after following it with the mouse) keeps moving the same world/character.
-                Arrow next = Find(menu, slot + a.dir, a.dir);
+                Arrow next = Find(menu, slot + a.dir, a.kind);
                 if (next != null && next.option.enabled)
                 {
                     int index = menu.menuOptions.IndexOf(next.option);
@@ -83,10 +102,10 @@ namespace SlotOrganizer
             return true;
         }
 
-        private static Arrow Find(RadicalMenu menu, int slot, int dir)
+        private static Arrow Find(RadicalMenu menu, int slot, Kind kind)
         {
             foreach (Arrow a in byMenu[menu])
-                if (a.dir == dir && RowIndex(menu, a.row) == slot) return a;
+                if (a.kind == kind && RowIndex(menu, a.row) == slot) return a;
             return null;
         }
 
@@ -118,12 +137,12 @@ namespace SlotOrganizer
                 {
                     if (done.Contains(slot.transform)) continue;
                     WorldSlotDeleteOption src = slot.deleteOption;
-                    for (int dir = -1; dir <= 1; dir += 2)
+                    foreach (Kind kind in new[] { Kind.Up, Kind.Down, Kind.Copy })
                     {
-                        var clone = (WorldSlotDeleteOption)Clone(menu, src, src.icon, src.background, dir);
+                        var clone = (WorldSlotDeleteOption)Clone(menu, src, src.icon, src.background, kind, RowCentre(src, slot.moreOption));
                         clone.Init(worldMenu);
                         clone.animator.enabled = false;
-                        Register(arrows, clone, src, slot.transform, dir);
+                        Register(arrows, clone, src, slot.transform, kind);
                     }
                 }
                 return;
@@ -134,37 +153,67 @@ namespace SlotOrganizer
             {
                 if (done.Contains(slot.transform)) continue;
                 SaveSlotDeleteOption src = slot.saveSlotDeleteOption;
-                for (int dir = -1; dir <= 1; dir += 2)
+                foreach (Kind kind in new[] { Kind.Up, Kind.Down, Kind.Copy, Kind.Edit })
                 {
-                    var clone = (SaveSlotDeleteOption)Clone(menu, src, src.icon, src.background, dir);
+                    var clone = (SaveSlotDeleteOption)Clone(menu, src, src.icon, src.background, kind, 0f);
                     clone.Init(charMenu);
                     clone.animator.enabled = false;
-                    Register(arrows, clone, src, slot.transform, dir);
+                    Register(arrows, clone, src, slot.transform, kind);
                 }
             }
         }
 
-        private static void Register(List<Arrow> arrows, RadicalMenuOption clone, RadicalMenuOption src, Transform row, int dir)
+        private static void Register(List<Arrow> arrows, RadicalMenuOption clone, RadicalMenuOption src, Transform row, Kind kind)
         {
-            var a = new Arrow { option = clone, source = src, row = row, dir = dir };
+            var a = new Arrow { option = clone, source = src, row = row, kind = kind };
             arrows.Add(a);
             byOption[clone] = a;
         }
 
-        private static RadicalMenuOption Clone(RadicalMenu menu, RadicalMenuOption src, SpriteRenderer srcIcon, SpriteRenderer srcBackground, int dir)
+        private static RadicalMenuOption Clone(RadicalMenu menu, RadicalMenuOption src, SpriteRenderer srcIcon, SpriteRenderer srcBackground, Kind kind, float centreY)
         {
             GameObject go = Object.Instantiate(src.gameObject, src.transform.parent);
-            go.name = NamePrefix + (dir < 0 ? "Up" : "Down");
+            go.name = NamePrefix + kind;
             var option = go.GetComponent<RadicalMenuOption>();
             option.SetParentMenu(menu);
 
-            // Up arrow right of the trash can, down arrow right of that.
+            // A 2x2 grid right of the trash can (one row of four ran off the screen): up above down
+            // in the first column, copy above edit in the second, centred on the row. Buttons keep
+            // full size (scaled pixel art smudges); the visible button is about half of `step`
+            // tall, so +-0.26 steps leaves a small gap. World slots have no edit button, so their
+            // copy button is centred vertically.
             float step = ButtonWidth(src, srcBackground);
-            go.transform.localPosition = src.transform.localPosition + new Vector3(step * (dir < 0 ? 1 : 2), 0f, 0f);
+            float x = kind == Kind.Up || kind == Kind.Down ? step : step * 2f;
+            bool alone = kind == Kind.Copy && menu is SelectWorldMenu;
+            float y = centreY + (alone ? 0f : (kind == Kind.Up || kind == Kind.Copy ? 1f : -1f) * step * 0.26f);
+            go.transform.localPosition = src.transform.localPosition + new Vector3(x, y, 0f);
 
             SpriteRenderer icon = FindIcon(option);
-            if (icon != null && srcIcon.sprite != null) icon.sprite = ArrowSprite(srcIcon.sprite, dir);
+            if (icon != null && srcIcon.sprite != null) icon.sprite = IconSprite(srcIcon.sprite, kind);
             return option;
+        }
+
+        // World rows stack "..." above the trash can; centre our grid on the pair, not the trash can.
+        private static float RowCentre(RadicalMenuOption delete, Component more)
+        {
+            Transform parent = delete.transform.parent;
+            if (more == null || parent == null) return 0f;
+            Vector3 a = parent.InverseTransformPoint(delete.transform.position);
+            Vector3 b = parent.InverseTransformPoint(more.transform.position);
+            return (b.y - a.y) / 2f;
+        }
+
+        /// <summary>Hover text for our buttons, null for anything else.</summary>
+        public static string Tooltip(UIelement element)
+        {
+            if (!(element is RadicalMenuOption option) || !byOption.TryGetValue(option, out Arrow a)) return null;
+            switch (a.kind)
+            {
+                case Kind.Up: return "Move up";
+                case Kind.Down: return "Move down";
+                case Kind.Copy: return "Copy to an empty slot";
+                default: return "Edit name and looks";
+            }
         }
 
         private static SpriteRenderer FindIcon(RadicalMenuOption option)
@@ -194,25 +243,54 @@ namespace SlotOrganizer
             return 1.25f;
         }
 
-        // A white filled triangle the size of the trash-can icon (same pixels per unit and pivot).
-        private static Sprite ArrowSprite(Sprite like, int dir)
+        // White pixel icons the size of the trash-can icon (same pixels per unit and pivot):
+        // a filled triangle for up/down, two overlapping sheets for copy, "..." for edit.
+        private static Sprite IconSprite(Sprite like, Kind kind)
         {
-            int key = dir * 1000003 + like.GetInstanceID();
+            int key = (int)kind * 1000003 + like.GetInstanceID();
             if (sprites.TryGetValue(key, out Sprite cached) && cached != null) return cached;
 
-            int w = Mathf.Max(5, Mathf.RoundToInt(like.rect.width));
-            int h = Mathf.Max(5, Mathf.RoundToInt(like.rect.height));
+            int w = Mathf.Max(7, Mathf.RoundToInt(like.rect.width));
+            int h = Mathf.Max(7, Mathf.RoundToInt(like.rect.height));
             var tex = new Texture2D(w, h, TextureFormat.RGBA32, false) { filterMode = FilterMode.Point, wrapMode = TextureWrapMode.Clamp };
             var pixels = new Color32[w * h];
-            int height = Mathf.Max(3, (Mathf.Min(w, h) + 1) / 2);
-            float cx = (w - 1) / 2f;
-            int y0 = (h - height) / 2;
-            for (int i = 0; i < height; i++)
+            var white = new Color32(255, 255, 255, 255);
+            void Set(int x, int y) { if (x >= 0 && x < w && y >= 0 && y < h) pixels[y * w + x] = white; }
+
+            int size = Mathf.Min(w, h);
+            int x0 = (w - size) / 2, y0 = (h - size) / 2;
+            int m = Mathf.Max(1, size / 8), n = size - 2 * m;
+            if (kind == Kind.Up || kind == Kind.Down)
             {
-                int half = dir < 0 ? height - 1 - i : i;   // up: wide at the bottom
-                int y = y0 + i;
-                for (int x = 0; x < w; x++)
-                    if (Mathf.Abs(x - cx) <= half + 0.01f) pixels[y * w + x] = new Color32(255, 255, 255, 255);
+                int height = Mathf.Max(3, (size + 1) / 2);
+                float cx = (w - 1) / 2f;
+                int ty = (h - height) / 2;
+                for (int i = 0; i < height; i++)
+                {
+                    int half = kind == Kind.Up ? height - 1 - i : i;   // up: wide at the bottom
+                    for (int x = 0; x < w; x++)
+                        if (Mathf.Abs(x - cx) <= half + 0.01f) Set(x, ty + i);
+                }
+            }
+            else if (kind == Kind.Copy)
+            {
+                // Two outlined sheets: the back one top left, the front one bottom right drawn over it.
+                int b = Mathf.Max(4, (n * 3 + 3) / 4);
+                int bx = x0 + m, by = y0 + m + n - b;
+                int fx = x0 + m + n - b, fy = y0 + m;
+                for (int i = 0; i < b; i++) { Set(bx + i, by + b - 1); Set(bx, by + i); }
+                for (int i = 0; i < b; i++) { if (bx + i < fx) Set(bx + i, by); if (by + i > fy + b - 1) Set(bx + b - 1, by + i); }
+                for (int i = 0; i < b; i++) { Set(fx + i, fy); Set(fx + i, fy + b - 1); Set(fx, fy + i); Set(fx + b - 1, fy + i); }
+            }
+            else
+            {
+                // "..." like the game's own world settings button: three square dots.
+                int d = Mathf.Max(1, size / 6);
+                int gap = Mathf.Max(1, (size - 3 * d) / 4);
+                int start = (w - (3 * d + 2 * gap)) / 2, dy = (h - d) / 2;
+                for (int k = 0; k < 3; k++)
+                    for (int x = 0; x < d; x++)
+                        for (int y = 0; y < d; y++) Set(start + k * (d + gap) + x, dy + y);
             }
             tex.SetPixels32(pixels);
             tex.Apply();

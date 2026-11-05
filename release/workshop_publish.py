@@ -56,7 +56,7 @@ MODS = [
     ("MagicMirror", "Magic Mirror", "magicmirror_logo.png", "Item"),
     ("MushroomSlayer", "Mushroom Slayer", "mushroomslayer_logo.gif", "Quality of Life"),
     ("ConnectedStorage", "Runic Storage", "runicstorage_workshop.png", "Item"),
-    ("SlotOrganizer", "Slot Organizer", "slotorganizer_logo.png", "Quality of Life"),
+    ("SlotOrganizer", "Slot Manager", "slotorganizer_logo.png", "Quality of Life"),
     ("FasterMachines", "Faster Machines", "fastermachines_logo.gif", "Quality of Life"),
     ("BuildTools", "Build Tools", "buildtools_logo.png", "Quality of Life"),
     ("ItemSpawner", "Item Spawner", "itemspawner_logo.png", "Quality of Life"),
@@ -74,7 +74,7 @@ NOT_IN_OVERHAUL = {"SlotOrganizer"}
 # Cover disclosure per item; everything else keeps the AI-artwork note.
 COVER_NOTES = {
     "ConnectedStorage": "Cover combines in-game screenshots (storage panel, base floor), the mod's own unit and gem sprites and the game's bar icons; title banner and highlights added.",
-    "SlotOrganizer": "Cover is an in-game screenshot of the Select World menu with the mod's buttons; title banner and highlight added.",
+    "SlotOrganizer": "Cover is made from in-game screenshots of the Select World and Select Character menus with the mod's buttons; title banner and highlights added.",
     "FiveLoadouts": "Cover is an in-game screenshot of the equipment panel; title banner and highlight added.",
     "LoadoutSharing": "Cover is an in-game screenshot of the equipment panel; title banner and highlight added.",
     "PetEditor": "Cover is an in-game screenshot of the pet panel; title banner and highlight added.",

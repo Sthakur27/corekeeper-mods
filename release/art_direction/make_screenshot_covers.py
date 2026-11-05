@@ -21,7 +21,7 @@ W, H, TOP = 1280, 720, 176          # canvas; content area starts below the bann
 # HDR captures (.jxr scRGB float) are tone-mapped to PNG first with hdr_to_png.py:
 # value / 10 (game UI white ~9.5), clamp, sRGB curve. Converted copies live in HDR_DIRS.
 HDR_DIRS = [REPO / 'build/artwork-review/hdr', REPO / 'build/artwork-review/2026-10-28/hdr',
-            REPO / 'build/artwork-review/2026-10-29/hdr', REPO / 'build/artwork-review/2026-11-01/hdr']
+            REPO / 'build/artwork-review/2026-10-29/hdr', REPO / 'build/artwork-review/2026-11-01/hdr', REPO / 'build/artwork-review/2026-11-05/hdr']
 
 
 def shot(stamp):

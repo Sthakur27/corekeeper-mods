@@ -279,7 +279,7 @@ namespace AutoReplant.Systems
                 }
                 else
                 {
-                    EntityManager.DestroyEntity(best);
+                    DestroyDroppedItem(best);
                 }
                 return true;
             }
@@ -287,6 +287,27 @@ namespace AutoReplant.Systems
             {
                 items.Dispose();
             }
+        }
+
+        /// <summary>
+        /// Destroys a dropped item together with its conveyor-automation "movee" entities. A plain
+        /// DestroyEntity leaves the item as a cleanup shell until PugAutomationInstantiateSystem removes
+        /// the movees at the start of the next tick; until then UpdateEnabledMoveeJob logs
+        /// "Missing LocalTransform on entity ref". This does that cleanup right away, the same way.
+        /// </summary>
+        private void DestroyDroppedItem(Entity item)
+        {
+            if (EntityManager.HasBuffer<Pug.Automation.SmallEntityRefBuffer>(item))
+            {
+                var smalls = EntityManager.GetBuffer<Pug.Automation.SmallEntityRefBuffer>(item, true).ToNativeArray(Allocator.Temp);
+                for (int i = 0; i < smalls.Length; i++)
+                    if (EntityManager.Exists(smalls[i].Value)) EntityManager.DestroyEntity(smalls[i].Value);
+                smalls.Dispose();
+                EntityManager.RemoveComponent<Pug.Automation.SmallEntityRefBuffer>(item);
+                if (EntityManager.HasBuffer<Pug.Automation.SmallEntityCrafterRefBuffer>(item))
+                    EntityManager.RemoveComponent<Pug.Automation.SmallEntityCrafterRefBuffer>(item);
+            }
+            EntityManager.DestroyEntity(item);
         }
 
         /// <summary>Instantiates the seed at the tile the way InventoryUtility.CreateEntity does when you plant by hand.</summary>

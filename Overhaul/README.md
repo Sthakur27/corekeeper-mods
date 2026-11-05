@@ -4,6 +4,8 @@
 
 Spend less time repeating chores and more time exploring. Sid's Overhaul brings the individual mods in this repository into one package: easier farming and fishing, equipment tools, merchant supplies, and adjustable combat and progression.
 
+**New in 1.14.1:** Auto Replant: replanting from seeds on the ground no longer floods the game log with conveyor warnings.
+
 **New in 1.14.0: performance pass.** Many features do less work per tick: fewer scans of the world, read-only access where nothing changes, and staggered timers. Enchanting can now roll small enchantments onto rings, necklaces and offhands, and totals from all your gear are capped so stacking one defence everywhere stops paying off. Fixes: Fast Auto Fishing now really stops when you switch it off in the Overhaul settings, Armor Dye no longer leaks your weapon dye onto enemy projectiles, and the Coin Pouch slot shows up again after changing worlds. The Wormhole Potion is now called the Potion of Return and the Drill Unit is now the Drill Pod; existing items and saves carry over.
 
 **New in 1.13.0: Enchanting (Alpha).** Build an Enchanting Table (Galaxite Workbench: 20 Octarine + 15 Gold Bars), put a weapon, tool or armor piece in it and pay Gold Bars + Ancient Coins for a random enchantment, up to three per item. Alpha: tested in single player only; balance will change.

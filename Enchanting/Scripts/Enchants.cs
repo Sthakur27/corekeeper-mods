@@ -85,6 +85,12 @@ namespace Enchanting
         public EnchantStack Stack = EnchantStack.Sum;
         /// <summary>Radiance: writes the glow colour the player already shines brightest in (EnchantEffectSystem).</summary>
         public bool FollowsLight;
+        /// <summary>Works through projectiles only: never rolled on beam weapons (raycasts, no projectile).</summary>
+        public bool ProjectileOnly;
+        /// <summary>Written onto the owner's minions (EnchantMinionSystem), not onto the player.</summary>
+        public bool OnMinions;
+        /// <summary>Extra tooltip line (requirements the stat system can't show).</summary>
+        public string Note;
 
         public int MaxLevel => Values.Length;
     }
@@ -114,6 +120,10 @@ namespace Enchanting
             Rel(7, "swiftblade", "Swiftblade", EnchantSlot.Melee, ConditionID.MeleeAttackSpeedIncrease, RelBucket.AttackSpeed, 3, 6, 10);
             Add(8, "keen", "Keen", Weapons, ConditionID.CritChance, 3, 6, 9);
             Add(9, "bossbane", "Bossbane", Weapons, ConditionID.IncreasedDamageAgainstBosses, 5, 10, 15);
+            // Experimental (2026-11-05): chance on a melee crit to fire a lightning beam for 50% of the hit. The game
+            // only fires it while the Soul of Azeos is enabled (PlayerController, melee and not explosive).
+            Add(10, "thunderstrike", "Thunderstrike", EnchantSlot.Melee, ConditionID.ChanceOnCritToSpawnThunderBeam, 10, 20, 30)
+                .Note = "Needs the Soul of Azeos enabled. Melee crits only";
 
             // Ranged (bows, non-stackable throwables, non-magic range beams)
             Rel(20, "power", "Power", EnchantSlot.Ranged, ConditionID.PhysicalRangeDamageIncrease, RelBucket.Damage, 4, 8, 12);
@@ -121,6 +131,13 @@ namespace Enchanting
             Rel(21, "quickdraw", "Quick Draw", EnchantSlot.Ranged | EnchantSlot.Magic, ConditionID.RangeAttackSpeedIncrease, RelBucket.AttackSpeed, 3, 6, 10);
             Add(22, "frost", "Frost", EnchantSlot.Ranged, ConditionID.ChanceOnRangeShotToApplySlowedBySlime, -10, -20, -30); // slow amount: must be negative (damage code applies it only when < 0)
             Add(23, "stunshot", "Stunshot", EnchantSlot.Ranged, ConditionID.ChanceOnRangeShotToStun, 3, 6, 9);
+            // Experimental (2026-11-05). Piercing: the projectile's pierce count reads the player's summary at spawn
+            // (EntityUtility.SpawnProjectile), so it works on bows, staffs and throwables, not on beams.
+            Add(24, "piercing", "Piercing", EnchantSlot.Ranged | EnchantSlot.Magic, ConditionID.PiercingProjectiles, 1, 2, 3)
+                .ProjectileOnly = true;
+            // Flame: burn on hit. Beams hit through the player's own stats (works); projectiles only burn if the
+            // game copies ApplyBurning onto them (ConditionsTable inherit flag, unknown: combattest decides).
+            Lvl(25, "flame", "Flame", EnchantSlot.Ranged | EnchantSlot.Magic, ConditionID.ApplyBurning, ItemCurve.Burning, 50, 75, 100);
 
             // Tools
             Add(40, "efficiency", "Efficiency", EnchantSlot.Tool, ConditionID.MiningPercentageIncrease, 10, 20, 30); // ×(1 + v/100) on mining damage
@@ -158,6 +175,14 @@ namespace Enchanting
             Rel(121, "frenzy", "Frenzy", EnchantSlot.Summon, ConditionID.IncreasedMinionAttackSpeed, RelBucket.MinionAttackSpeed, 3, 6, 10);
             Add(122, "keenfangs", "Keen Fangs", EnchantSlot.Summon, ConditionID.IncreasedMinionCritChance, 5, 10, 15);
             Add(123, "slayer", "Slayer", EnchantSlot.Summon, ConditionID.IncreasedMinionBossDamagePercentage, 10, 20, 30);
+            // Experimental minion on-hit (2026-11-05): written onto each of the owner's minions (EnchantMinionSystem).
+            // Never use ApplyBurning / ChanceToApplyPoisoned / radioactive here: the game rewrites those on minions.
+            var shock = Add(124, "staticfamiliars", "Static Familiars", EnchantSlot.Summon, ConditionID.ChanceOnHitToStun, 4, 8, 12);
+            shock.OnMinions = true;
+            shock.Note = "Your minions' hits can stun";
+            var siphon = Add(125, "soulsiphon", "Soul Siphon", EnchantSlot.Summon, ConditionID.LifeOnMinionHit, 1, 2, 3);
+            siphon.OnMinions = true;
+            siphon.Note = "Heals you when your minions hit";
 
             // Accessories (rings, necklace, offhand): ids 140-169, one shared pool, Stack = Max ("doesn't stack":
             // only the highest copy among all worn accessories counts). Micro stats plus a few utility perks.
@@ -203,11 +228,12 @@ namespace Enchanting
             return def;
         }
 
-        private static void Lvl(int id, string key, string name, EnchantSlot slots, ConditionID condition, ItemCurve curve, params int[] percentOfVanilla)
+        private static EnchantDef Lvl(int id, string key, string name, EnchantSlot slots, ConditionID condition, ItemCurve curve, params int[] percentOfVanilla)
         {
             var def = Add(id, key, name, slots, condition, percentOfVanilla);
             def.Mode = EnchantMode.ItemLevel;
             def.Curve = curve;
+            return def;
         }
 
         public static EnchantDef Get(int id) => ById.TryGetValue(id, out var d) ? d : null;
@@ -307,12 +333,16 @@ namespace Enchanting
         /// <summary>Worn accessories (rings, necklace, offhand): apply while equipped, like armor.</summary>
         public static bool IsAccessory(EnchantSlot s) => (s & EnchantSlot.Accessory) != 0;
 
-        public static List<EnchantDef> PoolFor(EnchantSlot slot)
+        public static List<EnchantDef> PoolFor(EnchantSlot slot) => PoolFor(slot, ObjectID.None);
+
+        /// <summary>The pool for one item: drops projectile-only enchants (Piercing) on beam weapons.</summary>
+        public static List<EnchantDef> PoolFor(EnchantSlot slot, ObjectID item)
         {
             var list = new List<EnchantDef>();
             if (slot == EnchantSlot.None) return list;
+            bool beam = item != ObjectID.None && PugDatabase.GetObjectInfo(item)?.objectType == ObjectType.BeamWeapon;
             foreach (var d in All)
-                if ((d.Slots & slot) != 0) list.Add(d);
+                if ((d.Slots & slot) != 0 && !(beam && d.ProjectileOnly)) list.Add(d);
             return list;
         }
 

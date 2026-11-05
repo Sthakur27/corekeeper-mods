@@ -91,7 +91,7 @@ namespace Enchanting
             _seconds = Mathf.Clamp(seconds, 3f, 120f);
             Queue.Clear();
             Queue.Add(null);
-            Queue.AddRange(Enchants.PoolFor(kind));
+            Queue.AddRange(Enchants.PoolFor(kind, item.objectID));
             Queue.Add(null); // second plain run: if it differs from the first, something drifted (stacking buffs)
             _index = 0;
             _phase = Phase.Apply;

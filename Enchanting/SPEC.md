@@ -84,6 +84,7 @@ Costs stay flat per roll (section above). Save ids never change meaning; ids 44,
 | 7 | Swiftblade | `MeleeAttackSpeedIncrease` | x1.03 / x1.06 / x1.10 attack rate | multiplier, bucket MeleeAttackSpeed + AttackSpeed |
 | 8 | Keen | `CritChance` | 3 / 6 / 9 % | flat (melee, ranged, magic) |
 | 9 | Bossbane | `IncreasedDamageAgainstBosses` | 5 / 10 / 15 % | flat (melee, ranged, magic) |
+| 10 | Thunderstrike *(exp. 0.3.0)* | `ChanceOnCritToSpawnThunderBeam` | 10 / 20 / 30 % of melee crits | flat; the game fires the beam (50% of the hit) only with the Soul of Azeos enabled (`PlayerController` ~6605) and only on melee (`EntityUtility` ~2033) |
 
 ### Ranged weapons (`RangeWeapon`, non-stackable `ThrowingWeapon`, range beams; not magic)
 | Id | Enchant | Condition | I / II / III | Kind |
@@ -92,6 +93,8 @@ Costs stay flat per roll (section above). Save ids never change meaning; ids 44,
 | 21 | Quick Draw | Range- or `MeleeAttackSpeedIncrease` (by the weapon's cooldown) | x1.03 / x1.06 / x1.10 | multiplier (ranged and magic) |
 | 22 | Frost | `ChanceOnRangeShotToApplySlowedBySlime` | −10 / −20 / −30 (tenths) | flat |
 | 23 | Stunshot | `ChanceOnRangeShotToStun` | 3 / 6 / 9 % | flat |
+| 24 | Piercing *(exp. 0.3.0)* | `PiercingProjectiles` | +1 / 2 / 3 enemies | flat; read from the player's summary at projectile spawn (`EntityUtility.SpawnProjectile`); ranged + magic, never rolled on `BeamWeapon` (`ProjectileOnly`) |
+| 25 | Flame *(exp. 0.3.0)* | `ApplyBurning` | 50 / 75 / 100 % of vanilla (10 + 3L) | item level; ranged + magic. Beams hit with the player's summary (burns). Projectiles burn only if ApplyBurning is inheritable (ConditionsTable flag, unknown) |
 | 8, 9 | Keen, Bossbane | | as melee | |
 
 Stackable throwables (grenades, bombs) are not enchantable (aux data is shared per stack).
@@ -117,6 +120,16 @@ The last tome the player held keeps applying its enchants while it is anywhere i
 | 121 | Frenzy | `IncreasedMinionAttackSpeed` | x1.03 / x1.06 / x1.10 minion attack rate | multiplier, bucket MinionAttackSpeed |
 | 122 | Keen Fangs | `IncreasedMinionCritChance` | 5 / 10 / 15 % | flat |
 | 123 | Slayer | `IncreasedMinionBossDamagePercentage` | 10 / 20 / 30 % | flat |
+
+| 124 | Static Familiars *(exp. 0.3.0)* | `ChanceOnHitToStun` on each minion | 4 / 8 / 12 % | flat, `OnMinions` |
+| 125 | Soul Siphon *(exp. 0.3.0)* | `LifeOnMinionHit` on each minion | 1 / 2 / 3 hp to the owner per minion hit | flat, `OnMinions` |
+
+`OnMinions` enchants are not player stats: a minion's hit uses the minion's own summary
+(`EntityUtility.GetOwnerInfo`, attacker = minion). `EnchantEffectSystem` collects them from the carried tome per
+player; `EnchantMinionSystem` keeps one marked entry (∞ duration + Marker) per condition in every owned minion's
+`ConditionsBuffer`, checked read-only every 10 updates. `SetConditionsJob` only re-levels ApplyBurning / poison /
+radioactive on minions, so those IDs must never be used here. Ranged minions: their projectiles get the stun only
+if the condition is inheritable (unknown).
 
 No Legion (max minions): extra minions are dismissed whenever the bonus drops.
 

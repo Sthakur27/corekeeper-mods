@@ -112,7 +112,7 @@ namespace Enchanting
                 if (summon && slot != held && slot != carried) continue;
                 Originals[slot] = EnchantStorage.Read(em, aux, item);
                 Steps.Add(new Step { Slot = slot, Item = item.objectID });
-                foreach (var def in Enchants.PoolFor(kind))
+                foreach (var def in Enchants.PoolFor(kind, item.objectID))
                     foreach (int level in Levels)
                         if (level <= def.MaxLevel) Steps.Add(new Step { Slot = slot, Item = item.objectID, Def = def, Level = level });
             }
@@ -171,7 +171,8 @@ namespace Enchanting
                 }
                 if (err != null) { Finish(em, err); return; }
                 _applied = true;
-                _wait = SettleTicks;
+                // Minion enchants: EnchantMinionSystem syncs every Interval updates after the effect system.
+                _wait = step.Def != null && step.Def.OnMinions ? SettleTicks + EnchantMinionSystem.Interval + 2 : SettleTicks;
                 return;
             }
             if (--_wait > 0) return;
@@ -183,6 +184,10 @@ namespace Enchanting
             {
                 BaseConds[step.Slot] = Copy(sum);
                 BaseEffects[step.Slot] = Copy(fx);
+            }
+            else if (step.Def.OnMinions)
+            {
+                CheckMinions(em, items[step.Slot], step);
             }
             else
             {
@@ -228,6 +233,40 @@ namespace Enchanting
             _index++;
             _applied = false;
             if (_index >= Steps.Count) Finish(em, null);
+        }
+
+        private static readonly List<Entity> Minions = new List<Entity>();
+
+        // Minion on-hit (OnMinions): every live minion of the player must carry our entry with the raw value, and its
+        // summary must include it. No minions out: SKIP (not counted), summon some and rerun.
+        private static void CheckMinions(EntityManager em, ContainedObjectsBuffer item, Step step)
+        {
+            var def = step.Def;
+            int expected = EnchantMath.Raw(def, step.Level, item.objectData);
+            EnchantMinionSystem.MinionsOf(em, _player, Minions);
+            string line;
+            if (Minions.Count == 0)
+            {
+                line = $"SKIP {step.Item} {def.Name} {Enchants.Roman(step.Level)}: no minions out (summon some, then rerun)";
+                Debug.Log($"[{EnchantingMod.Name}] selftest {line}");
+                if (step.Level == Levels[Levels.Length - 1]) Results.Add(line);
+                return;
+            }
+            int good = 0;
+            var detail = new List<string>();
+            foreach (var m in Minions)
+            {
+                int ours = OurEntry(em, m, def.Condition);
+                var sum = em.GetBuffer<SummarizedConditionsBuffer>(m, true);
+                int total = (int)def.Condition < sum.Length ? sum[(int)def.Condition].value : 0;
+                if (ours == expected && total >= expected) good++;
+                detail.Add($"#{m.Index} entry {ours} total {total}");
+            }
+            bool ok = good == Minions.Count;
+            line = $"{(ok ? "PASS" : "FAIL")} {step.Item} {def.Name} {Enchants.Roman(step.Level)}: {def.Condition} on {good}/{Minions.Count} minions (expected {expected}; {string.Join(", ", detail)})";
+            if (ok) _pass++; else _fail++;
+            Debug.Log($"[{EnchantingMod.Name}] selftest {line}");
+            if (!ok || step.Level == Levels[Levels.Length - 1]) Results.Add(line);
         }
 
         private static List<EnchantEntry> One(EnchantDef def, int level) =>

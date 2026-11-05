@@ -24,9 +24,9 @@ namespace Enchanting
         /// Rolls one enchant onto <paramref name="current"/> (modified in place). Returns a player-facing line, or
         /// null when nothing can be rolled for this item type.
         /// </summary>
-        public static string Roll(List<EnchantEntry> current, EnchantSlot slot)
+        public static string Roll(List<EnchantEntry> current, EnchantSlot slot, ObjectID item = ObjectID.None)
         {
-            var pool = Enchants.PoolFor(slot);
+            var pool = Enchants.PoolFor(slot, item);
             if (pool.Count == 0) return null;
 
             // Upgrade targets: anything in the pool not already at max level.

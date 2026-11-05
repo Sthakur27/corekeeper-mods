@@ -57,6 +57,17 @@ crit rate, % of hits with the target burning / poisoned / stunned / slowed, HP r
 | Knockback | not measurable on a dummy (manual) |
 | plain first vs plain last | within ~5%; otherwise drift (stacking buffs) — rerun |
 
+### Experimental 0.3.0 (Thunderstrike, Piercing, Flame, Static Familiars, Soul Siphon)
+
+- Layer 1: all five are in the selftest. Static Familiars / Soul Siphon are checked on every summoned minion
+  (our entry = expected, minion summary includes it); with no minions out they report SKIP: summon, then rerun.
+- Layer 2 (`/enchant combattest` on a dummy): Flame on a bow/staff = the open question; PASS when burning % is
+  clearly above plain (beams should always pass). Thunderstrike: Soul of Azeos enabled, 60 s runs; more hits /
+  damage than plain. Piercing can't show on one dummy.
+- Manual: Piercing, shoot through a line of 2+ enemies (each gets a damage number). Static Familiars: minions on
+  a live enemy, look for stun stars. Soul Siphon: take some damage, let minions hit, HP climbs per minion hit.
+  Ranged minions only stun if the game passes the stat on to their projectiles.
+
 ## Layer 3 — unattended runner (to do, reuses ModDiagnostics bench mode)
 
 `python Enchanting/Unity/../test/run_tests.py` (planned): restore a pristine test save (world with a training

@@ -90,7 +90,7 @@ namespace Enchanting
             var current = EnchantStorage.Read(em, aux, item);
 
             if (sub == "show" || sub == "info")
-                return Info($"{item.objectID}: {EnchantStorage.Describe(current)}. Pool: {string.Join(", ", Enchants.PoolFor(kind).Select(d => d.Key))}");
+                return Info($"{item.objectID}: {EnchantStorage.Describe(current)}. Pool: {string.Join(", ", Enchants.PoolFor(kind, item.objectID).Select(d => d.Key))}");
             if (sub == "cost")
             {
                 EnchantRoll.Cost(current.Count, out int gold, out int coins);
@@ -142,7 +142,7 @@ namespace Enchanting
                     int n = 1;
                     if (args.Count > 1 && int.TryParse(args[1], out int parsed)) n = System.Math.Max(1, System.Math.Min(parsed, 50));
                     var lines = new List<string>();
-                    for (int i = 0; i < n; i++) lines.Add(EnchantRoll.Roll(current, kind) ?? "nothing to roll.");
+                    for (int i = 0; i < n; i++) lines.Add(EnchantRoll.Roll(current, kind, item.objectID) ?? "nothing to roll.");
                     message = string.Join(" ", lines) + " ";
                     break;
                 }

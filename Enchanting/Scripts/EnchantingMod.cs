@@ -15,7 +15,7 @@ namespace Enchanting
     public sealed class EnchantingMod : IMod
     {
         public const string Name = "Enchanting";
-        public const string Version = "0.2.0";
+        public const string Version = "0.3.0";
         public const string TableObjectName = "Enchanting_Table"; // objectName in the bundle (EnchantingBuilder)
         public const string ButtonTerm = "Enchanting/EnchantButton";
         public const string PlainTerm = "Enchanting/Plain"; // "{0}": shows its format field as-is

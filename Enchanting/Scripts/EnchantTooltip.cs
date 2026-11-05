@@ -66,6 +66,17 @@ namespace Enchanting
                 {
                     Debug.LogWarning($"[{EnchantingMod.Name}] tooltip text for {def.Condition}: {ex.Message}");
                 }
+                finally
+                {
+                    if (def.Note != null)
+                        __result.Add(new TextAndFormatFields
+                        {
+                            text = EnchantingMod.PlainTerm,
+                            formatFields = new[] { def.Note },
+                            dontLocalizeFormatFields = true,
+                            color = EffectColor,
+                        });
+                }
             }
             if (unique)
                 __result.Add(new TextAndFormatFields

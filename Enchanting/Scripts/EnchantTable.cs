@@ -175,7 +175,7 @@ namespace Enchanting
             if (!free && (Count(em, player, ObjectID.GoldBar) < gold || Count(em, player, ObjectID.AncientCoin) < coins))
                 return $"you need {gold} Gold Bars and {coins} Ancient Coins.";
 
-            string result = EnchantRoll.Roll(current, kind);
+            string result = EnchantRoll.Roll(current, kind, item.objectID);
             if (result == null) return "nothing can be rolled for this item.";
             string err = EnchantStorage.Write(em, player, upgradeSlot, current);
             if (err != null) return err;

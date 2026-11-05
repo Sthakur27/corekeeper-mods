@@ -73,6 +73,10 @@
             "guid": ""
         },
         {
+            "path": "Scripts/EnchantMinionSystem.cs",
+            "guid": ""
+        },
+        {
             "path": "Bundles/Enchanting_Windows.assetbundle",
             "guid": ""
         },

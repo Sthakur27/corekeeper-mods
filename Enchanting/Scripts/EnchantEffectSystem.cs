@@ -46,6 +46,8 @@ namespace Enchanting
             public ObjectID CarriedItem;
             public int CarriedAux;
             public long Seen;
+            /// <summary>OnMinions enchants of the carried tome: written onto minions by EnchantMinionSystem.</summary>
+            public readonly Dictionary<ConditionID, int> Minion = new Dictionary<ConditionID, int>();
             public readonly Dictionary<ConditionID, int> Permille = new Dictionary<ConditionID, int>();
         }
 
@@ -65,6 +67,7 @@ namespace Enchanting
         private readonly Dictionary<ConditionID, RelWant> _rel = new Dictionary<ConditionID, RelWant>();
         private readonly Dictionary<ConditionID, int> _ours = new Dictionary<ConditionID, int>();
         private readonly Dictionary<ConditionID, int> _wanted = new Dictionary<ConditionID, int>();
+        private readonly Dictionary<ConditionID, int> _minion = new Dictionary<ConditionID, int>();
         // Stack = Max: best copy per enchant id (raw value for Flat/ItemLevel, permille for Relative).
         private readonly Dictionary<int, MaxPick> _maxFlat = new Dictionary<int, MaxPick>();
         private readonly Dictionary<int, MaxPick> _maxRel = new Dictionary<int, MaxPick>();
@@ -81,6 +84,13 @@ namespace Enchanting
 
         /// <summary>Server: absolute inventory slot of the player's carried summoning tome, or -1.</summary>
         public static int CarriedSlot(Entity player) => States.TryGetValue(player, out var s) ? s.CarriedSlot : -1;
+
+        /// <summary>Server: adds the minion conditions the player's carried tome grants (empty when none).</summary>
+        public static void MinionWants(Entity player, Dictionary<ConditionID, int> into)
+        {
+            if (!States.TryGetValue(player, out var s)) return;
+            foreach (var kv in s.Minion) into[kv.Key] = kv.Value;
+        }
 
         protected override void OnCreate()
         {
@@ -129,6 +139,7 @@ namespace Enchanting
             _rel.Clear();
             _maxFlat.Clear();
             _maxRel.Clear();
+            _minion.Clear();
             var items = EntityManager.GetBuffer<ContainedObjectsBuffer>(player, true);
             var equipment = EntityManager.GetComponentData<EquipmentCD>(player);
             int held = EntityManager.GetComponentData<EquippedObjectCD>(player).equippedSlotIndex;
@@ -146,6 +157,9 @@ namespace Enchanting
             AddFrom(items, equipment.necklaceSlotIndex, aux, heldSlot: false);
             AddFrom(items, equipment.offHandIndex, aux, heldSlot: false);
             if (state.CarriedSlot >= 0) AddItem(items[state.CarriedSlot], aux);
+
+            state.Minion.Clear();
+            foreach (var kv in _minion) if (kv.Value != 0) state.Minion[kv.Key] = kv.Value;
 
             FoldMax(player);
             foreach (var id in EnchantMath.CappedConditions)
@@ -246,6 +260,13 @@ namespace Enchanting
             {
                 var def = e.Def;
                 if (def == null) continue;
+                if (def.OnMinions)
+                {
+                    // Minion on-hit: not a player stat (EnchantMinionSystem writes it onto the minions).
+                    int mv = EnchantMath.Raw(def, e.Level, item.objectData);
+                    _minion[def.Condition] = _minion.TryGetValue(def.Condition, out int m) ? m + mv : mv;
+                    continue;
+                }
                 if (def.Stack == EnchantStack.Max)
                 {
                     // Highest copy wins: permille for multipliers, largest magnitude otherwise (Resilience is negative).

@@ -25,6 +25,7 @@ Use the Overhaul or the individual versions of its features. Installing both run
 | [Potion of Return](WormholePotion/README.md) | A one-use recall to the Core that marks your spot on the map; teleport back to it once from any waypoint. 10 Gold Bars at an Ancient Hologram Pod. |
 | [Drill Pod (Alpha)](DrillUnit/README.md) | End-game hover craft from the Rift Statue: crosses water, lava and pits, drills through walls, lays floor or digs pits around you. Alpha, single player tested. |
 | [Enchanting (Alpha)](Enchanting/README.md) | Random enchantments for weapons, tools and armor from an Enchanting Table, paid with Gold Bars and Ancient Coins; up to three per item. Alpha, single player tested. |
+| [Coin Drops](CoinDrops/README.md) | Enemies you kill (yourself or your pets, minions, arrows and bombs) drop Ancient Coins, scaled by their max health; bosses drop a big pile. |
 | [Armor Dye](ArmorDye/README.md) | Color individual armor pieces, weapons and tools. |
 | [Pet Editor](PetEditor/README.md) | Change a pet's level, talents and color. |
 | [Item Spawner](ItemSpawner/README.md) | Host/admin spawn browser: search every item (modded ones too), take one or a full stack, spawn gear and tools above their base level, and cook any dish from two ingredients. Requires CoreLib and Runic Storage. |

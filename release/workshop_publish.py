@@ -65,6 +65,7 @@ MODS = [
     ("WormholePotion", "Potion of Return", "wormholepotion_logo.png", "Item"),
     ("DrillUnit", "Drill Pod (Alpha)", "drillunit_logo.png", "Item"),
     ("Enchanting", "Enchanting (Alpha)", "enchanting_logo.png", "Item"),
+    ("CoinDrops", "Coin Drops", "coindrops_logo.png", "Other"),
 ]
 OVERHAUL = ("SidsOverhaul", "Sid's Overhaul", "overhaul_logo.png", "Overhaul")
 # Standalone-only items: a mod that needs skipSafetyChecks (Slot Organizer uses the game's file system) cannot be
@@ -105,6 +106,7 @@ COVER_NOTES = {
     "DrillUnit": "Cover is made from in-game screenshots (drilling a tunnel, hovering on lava, a dug pit trench beside a laid floor; HDR captures tone-mapped and brightened, mouse cursor painted out, the rider moved up onto the trench end in the third); title banner and labels added.",
     "Enchanting": "Cover is made from in-game screenshots (the Enchanting Table recipe tooltip, the placed table and its panel, enchanted bow and helmet slots with their violet borders, and an enchanted bow tooltip; HDR captures tone-mapped); title banner and ALPHA plaque added.",
     "MerchantRestock": "Cover is made from in-game screenshots of the Caveling and Fishing Merchants' shops and the Fishing Merchant (HDR captures tone-mapped); title banner and a stopwatch icon added.",
+    "CoinDrops": "Cover is assembled from game art, not a gameplay moment: the game's orange slime sprite and Copper Sword icon, plus an Ancient Coin and the stack-count digits cut from in-game screenshots (HDR captures tone-mapped; the coin rebuilt from its unobscured quarter), over a blurred cave screenshot; title banner and plus/equals signs added.",
 }
 
 # Steam collection with every individual mod (+ CoreLib); processed first so other descriptions can link it.

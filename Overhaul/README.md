@@ -22,7 +22,7 @@ Spend less time repeating chores and more time exploring. Sid's Overhaul brings 
 
 **New in 1.11.0: Coin Pouch, Coin Drops and Wormhole Potion.** Coin Pouch adds a coin slot under the vanity pants: picked-up Ancient Coins go there automatically, up to 99,999, and merchants take payment from it. Coin Drops makes every enemy drop Ancient Coins (more for tougher enemies, a big pile from bosses). The Wormhole Potion (10 Gold Bars at an Ancient Hologram Pod) recalls you to the Core and marks a one-use return point you can teleport back to from any waypoint.
 
-**1.10.4: Relucite storage and bigger units.** Relucite storage and bigger units.** Runic Storage 0.10.0 adds a ninth tier, Relucite, and every tier now holds 40 more slots than the last: Copper units start at 40 and Relucite units hold 360. Upgrade gems cost 40 bars of their material (Copper units still cost 30 Copper Bars). Units you already placed grow to their new size and keep their items.
+**1.10.4: Relucite storage and bigger units.** Runic Storage 0.10.0 adds a ninth tier, Relucite, and every tier now holds 40 more slots than the last: Copper units start at 40 and Relucite units hold 360. Upgrade gems cost 40 bars of their material (Copper units still cost 30 Copper Bars). Units you already placed grow to their new size and keep their items.
 
 **1.10.5:** Vehicle Speed 1.2.0: boats and go-karts now default to 1.5x. Speeds you already chose are kept.
 

@@ -5,7 +5,7 @@
 Defaults to WormholePotion/Bundles/WormholePotion_Windows.assetbundle. Fails when:
 - any networked prefab (GhostAuthoringComponent) is named like a vanilla prefab (shared ghost type,
   Runic Storage 0.7.37 lesson) or two ghost prefabs share a prefabId;
-- the potion is not a 10 Gold Bar cast item, or the return marker is missing, is not a Waypoint-type
+- the potion is not a 25 Gold Bar cast item, or the return marker is missing, is not a Waypoint-type
   map marker, or would not be saved with the world.
 """
 import glob, os, sys
@@ -52,7 +52,7 @@ def check(path):
         errors.append('missing WormholePotion_Potion')
     else:
         need = [(r['objectName'], r['amount']) for r in potion['InventoryItemAuthoring']['requiredObjectsToCraft']]
-        if need != [('GoldBar', 10)] or 'CastItemAuthoring' not in potion:
+        if need != [('GoldBar', 25)] or 'CastItemAuthoring' not in potion:
             errors.append(f'potion recipe/cast wrong: {need}')
     marker = prefabs.get('WormholePotion_MarkerEntity')
     if marker is None:

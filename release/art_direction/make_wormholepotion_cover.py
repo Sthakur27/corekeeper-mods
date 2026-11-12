@@ -3,7 +3,8 @@
     python release/art_direction/make_wormholepotion_cover.py [--out DIR]
 
 0. Crafting column: the potion's own 16 px inventory sprite blown up nearest-neighbour, the Ancient Hologram
-   Pod window ("Remnants") with the potion's recipe slot, and the 10 Gold Bar icon from its tooltip (capture 00.36.10.40).
+   Pod window ("Remnants") with the potion's recipe slot (capture 00.36.10.40), and the game's own Gold Bar
+   sprite (read from the installed game, cached in ignored build/) above the 25 Gold Bar cost.
 1. The player mid-cast with the potion: blue glow and cast bar (HDR capture 01.10.59.19).
 2. The potion-icon "Wormhole Return Point" on the map, with its hover title (capture 00.38.00.07).
 3. The map's teleport line from a waypoint to that marker (screenshot Sid pasted in chat, SDR).
@@ -32,7 +33,8 @@ FRAMES = {'hdr:01.10.59.19': [(586, 286, 676, 386)], 'hdr:00.36.10.40': [(676, 2
 PANEL_Y0, PANEL_Y1 = TOP + 16, 566
 ICON = covers.REPO / 'WormholePotion/Unity/Art/WormholePotion_icon.png'
 CRAFT = ('hdr:00.36.10.40', (540, 182, 740, 352), GAIN, 24, 314)   # the pod's window, below the big icon
-GOLD_BAR = ('hdr:00.36.10.40', (854, 661, 887, 699))                 # gold bar icon with its green "10"
+GAME_BUNDLE = Path(r'C:/Program Files (x86)/Steam/steamapps/common/Core Keeper/CoreKeeper_Data/StreamingAssets/aa/StandaloneWindows64/defaultlocalgroup_assets_all.bundle')
+GOLD_BAR = covers.REPO / 'build/artwork-review/bars/goldbar.png'   # cache, never committed
 
 
 def pixel_text(s, size=8, gap=3):
@@ -87,6 +89,18 @@ def arrow(canvas, x, y):
     canvas.paste(out, (x - out.width // 2 + 3, y - out.height // 2), out)
 
 
+def gold_bar():
+    """The game's 16 px Gold Bar item sprite, extracted once from the installed game."""
+    if not GOLD_BAR.exists():
+        import UnityPy
+        GOLD_BAR.parent.mkdir(parents=True, exist_ok=True)
+        for o in UnityPy.load(str(GAME_BUNDLE)).objects:
+            if o.type.name == 'Sprite' and o.peek_name() == 'lootsprite_goldBar':
+                o.read().image.save(GOLD_BAR)
+                break
+    return Image.open(GOLD_BAR).convert('RGBA')
+
+
 def compose():
     bg = covers.crop('hdr:00.35.22.78', (330, 100, 970, 460))
     bg = bg.resize((W, H), Image.LANCZOS).filter(ImageFilter.GaussianBlur(6))
@@ -131,14 +145,10 @@ def compose():
     for (_, a1), (b0, _) in zip(columns, columns[1:]):
         arrow(canvas, (a1 + b0) // 2, (PANEL_Y0 + PANEL_Y1) // 2)
 
-    # Labels: the gold bar icon (with its "10") in place of a number under the crafting column.
-    bar = covers.crop(GOLD_BAR[0], GOLD_BAR[1])
-    bar = ImageEnhance.Brightness(bar).enhance(GAIN)
-    bar = bar.resize((round(bar.width * 52 / bar.height), 52), Image.LANCZOS)
-    # keep only the icon's bright pixels; the tooltip's dark backing drops out
-    keep = bar.convert('L').point(lambda v: 255 if v > 60 else 0).filter(ImageFilter.MaxFilter(3))
-    canvas.paste(bar, (cx - bar.width // 2, PANEL_Y1 + 4), keep)
-    paste_text(canvas, pixel_text('10 GOLD BARS', gap=2), cx, PANEL_Y1 + 62, '#ffffff')
+    # Labels: the game's Gold Bar sprite in place of a number under the crafting column.
+    bar = gold_bar().resize((48, 48), Image.NEAREST)
+    canvas.paste(bar, (cx - bar.width // 2, PANEL_Y1 + 6), bar)
+    paste_text(canvas, pixel_text('25 GOLD BARS', gap=2), cx, PANEL_Y1 + 62, '#ffffff')
     paste_text(canvas, pixel_text('AT HOLOGRAM POD', gap=2), cx, PANEL_Y1 + 94, MINT)
     for n, (_, _, _, x0, x1, lines) in enumerate(STEPS, 1):
         c = (x0 + x1) // 2

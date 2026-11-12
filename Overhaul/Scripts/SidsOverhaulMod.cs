@@ -21,7 +21,7 @@ namespace SidsOverhaul
     public sealed class SidsOverhaulMod : IMod
     {
         public const string Name = "SidsOverhaul";
-        public const string Version = "1.15.0";
+        public const string Version = "1.15.1";
 
         public void EarlyInit()
         {

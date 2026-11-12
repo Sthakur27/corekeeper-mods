@@ -55,7 +55,7 @@ namespace PotionSeller
         /// </summary>
         private static readonly (string name, int buyPrice)[] OptionalPotions =
         {
-            ("WormholePotion_Potion", 800),   // Potion of Return
+            ("WormholePotion_Potion", 2500),   // Potion of Return
         };
 
         /// <summary>The Caveling Merchant's list: <see cref="BasePotions"/> plus installed optional items.</summary>

@@ -4,6 +4,8 @@
 
 Spend less time repeating chores and more time exploring. Sid's Overhaul brings the individual mods in this repository into one package: easier farming and fishing, equipment tools, merchant supplies, and adjustable combat and progression.
 
+**New in 1.15.1:** Potion of Return now costs 25 Gold Bars to craft (was 10), and 2,500 coins at the Caveling Merchant (was 800).
+
 **New in 1.15.0: coins and prices.** Coin Drops now only pays for your kills (including your pets, minions, arrows and bombs; traps and enemy-on-enemy kills drop nothing) and drops half as many coins by default. The Coin Pouch slot now also shows next to the hotbar at merchants, chests and crafting stations. Potion Seller: the Caveling Merchant also sells the Potion of Return (800 coins); Healing Potions now cost 100 and Recall Idols 500.
 
 **New in 1.14.1:** Auto Replant: replanting from seeds on the ground no longer floods the game log with conveyor warnings.
@@ -72,7 +74,7 @@ Prefer to pick individual mods? Use [Sid's Core Keeper Mods collection](https://
 | Runic Storage | Craft a storage workbench, connect storage units, and upgrade them through nine tiers from 40 to 360 slots per unit. One-click category tabs (Materials, Weapons, Tools, Armor, Blocks, Furniture and more) filter the shared inventory, and Sort groups it by category. Inspired by Magic Storage for Terraria. |
 | Solarite Drill | A gold stationary drill one tier above the Scarlet Drill with 3x its mining damage. Craft for 10 Galaxite + 10 Solarite Bars at a Solarite Workbench. |
 | Magic Mirror | Reusable three-second return to the Core. Craft for 50 Solarite Bars + 10 Recall Idols at a Solarite Workbench, or get one from Omoroth with a 20% chance per defeat. |
-| Potion of Return | (formerly Wormhole Potion) One-use recall to the Core that marks your spot on the map; teleport back to it once from any waypoint. Craft for 10 Gold Bars at an Ancient Hologram Pod. |
+| Potion of Return | (formerly Wormhole Potion) One-use recall to the Core that marks your spot on the map; teleport back to it once from any waypoint. Craft for 25 Gold Bars at an Ancient Hologram Pod. |
 | Drill Pod (Alpha) | End-game hover craft (Rift Statue: 300 Pandorium + 100 Solarite Bars) that crosses water, lava and pits, drills through walls and lays floor or digs pits around you. Tested in single player only. |
 | Enchanting (Alpha) | Random enchantments for weapons, tools and armor from an Enchanting Table (Galaxite Workbench), paid with Gold Bars and Ancient Coins; up to three per item. Tested in single player only. |
 | Armor Dye | Color individual armor, weapons and tools with an inventory palette. |

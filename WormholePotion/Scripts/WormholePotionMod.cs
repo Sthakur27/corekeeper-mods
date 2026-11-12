@@ -6,7 +6,7 @@ namespace WormholePotion
 {
     public sealed class WormholePotionMod : IMod
     {
-        public const string Version = "1.1.1";
+        public const string Version = "1.2.0";
         public const string PotionName = "WormholePotion_Potion";
         public const string MarkerName = "WormholePotion_Marker";
         internal static bool Active;
@@ -32,7 +32,7 @@ namespace WormholePotion
         {
             Active = true;
             API.Authoring.OnObjectTypeAdded += OnObjectTypeAdded;
-            Debug.Log("[WormholePotion] v" + Version + " loaded: one-use recall that marks a one-use waypoint back, 10 Gold Bars at the Ancient Hologram Pod.");
+            Debug.Log("[WormholePotion] v" + Version + " loaded: one-use recall that marks a one-use waypoint back, 25 Gold Bars at the Ancient Hologram Pod.");
         }
         public void Init() { }
         public void Update() { }

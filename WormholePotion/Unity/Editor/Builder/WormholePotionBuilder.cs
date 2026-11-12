@@ -9,7 +9,7 @@ using Object = UnityEngine.Object;
 
 /// <summary>
 /// Builds the Wormhole Potion mod objects from vanilla authoring components only:
-/// - WormholePotion_Potion: a cast item with the Recall Idol's cast values, 10 Gold Bars.
+/// - WormholePotion_Potion: a cast item with the Recall Idol's cast values, 25 Gold Bars.
 /// - WormholePotion_Marker: a copy of the vanilla WayPointMapMarker prefab (values from WormholePotionVanilla.txt,
 ///   written by gen_assets.py from dump_vanilla.py), minus DontSerializeAuthoring so it is saved with the world.
 ///   Its MapMarkerAuthoring type is Waypoint, so the map lets players at a waypoint teleport to it.
@@ -87,7 +87,7 @@ public static class WormholePotionBuilder
                 B(so, "isStackable", true);
                 var list = so.FindProperty("requiredObjectsToCraft"); list.arraySize = 1;
                 list.GetArrayElementAtIndex(0).FindPropertyRelative("objectName").stringValue = "GoldBar";
-                list.GetArrayElementAtIndex(0).FindPropertyRelative("amount").intValue = 10;
+                list.GetArrayElementAtIndex(0).FindPropertyRelative("amount").intValue = 25;
             });
             Fill(Add(go, "CastItemAuthoring"), so =>
             {

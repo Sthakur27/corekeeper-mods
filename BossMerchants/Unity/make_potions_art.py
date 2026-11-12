@@ -136,173 +136,6 @@ def frustum(cx, ytop, rx0, ry0, ybot, rx1, ry1, hem_dx=0):
     return body | top | bottom, top
 
 
-# Scale: drawn to the vanilla CavelingMerchant body (Sid's in-game note 2026-11-12: the first pass rendered bulkier
-# than vanilla merchants and the player). Budget per frame: <= 26 px wide, <= 47 tall, ~575 opaque px like vanilla;
-# feet centred under the pivot (x 32) on the vanilla ground row 53.
-def draw_robe(cv, dy, hem_dx):
-    """Moss robe: a squat bell. The hem is an oval that curves toward the viewer; folds run down the front."""
-    cx, ytop, ybot = 32, 38 + dy, 48 + dy
-    rx0, rx1, ry1 = 5.1, 7.2, 2.5
-    pix, top = frustum(cx, ytop, rx0, 1.7, ybot, rx1, ry1, hem_dx)
-    out = {}
-    for (x, y) in pix:
-        t = (y - ytop) / (ybot + ry1 - ytop)
-        nx = (x - cx - hem_dx * t * t) / rx1
-        v = 0.8 - 0.55 * t - 0.32 * nx
-        # folds: two soft creases following the bell
-        for f in (-0.3, 0.32):
-            fx = cx + f * (rx0 + (rx1 - rx0) * t) + hem_dx * t * t
-            if y > ytop + 3 and abs(x - fx) < 0.6:
-                v -= 0.22
-            elif y > ytop + 3 and 0.6 <= fx - x < 1.6:
-                v += 0.1
-        out[(x, y)] = q(v, 'robe')
-    # Ivy stain along the hem's front oval
-    for (x, y) in list(out):
-        hem_y = ybot + ry1 * math.sqrt(max(0.0, 1 - ((x - cx - hem_dx) / rx1) ** 2))
-        if y >= hem_y - 1.1:
-            out[(x, y)] = 'o' if x < cx - 2 + hem_dx else 'n' if x < cx + 3 + hem_dx else 'm'
-    # drips (1 px under the stain)
-    for dxp in (-4, 3):
-        x = cx + dxp + hem_dx
-        hy = int(ybot + ry1 * math.sqrt(max(0.0, 1 - (dxp / rx1) ** 2)))
-        out[(x, hy + 1)] = 'n' if dxp < 0 else 'm'
-    cv.part(out, 'K')
-    # belt: a copper band following the body's oval (curves down at the front)
-    belt = {}
-    by, brx = 41 + dy, 6.0
-    for x in range(int(cx - brx), int(cx + brx) + 1):
-        yy = by + 1.7 * math.sqrt(max(0.0, 1 - ((x - cx) / (brx + 0.5)) ** 2))
-        nx = (x - cx) / brx
-        belt[(x, int(round(yy)))] = 'X' if x == cx - 3 else 'x' if nx < -0.3 else 'v' if nx < 0.5 else 'u'
-        belt[(x, int(round(yy)) + 1)] = 'u' if nx > 0.2 else 'v'
-    for p, ch in belt.items():
-        cv.put(p[0], p[1], ch)
-    # two little vials hanging off the belt: cork tops seen from above
-    for (vx, liquid) in ((cx - 4, 'onm'), (cx + 2, 'ihg')):
-        vy = int(round(by + 1.7 * math.sqrt(max(0.0, 1 - ((vx - cx) / 6.5) ** 2)))) + 2
-        cv.part({(vx, vy): 'X', (vx + 1, vy): 'u', (vx, vy + 1): liquid[0], (vx + 1, vy + 1): liquid[1],
-                 (vx, vy + 2): liquid[1], (vx + 1, vy + 2): liquid[2]}, 'K')
-
-
-def draw_capelet(cv, dy):
-    """Purple capelet over the shoulders; its top plane faces the camera and catches the light."""
-    cx = 32
-    pix, top = frustum(cx, 35 + dy, 4.7, 1.9, 38 + dy, 6.8, 2.2)
-    out = {}
-    for (x, y) in pix:
-        t = (y - (35 + dy)) / 5.4
-        nx = (x - cx) / 6.8
-        v = 0.95 - 0.75 * t - 0.35 * nx
-        out[(x, y)] = q(v, 'purple')
-    for (x, y) in list(out):   # pink trim along the front edge
-        edge = 38 + dy + 2.2 * math.sqrt(max(0.0, 1 - ((x - cx) / 6.8) ** 2))
-        if y >= edge - 0.8:
-            out[(x, y)] = 'o' if x < cx - 3 else 'n' if x < cx + 3 else 'm'
-    cv.part(out, 'k')
-
-
-def draw_head(cv, dy, blink):
-    """Hood seen from above: a big lit crown, the bone beak mask low at the front, beak tilting down."""
-    cx, cy = 33, 29 + dy
-    rx, ry = 6.0, 5.3
-    hood = {}
-    for (x, y) in ellipse(cx, cy, rx, ry):
-        nxv, nyv = (x - cx) / rx, (y - cy) / ry
-        v = 0.46 - 0.32 * nxv - 0.6 * nyv + 0.18 * (1 - nxv * nxv - nyv * nyv)
-        hood[(x, y)] = q(v, 'purple')
-    # drooping tip curling back over the flask
-    for (x, y), v in (((26, 24), 0.95), ((27, 24), 0.9), ((26, 25), 0.8), ((27, 25), 0.85), ((28, 25), 0.9),
-                      ((28, 26), 0.8), ((29, 26), 0.85), ((25, 24), 0.7)):
-        hood[(x, y + dy)] = q(v, 'purple')
-    # top plane of the hood catches the light: a warm highlight cluster on the crown
-    for (x, y) in ((30, 25), (31, 25), (32, 25), (29, 26), (30, 26), (31, 26), (30, 27)):
-        if (x, y + dy) in hood:
-            hood[(x, y + dy)] = 'Q'
-    cv.part(hood, 'k')
-    # face opening: shadowed hollow under the hood's front brim, mask set low into it
-    for p in ellipse(36.0, 32.6 + dy, 3.9, 2.5):
-        cv.put(p[0], p[1], 'P')
-    mask = {}
-    for (x, y) in ellipse(36.8, 33.3 + dy, 3.4, 2.1):
-        mask[(x, y)] = 'e' if y < 32.5 + dy else 'd' if y < 34 + dy else 'c'
-    # beak: tapered wedge pointing right and down; lit top ridge, dark underside
-    for i in range(5):
-        x = 38 + i
-        y0 = int(round(32 + dy + i * 0.5))
-        h = 3 if i < 2 else 2 if i < 4 else 1
-        for j in range(h):
-            mask[(x, y0 + j)] = 'e' if j == 0 else 'c' if j < h - 1 else 'b'
-    cv.part(mask, 'k')
-    # brim shadow: the hood's front edge overhangs the mask
-    for x in range(33, 40):
-        y = int(round(31 + dy + 0.15 * (x - 33)))
-        if cv.px.get((x, y), ('',))[0] in 'PpqrQ':
-            cv.put(x, y, 'P')
-    # goggle lens: 2x2, glowing (eye sheet), ringed
-    for (x, y) in ((33, 32), (33, 33), (34, 34), (35, 34)):
-        cv.put(x, y + dy, 'k')
-    for (x, y), ch in (((34, 32), 'y'), ((35, 32), 'y'), ((34, 33), 'y'), ((35, 33), 'Y')):
-        if blink:
-            cv.put(x, y + dy, 'f')
-        else:
-            cv.put(x, y + dy, ch, 'eye')
-
-
-def draw_flask(cv, dx, dy, level, bubbles):
-    """Round glass flask on the back. From above: the brew's surface is an oval, the cork top is an oval."""
-    cx, cy, r = 26 + dx, 29 + dy, 5.4
-    ball = ellipse(cx, cy, r, r)
-    sy = cy + level                      # brew surface height
-    out = {}
-    for (x, y) in ball:
-        half = math.sqrt(max(0.0, r * r - (sy - cy) ** 2))
-        on_surface = ((x - cx) / max(half, 1)) ** 2 + ((y - sy) / 1.4) ** 2 <= 1.0
-        if on_surface:
-            out[(x, y)] = 'O' if x < cx + half * 0.3 else 'o'
-        elif y > sy:
-            nxv, nyv = (x - cx) / r, (y - cy) / r
-            v = 0.62 - 0.3 * nxv - 0.45 * nyv
-            out[(x, y)] = q(v, 'pink')
-        else:
-            nxv, nyv = (x - cx) / r, (y - cy) / r
-            out[(x, y)] = 'e' if nxv + nyv < -1.05 else 'i' if nxv + nyv < -0.2 else 'h'
-    # glass highlight (deliberate 3 px cluster on the top-left of the glass)
-    for p, ch in (((cx - 3, cy - 3), 'w'), ((cx - 4, cy - 2), 'e'), ((cx - 2, cy - 4), 'e')):
-        if p in out:
-            out[p] = ch
-    for bx, by in bubbles:
-        p = (cx + bx, cy + by)
-        if p in out and p[1] > sy + 1 and out[p] in 'mn':
-            out[p] = 'O'
-    neck = {}
-    for y in range(cy - 9, cy - 4):
-        for x in range(cx - 2, cx + 1):
-            neck[(x, y)] = 'e' if x == cx - 2 else 'i' if x == cx - 1 else 'h'
-    cv.part(neck, 'G', 'flask')
-    cv.part(out, 'G', 'flask')
-    # cork: a short copper cylinder whose top is a bright oval
-    cork = {}
-    for (x, y) in ellipse(cx - 1, cy - 10, 2.2, 1.1):
-        cork[(x, y)] = 'X' if (x < cx - 1 and y < cy - 10) else 'x'
-    for x in range(cx - 3, cx + 1):
-        cork[(x, cy - 9)] = 'v' if x < cx - 1 else 'u'
-    cv.part(cork, 'k')
-    # vine wrapped round the bulb with two leaf clusters
-    vine = {}
-    for (x, y) in ball:
-        if math.hypot(x - cx, y - cy) > r - 0.6:
-            continue
-        s = (x - cx) - 0.75 * (y - cy)
-        if -4.9 < s < -3.7:
-            vine[(x, y)] = '7' if s > -4.3 else '6'
-    for p, ch in vine.items():
-        cv.put(p[0], p[1], ch, 'vine')
-    for leaf in (((cx - 6, cy - 1), (cx - 5, cy - 1), (cx - 6, cy), (cx - 5, cy)),
-                 ((cx - 2, cy + 5), (cx - 1, cy + 5), (cx - 2, cy + 6))):
-        cv.part({p: '9' if i == 0 else '8' if i < 3 else '7' for i, p in enumerate(leaf)}, 'K', 'vine')
-
-
 def capsule(p0, p1, rad):
     (x0, y0), (x1, y1) = p0, p1
     out = set()
@@ -316,10 +149,282 @@ def capsule(p0, p1, rad):
     return out
 
 
+# Scale: drawn to the vanilla CavelingMerchant body (Sid's in-game note 2026-11-12: the first pass rendered bulkier
+# than vanilla merchants and the player). Budget per frame: <= 26 px wide, <= 47 tall, ~575 opaque px like vanilla
+# (sheet total 0.85-1.15x vanilla's 13,684); feet on the vanilla ground row 53.
+#
+# Restyle (2026-11-12, Sid's in-game screenshot beside the vanilla Caveling Merchant): the previous pass read as a
+# bright, flat, compact blob with a big glowing flask. This pass follows the vanilla merchant's look instead:
+#   - dark, muted ramps (6-8 close steps per material) shaded in small ~2x2 clusters, so the body sinks into the
+#     cave light and only small accents (beak ridge, wood highlights, the vial) catch the eye;
+#   - no separate outline colour: a part's silhouette ring is a dark step of its own ramp (one step lighter on the
+#     lit top/left side), the way vanilla's edges are mid/dark tones of the material they bound (finish_art.py
+#     then darkens edges next to solid mass further);
+#   - a narrow body with thin props sticking out (a crooked 2 px walking stick held by the reaching back arm with
+#     a glowing vial hanging off its crook, the beak, the hood's drooping tip, the flask held out in the front
+#     hand) instead of one wide mass; a leather apron and a back satchel carry the mid-tone browns vanilla uses;
+#   - the glow (Merchant_Light) is only the hanging vial's brew, ~6 px a frame (vanilla's lantern is ~18).
+MPAL = {   # picked from the finisher's master palette (vanilla-sampled) so the palette lock keeps them
+    # hood / capelet: deep dusky purple, indigo shadows, warm mauve top light
+    'H0': '0d0721', 'H1': '1f102a', 'H2': '2b213b', 'H3': '2b215f', 'H4': '4c376f', 'H5': '6a4388', 'H6': '895392',
+    # robe: the vanilla merchant's dark teal-moss
+    'R0': '0b1917', 'R1': '0e2522', 'R2': '1c3b31', 'R3': '2a4e4a', 'R4': '2b5432', 'R5': '356a2c', 'R6': '4c6a4a',
+    # bone mask
+    'B0': '474130', 'B1': '645d53', 'B2': '8f7b77', 'B3': 'a98963', 'B4': 'd4b987',
+    # wood / leather (vanilla browns)
+    'W0': '352a1c', 'W1': '49351d', 'W2': '614822', 'W3': '915b26', 'W4': 'b58047',
+    # glass
+    'L0': '0b1917', 'L1': '232930', 'L2': '316471', 'L3': '3d7983', 'L4': 'a5cada',
+    # Ivy brew in the held flask (not glowing)
+    'Y0': '2b215f', 'Y1': '723e8a', 'Y2': 'a555a4',
+    # herbs sticking out of the satchel
+    'V0': '2b5432', 'V1': '356a2c', 'V2': '4c8d32',
+    # glowing brew in the hanging vial (Merchant_Light)
+    'G1': '0f9e88', 'G2': '4ad8ae', 'G3': '94f7dd',
+    # goggle lens
+    'E1': 'd5a43c', 'E0': '232930',
+}
+for _k, _v in MPAL.items():
+    PAL[_k] = _v
+    RGB[_k] = tuple(int(_v[i:i + 2], 16) for i in (0, 2, 4))
+MGLOW = {'G1', 'G2', 'G3'}
+MR = {'hood': ['H%d' % i for i in range(7)], 'robe': ['R%d' % i for i in range(7)],
+      'bone': ['B%d' % i for i in range(5)], 'wood': ['W%d' % i for i in range(5)],
+      'glass': ['L%d' % i for i in range(5)], 'brew': ['Y0', 'Y1', 'Y2'],
+      # hood fill: weighted toward the dark middle steps; the light step only on the lit crown edge
+      'hoodfill': ['H0', 'H1', 'H2', 'H3', 'H3', 'H4', 'H4', 'H4', 'H5']}
+
+
+def grain(x, y):
+    """Deterministic cluster grain in {-1, 0, 1}: constant over irregular ~2x2 blocks (never single pixels)."""
+    bx, by = (x + (y // 2) % 2) // 2, y // 2
+    h = (bx * 73856093 ^ by * 19349663) & 0xffff
+    return (h % 5) // 2 - 1 if h % 7 else 0
+
+
+def qm(v, ramp, lo=2):
+    """Quantise light value v (0..1) onto ramp[lo:] (the darkest steps are kept for edges and occlusion)."""
+    r = MR[ramp][lo:]
+    return r[max(0, min(len(r) - 1, int(v * len(r))))]
+
+
+def mpart(cv, pix, ramp, tag='', ring=True):
+    """Draw {(x, y): key} with a 1 px ring in the ramp's own dark tones: step 1 on the shadow (bottom/right)
+    side, step 2 on the lit top/left side. Vanilla edges are dark shades of the material, not one line colour."""
+    if ring:
+        r = MR[ramp]
+        ringpx = {}
+        for (x, y) in pix:
+            for a, b in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                p = (x + a, y + b)
+                if p in pix:
+                    continue
+                lit = (a, b) in ((-1, 0), (0, -1))
+                if not lit:
+                    ringpx[p] = r[2]
+                elif p not in ringpx:
+                    ringpx[p] = r[3]
+        for p, ch in ringpx.items():
+            cv.put(p[0], p[1], ch, tag)
+    for (x, y), ch in pix.items():
+        cv.put(x, y, ch, tag)
+
+
+def draw_stick(cv, dy, hand, tip_dx, sway):
+    """Crooked walking stick on the back side: tip on the ground, crook above the hood, a vial hanging off it.
+    Two px wide like vanilla's staff (lit left column, shaded right column), knots every few px."""
+    hx, hy = hand
+    tip = (18 + tip_dx, 53)
+    top = (19 + (hx - 20), 12 + dy)
+    n = tip[1] - top[1]
+    for i in range(n + 1):
+        y = tip[1] - i
+        x = int(round(tip[0] + (top[0] - tip[0]) * i / n))
+        hi = i > n * 0.4
+        lit, sh = ('W4', 'W2') if hi else ('W3', 'W1')
+        if i % 6 == 2:
+            lit, sh = 'W2', 'W0'          # knot
+        cv.put(x, y, lit)
+        if i < n - 1:
+            cv.put(x + 1, y, sh)
+    cx, cy = top
+    # crook curling forward (its top catches the light)
+    for (x, y), ch in (((cx, cy - 1), 'W3'), ((cx + 1, cy - 2), 'W4'), ((cx + 2, cy - 2), 'W4'),
+                       ((cx + 3, cy - 2), 'W3'), ((cx + 1, cy - 1), 'W2'), ((cx + 2, cy - 1), 'W1'),
+                       ((cx + 3, cy - 1), 'W1'), ((cx + 4, cy - 1), 'W2'), ((cx + 4, cy), 'W1')):
+        cv.put(x, y, ch)
+    # cord + potion vial: cork, glowing brew, dark glass; swings with `sway`
+    vx = cx + 4 + sway
+    cv.put(cx + 4, cy + 1, 'W0')
+    cv.put(vx, cy + 2, 'W0')
+    vial = {(vx, cy + 3): 'W4', (vx - 1, cy + 4): 'L3', (vx, cy + 4): 'G3', (vx + 1, cy + 4): 'L2',
+            (vx - 1, cy + 5): 'G2', (vx, cy + 5): 'G2', (vx + 1, cy + 5): 'G1',
+            (vx - 1, cy + 6): 'G1', (vx, cy + 6): 'G1', (vx + 1, cy + 6): 'L2', (vx, cy + 7): 'L1'}
+    for (x, y), ch in vial.items():
+        cv.put(x, y, ch, 'flask')
+    for (x, y), ch in (((vx - 2, cy + 5), 'L2'), ((vx - 2, cy + 6), 'L1'), ((vx + 2, cy + 5), 'L1'),
+                       ((vx + 2, cy + 6), 'L0'), ((vx - 1, cy + 7), 'L1'), ((vx + 1, cy + 7), 'L0')):
+        cv.put(x, y, ch)
+    # the hand gripping it
+    for (x, y), ch in (((hx, hy), 'R6'), ((hx + 1, hy), 'R5'), ((hx, hy + 1), 'R4'), ((hx + 1, hy + 1), 'R3'),
+                       ((hx - 1, hy), 'R4'), ((hx + 2, hy + 1), 'R1')):
+        cv.put(x, y, ch)
+
+
+def draw_back_arm(cv, dy, hand):
+    """The far arm reaching back to the stick: a thin sleeve, shaded (it is on the far side)."""
+    hx, hy = hand
+    sleeve = {}
+    for (x, y) in capsule((27, 35 + dy), (hx + 1, hy), 1.0):
+        v = 0.55 - 0.3 * (y - 35 - dy) / 4.0 + 0.15 * grain(x, y)
+        sleeve[(x, y)] = qm(v, 'robe')
+    mpart(cv, sleeve, 'robe')
+
+
+def draw_satchel(cv, dy):
+    """Leather satchel slung on the back hip, seen from above (lit top face), under the reaching back arm."""
+    x0, y0 = 22, 36 + dy
+    box = {}
+    for y in range(y0, y0 + 8):
+        for x in range(x0, x0 + 5):
+            if y < y0 + 2:
+                box[(x, y)] = 'W4' if (x - x0) + (y - y0) < 2 else 'W3'      # top face
+            elif y < y0 + 4:
+                box[(x, y)] = 'W2' if x < x0 + 3 else 'W1'                    # flap
+            else:
+                box[(x, y)] = 'W2' if (x < x0 + 2 and (x + y) % 5) else 'W1'  # front face, darker low
+    box[(x0 + 2, y0 + 3)] = 'B3'   # buckle
+    box[(x0 + 2, y0 + 4)] = 'B1'
+    mpart(cv, box, 'wood')
+
+
+def draw_robe(cv, dy, hem_dx):
+    """Moss robe: a narrow bell, oval hem curving toward the viewer, ragged tatters, cluster-shaded folds."""
+    cx, ytop, ybot = 31, 36 + dy, 48 + dy
+    rx0, rx1, ry1 = 4.2, 5.8, 1.7
+    pix, top = frustum(cx, ytop, rx0, 1.4, ybot, rx1, ry1, hem_dx)
+    out = {}
+    for (x, y) in pix:
+        t = (y - ytop) / (ybot + ry1 - ytop)
+        c = cx + hem_dx * t * t
+        nx = (x - c) / rx1
+        v = 1.04 - 0.55 * t - 0.42 * nx + 0.15 * grain(x, y)
+        for f in (-0.35, 0.3):   # two creases: dark line, lit ridge on its left
+            fx = c + f * (rx0 + (rx1 - rx0) * t)
+            if y > ytop + 2 and abs(x - fx) < 0.5:
+                v -= 0.22
+            elif y > ytop + 2 and 0.5 <= fx - x < 1.5:
+                v += 0.1
+        out[(x, y)] = qm(v, 'robe')
+    # ragged hem: notch every fourth column of the bottom row, extend a few tatters by one
+    bottom = {}
+    for (x, y) in out:
+        bottom[x] = max(bottom.get(x, -1), y)
+    for x, y in sorted(bottom.items()):
+        k = (x - cx) % 4
+        if k == 1:
+            out.pop((x, y), None)
+        elif k == 3 and (x, y + 1) not in out:
+            out[(x, y + 1)] = 'R2'
+    # leather apothecary apron down the front (follows the bell, stained with Ivy brew)
+    for (x, y) in list(out):
+        if y <= 40 + dy:
+            continue
+        t = (y - ytop) / (ybot + ry1 - ytop)
+        c = cx + 1 + hem_dx * t * t
+        half = 1.6 + 1.6 * t
+        if abs(x - c) <= half:
+            nx = (x - c) / half
+            v = 0.7 - 0.6 * t - 0.35 * nx + 0.15 * grain(x, y)
+            out[(x, y)] = qm(v, 'wood', 1)
+    for (x, y), ch in (((cx + 2, 44 + dy), 'Y1'), ((cx + 3, 44 + dy), 'Y0'), ((cx + 2, 45 + dy), 'Y0'),
+                       ((cx - 1, 47 + dy), 'Y1'), ((cx - 1, 48 + dy), 'Y0')):
+        if (x, y) in out:
+            out[(x, y)] = ch
+    mpart(cv, out, 'robe')
+    # belt with a bone buckle
+    by, brx = 39 + dy, 4.7
+    for x in range(int(cx - brx), int(cx + brx) + 1):
+        yy = int(round(by + 1.3 * math.sqrt(max(0.0, 1 - ((x - cx) / (brx + 0.6)) ** 2))))
+        nx = (x - cx) / brx
+        cv.put(x, yy, 'W3' if nx < -0.4 else 'W2' if nx < 0.4 else 'W1')
+        cv.put(x, yy + 1, 'W1' if nx < 0.3 else 'W0')
+    byy = int(round(by + 1.3))
+    cv.put(cx - 1, byy, 'B3'); cv.put(cx - 1, byy + 1, 'B1')
+    # a vial tucked in the belt
+    for (x, y), ch in (((cx + 2, byy - 1), 'W4'), ((cx + 2, byy), 'Y1'), ((cx + 3, byy), 'Y1'),
+                       ((cx + 2, byy + 1), 'Y1'), ((cx + 3, byy + 1), 'Y0')):
+        cv.put(x, y, ch)
+
+
+def draw_capelet(cv, dy):
+    """Short purple capelet over the shoulders: lit top plane, ragged front edge."""
+    cx = 31
+    pix, top = frustum(cx, 33 + dy, 4.2, 1.6, 36 + dy, 6.0, 1.6)
+    out = {}
+    for (x, y) in pix:
+        t = (y - (33 + dy)) / 4.6
+        nx = (x - cx) / 6.0
+        v = 0.8 - 0.7 * t - 0.42 * nx + 0.15 * grain(x, y)
+        out[(x, y)] = qm(v, 'hoodfill')
+    bottom = {}
+    for (x, y) in out:
+        bottom[x] = max(bottom.get(x, -1), y)
+    for x, y in sorted(bottom.items()):
+        if (x - cx) % 3 == 0:
+            out[(x, y + 1)] = 'H3'
+    mpart(cv, out, 'hood')
+
+
+def draw_head(cv, dy, blink):
+    """Hood seen from above: lit crown, drooping tip behind, a hollow face with the bone beak mask low in front."""
+    cx, cy = 31, 27 + dy
+    rx, ry = 5.0, 4.6
+    hood = {}
+    for (x, y) in ellipse(cx, cy, rx, ry):
+        nxv, nyv = (x - cx) / rx, (y - cy) / ry
+        v = 0.42 - 0.3 * nxv - 0.55 * nyv + 0.2 * (1 - nxv * nxv - nyv * nyv) + 0.15 * grain(x, y)
+        hood[(x, y)] = qm(v, 'hoodfill')
+    # drooping tip trailing back (thin, 1-2 px)
+    for (x, y), ch in (((26, 24), 'H4'), ((25, 24), 'H5'), ((25, 25), 'H3'), ((24, 25), 'H4'), ((24, 26), 'H2'),
+                       ((25, 26), 'H3')):
+        hood[(x, y + dy)] = ch
+    # top plane highlight: a small warm cluster on the crown
+    for (x, y), ch in (((29, 23), 'H6'), ((30, 23), 'H6'), ((28, 24), 'H5'), ((29, 24), 'H6'), ((30, 24), 'H5'),
+                       ((31, 23), 'H5')):
+        if (x, y + dy) in hood:
+            hood[(x, y + dy)] = ch
+    mpart(cv, hood, 'hood')
+    # face hollow under the brim
+    for p in ellipse(33.8, 29.5 + dy, 2.7, 1.9):
+        cv.put(p[0], p[1], 'H0' if p[1] > 29 + dy else 'H1')
+    # mask + beak (the beak pokes out past the hood, tilting down)
+    mask = {}
+    for (x, y) in ellipse(34.6, 30.3 + dy, 2.2, 1.4):
+        mask[(x, y)] = 'B3' if y < 30 + dy else 'B2'
+    for i in range(6):
+        x = 36 + i
+        y0 = int(round(29 + dy + i * 0.45))
+        h = 2 if i < 4 else 1
+        for j in range(h):
+            mask[(x, y0 + j)] = ('B4' if i < 3 else 'B3') if j == 0 else 'B2'
+    mpart(cv, mask, 'bone')
+    # brim shadow over the top of the mask
+    for x in range(32, 37):
+        if cv.px.get((x, 28 + dy), ('',))[0] in MR['hood']:
+            cv.put(x, 28 + dy, 'H1')
+    # goggle: one lens pixel glows (eye sheet), its rim is dark glass
+    cv.put(32, 29 + dy, 'L1'); cv.put(33, 30 + dy, 'L1')
+    if blink:
+        cv.put(33, 29 + dy, 'E0')
+    else:
+        cv.put(33, 29 + dy, 'E1', 'eye')
+
+
 ARM_POSES = {  # shoulder, hand (cell coords at body_dy 0)
-    'down': ((37, 37), (40, 42)),
-    'mid': ((37, 37), (40, 38)),
-    'up': ((37, 37), (40, 34)),
+    'down': ((35, 35), (38, 41)),
+    'mid': ((35, 35), (38, 37)),
+    'up': ((35, 35), (38, 33)),
 }
 
 
@@ -328,73 +433,80 @@ def draw_arm(cv, dy, pose, adx, ady):
     hx, hy = hx + adx, hy + dy + ady
     sy += dy
     sleeve = {}
-    for (x, y) in capsule((sx, sy), (hx, hy), 1.5):
-        v = 0.85 - 0.35 * ((y - min(sy, hy)) / 5.0) - 0.15 * (x - sx) / 3
-        sleeve[(x, y)] = q(v, 'robe')
-    cv.part(sleeve, 'K')
-    # vial standing in the hand: small bulb, cork whose top is a lit oval
-    vial = {(hx, hy - 4): 'X', (hx + 1, hy - 4): 'x', (hx, hy - 3): 'i', (hx + 1, hy - 3): 'h',
-            (hx, hy - 2): 'O', (hx + 1, hy - 2): 'n', (hx, hy - 1): 'n', (hx + 1, hy - 1): 'm'}
-    cv.part(vial, 'k')
-    glove = {}
-    for (x, y) in ellipse(hx + 0.5, hy + 0.4, 1.4, 1.1):
-        glove[(x, y)] = 'x' if y <= hy else 'v' if x <= hx else 'u'
-    cv.part(glove, 'k')
+    for (x, y) in capsule((sx, sy), (hx, hy), 1.2):
+        v = 0.8 - 0.4 * ((y - min(sy, hy)) / 6.0) - 0.2 * (x - sx) / 3 + 0.15 * grain(x, y)
+        sleeve[(x, y)] = qm(v, 'robe')
+    mpart(cv, sleeve, 'robe')
+    # round flask held out in the hand: cork top, glass shoulder, Ivy brew, one specular
+    fx, fy = hx + 1, hy + 1
+    flask = {(fx, fy - 3): 'W4', (fx + 1, fy - 3): 'W2',
+             (fx, fy - 2): 'L3', (fx + 1, fy - 2): 'L2',
+             (fx - 1, fy - 1): 'L4', (fx, fy - 1): 'L3', (fx + 1, fy - 1): 'L3', (fx + 2, fy - 1): 'L2',
+             (fx - 1, fy): 'Y1', (fx, fy): 'Y1', (fx + 1, fy): 'Y1', (fx + 2, fy): 'Y1',
+             (fx - 1, fy + 1): 'Y1', (fx, fy + 1): 'Y1', (fx + 1, fy + 1): 'Y0', (fx + 2, fy + 1): 'Y0',
+             (fx, fy + 2): 'Y0', (fx + 1, fy + 2): 'Y0'}
+    mpart(cv, flask, 'glass')
+    glove = {(hx - 1, hy): 'W3', (hx, hy): 'W2', (hx - 1, hy + 1): 'W2', (hx, hy + 1): 'W1'}
+    for p, ch in glove.items():
+        cv.put(p[0], p[1], ch)
 
 
 def draw_feet(cv, feet):
     for fx, lift in feet:
         boot = {}
-        for (x, y) in ellipse(fx + 1, 51.6 - lift, 1.6, 1.0):
-            boot[(x, y)] = 'x' if y < 51.6 - lift else 'v' if x < fx + 1 else 'u'
-        cv.part(boot, 'k')
+        for (x, y) in ellipse(fx + 1, 51.8 - lift, 1.6, 0.9):
+            boot[(x, y)] = 'W3' if y < 51.8 - lift and x <= fx + 1 else 'W2'
+        mpart(cv, boot, 'wood')
 
 
-def frame(body_dy=0, flask_dx=0, level=-1, bubbles=(), feet=((28, 0), (33, 0)),
-          arm='down', arm_dx=0, arm_dy=0, blink=False, hem_dx=0):
+def frame(body_dy=0, sway=0, feet=((27, 0), (32, 0)), arm='down', arm_dx=0, arm_dy=0, blink=False, hem_dx=0,
+          stick_dx=0, tip_dx=0):
     cv = Canvas()
-    draw_flask(cv, flask_dx, body_dy, level, bubbles)
+    draw_satchel(cv, body_dy)
     draw_robe(cv, body_dy, hem_dx)
-    draw_feet(cv, feet)   # toes peek out in front of the hem
+    draw_feet(cv, feet)
     draw_capelet(cv, body_dy)
-    # copper strap from the flask over the capelet (top plane of the strap lit)
-    for i, (x, y) in enumerate(((29, 35), (30, 36), (31, 37), (32, 37), (33, 38))):
-        cv.put(x, y + body_dy, 'x' if i < 2 else 'v')
     draw_head(cv, body_dy, blink)
     draw_arm(cv, body_dy, arm, arm_dx, arm_dy)
-    return cv.images()
+    draw_back_arm(cv, body_dy, (20 + stick_dx, 39 + body_dy))
+    draw_stick(cv, body_dy, (20 + stick_dx, 39 + body_dy), tip_dx, sway)
+    return images_m(cv)
 
 
-def bubble_set(t):
-    out = []
-    for col, phase in ((-3, 0), (1, 3), (3, 5)):
-        out.append((col, 5 - ((t + phase) % 6)))
-    return out
+def images_m(cv):
+    main = Image.new('RGBA', (cv.w, cv.h), (0, 0, 0, 0))
+    light = Image.new('RGBA', (cv.w, cv.h), (0, 0, 0, 0))
+    eye = Image.new('RGBA', (cv.w, cv.h), (0, 0, 0, 0))
+    for (x, y), (ch, tag) in cv.px.items():
+        c = RGB[ch] + (255,)
+        main.putpixel((x, y), c)
+        if tag == 'flask' and ch in MGLOW:
+            light.putpixel((x, y), c)
+        if tag == 'eye':
+            eye.putpixel((x, y), c)
+    return main, light, eye
 
 
 def build_frames():
     frames = []
-    # idle: breathe (body sinks 1 px), brew sloshes, bubbles rise, one blink
+    # idle: breathe (body sinks 1 px), the vial swings on its cord, one blink
     idle_dy = [0, 0, 0, 0, 1, 1, 1, 1, 0, 0]
-    idle_lv = [-1, -1, -2, -2, -2, -1, -1, 0, 0, -1]
+    idle_sw = [0, 0, 1, 1, 0, 0, -1, -1, 0, 0]
     for t in range(10):
-        frames.append(frame(body_dy=idle_dy[t], level=idle_lv[t], bubbles=bubble_set(t), blink=(t == 8),
+        frames.append(frame(body_dy=idle_dy[t], sway=idle_sw[t], blink=(t == 8),
                             arm_dy=1 if t in (5, 6) else 0))
-    # move: alternating steps, bob, hem swings, flask lags behind the stride
-    feet = [((28, 0), (34, 1)), ((29, 0), (34, 2)), ((30, 0), (33, 1)), ((31, 0), (33, 0)),
-            ((32, 1), (32, 0)), ((31, 2), (31, 0)), ((30, 1), (32, 0)), ((28, 0), (33, 0))]
+    # move: alternating steps, bob, hem swings, the stick is planted and lifted, the vial lags behind
+    feet = [((27, 0), (33, 1)), ((28, 0), (33, 2)), ((29, 0), (32, 1)), ((30, 0), (32, 0)),
+            ((31, 1), (31, 0)), ((30, 2), (30, 0)), ((29, 1), (31, 0)), ((27, 0), (32, 0))]
     move_dy = [0, 1, 1, 0, 0, 1, 1, 0]
-    flask = [0, 0, -1, -1, 0, 0, -1, -1]
-    lv = [-1, -2, -1, 0, -1, -2, -1, 0]
     for t in range(8):
-        frames.append(frame(body_dy=move_dy[t], flask_dx=flask[t], level=lv[t], bubbles=bubble_set(t * 2),
-                            feet=feet[t], arm_dx=-1 if t in (1, 2, 5, 6) else 0,
-                            hem_dx=[0, 1, 1, 0, 0, -1, -1, 0][t]))
-    # wave: raise the vial and shake it (head stays put: the wave clip holds Eye_10)
+        frames.append(frame(body_dy=move_dy[t], sway=[0, -1, -1, 0, 0, -1, -1, 0][t], feet=feet[t],
+                            arm_dx=-1 if t in (1, 2, 5, 6) else 0, hem_dx=[0, 1, 1, 0, 0, -1, -1, 0][t],
+                            stick_dx=[0, 0, 1, 1, 0, 0, 1, 1][t], tip_dx=[0, 0, 1, 2, 2, 1, 1, 0][t]))
+    # wave: raise the flask and shake it (head stays put: the wave clip holds Eye_10)
     seq = [('mid', 0, 0), ('up', 0, 0), ('up', 1, -1), ('up', -1, 0), ('up', 1, -1), ('mid', 0, 0)]
     for t, (arm, ax, ay) in enumerate(seq):
-        frames.append(frame(level=[-1, -2, 0, -2, 0, -1][t], bubbles=bubble_set(t * 3), arm=arm,
-                            arm_dx=ax, arm_dy=ay))
+        frames.append(frame(arm=arm, arm_dx=ax, arm_dy=ay, sway=[0, 1, 0, -1, 0, 1][t]))
     return frames
 
 

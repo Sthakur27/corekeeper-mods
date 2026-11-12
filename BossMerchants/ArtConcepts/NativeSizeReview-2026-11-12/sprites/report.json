@@ -1,0 +1,148 @@
+[
+  {
+    "key": "blocks",
+    "sourceSha256": "3b67b1ce84deb824a5adec07588de229820663daaf2692316ccac58289d04a86",
+    "nativeBounds": [
+      21,
+      24
+    ],
+    "idolBounds": [
+      16,
+      15
+    ],
+    "frames": {
+      "Slime_merchant": 38
+    },
+    "paletteLimit": 48,
+    "animation": "pixel-aligned idle compression, alternating walk sway, greeting nod; slime arrival reveal"
+  },
+  {
+    "key": "decor",
+    "sourceSha256": "aa5091c8c7bb279a65d34a61cda430c3eb866631a2a699f9a8c1d26c27558396",
+    "nativeBounds": [
+      22,
+      29
+    ],
+    "idolBounds": [
+      12,
+      16
+    ],
+    "frames": {
+      "Fisher_merchant": 30
+    },
+    "paletteLimit": 48,
+    "animation": "pixel-aligned idle compression, alternating walk sway, greeting nod; slime arrival reveal"
+  },
+  {
+    "key": "explosives",
+    "sourceSha256": "48eaf787e8425ac4c4b164603fa4da7687b645414ebd9e1325acaba4626b0a5d",
+    "nativeBounds": [
+      20,
+      25
+    ],
+    "idolBounds": [
+      11,
+      15
+    ],
+    "frames": {
+      "Slime_merchant": 38
+    },
+    "paletteLimit": 48,
+    "animation": "pixel-aligned idle compression, alternating walk sway, greeting nod; slime arrival reveal"
+  },
+  {
+    "key": "potions",
+    "sourceSha256": "dd06ae2638accf69e8874bd241cc7db119d78858fdf88d92eb449441ba15d6e8",
+    "nativeBounds": [
+      18,
+      32
+    ],
+    "idolBounds": [
+      11,
+      15
+    ],
+    "frames": {
+      "Merchant": 24,
+      "Merchant_Light": 24,
+      "Merchant_Eye": 18
+    },
+    "paletteLimit": 48,
+    "animation": "pixel-aligned idle compression, alternating walk sway, greeting nod; slime arrival reveal"
+  },
+  {
+    "key": "eggs",
+    "sourceSha256": "31c0d2f2e3ade1fd0d7a34ea765106c65712445d5879f2bfa552d35f6095a471",
+    "nativeBounds": [
+      18,
+      23
+    ],
+    "idolBounds": [
+      12,
+      16
+    ],
+    "frames": {
+      "voidMerchant_idle": 8,
+      "voidMerchant_move": 6,
+      "voidMerchant_emote": 27
+    },
+    "paletteLimit": 48,
+    "animation": "pixel-aligned idle compression, alternating walk sway, greeting nod; slime arrival reveal"
+  },
+  {
+    "key": "hydras",
+    "sourceSha256": "3aab2a5936b2581cca7e5c5b9433a47159a2f1e3e3fb73c7a5450514e7e46fe5",
+    "nativeBounds": [
+      24,
+      33
+    ],
+    "idolBounds": [
+      13,
+      16
+    ],
+    "frames": {
+      "Merchant": 24,
+      "Merchant_Light": 24,
+      "Merchant_Eye": 18
+    },
+    "paletteLimit": 48,
+    "animation": "pixel-aligned idle compression, alternating walk sway, greeting nod; slime arrival reveal"
+  },
+  {
+    "key": "farmanimals",
+    "sourceSha256": "af152ee1d48f08e083113bb5d26e9bbb17925aeefc21b30dc1eca4bf5b69834f",
+    "nativeBounds": [
+      23,
+      36
+    ],
+    "idolBounds": [
+      12,
+      16
+    ],
+    "frames": {
+      "Merchant": 24,
+      "Merchant_Light": 24,
+      "Merchant_Eye": 18
+    },
+    "paletteLimit": 48,
+    "animation": "pixel-aligned idle compression, alternating walk sway, greeting nod; slime arrival reveal"
+  },
+  {
+    "key": "seeds",
+    "sourceSha256": "ae696a03733b7064e3c55d2708519121ba0bfd63dae0ddceaf0ea010e56293eb",
+    "nativeBounds": [
+      24,
+      27
+    ],
+    "idolBounds": [
+      14,
+      15
+    ],
+    "frames": {
+      "Merchant": 24,
+      "Merchant_Light": 24,
+      "Merchant_Eye": 18
+    },
+    "paletteLimit": 48,
+    "animation": "pixel-aligned idle compression, alternating walk sway, greeting nod; slime arrival reveal"
+  }
+]

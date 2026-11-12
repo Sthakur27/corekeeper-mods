@@ -15,7 +15,7 @@ Rebind these in **Controls > Quick Buff**. The actions search your main inventor
 
 ## Avoid using supplies too early
 
-By default, an item is skipped when **all** of its buffs have more than **30 seconds** left. If even one buff is missing or running low, the item can be used again. Quick Buff leaves hunger-only, heal-only, mana-only and permanent-upgrade items alone; use Quick Heal for healing potions and Quick Mana for mana potions.
+By default, an item is skipped when **all** of its buffs have more than **30 seconds** left. If even one buff is missing or running low, the item can be used again. Permanent stat bonuses from gear don't count as an active buff, so potions like Crystal Water still apply their timed bonus on top. Quick Buff leaves hunger-only, heal-only, mana-only and permanent-upgrade items alone; use Quick Heal for healing potions and Quick Mana for mana potions.
 
 Open **Settings > Mod Options > Quick Buff** to change:
 

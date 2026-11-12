@@ -1,0 +1,550 @@
+{
+ "key": "blocks",
+ "rig": "SlimeMerchantEntity",
+ "kind": "legacy",
+ "textures": [
+  {
+   "output": "blocks/blocks__Slime_merchant.png",
+   "replacesTexture": "Slime_merchant",
+   "size": [
+    300,
+    120
+   ],
+   "legacySprites": [
+    {
+     "name": "Slime_merchant_0",
+     "rect": [
+      0.0,
+      90.0,
+      30.0,
+      30.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Slime_merchant_1",
+     "rect": [
+      30.0,
+      90.0,
+      30.0,
+      30.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Slime_merchant_2",
+     "rect": [
+      60.0,
+      90.0,
+      30.0,
+      30.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Slime_merchant_3",
+     "rect": [
+      90.0,
+      90.0,
+      30.0,
+      30.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Slime_merchant_4",
+     "rect": [
+      120.0,
+      90.0,
+      30.0,
+      30.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Slime_merchant_5",
+     "rect": [
+      150.0,
+      90.0,
+      30.0,
+      30.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Slime_merchant_6",
+     "rect": [
+      180.0,
+      90.0,
+      30.0,
+      30.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Slime_merchant_7",
+     "rect": [
+      210.0,
+      90.0,
+      30.0,
+      30.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Slime_merchant_8",
+     "rect": [
+      240.0,
+      90.0,
+      30.0,
+      30.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Slime_merchant_9",
+     "rect": [
+      270.0,
+      90.0,
+      30.0,
+      30.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Slime_merchant_10",
+     "rect": [
+      0.0,
+      60.0,
+      30.0,
+      30.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Slime_merchant_11",
+     "rect": [
+      30.0,
+      60.0,
+      30.0,
+      30.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Slime_merchant_12",
+     "rect": [
+      60.0,
+      60.0,
+      30.0,
+      30.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Slime_merchant_13",
+     "rect": [
+      90.0,
+      60.0,
+      30.0,
+      30.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Slime_merchant_14",
+     "rect": [
+      120.0,
+      60.0,
+      30.0,
+      30.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Slime_merchant_15",
+     "rect": [
+      150.0,
+      60.0,
+      30.0,
+      30.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Slime_merchant_16",
+     "rect": [
+      180.0,
+      60.0,
+      30.0,
+      30.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Slime_merchant_17",
+     "rect": [
+      210.0,
+      60.0,
+      30.0,
+      30.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Slime_merchant_18",
+     "rect": [
+      240.0,
+      60.0,
+      30.0,
+      30.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Slime_merchant_19",
+     "rect": [
+      270.0,
+      60.0,
+      30.0,
+      30.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Slime_merchant_20",
+     "rect": [
+      0.0,
+      30.0,
+      30.0,
+      30.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Slime_merchant_21",
+     "rect": [
+      30.0,
+      30.0,
+      30.0,
+      30.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Slime_merchant_22",
+     "rect": [
+      60.0,
+      30.0,
+      30.0,
+      30.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Slime_merchant_23",
+     "rect": [
+      90.0,
+      30.0,
+      30.0,
+      30.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Slime_merchant_24",
+     "rect": [
+      120.0,
+      30.0,
+      30.0,
+      30.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Slime_merchant_25",
+     "rect": [
+      150.0,
+      30.0,
+      30.0,
+      30.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Slime_merchant_26",
+     "rect": [
+      180.0,
+      30.0,
+      30.0,
+      30.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Slime_merchant_27",
+     "rect": [
+      210.0,
+      30.0,
+      30.0,
+      30.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Slime_merchant_28",
+     "rect": [
+      240.0,
+      30.0,
+      30.0,
+      30.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Slime_merchant_29",
+     "rect": [
+      270.0,
+      30.0,
+      30.0,
+      30.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Slime_merchant_30",
+     "rect": [
+      0.0,
+      0.0,
+      30.0,
+      30.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Slime_merchant_31",
+     "rect": [
+      30.0,
+      0.0,
+      30.0,
+      30.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Slime_merchant_32",
+     "rect": [
+      60.0,
+      0.0,
+      30.0,
+      30.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Slime_merchant_33",
+     "rect": [
+      90.0,
+      0.0,
+      30.0,
+      30.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Slime_merchant_34",
+     "rect": [
+      120.0,
+      0.0,
+      30.0,
+      30.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Slime_merchant_35",
+     "rect": [
+      150.0,
+      0.0,
+      30.0,
+      30.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Slime_merchant_36",
+     "rect": [
+      180.0,
+      0.0,
+      30.0,
+      30.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Slime_merchant_37",
+     "rect": [
+      210.0,
+      0.0,
+      30.0,
+      30.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    }
+   ],
+   "renderer": "/SlimeMerchant/XScaler/AnimPositionRotation/AnimScale/SRPivot/SR"
+  }
+ ]
+}

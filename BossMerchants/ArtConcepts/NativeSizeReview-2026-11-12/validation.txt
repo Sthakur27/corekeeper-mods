@@ -1,0 +1,232 @@
+[
+  {
+    "key": "blocks",
+    "palettes": {
+      "Slime_merchant": 41
+    },
+    "distinctFrames": {
+      "Slime_merchant/idle": 2,
+      "Slime_merchant/walk": 3,
+      "Slime_merchant/arrival": 16,
+      "Slime_merchant/greet": 6
+    },
+    "firstFrameBounds": [
+      4,
+      2,
+      25,
+      26
+    ],
+    "scaleComparison": {
+      "imported": [
+        21,
+        24
+      ],
+      "native": [
+        22,
+        23
+      ]
+    }
+  },
+  {
+    "key": "decor",
+    "palettes": {
+      "Fisher_merchant": 40
+    },
+    "distinctFrames": {
+      "Fisher_merchant/idle": 4,
+      "Fisher_merchant/walk": 3,
+      "Fisher_merchant/greet": 6
+    },
+    "firstFrameBounds": [
+      2,
+      9,
+      24,
+      38
+    ],
+    "scaleComparison": {
+      "imported": [
+        22,
+        29
+      ],
+      "native": [
+        22,
+        37
+      ]
+    }
+  },
+  {
+    "key": "explosives",
+    "palettes": {
+      "Slime_merchant": 37
+    },
+    "distinctFrames": {
+      "Slime_merchant/idle": 2,
+      "Slime_merchant/walk": 3,
+      "Slime_merchant/arrival": 16,
+      "Slime_merchant/greet": 6
+    },
+    "firstFrameBounds": [
+      5,
+      1,
+      25,
+      26
+    ],
+    "scaleComparison": {
+      "imported": [
+        20,
+        25
+      ],
+      "native": [
+        22,
+        23
+      ]
+    }
+  },
+  {
+    "key": "potions",
+    "palettes": {
+      "Merchant": 43,
+      "Merchant_Light": 1,
+      "Merchant_Eye": 0
+    },
+    "distinctFrames": {
+      "Merchant/idle": 2,
+      "Merchant/walk": 3,
+      "Merchant/greet": 6
+    },
+    "firstFrameBounds": [
+      23,
+      22,
+      41,
+      54
+    ],
+    "scaleComparison": {
+      "imported": [
+        18,
+        32
+      ],
+      "native": [
+        20,
+        48
+      ]
+    }
+  },
+  {
+    "key": "eggs",
+    "palettes": {
+      "voidMerchant_idle": 40,
+      "voidMerchant_move": 40,
+      "voidMerchant_emote": 40
+    },
+    "distinctFrames": {
+      "voidMerchant_idle/all": 2,
+      "voidMerchant_move/all": 3,
+      "voidMerchant_emote/all": 8
+    },
+    "firstFrameBounds": [
+      7,
+      12,
+      25,
+      35
+    ],
+    "scaleComparison": {
+      "imported": [
+        18,
+        23
+      ],
+      "native": [
+        16,
+        34
+      ],
+      "intentionalChange": "Scarab uses wider 32px cells; original idle cells 16px"
+    }
+  },
+  {
+    "key": "hydras",
+    "palettes": {
+      "Merchant": 42,
+      "Merchant_Light": 0,
+      "Merchant_Eye": 0
+    },
+    "distinctFrames": {
+      "Merchant/idle": 4,
+      "Merchant/walk": 3,
+      "Merchant/greet": 6
+    },
+    "firstFrameBounds": [
+      20,
+      21,
+      44,
+      54
+    ],
+    "scaleComparison": {
+      "imported": [
+        24,
+        33
+      ],
+      "native": [
+        20,
+        48
+      ]
+    }
+  },
+  {
+    "key": "farmanimals",
+    "palettes": {
+      "Merchant": 39,
+      "Merchant_Light": 1,
+      "Merchant_Eye": 0
+    },
+    "distinctFrames": {
+      "Merchant/idle": 2,
+      "Merchant/walk": 3,
+      "Merchant/greet": 6
+    },
+    "firstFrameBounds": [
+      20,
+      18,
+      43,
+      54
+    ],
+    "scaleComparison": {
+      "imported": [
+        23,
+        36
+      ],
+      "native": [
+        20,
+        48
+      ]
+    }
+  },
+  {
+    "key": "seeds",
+    "palettes": {
+      "Merchant": 37,
+      "Merchant_Light": 0,
+      "Merchant_Eye": 0
+    },
+    "distinctFrames": {
+      "Merchant/idle": 2,
+      "Merchant/walk": 3,
+      "Merchant/greet": 6
+    },
+    "firstFrameBounds": [
+      20,
+      27,
+      44,
+      54
+    ],
+    "scaleComparison": {
+      "imported": [
+        24,
+        27
+      ],
+      "native": [
+        20,
+        48
+      ]
+    }
+  }
+]
+PASS: 8 NPC sets and 24 idol PNGs; native metadata, alpha, palette, cells, floors, animation diversity and overlay alignment.

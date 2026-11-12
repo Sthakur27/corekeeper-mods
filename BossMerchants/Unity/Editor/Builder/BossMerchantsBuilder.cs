@@ -108,7 +108,9 @@ public static class BossMerchantsBuilder
         d.FindPropertyRelative("normalTexture").objectReferenceValue = null;
         d.FindPropertyRelative("pivot").vector2Value = new Vector2(s.px, s.py);
         d.FindPropertyRelative("positionalData").arraySize = 0;
-        B(d.FindPropertyRelative("inheritPivot"), true);
+        // The approved scarab uses wider replacement frames. Honor the authored
+        // pivot instead of inheriting the narrow vanilla robe's emote pivot.
+        B(d.FindPropertyRelative("inheritPivot"), false);
         data.FindPropertyRelative("m_variants").arraySize = 0;
     }
 

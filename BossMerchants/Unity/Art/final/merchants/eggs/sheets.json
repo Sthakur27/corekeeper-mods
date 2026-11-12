@@ -7,7 +7,7 @@
    "output": "eggs/eggs__voidMerchant_idle.png",
    "replacesTexture": "voidMerchant_idle",
    "size": [
-    128,
+    256,
     35
    ],
    "spriteAsset": "voidMerchant",
@@ -29,7 +29,7 @@
    "output": "eggs/eggs__voidMerchant_move.png",
    "replacesTexture": "voidMerchant_move",
    "size": [
-    96,
+    192,
     34
    ],
    "spriteAsset": "voidMerchant",
@@ -51,7 +51,7 @@
    "output": "eggs/eggs__voidMerchant_emote.png",
    "replacesTexture": "voidMerchant_emote",
    "size": [
-    621,
+    864,
     37
    ],
    "spriteAsset": "voidMerchant",
@@ -62,7 +62,7 @@
    "animationGuid": "e1e86c38-70e3-402a-a63f-ecb6d1f3edf0",
    "slot": "m_animations[].m_spriteData.texture",
    "pivot": [
-    0.3478260934352875,
+    0.5,
     0.0
    ],
    "srcFrameCount": 27,

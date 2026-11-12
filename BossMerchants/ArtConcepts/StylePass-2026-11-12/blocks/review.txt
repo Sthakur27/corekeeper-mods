@@ -1,0 +1,3 @@
+Grout + Slick Cornerstone — review-only concept generated with built-in image_gen.
+Strong points: broad overhead top planes, readable brick/slime/steel materials, warm clay against subdued blue, clear mason identity and matching summoning item. Distinct from Hemlock while keeping the approved board treatment and clustered shading.
+Limits: generated contour pixels are not a verified uniform native grid; eyes are larger/cuter than the original native merchant references; there is residual painterly softness. The smaller repeat is a readability sketch, not exact native scale or pixel-identical duplication. Needs native-resolution cleanup and animation work only after replacement approval. No runtime assets changed.

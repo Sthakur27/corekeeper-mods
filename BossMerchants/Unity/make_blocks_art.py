@@ -80,113 +80,180 @@ def ellipse(cx, cy, rx, ry):
     return pts
 
 
-def fill_slime(cv, mask, shine=True, edge=True):
-    """Slime blob: dark outline, ramp lit from the top-left, one specular sparkle."""
+# ------------------------------------------------------------------------------------------------------------
+# Restyle (2026-11-12, same treatment as Old Hemlock after Sid's in-game screenshot): the previous Grout read as
+# a flat salmon box with a saturated blue blob, 2-3 shades per material, a near-black outline all round and one
+# wide rectangular mass.  This pass follows the vanilla merchants instead:
+#   - muted ramps of 7-8 close steps per material (clay, slime, stone, wood, steel), shaded per pixel from a
+#     top-left light and quantised through a deterministic ~2x2 grain, so every surface breaks into small
+#     clusters; only tiny accents reach the lightest steps (the stone's top-left corner, the slime's sheen,
+#     the trowel's edge), and there is no wide flat light plane any more;
+#   - no separate outline colour: each part is ringed with dark steps of its own ramp (one step lighter on the
+#     lit top/left side); finish_art.py then darkens and tints edges further;
+#   - a narrower, rounder shell (14 px instead of 18, chipped corners) with the mass moved into thin props: a
+#     long-handled trowel held out on a slime pseudopod, a thin slime-spike crown, 1 px drips and a lower,
+#     thinner slime pool;
+#   - no glow layer (the rig's glow is the vanilla flare sprite, unchanged); the sparkle is two pale pixels.
+RAMP = {   # dark -> light; fills use the middle steps, the darkest are kept for rings / occlusion
+    'clay':  ['2a1814', '45231e', '5c3026', '74402e', '8a5236', 'a1683f', 'bd8458', 'd9a983'],
+    'slime': ['142b5c', '273fa7', '365dd5', '4883d4', '6e9bb9', '88a2ee', 'a5cada', 'd7dcfb'],
+    'stone': ['232930', '3a3a3a', '4a4a4a', '595959', '6e6e6e', '878787', 'a0a0a0', 'c0bacf'],
+    'wood':  ['2e2216', '49351d', '614822', '7a5527', '915b26', 'b58047'],
+    'steel': ['2b3439', '3c4a52', '667b84', '8195a0', 'a4b6c0', 'cbd7dd'],
+}
+RAMP = {k: [hx(c) for c in v] for k, v in RAMP.items()}
+EYE_W, EYE_P = hx('d7dcfb'), hx('16203a')
+
+
+def grain(x, y):
+    """Deterministic cluster grain in {-1, 0, 1}: constant over irregular ~2x2 blocks (never single pixels)."""
+    bx, by = (x + (y // 2) % 2) // 2, y // 2
+    h = (bx * 73856093 ^ by * 19349663) & 0xffff
+    return (h % 5) // 2 - 1 if h % 7 else 0
+
+
+def qv(v, ramp, lo=2, hi=None):
+    r = RAMP[ramp][lo:hi]
+    return r[max(0, min(len(r) - 1, int(v * len(r))))]
+
+
+def part(cv, pix, ramp, ring=True, chip=()):
+    """Draw {(x, y): colour} ringed by its own ramp's dark steps (step 1 on bottom/right, step 2 on top/left)."""
+    if ring:
+        r = RAMP[ramp]
+        rp = {}
+        for (x, y) in pix:
+            for a, b in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                p = (x + a, y + b)
+                if p in pix:
+                    continue
+                if (a, b) in ((-1, 0), (0, -1)):
+                    rp.setdefault(p, r[2])
+                else:
+                    rp[p] = r[1]
+        for p in chip:
+            rp.pop(p, None)
+        for (x, y), c in rp.items():
+            cv.put(x, y, c)
+    for (x, y), c in pix.items():
+        cv.put(x, y, c)
+
+
+def slime_mass(mask, bias=0.0, sheen=True, shade_above=None):
+    """Slime shading for a mask: top-left light, darker toward the bottom/right, grainy, a 2 px sheen."""
     if not mask:
-        return
+        return {}
     xs = [p[0] for p in mask]; ys = [p[1] for p in mask]
     x0, x1, y0, y1 = min(xs), max(xs), min(ys), max(ys)
+    out = {}
     for (x, y) in mask:
-        if edge and any(n not in mask for n in ((x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1))):
-            cv.put(x, y, SLIME['out'])
-            continue
-        t = ((x - x0) / max(1, x1 - x0)) * 0.45 + ((y - y0) / max(1, y1 - y0)) * 0.75
-        c = SLIME['c'] if t < 0.28 else SLIME['l'] if t < 0.55 else SLIME['m'] if t < 0.85 else SLIME['d']
-        cv.put(x, y, c)
-    if shine and x1 - x0 >= 3 and y1 - y0 >= 2:
-        cv.put(x0 + 1 + (x1 - x0) // 4, y0 + 1, SLIME['p'])
+        tx = (x - x0) / max(1, x1 - x0); ty = (y - y0) / max(1, y1 - y0)
+        v = 1.06 + bias - 0.62 * ty - 0.3 * tx + 0.16 * grain(x, y)
+        if shade_above is not None and y <= shade_above:
+            v -= 0.3 * (1.0 - (y - y0) / max(1, shade_above - y0 + 1))   # occluded under the shell's arch
+        out[(x, y)] = qv(v, 'slime', 2, 7)
+    if sheen and x1 - x0 >= 4 and y1 - y0 >= 2:
+        sx_, sy_ = x0 + 1 + (x1 - x0) // 5, y0 + 1
+        for p in ((sx_, sy_), (sx_ + 1, sy_)):
+            if p in out:
+                out[p] = RAMP['slime'][6]
+    return out
 
 
-def block(cv, x, y, w, top, front, P, bricks=True, lit=True, courses=3):
-    """A Core Keeper wall-block: coloured outline, lighter top face, front face with brick courses."""
-    x1, y1 = x + w - 1, y + top + front
-    cv.rect(x, y, x1, y1, P['out'])
-    for xx in range(x + 1, x + 1 + w // 3):                          # outline breaks on the lit edge
-        cv.put(xx, y, P['d'])
-    for yy in range(y + 1, y + top):
-        cv.put(x, yy, P['d'])
-    cv.rect(x + 1, y + 1, x1 - 1, y + top, P['t'])                  # top face
-    for xx in range(x + 1, x1):
-        cv.put(xx, y + top, P['l'])                                  # front edge of the top face
-    if lit:
-        cv.rect(x + 1, y + 1, x + 1 + (w - 3) // 3, y + 1, P['p'])  # specular rim, top-left
-    cv.rect(x + 1, y + top + 1, x1 - 1, y1 - 1, P['m'])              # front face
-    for yy in range(y + top + 1, y1):
-        cv.put(x1 - 1, yy, P['d'])                                   # shaded right edge
-    for xx in range(x + 1, x1):
-        cv.put(xx, y1 - 1, P['d'])                                   # shaded bottom course
-        if front >= 7:
-            cv.put(xx, y1 - 2, P['d'] if xx % 6 else P['m'])
-    if top >= 5:
-        for yy in range(y + 2, y + top):
-            cv.put(x1 - 1, yy, P['l'])                               # top plane falls off toward the back-right
-        cv.rect(x + 2, y + 2, x + 4, y + 2, P['p'])                  # broad highlight cluster
-    if bricks:
-        course = 0
-        for yy in range(y + top + courses, y1 - 1, courses):
-            for xx in range(x + 1, x1):
-                cv.put(xx, yy, P['d'])
-            off = 3 if course % 2 == 0 else 0
-            for xx in range(x + 1 + off, x1 - 1, 6):
-                for k in range(1, courses):
-                    if yy + k < y1 - 1:
-                        cv.put(xx, yy + k, P['d'])
-            course += 1
-        for xx in range(x + 2, x1 - 1, 6):                           # lit brick tops along first course
-            cv.put(xx, y + top + 1, P['l'])
+def clay_shell(cv, X0, top_y, W, TOP, FRONT):
+    """Hollow clay-brick block in 3/4 view: grainy top plane with a few brick joints, front face in staggered
+    courses darkening toward the ground, chipped corners."""
+    x1 = X0 + W - 1
+    fy = top_y + TOP
+    y1 = fy + FRONT
+    pix = {}
+    for y in range(top_y, y1 + 1):
+        for x in range(X0, x1 + 1):
+            if (x, y) in ((X0, top_y), (x1, top_y), (x1, y1)):
+                continue                                         # chipped corners
+            g = 0.15 * grain(x, y)
+            if y < fy:                                           # top plane (seen from above)
+                ty = (y - top_y) / max(1, TOP - 1); tx = (x - X0) / (W - 1)
+                v = 1.0 - 0.22 * ty - 0.4 * tx + g
+                r_ = y - top_y                                   # two brick courses seen from above
+                if r_ == 2 or (x - X0 + (3 if r_ > 2 else 0)) % 6 == 5:
+                    v -= 0.2                                     # joints, one step darker than the brick face
+                c = qv(v, 'clay', 3, 8)
+            else:                                                # front face: brick courses
+                ty = (y - fy) / max(1, FRONT); tx = (x - X0) / (W - 1)
+                v = 1.1 - 0.45 * ty - 0.3 * tx + g
+                c = qv(v, 'clay', 3, 8)
+                row = y - fy
+                if row == 0:
+                    c = qv(v + 0.2, 'clay', 3, 7)                # front edge of the top plane catches light
+                elif row % 3 == 0:
+                    c = RAMP['clay'][2]                          # mortar course
+                elif (x - X0 + (3 if (row // 3) % 2 else 0)) % 6 == 0:
+                    c = RAMP['clay'][2]                          # staggered head joints
+            pix[(x, y)] = c
+    part(cv, pix, 'clay')
+    # a small warm highlight cluster on the lit top-left corner of the top plane
+    for p in ((X0 + 1, top_y + 1), (X0 + 2, top_y + 1), (X0 + 1, top_y + 2)):
+        cv.put(p[0], p[1], RAMP['clay'][7])
+    return fy, y1
+
+
+def stone_block(cv, bx, by, w=7, top=4, front=3):
+    """Stone-brick block seen from above: lit top plane, short front face with one mortar course."""
+    pix = {}
+    for y in range(by, by + top + front):
+        for x in range(bx, bx + w):
+            tx = (x - bx) / (w - 1)
+            g = 0.15 * grain(x, y)
+            if y < by + top:
+                v = 1.0 - 0.3 * (y - by) / top - 0.4 * tx + g
+                c = qv(v, 'stone', 3, 7)
+                if y == by + 2 and x == bx + 3:
+                    c = RAMP['stone'][3]
+            else:
+                v = 0.7 - 0.35 * (y - by - top) / front - 0.3 * tx + g
+                c = qv(v, 'stone', 3, 6)
+                if y == by + top + 1 and (x - bx) % 4 == 2:
+                    c = RAMP['stone'][2]
+            pix[(x, y)] = c
+    part(cv, pix, 'stone', chip=((bx - 1, by - 1), (bx + w, by - 1)))
+    for p in ((bx, by), (bx + 1, by)):
+        cv.put(p[0], p[1], RAMP['stone'][7])
 
 
 def trowel(cv, hx_, hy, pose):
-    """Mason's trowel gripped at (hx_, hy): wooden handle below, broad steel blade above.
-    pose 'up' = blade straight up, 'tilt' = blade leaning right, 'back' = leaning left."""
-    for k in range(1, 4):                                   # handle
-        cv.put(hx_, hy + k, WOOD['l'] if k == 1 else WOOD['m'] if k == 2 else WOOD['d'])
-        cv.put(hx_ - 1, hy + k, WOOD['out']); cv.put(hx_ + 1, hy + k, WOOD['out'])
-    cv.put(hx_, hy + 4, WOOD['out'])
+    """Mason's trowel gripped at (hx_, hy): long thin wooden handle below, narrow steel blade above."""
+    W_ = RAMP['wood']; S_ = RAMP['steel']
+    for k in range(1, 5):                                   # 2 px handle: lit left, shaded right
+        cv.put(hx_, hy + k, W_[5] if k == 1 else W_[4] if k < 3 else W_[3])
+        cv.put(hx_ + 1, hy + k, W_[2] if k < 3 else W_[1])
+    cv.put(hx_, hy + 5, W_[1]); cv.put(hx_ + 1, hy + 5, W_[0])
     lean = {'up': 0, 'tilt': 1, 'back': -1}[pose]
-    rows = [0, 1, 1, 2]                                     # blade half-widths, tip first
+    for dx in range(-1, 3):                                 # ferrule / heel
+        cv.put(hx_ + dx, hy, S_[1] if dx in (-1, 2) else S_[2])
+    rows = [0, 1, 1, 1, 1]                                  # blade half-widths, tip first
     for i, hw in enumerate(rows):
-        dy = -4 + i
-        cxp = hx_ + (lean * (3 - i)) // 2
-        for dx in range(-hw - 1, hw + 2):
-            if abs(dx) == hw + 1:
-                c = STEEL['out']
-            elif dx < 0 or (dx == 0 and i < 2):
-                c = STEEL['l']
+        dy = -5 + i
+        cx_ = hx_ + (lean * (4 - i)) // 2
+        for dx in range(-hw, hw + 2):
+            if dx == -hw:
+                c = S_[4] if i < 3 else S_[3]               # lit edge
+            elif dx == hw + 1:
+                c = S_[1]                                   # shadow edge
             else:
-                c = STEEL['m']
-            cv.put(cxp + dx, hy + dy, c)
-    cv.put(hx_ + (lean * 3) // 2, hy - 5, STEEL['out'])     # tip
-    cv.put(hx_ + (lean * 2) // 2 - 1, hy - 2, STEEL['w'])   # glint
-    for dx in range(-3, 4):                                 # blade heel + ferrule
-        cv.put(hx_ + dx, hy, STEEL['out'] if abs(dx) == 3 or dx == 0 else STEEL['d'])
-
-
-STONE_BLOCK = [   # hand-authored 8x9 stone-brick block seen from above: deep bright top plane, short front
-    "ODDOOOOO",
-    "DPPTTTTO",
-    "DPTTTTLO",
-    "OTTTTTLO",
-    "OTTTTLLO",
-    "OLLLDLLO",
-    "OMMMDMDO",
-    "ODDDDDDO",
-    "OOOOOOOO",
-]
-
-
-def stone_block(cv, bx, by):
-    key = dict(O=STONE['out'], P=STONE['p'], T=STONE['t'], L=STONE['l'], M=STONE['m'], D=STONE['d'])
-    for y, row in enumerate(STONE_BLOCK):
-        for x, ch in enumerate(row):
-            cv.put(bx + x, by + y, key[ch])
+                c = S_[3] if i < 2 else S_[2]
+            cv.put(cx_ + dx, hy + dy, c)
+    cv.put(hx_ + (lean * 4) // 2, hy - 6, S_[2])            # tip
+    cv.put(hx_ + (lean * 4) // 2, hy - 5, S_[5])            # glint (2 px with the lit edge below)
 
 
 def spikes(cv, base_pts):
-    """Little Morpha slime spikes: list of (x, y_base, height)."""
+    """Thin Morpha slime spikes: list of (x, y_base, height)."""
+    S_ = RAMP['slime']
     for x, y, h in base_pts:
         for k in range(h):
-            cv.put(x, y - k, SLIME['p'] if k == h - 1 else SLIME['c'])
+            cv.put(x, y - k, S_[6] if k == h - 1 else S_[5] if k == h - 2 else S_[4])
+        cv.put(x + 1, y, S_[3])
 
 
 def character(f):
@@ -194,144 +261,139 @@ def character(f):
     cv = Canvas(CELL, CELL)
     sy = f.get('sy', 0)              # shell vertical offset (+ = sunk into the pool)
     sq = f.get('sq', 0)              # squash (front rows removed)
-    rx = f.get('rx', 11)             # slime pool half width
+    rx = f.get('rx', 11) - 2         # slime pool half width (narrower than before)
     sx = f.get('sx', 0)              # whole-body horizontal lean
     clip = f.get('clip')             # arrival: everything of the shell below this row is under the slime
+    S_ = RAMP['slime']
 
-    # slime pool behind everything
-    pool = ellipse(15 + sx * 0.5, GROUND - 1.0, rx, f.get('ry', 2.2))
-    pool = {p for p in pool if p[1] <= GROUND}
-    fill_slime(cv, pool, shine=False)
+    # slime pool behind everything: a thin oval
+    pool = {p for p in ellipse(15 + sx * 0.5, GROUND - 0.6, rx, f.get('ry', 2.2) - 0.5) if p[1] <= GROUND}
+    pm = {}
+    for (x, y) in pool:
+        v = 0.55 - 0.35 * (y - (GROUND - 2)) / 2 - 0.2 * (x - 6) / 18 + 0.15 * grain(x, y)
+        pm[(x, y)] = qv(v + 0.2, 'slime', 2, 7)
+    part(cv, pm, 'slime', ring=False)
+    for (x, y) in pool:                                       # rim of the pool in its own dark step
+        if (x, y + 1) not in pool or (x + 1, y) not in pool or (x - 1, y) not in pool:
+            cv.put(x, y, S_[1] if (x, y - 1) in pool else S_[2])
 
     # --- clay-brick shell ----------------------------------------------------------------
-    X0, W = 6 + sx, 18
-    TOP, FRONT = 6, 8 - sq          # 3/4 view: deep top plane, short front face
-    top_y = 8 + sy + sq
+    X0, W = 8 + sx, 14
+    TOP, FRONT = 5, 8 - sq          # 3/4 view: deep top plane, short front face
+    top_y = 9 + sy + sq
     cv.clip_y = clip
-    block(cv, X0, top_y, W, TOP, FRONT, CLAY)
-    fy = top_y + TOP
-    ox0, ox1 = X0 + 3, X0 + 13       # mouth (hermit-crab opening), 11 px wide
+    fy, y1 = clay_shell(cv, X0, top_y, W, TOP, FRONT)
+    ox0, ox1 = X0 + 3, X0 + 10       # mouth (hermit-crab opening), 8 px wide
     oy0 = fy + 2
-    oy1 = fy + FRONT
+    oy1 = y1
     for y in range(oy0, oy1 + 1):
         for x in range(ox0, ox1 + 1):
             if y == oy0 and x in (ox0, ox1):
                 continue
-            rim = x in (ox0, ox1) or y == oy0 or (y == oy0 + 1 and x in (ox0 + 1, ox1 - 1))
-            cv.put(x, y, CLAY['out'] if rim else CAVE)
+            rim = x in (ox0, ox1) or y == oy0
+            cv.put(x, y, RAMP['clay'][1] if rim else RAMP['clay'][0])
     for x in range(ox0 + 1, ox1):
-        cv.put(x, oy0 - 1, CLAY['l'])                       # lit arch stones
-    cv.put(ox0 + 5, oy0 - 1, CLAY['t'])                     # keystone
+        cv.put(x, oy0 - 1, RAMP['clay'][5] if x < ox0 + 4 else RAMP['clay'][4])   # lit arch stones
+    cv.put(ox0 + 3, oy0 - 1, RAMP['clay'][6]); cv.put(ox0 + 4, oy0 - 1, RAMP['clay'][6])   # keystone
 
     # slime body in the mouth, spilling over the bottom
     face_top = oy0 + 1 + f.get('breath', 0)
     body = set()
     for y in range(face_top, GROUND + 1):
-        inset = 2 if y == face_top else 1 if y == face_top + 1 else 0
-        grow = 1 if y >= oy1 else 0
+        inset = 1 if y == face_top else 0
+        grow = 1 if y > oy1 else 0
         for x in range(ox0 + 1 + inset - grow, ox1 - inset + grow):
             body.add((x, y))
-    fill_slime(cv, body, shine=True)
-    ex = ox0 + 1 + f.get('ex', 1)
-    ey = face_top + 2
+    part(cv, slime_mass(body, 0.05, shade_above=oy1), 'slime', ring=False)
+    ex = ox0 + f.get('ex', 1)
+    ey = face_top + 1
     eyes = f.get('eyes', 'open')
     for e in (ex, ex + 4):
         if eyes == 'open':
-            for dx, dy, c in ((0, 0, STONE['p']), (1, 0, SLIME['w']), (2, 0, SLIME['w']),
-                              (0, 1, SLIME['w']), (1, 1, CAVE), (2, 1, CAVE),
-                              (0, 2, STONE['p']), (1, 2, CAVE), (2, 2, SLIME['out'])):
-                cv.put(e + dx, ey + dy, c)
+            cv.put(e, ey, EYE_W); cv.put(e + 1, ey, EYE_W)
+            cv.put(e, ey + 1, EYE_W); cv.put(e + 1, ey + 1, EYE_P)
         elif eyes == 'happy':
-            cv.put(e, ey + 1, SLIME['w']); cv.put(e + 1, ey, SLIME['w']); cv.put(e + 2, ey + 1, SLIME['w'])
+            cv.put(e, ey + 1, EYE_W); cv.put(e + 1, ey, EYE_W); cv.put(e + 2, ey + 1, S_[6])
         else:  # closed
-            for dx in range(3):
-                cv.put(e + dx, ey + 1, SLIME['out'])
+            cv.put(e, ey + 1, S_[1]); cv.put(e + 1, ey + 1, S_[1])
     if eyes == 'happy' or f.get('mouth'):
-        cv.put(ex + 3, ey + 4, SLIME['out']); cv.put(ex + 4, ey + 4, SLIME['out'])
+        cv.put(ex + 2, ey + 3, S_[1]); cv.put(ex + 3, ey + 3, S_[1])
     cv.clip_y = None
 
     # slime ring in front when sunk (hides the clipped shell bottom)
     if clip is not None:
         ring = set()
         for y in (clip, clip + 1):
-            for x in range(int(15 - rx + 2), int(15 + rx - 1)):
+            for x in range(int(15 - rx + 1), int(15 + rx)):
                 ring.add((x, y))
-        fill_slime(cv, ring, shine=False)
-        for x in range(int(15 - rx + 3), int(15 - rx + 7)):
-            cv.put(x, clip, SLIME['c'])
-        cv.put(int(15 - rx + 4), clip, SLIME['p'])
-
-    # pool sheen
-    for x in (int(15 - rx + 2), int(15 - rx + 3), int(15 + rx - 4)):
-        if (x, GROUND - 1) in pool:
-            cv.put(x, GROUND - 1, SLIME['c'])
+        part(cv, slime_mass(ring, -0.05, sheen=False), 'slime', ring=False)
+        for x in range(int(15 - rx + 2), int(15 - rx + 5)):
+            cv.put(x, clip, S_[5])
 
     # --- stone-brick block on top, glued with slime mortar, crowned with Morpha spikes ---
     tb = f.get('top', (0, 0))
     if tb is not None:
         tx, ty = tb
-        TW = 8
+        TW = 7
         if f.get('top_abs'):
             bx, by = tx, ty
         else:
-            bx, by = X0 + 5 + tx, top_y - 4 + ty
+            bx, by = X0 + 4 + tx, top_y - 5 + ty
         cv.clip_y = f.get('top_clip')
         if not f.get('top_abs'):
-            band = set()
-            for x in range(bx - 1, bx + TW + 1):
-                band.add((x, by + 8)); band.add((x, by + 9))
-            band.discard((bx - 1, by + 8)); band.discard((bx + TW, by + 8))
-            for (x, y) in band:   # mortar seen from above: lit top lip, darker underside
-                cv.put(x, y, SLIME['c'] if y == by + 8 else SLIME['m'] if bx <= x < bx + TW else SLIME['d'])
-            cv.put(bx - 2, by + 9, SLIME['out']); cv.put(bx + TW + 1, by + 9, SLIME['out'])
-        stone_block(cv, bx, by)
+            for x in range(bx - 1, bx + TW + 1):          # mortar band seen from above: lit lip, darker underside
+                lit = x < bx + 3
+                cv.put(x, by + 8, S_[5] if lit else S_[4])
+                if bx <= x < bx + TW:
+                    cv.put(x, by + 9, S_[3] if lit else S_[2])
+            cv.put(bx - 2, by + 9, S_[2]); cv.put(bx + TW + 1, by + 9, S_[1])
+        stone_block(cv, bx, by, TW)
         if not f.get('top_abs') or f.get('crown'):
-            crown = ellipse(bx + TW / 2, by + 2.3, 2.9, 1.7)   # an oval resting on the block's top plane
-            fill_slime(cv, crown, shine=True)
-            spikes(cv, [(bx + 2, by + 1, 2), (bx + 4, by + 1, 2), (bx + 6, by + 1, 1)])
+            crown = ellipse(bx + TW / 2, by + 2.2, 2.6, 1.5)   # an oval of slime resting on the block's top plane
+            part(cv, slime_mass(crown, 0.0), 'slime', ring=False)
+            spikes(cv, [(bx + 2, by + 1, 3), (bx + 4, by + 1, 2)])
         cv.clip_y = None
         if not f.get('top_abs'):
             d = f.get('drip', 0)
-            for x0_, base, mx in ((bx + 1, 1, 3), (bx + 6, 3, 4), (X0 + 2, 0, 2)):
+            for x0_, base, mx in ((bx, 1, 3), (bx + 5, 3, 4), (X0 + 1, 0, 2)):
                 ln = (d + base) % (mx + 1)
-                start = by + 10 if x0_ != X0 + 2 else top_y + TOP
+                start = by + 10 if x0_ != X0 + 1 else top_y + TOP
                 for k in range(ln):
-                    cv.put(x0_, start + k, SLIME['l'] if k < ln - 1 else SLIME['c'])
+                    cv.put(x0_, start + k, S_[4] if k < ln - 1 else S_[5])
                 if ln:
-                    cv.put(x0_, start + ln, SLIME['out'])
+                    cv.put(x0_, start + ln, S_[2])
 
-    # --- arm (slime pseudopod) + trowel --------------------------------------------------
+    # --- arm (slime pseudopod) + long trowel ---------------------------------------------
     arm = f.get('arm', 'rest')
     if arm != 'none':
-        ay = face_top + 4
+        ay = face_top + 3
         if arm == 'rest':
-            path = [(ox1, ay), (ox1 + 1, ay), (ox1 + 2, ay - 1), (ox1 + 3, ay - 2)]
-            hand = (ox1 + 4, ay - 4); tpose = 'up'
+            path = [(ox1, ay), (ox1 + 1, ay), (ox1 + 2, ay), (ox1 + 3, ay - 1), (ox1 + 4, ay - 2), (ox1 + 5, ay - 3)]
+            hand = (ox1 + 6, ay - 5); tpose = 'up'
         elif arm == 'up1':
-            path = [(ox1, ay), (ox1 + 1, ay - 1), (ox1 + 2, ay - 2), (ox1 + 3, ay - 3), (ox1 + 3, ay - 4), (ox1 + 4, ay - 5)]
-            hand = (ox1 + 4, ay - 7); tpose = 'tilt'
+            path = [(ox1, ay), (ox1 + 1, ay - 1), (ox1 + 2, ay - 2), (ox1 + 3, ay - 3), (ox1 + 4, ay - 4), (ox1 + 5, ay - 5)]
+            hand = (ox1 + 6, ay - 7); tpose = 'tilt'
         elif arm == 'up2':
-            path = [(ox1, ay), (ox1 + 1, ay - 1), (ox1 + 2, ay - 2), (ox1 + 2, ay - 3), (ox1 + 2, ay - 4), (ox1 + 2, ay - 5)]
-            hand = (ox1 + 2, ay - 7); tpose = 'back'
+            path = [(ox1, ay), (ox1 + 1, ay - 1), (ox1 + 2, ay - 2), (ox1 + 3, ay - 3), (ox1 + 3, ay - 4), (ox1 + 3, ay - 5)]
+            hand = (ox1 + 4, ay - 7); tpose = 'back'
         elif arm == 'lift':
-            path = [(ox1, ay), (ox1 + 1, ay - 1), (ox1 + 2, ay - 2), (ox1 + 2, ay - 3), (ox1 + 3, ay - 4)]
+            path = [(ox1, ay), (ox1 + 1, ay - 1), (ox1 + 2, ay - 2), (ox1 + 3, ay - 3), (ox1 + 4, ay - 4)]
             hand = None; tpose = None
         else:  # 'fwd' (walking)
-            path = [(ox1, ay), (ox1 + 1, ay), (ox1 + 2, ay - 1), (ox1 + 3, ay - 1), (ox1 + 4, ay - 2)]
-            hand = (ox1 + 4, ay - 3); tpose = 'tilt'
+            path = [(ox1, ay), (ox1 + 1, ay), (ox1 + 2, ay - 1), (ox1 + 3, ay - 1), (ox1 + 4, ay - 2), (ox1 + 5, ay - 2)]
+            hand = (ox1 + 6, ay - 3); tpose = 'tilt'
         m = set()
         for (x, y) in path:
             m.add((x, y)); m.add((x, y + 1))
         if hand:
             m.add((hand[0] - 1, hand[1] + 1)); m.add((hand[0] - 1, hand[1] + 2))
         for (x, y) in m:
-            c = SLIME['out'] if (x, y + 1) not in m else SLIME['c'] if (x, y - 1) not in m else SLIME['l']
+            c = S_[2] if (x, y + 1) not in m else S_[5] if (x, y - 1) not in m else S_[4]
             cv.put(x, y, c)
         if hand:
             trowel(cv, hand[0], hand[1], tpose)
     for (x, y) in f.get('sparkle', []):
-        cv.put(x, y, GLOW['w']); cv.put(x - 1, y, GLOW['d']); cv.put(x + 1, y, GLOW['d'])
-        cv.put(x, y - 1, GLOW['d']); cv.put(x, y + 1, GLOW['d'])
+        cv.put(x, y, S_[7]); cv.put(x, y + 1, S_[6])
     return cv
 
 

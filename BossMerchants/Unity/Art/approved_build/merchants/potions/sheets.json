@@ -1,0 +1,964 @@
+{
+ "key": "potions",
+ "rig": "CavelingMerchantEntity",
+ "kind": "legacy",
+ "textures": [
+  {
+   "output": "potions/potions__Merchant.png",
+   "replacesTexture": "Merchant",
+   "size": [
+    640,
+    192
+   ],
+   "legacySprites": [
+    {
+     "name": "Merchant_0",
+     "rect": [
+      0.0,
+      128.0,
+      64.0,
+      64.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Merchant_1",
+     "rect": [
+      64.0,
+      128.0,
+      64.0,
+      64.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Merchant_2",
+     "rect": [
+      128.0,
+      128.0,
+      64.0,
+      64.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Merchant_3",
+     "rect": [
+      192.0,
+      128.0,
+      64.0,
+      64.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Merchant_4",
+     "rect": [
+      256.0,
+      128.0,
+      64.0,
+      64.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Merchant_5",
+     "rect": [
+      320.0,
+      128.0,
+      64.0,
+      64.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Merchant_6",
+     "rect": [
+      384.0,
+      128.0,
+      64.0,
+      64.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Merchant_7",
+     "rect": [
+      448.0,
+      128.0,
+      64.0,
+      64.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Merchant_8",
+     "rect": [
+      512.0,
+      128.0,
+      64.0,
+      64.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Merchant_9",
+     "rect": [
+      576.0,
+      128.0,
+      64.0,
+      64.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Merchant_10",
+     "rect": [
+      0.0,
+      64.0,
+      64.0,
+      64.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Merchant_11",
+     "rect": [
+      64.0,
+      64.0,
+      64.0,
+      64.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Merchant_12",
+     "rect": [
+      128.0,
+      64.0,
+      64.0,
+      64.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Merchant_13",
+     "rect": [
+      192.0,
+      64.0,
+      64.0,
+      64.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Merchant_14",
+     "rect": [
+      256.0,
+      64.0,
+      64.0,
+      64.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Merchant_15",
+     "rect": [
+      320.0,
+      64.0,
+      64.0,
+      64.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Merchant_16",
+     "rect": [
+      384.0,
+      64.0,
+      64.0,
+      64.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Merchant_17",
+     "rect": [
+      448.0,
+      64.0,
+      64.0,
+      64.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Merchant_18",
+     "rect": [
+      0.0,
+      0.0,
+      64.0,
+      64.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Merchant_19",
+     "rect": [
+      64.0,
+      0.0,
+      64.0,
+      64.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Merchant_20",
+     "rect": [
+      128.0,
+      0.0,
+      64.0,
+      64.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Merchant_21",
+     "rect": [
+      192.0,
+      0.0,
+      64.0,
+      64.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Merchant_22",
+     "rect": [
+      256.0,
+      0.0,
+      64.0,
+      64.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Merchant_23",
+     "rect": [
+      320.0,
+      0.0,
+      64.0,
+      64.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    }
+   ],
+   "renderer": "/CavelingMerchant/XScaler/AnimPositionRotation/AnimScale/SRPivot/SR"
+  },
+  {
+   "output": "potions/potions__Merchant_Light.png",
+   "replacesTexture": "Merchant_Light",
+   "size": [
+    640,
+    192
+   ],
+   "legacySprites": [
+    {
+     "name": "Merchant_Light_0",
+     "rect": [
+      0.0,
+      128.0,
+      64.0,
+      64.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Merchant_Light_1",
+     "rect": [
+      64.0,
+      128.0,
+      64.0,
+      64.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Merchant_Light_2",
+     "rect": [
+      128.0,
+      128.0,
+      64.0,
+      64.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Merchant_Light_3",
+     "rect": [
+      192.0,
+      128.0,
+      64.0,
+      64.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Merchant_Light_4",
+     "rect": [
+      256.0,
+      128.0,
+      64.0,
+      64.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Merchant_Light_5",
+     "rect": [
+      320.0,
+      128.0,
+      64.0,
+      64.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Merchant_Light_6",
+     "rect": [
+      384.0,
+      128.0,
+      64.0,
+      64.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Merchant_Light_7",
+     "rect": [
+      448.0,
+      128.0,
+      64.0,
+      64.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Merchant_Light_8",
+     "rect": [
+      512.0,
+      128.0,
+      64.0,
+      64.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Merchant_Light_9",
+     "rect": [
+      576.0,
+      128.0,
+      64.0,
+      64.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Merchant_Light_10",
+     "rect": [
+      0.0,
+      64.0,
+      64.0,
+      64.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Merchant_Light_11",
+     "rect": [
+      64.0,
+      64.0,
+      64.0,
+      64.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Merchant_Light_12",
+     "rect": [
+      128.0,
+      64.0,
+      64.0,
+      64.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Merchant_Light_13",
+     "rect": [
+      192.0,
+      64.0,
+      64.0,
+      64.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Merchant_Light_14",
+     "rect": [
+      256.0,
+      64.0,
+      64.0,
+      64.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Merchant_Light_15",
+     "rect": [
+      320.0,
+      64.0,
+      64.0,
+      64.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Merchant_Light_16",
+     "rect": [
+      384.0,
+      64.0,
+      64.0,
+      64.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Merchant_Light_17",
+     "rect": [
+      448.0,
+      64.0,
+      64.0,
+      64.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Merchant_Light_18",
+     "rect": [
+      0.0,
+      0.0,
+      64.0,
+      64.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Merchant_Light_19",
+     "rect": [
+      64.0,
+      0.0,
+      64.0,
+      64.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Merchant_Light_20",
+     "rect": [
+      128.0,
+      0.0,
+      64.0,
+      64.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Merchant_Light_21",
+     "rect": [
+      192.0,
+      0.0,
+      64.0,
+      64.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Merchant_Light_22",
+     "rect": [
+      256.0,
+      0.0,
+      64.0,
+      64.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Merchant_Light_23",
+     "rect": [
+      320.0,
+      0.0,
+      64.0,
+      64.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    }
+   ],
+   "renderer": "/CavelingMerchant/XScaler/AnimPositionRotation/AnimScale/SRPivot/SRLight"
+  },
+  {
+   "output": "potions/potions__Merchant_Eye.png",
+   "replacesTexture": "Merchant_Eye",
+   "size": [
+    640,
+    128
+   ],
+   "legacySprites": [
+    {
+     "name": "Merchant_Eye_0",
+     "rect": [
+      0.0,
+      64.0,
+      64.0,
+      64.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Merchant_Eye_1",
+     "rect": [
+      64.0,
+      64.0,
+      64.0,
+      64.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Merchant_Eye_2",
+     "rect": [
+      128.0,
+      64.0,
+      64.0,
+      64.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Merchant_Eye_3",
+     "rect": [
+      192.0,
+      64.0,
+      64.0,
+      64.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Merchant_Eye_4",
+     "rect": [
+      256.0,
+      64.0,
+      64.0,
+      64.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Merchant_Eye_5",
+     "rect": [
+      320.0,
+      64.0,
+      64.0,
+      64.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Merchant_Eye_6",
+     "rect": [
+      384.0,
+      64.0,
+      64.0,
+      64.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Merchant_Eye_7",
+     "rect": [
+      448.0,
+      64.0,
+      64.0,
+      64.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Merchant_Eye_8",
+     "rect": [
+      512.0,
+      64.0,
+      64.0,
+      64.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Merchant_Eye_9",
+     "rect": [
+      576.0,
+      64.0,
+      64.0,
+      64.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Merchant_Eye_10",
+     "rect": [
+      0.0,
+      0.0,
+      64.0,
+      64.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Merchant_Eye_11",
+     "rect": [
+      64.0,
+      0.0,
+      64.0,
+      64.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Merchant_Eye_12",
+     "rect": [
+      128.0,
+      0.0,
+      64.0,
+      64.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Merchant_Eye_13",
+     "rect": [
+      192.0,
+      0.0,
+      64.0,
+      64.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Merchant_Eye_14",
+     "rect": [
+      256.0,
+      0.0,
+      64.0,
+      64.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Merchant_Eye_15",
+     "rect": [
+      320.0,
+      0.0,
+      64.0,
+      64.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Merchant_Eye_16",
+     "rect": [
+      384.0,
+      0.0,
+      64.0,
+      64.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    },
+    {
+     "name": "Merchant_Eye_17",
+     "rect": [
+      448.0,
+      0.0,
+      64.0,
+      64.0
+     ],
+     "pivot": [
+      0.5,
+      0.5
+     ],
+     "pixelsPerUnit": 16.0
+    }
+   ],
+   "renderer": "/CavelingMerchant/XScaler/AnimPositionRotation/AnimScale/SRPivot/SREye"
+  }
+ ]
+}

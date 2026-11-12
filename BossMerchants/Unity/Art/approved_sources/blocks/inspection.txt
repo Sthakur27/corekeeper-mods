@@ -1,0 +1,7 @@
+Source: built-in image_gen, unprocessed 1536x1024 RGBA output. Approved concept used as visual reference.
+Alpha is NOT hard alpha: all outputs have semitransparent colored halos despite transparent/no-halo requests. Alpha maximum is 254. Manager informed; deterministic importer must inspect/threshold before integration.
+Read-only measured object core bounds at alpha >=250 (left,top,right,bottom; exclusive right/bottom):
+NPC: (80, 97, 825, 958)
+Idol: (1028, 517, 1429, 883)
+Grout eyes remain white despite prompt requesting smaller dark-eyed expression.
+No source resizing, pixel edits, production sheet/code edits or installation performed by this agent.

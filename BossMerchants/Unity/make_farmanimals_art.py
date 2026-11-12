@@ -73,8 +73,8 @@ PAL = {k: hx(v) for k, v in PAL.items()}
 # ---------------------------------------------------------------- character (cell coords, facing right, 3/4 top-down)
 # Core Keeper's camera looks down at ~3/4: top planes (hat crown, brim, shoulders, sack mouth, lantern cap) are
 # foreshortened ovals in the lightest ramp step, front faces are mid-tone and darken downwards, round things are
-# ovals, and the face sits low under a wide oval brim. Parts are built from ellipses / curved bands and shaded in
-# clean bands (light from the top-left); no dithering.
+# ovals, and the face sits low under a wide oval brim. Parts are built from ellipses / curved bands, light from the
+# top-left, shaded in ~2x2 clusters (see the restyle note above MPAL); no single-pixel dithering.
 # Vanilla scale (2026-11-12 size fix): the CavelingMerchant rig shows the sprite 1:1 at 16 px/unit, so Wren is drawn
 # at the vanilla merchant's size: whole figure incl. crook + lantern <= 26 px wide and <= 47 px tall, body about
 # 17-20 px wide, ~480-650 opaque px per frame (vanilla ~570), feet on row 53 like vanilla.
@@ -95,8 +95,8 @@ STAND_LEGS = ((2, 0), (-4, 0))
 WAVE = [((-3, 37), 0), ((-5, 33), 0), ((-7, 28), 0), ((-7, 25), -2), ((-7, 25), -2), ((-7, 26), -1)]
 
 # hat / head geometry (relative to CX and the bob)
-BRIM = (-0.5, 25.0, 9.6, 3.3)          # dx, cy, rx, ry
-HEAD = (1.0, 31.5, 4.6, 3.8)
+BRIM = (-0.5, 25.0, 9.0, 3.1)          # dx, cy, rx, ry
+HEAD = (1.0, 31.5, 4.2, 3.7)
 
 
 def put(img, x, y, ch):
@@ -159,46 +159,151 @@ def paint(img, mask, keyfn, out_tl=None, out_br=None):
             put(img, x, y, keyfn(x, y))
 
 
-def draw_boot(img, x0, lift, near, top=44):
-    """Slate trouser leg down from under the poncho, then a small boot: light top plane, leather front, dark sole."""
+# Restyle (2026-11-12, after Old Hemlock's restyle beside the vanilla Caveling Merchant in Sid's screenshot): the
+# previous pass read as bright and flat next to vanilla: a big pale straw disc of a brim, a wide flat rust poncho,
+# a bright blue head and 1-2 shade fills. This pass follows the vanilla merchants' look instead:
+#   - dark, muted ramps (6-7 close steps per material, picked from the finisher's master palette) shaded in small
+#     ~2x2 clusters (grain()), so the figure sinks into the cave light and only small accents catch the eye: a few
+#     sunlit straw strands on the crown and the back of the brim, the beak, the brass bell and buckle, the lantern;
+#   - the straw hat is no longer a flat pale disc: weathered ochre straw, darker toward the front, woven in rings of
+#     clusters, a shadow cast by the crown across the right half of the brim, a frayed front edge;
+#   - no separate outline colour: each part's silhouette ring is a dark step of its own ramp (one step lighter on
+#     the lit top/left side); the finisher darkens edges next to solid mass further;
+#   - a narrower poncho (mass moved into thin props: the crook, the lasso hanging off the sack, the horseshoe charm,
+#     the feather, the fringe and the trouser legs);
+#   - the glow (Merchant_Light) stays the lantern flame, ~6 px a frame (vanilla's lantern is ~18).
+MPAL = {
+    # straw hat: weathered ochre, cool-brown shadow, two warm sunlit steps used only in small clusters
+    'S0': '201d15', 'S1': '352a1c', 'S2': '49351d', 'S3': '614822', 'S4': '624f32', 'S5': '875e2c',
+    'S6': 'ab834c', 'S7': 'ab834c',
+    # Azeos-blue feathers (navy shadow, muted mid blues, one slate-blue light step)
+    'F0': '0f2960', 'F1': '142b5c', 'F2': '273fa7', 'F3': '4b708a', 'F4': '4883d4', 'F5': '6e9bb9', 'F6': '6e9bb9',
+    # poncho: muted rust, purple-maroon shadow
+    'P0': '2b213b', 'P1': '5e2a28', 'P2': '5e2a28', 'P3': '6b4545', 'P4': '6b4545', 'P5': '824223', 'P6': '774627',
+    'P7': 'b16a3c',
+    # brass (zigzag, bell, buckle, feather tip)
+    'A0': '49351d', 'A1': '614822', 'A2': 'a88b37', 'A3': 'a88b37',
+    # slate cloth / lantern metal
+    'T0': '232930', 'T1': '2a4e4a', 'T2': '47677e', 'T3': '47677e', 'T4': '4b708a',
+    # leather (strap, boots, glove)
+    'L0': '352a1c', 'L1': '5e2a28', 'L2': '774627', 'L3': 'b16a3c',
+    # crook wood
+    'W0': '352a1c', 'W1': '49351d', 'W2': '614822', 'W3': '915b26', 'W4': '915b26',
+    # burlap sack / rope
+    'U0': '352a1c', 'U1': '49351d', 'U2': '614822', 'U3': '624f32', 'U4': '875e2c', 'U5': 'ab834c',
+    # beak
+    'K0': '824223', 'K1': 'da6210', 'K2': 'e2a12c',
+    # lantern flame (Merchant_Light)
+    'G1': 'da6210', 'G2': 'f2df3a', 'G3': 'ffffff',
+}
+for _k, _v in MPAL.items():
+    PAL[_k] = hx(_v)
+MGLOW = {'G1', 'G2', 'G3'}
+MR = {'straw': ['S%d' % i for i in range(8)], 'blue': ['F%d' % i for i in range(7)],
+      'rust': ['P%d' % i for i in range(8)], 'brass': ['A%d' % i for i in range(4)],
+      'slate': ['T%d' % i for i in range(5)], 'leather': ['L%d' % i for i in range(4)],
+      'wood': ['W%d' % i for i in range(5)], 'burlap': ['U%d' % i for i in range(6)],
+      'beak': ['K0', 'K0', 'K1', 'K2']}
+
+
+def grain(x, y):
+    """Deterministic cluster grain in {-1, 0, 1}: constant over irregular ~2x2 blocks (never single pixels)."""
+    bx, by = (x + (y // 2) % 2) // 2, y // 2
+    h = (bx * 73856093 ^ by * 19349663) & 0xffff
+    return (h % 5) // 2 - 1 if h % 7 else 0
+
+
+def qm(v, ramp, lo=2, hi=None):
+    """Quantise light value v (0..1) onto ramp[lo:hi] (the darkest steps are kept for edges and occlusion)."""
+    r = MR[ramp][lo:hi]
+    return r[max(0, min(len(r) - 1, int(v * len(r))))]
+
+
+class Canvas:
+    def __init__(self):
+        self.px = {}
+
+    def put(self, x, y, ch, tag=''):
+        if 0 <= x < CELL and 0 <= y < CELL:
+            self.px[(x, y)] = (ch, tag)
+
+    def part(self, pix, ramp, tag='', ring=True):
+        """Draw {(x, y): key} with a 1 px ring in the ramp's own dark tones: step 0 on the shadow (bottom/right)
+        side, step 1 on the lit top/left side (vanilla edges are dark shades of the material, not one line colour)."""
+        if ring:
+            r = MR[ramp]
+            ringpx = {}
+            for (x, y) in pix:
+                for a, b in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                    p = (x + a, y + b)
+                    if p in pix:
+                        continue
+                    if (a, b) in ((1, 0), (0, 1)):
+                        ringpx[p] = r[0]
+                    elif p not in ringpx:
+                        ringpx[p] = r[1]
+            for p, ch in ringpx.items():
+                self.put(p[0], p[1], ch, tag)
+        for (x, y), ch in pix.items():
+            self.put(x, y, ch, tag)
+
+    def key(self, x, y):
+        return self.px.get((x, y), ('',))[0]
+
+    def images(self):
+        base = Image.new('RGBA', (CELL, CELL), (0, 0, 0, 0))
+        light = Image.new('RGBA', (CELL, CELL), (0, 0, 0, 0))
+        for (x, y), (ch, tag) in self.px.items():
+            base.putpixel((x, y), PAL[ch])
+            if tag == 'flame' and ch in MGLOW:
+                light.putpixel((x, y), PAL[ch])
+        return base, light
+
+
+def draw_sack(cv, c, dy):
+    """Burlap feed sack slung on the back (mouth seen from above), a rope tie, the lasso coil and horseshoe."""
+    sx, sy, srx, sry = c - 6.5, 38.5 + dy, 2.8, 4.4
+    sack = {}
+    for (x, y) in ell(sx, sy, srx, sry):
+        nx, ny = (x + .5 - sx) / srx, (y + .5 - sy) / sry
+        v = 0.55 - 0.35 * nx - 0.4 * ny + 0.18 * grain(x, y)
+        if (x + y) % 4 == 0 and y > sy:                       # a burlap seam
+            v -= 0.18
+        sack[(x, y)] = qm(v, 'burlap', 1, 5)
+    for (x, y) in ell(sx, 34.2 + dy, 2.2, 1.1):              # gathered mouth, top plane
+        sack[(x, y)] = 'U4' if x < sx else 'U3'
+    sack[(int(sx) - 1, 34 + dy)] = 'U5'
+    cv.part(sack, 'burlap')
+    cv.put(int(sx), 35 + dy, 'U1'); cv.put(int(sx) + 1, 35 + dy, 'U1')   # rope tie
+    # lasso: a thin coil hanging off the sack's lower side (1 px rope, lit top arc)
+    rcx, rcy = c - 7.5, 44.0 + dy
+    ring = ell(rcx, rcy, 2.8, 1.9) - ell(rcx, rcy - 0.2, 1.6, 0.8)
+    for (x, y) in ring:
+        top = y + .5 < rcy
+        cv.put(x, y, ('U5' if (x // 2) % 2 == 0 else 'U4') if top else ('U3' if x < rcx else 'U1'))
+    cv.put(int(rcx) + 2, int(rcy) + 2, 'U1'); cv.put(int(rcx) + 2, int(rcy) + 3, 'U2')   # loose end
+    # horseshoe charm (steel) under the coil
+    for (x, y), ch in (((c - 10, 46), 'T2'), ((c - 10, 47), 'T1'), ((c - 9, 48), 'T1'), ((c - 8, 47), 'T0'),
+                       ((c - 8, 46), 'T1')):
+        cv.put(x, y + dy, ch)
+
+
+def draw_leg(cv, x0, lift, near, top):
+    """Slate trouser leg down from under the poncho, then a small boot: lit top plane, leather front, dark sole."""
     y0 = GROUND - 2 - lift
     for y in range(top, y0):
-        put(img, x0 + 1, y, 'V' if near else 'v'); put(img, x0 + 2, y, 'v' if near else 'T')
-    rows = (["lhhl", "LllL", "DLLD"] if near else ["LllL", "LLLL", "DDDD"])
-    grid(img, rows, x0, y0)
+        cv.put(x0 + 1, y, 'T2' if near else 'T1'); cv.put(x0 + 2, y, 'T1' if near else 'T0')
+    rows = (('L2', 'L3', 'L2', 'L1'), ('L1', 'L2', 'L1', 'L0'), ('L0', 'L0', 'L0', 'T0')) if near else \
+           (('L1', 'L2', 'L1', 'L0'), ('L0', 'L1', 'L0', 'L0'), ('T0', 'L0', 'L0', 'T0'))
+    for j, row in enumerate(rows):
+        for i, ch in enumerate(row):
+            cv.put(x0 + i, y0 + j, ch)
 
 
-def draw_figure(dy=0, hat_dy=0, lantern_dx=0, flutter=0, legs=STAND_LEGS, hand=None):
-    """Returns (base, light, eye_xy) for one 64x64 cell."""
-    base = Image.new('RGBA', (CELL, CELL), (0, 0, 0, 0))
-    light = Image.new('RGBA', (CELL, CELL), (0, 0, 0, 0))
-    c = CX
-
-    # ---- back gear: burlap feed sack (mouth seen from above), lasso coil (an oval ring), horseshoe charm
-    sx0, sy0, srx, sry = c - 6, 38.0 + dy, 3.0, 4.6
-    sack = ell(sx0, sy0, srx, sry)
-    paint(base, sack, lambda x, y: band(-((x + .5 - sx0) / srx) * .6 - ((y + .5 - sy0) / sry) * .8,
-                                         (-0.35, 0.3, 0.8), '1233'), out_tl='3', out_br='1')
-    mouth = ell(sx0, 33.8 + dy, 2.4, 1.2)
-    paint(base, mouth, lambda x, y: '1', out_tl='i', out_br='3')
-    put(base, sx0 - 1, 34 + dy, 'O'); put(base, sx0, 34 + dy, '3')                            # rope tie
-    rcx, rcy = c - 7, 43.5 + dy
-    ring = ell(rcx, rcy, 3.0, 2.0) - ell(rcx, rcy - 0.2, 1.5, 0.8)
-    for (x, y) in ring:
-        tw = ((x * 2 + y) // 2) % 3
-        put(base, x, y, '5' if (y < rcy and tw == 0) else ('3' if tw != 2 else '2'))
-    tl, br = edges(ring)
-    for p in br:
-        put(base, p[0], p[1], 'O')
-    grid(base, ["V.v", ".vT"], c - 10, 46 + dy)                                               # horseshoe
-
-    # ---- legs: two small boots
-    (nx, nl), (fx, fl) = legs
-    draw_boot(base, c + fx - 2, fl, False, 44 + dy)
-    draw_boot(base, c + nx - 2, nl, True, 44 + dy)
-
-    # ---- poncho: squat cone, oval shoulders on top, oval curved hem, curved stripes
-    yt, hy, rxh, ryh, w0 = 35 + dy, 45 + dy, 8.2, 2.4, 5.0
+def draw_poncho(cv, c, dy):
+    """Rust poncho: narrow cone with oval shoulders and a curved hem, cluster-shaded folds, a low-contrast brass
+    zigzag, a slate stripe, a fringe, a patch, and the sack strap with a brass buckle across the chest."""
+    yt, hy, rxh, ryh, w0 = 35 + dy, 45 + dy, 7.2, 2.2, 4.4
     pon = set()
     for y in range(yt, int(hy + ryh) + 1):
         hw = w0 + (rxh - w0) * min(1.0, (y - yt) / (hy - yt))
@@ -207,123 +312,204 @@ def draw_figure(dy=0, hat_dy=0, lantern_dx=0, flutter=0, legs=STAND_LEGS, hand=N
             if abs(dx) <= hw and y + 0.5 <= hy + ryh * max(0.0, 1 - (dx / rxh) ** 2) ** 0.5:
                 pon.add((x, y))
 
-    def hem_y(x, k):     # a curve parallel to the hem, k rows below the shoulders
+    def hem_y(x, k):
         dx = (x + 0.5 - c) / rxh
         return round(yt + k + ryh * max(0.0, 1 - dx * dx) ** 0.5)
 
-    def pon_key(x, y):
+    out = {}
+    for (x, y) in pon:
         u = (x + 0.5 - c) / rxh
-        t = (y - yt) / (hy - yt)
-        v = -0.75 * u - 0.55 * t
-        if y == hem_y(x, 4):                               # brass zigzag band (low contrast, one row at this scale)
-            return band(v, (-0.35,), 'aA') if x % 2 == 0 else 'a'
-        if y == hem_y(x, 5) and x % 2 == 1:
-            return 'a'
-        if y == hem_y(x, 7):                               # slate stripe
-            return band(v, (-0.3,), 'vV')
-        if y >= hem_y(x, 9):                               # darker hem underside
-            return 'P'
-        return band(v, (-0.45, 0.3), 'Ppq')
-    paint(base, pon, pon_key, out_tl='P', out_br='D')
-    for x in range(c - 7, c + 8, 2):                        # fringe under the hem
+        t = (y - yt) / (hy + ryh - yt)
+        v = 1.1 - 0.45 * t - 0.5 * u + 0.1 * grain(x, y)
+        for f in (-0.3,):                                        # one fold: dark crease, lit ridge on its left
+            fx = c + f * (w0 + (rxh - w0) * t)
+            if y > yt + 3 and abs(x + .5 - fx) < 0.5:
+                v -= 0.25
+            elif y > yt + 3 and 0.5 <= fx - x - .5 < 1.5:
+                v += 0.12
+        if y == hem_y(x, 4):                                     # brass zigzag, muted, in 2 px steps
+            out[(x, y)] = 'A2' if (x // 2) % 2 == 0 and u < -0.15 else 'A1' if (x // 2) % 2 == 0 else 'P3'
+            continue
+        if y == hem_y(x, 7):                                     # slate stripe
+            out[(x, y)] = 'T2' if u < -0.2 else 'T1'
+            continue
+        if y >= hem_y(x, 9):
+            v -= 0.25                                            # underside of the hem
+        out[(x, y)] = qm(v, 'rust', 1, 8)
+    for (x, y), ch in (((c - 4, yt + 7), 'T3'), ((c - 3, yt + 7), 'T2'), ((c - 4, yt + 8), 'T2'),
+                       ((c - 3, yt + 8), 'T1')):                 # slate patch
+        if (x, y) in out:
+            out[(x, y)] = ch
+    # fringe: little 2 px tassels under the hem
+    for x in range(c - 6, c + 7, 2):
         y = hem_y(x, 10) + 1
         if (x, y - 1) in pon:
-            put(base, x, y, 'P')
-    put(base, c - 8, hem_y(c - 8, 9) + 1, 'A'); put(base, c + 7, hem_y(c + 7, 9) + 1, 'A')   # tassels
-    # slate patch with a stitch on the lit side
-    grid(base, ["VQ", "vv"], c - 5, yt + 7)
-    # shoulders: top plane of the poncho, lightest
-    sh = ell(c, yt + 1.0, w0 + 1.2, 2.2)
-    paint(base, sh, lambda x, y: band(-((x + .5 - c) / (w0 + 1.2)) - ((y - yt) / 2.2) * .4, (-0.6, 0.15), 'pqQ'),
-          out_tl='q', out_br='P')
+            out[(x, y)] = 'P2'
+            if x % 4 == 0:
+                out[(x, y + 1)] = 'P1'
+    cv.part(out, 'rust')
+    # shoulders: the poncho's top plane
+    sh = {}
+    for (x, y) in ell(c, yt + 1.0, w0 + 1.0, 2.0):
+        u = (x + .5 - c) / (w0 + 1.0)
+        v = 0.85 - 0.5 * u - 0.25 * (y - yt) + 0.15 * grain(x, y)
+        sh[(x, y)] = qm(v, 'rust', 3)
+    cv.part(sh, 'rust', ring=False)
     # sack strap across the chest with a brass buckle
-    for (x, y) in line_px(c - 4, yt + 1, c + 5, yt + 7):
-        put(base, x, y, 'l'); put(base, x, y + 1, 'L')
-    put(base, c, yt + 4, 'A')                                         # buckle
+    for (x, y) in line_px(c - 4, yt + 1, c + 4, yt + 7):
+        cv.put(x, y, 'L2'); cv.put(x, y + 1, 'L0')
+    cv.put(c, yt + 4, 'A3'); cv.put(c + 1, yt + 4, 'A2')
 
-    # ---- head: blue feathered ball, mostly under the brim; face low, beak with a lit top
+
+def draw_head(cv, c, dy, hat_dy):
+    """Blue feathered head, mostly under the brim: face low, gold beak with a lit top, a dark eye (glint overlay)."""
     hcx, hcy, hrx, hry = c + HEAD[0], HEAD[1] + dy, HEAD[2], HEAD[3]
-    head = ell(hcx, hcy, hrx, hry)
-    paint(base, head, lambda x, y: band(-((x + .5 - hcx) / hrx) * .55 - ((y + .5 - hcy) / hry) * .85,
-                                         (-0.55, -0.05, 0.45), 'bBcC'), out_tl='b', out_br='n')
-    _brim = ell(c + BRIM[0], BRIM[1] + dy + hat_dy, BRIM[2], BRIM[3])
-    hbr = edges(head)[1]
-    for (x, y) in head:                                               # occlusion under the brim
-        if (x, y - 1) in _brim:
-            put(base, x, y, 'n')
-        elif (x, y - 2) in _brim and (x, y) not in hbr:
-            put(base, x, y, 'b')
-    grid(base, ["kgy", "kGg", ".k."], c + 5, 31 + dy)                 # beak: top plane catches light
+    head = {}
+    for (x, y) in ell(hcx, hcy, hrx, hry):
+        nx, ny = (x + .5 - hcx) / hrx, (y + .5 - hcy) / hry
+        v = 0.64 - 0.4 * nx - 0.4 * ny + 0.14 * grain(x, y)
+        if y % 2 == 0 and ((x // 2) + (y // 2)) % 2:            # overlapping feather rows (2 px dashes)
+            v -= 0.22
+        head[(x, y)] = qm(v, 'blue', 2, 6)
+    brim = ell(c + BRIM[0], BRIM[1] + dy + hat_dy, BRIM[2], BRIM[3])
+    for (x, y) in head:                                          # occlusion under the brim
+        if (x, y - 1) in brim:
+            head[(x, y)] = 'F0'
+        elif (x, y - 2) in brim:
+            head[(x, y)] = 'F1' if x > hcx else 'F2'
+    for (x, y), ch in (((c + 2, 33), 'F5'), ((c + 3, 33), 'F6'), ((c + 2, 34), 'F4'), ((c + 1, 34), 'F5')):
+        if (x, y + dy) in head:                                  # cheek feathers catch a little light
+            head[(x, y + dy)] = ch
     ex, ey = c + EYE_OFF[0], EYE_OFF[1] + dy
-    grid(base, ["nn", "nn"], ex, ey)
-    grid(base, [".w", "wC"], c + 3, 33 + dy)                          # cheek light
-    # collar bell (brass, oval top)
-    grid(base, [".A.", "aA4", ".1."], c + 2, yt + 2)
+    for p in ((ex, ey), (ex + 1, ey), (ex, ey + 1), (ex + 1, ey + 1)):
+        head[p] = 'F0'
+    cv.part(head, 'blue')
+    beak = {(c + 5, 31): 'K1', (c + 6, 31): 'K2', (c + 7, 31): 'K1', (c + 5, 32): 'K0', (c + 6, 32): 'K1',
+            (c + 7, 32): 'K0', (c + 6, 33): 'K0'}
+    for (x, y), ch in beak.items():
+        cv.put(x, y + dy, ch)
+    return ex, ey
 
-    # ---- hat: wide oval brim (top plane lit, front edge thickness), cylindrical crown with an oval top
-    hdy = dy + hat_dy
+
+def draw_bell(cv, c, yt):
+    for (x, y), ch in (((c + 3, yt + 2), 'A3'), ((c + 2, yt + 3), 'A2'), ((c + 3, yt + 3), 'A2'),
+                       ((c + 4, yt + 3), 'A1'), ((c + 3, yt + 4), 'A0')):
+        cv.put(x, y, ch)
+
+
+def draw_hat(cv, c, hdy, flutter):
+    """Weathered straw hat: wide oval brim (woven rings of clusters, darker toward the front, the crown's shadow on
+    its right half, frayed front edge), a cylindrical crown with a rust band and a pinched oval top, an Azeos
+    feather tucked in the band."""
     bcx, bcy, brx, bry = c + BRIM[0], BRIM[1] + hdy, BRIM[2], BRIM[3]
     brim = ell(bcx, bcy, brx, bry)
-    under = {(x, y + 1) for (x, y) in brim} | {(x, y + 2) for (x, y) in brim if y + 0.5 > bcy + 1}
-    rim = under - brim
-    for (x, y) in rim:                                                # brim thickness / underside, front only
-        if y > bcy:
-            put(base, x, y, '1' if (x, y + 1) not in under else '2')
-    paint(base, brim, lambda x, y: band(-((x + .5 - bcx) / brx) * .5 - ((y + .5 - bcy) / bry) * .75,
-                                         (-0.55, -0.1, 0.4), '3456'), out_tl='4', out_br='2')
-    ccx, crx, ctop, cbot = c - 1.0, 4.0, 18.0 + hdy, 23.5 + hdy
-    crown = set()
+    # brim thickness / underside along the front
+    under = {(x, y + 1) for (x, y) in brim if y + .5 > bcy}
+    for (x, y) in sorted(under - brim):
+        cv.put(x, y, 'S1' if (x // 2) % 3 else 'S0')
+    for x in range(int(bcx - brx) + 2, int(bcx + brx) - 1, 3):  # frayed straw ends hanging off the front edge
+        y = max(yy for (xx, yy) in brim if xx == x) + 2
+        if (x, y - 1) in under and x % 2:
+            cv.put(x, y, 'S1')
+    pix = {}
+    ccx = c - 1.0
+    for (x, y) in brim:
+        nx, ny = (x + .5 - bcx) / brx, (y + .5 - bcy) / bry
+        r = (nx * nx + ny * ny) ** 0.5
+        v = 0.72 - 0.4 * nx - 0.3 * ny + 0.16 * grain(x, y)
+        if int(r * 4.2) % 2:                                      # woven rings
+            v -= 0.12
+        if x + .5 > ccx + 1 and y + .5 > bcy - 1:                 # crown's shadow on the right/front half
+            v -= 0.18
+        pix[(x, y)] = qm(v, 'straw', 3, 7)
+    # sunlit strands on the back-left of the brim: a few small clusters only
+    for (x, y), ch in (((-8, -1), 'S6'), ((-7, -1), 'S6'), ((-7, -2), 'S7'), ((-6, -2), 'S6'), ((-3, -3), 'S5'),
+                       ((-2, -3), 'S6'), ((5, -2), 'S5'), ((6, -2), 'S5')):
+        p = (int(bcx) + x, int(bcy) + y)
+        if p in pix:
+            pix[p] = ch
+    cv.part(pix, 'straw')
+    # crown
+    crx, ctop, cbot = 3.4, 19.0 + hdy, 23.5 + hdy
+    crown = {}
     for y in range(int(ctop), int(cbot) + 2):
         for x in range(int(ccx - crx) - 1, int(ccx + crx) + 2):
             dx = (x + 0.5 - ccx) / crx
-            if abs(dx) <= 1 and y + 0.5 <= cbot + 1.2 * max(0.0, 1 - dx * dx) ** 0.5 and y >= ctop:
-                crown.add((x, y))
-    paint(base, crown, lambda x, y: band(-((x + .5 - ccx) / crx) - ((y - ctop) / 6) * .3, (-0.4, 0.35), '234'),
-          out_tl='3', out_br='1')
-    for x in range(int(ccx - crx), int(ccx + crx) + 1):               # rust hat band following the crown curve
+            if abs(dx) <= 1 and ctop <= y and y + 0.5 <= cbot + 1.1 * max(0.0, 1 - dx * dx) ** 0.5:
+                v = 0.66 - 0.7 * dx - 0.06 * (y - ctop) + 0.14 * grain(x, y)
+                crown[(x, y)] = qm(v, 'straw', 3, 7)
+    for x in range(int(ccx - crx), int(ccx + crx) + 1):          # rust band following the crown's curve
         dx = (x + 0.5 - ccx) / crx
-        yb = round(cbot - 1 + 1.2 * max(0.0, 1 - dx * dx) ** 0.5)
+        yb = round(cbot - 1 + 1.1 * max(0.0, 1 - dx * dx) ** 0.5)
         if (x, yb) in crown:
-            put(base, x, yb, 'q' if dx < -0.3 else ('p' if dx < 0.5 else 'P'))
-    ctopm = ell(ccx, ctop + 0.5, crx, 1.8)
-    paint(base, ctopm, lambda x, y: band(-((x + .5 - ccx) / crx) - ((y + .5 - ctop) / 1.8) * .3, (-0.5, 0.2), '456'),
-          out_tl='5', out_br='3')
-    for x in range(int(ccx) - 1, int(ccx) + 2):                       # pinch crease on the crown top
-        put(base, x, int(ctop) + 1, '4')
-    # Azeos feather tucked in the band, pointing up and back
+            crown[(x, yb)] = 'P6' if dx < -0.3 else ('P4' if dx < 0.5 else 'P2')
+    for (x, y) in ell(ccx, ctop + 0.5, crx, 1.3):                # pinched top plane
+        dx = (x + .5 - ccx) / crx
+        crown[(x, y)] = 'S6' if dx < -0.3 and (x + y) % 3 else ('S5' if dx < 0.4 else 'S4')
+    for x in range(int(ccx) - 1, int(ccx) + 1):
+        crown[(x, int(ctop) + 1)] = 'S3'                          # crease
+    cv.part(crown, 'straw')
+    # Azeos feather tucked in the band, pointing up and back (navy quill side, mid-blue vane, brass tip)
     fx0, fy0 = int(ccx - crx) + 1, int(cbot) - 2
     tip = (fx0 - 3 - (1 if flutter else 0), fy0 - 7)
     for i, (x, y) in enumerate(line_px(fx0, fy0, tip[0], tip[1])):
-        put(base, x, y, 'n'); put(base, x + 1, y, 'B' if i > 2 else 'c')
-    put(base, tip[0], tip[1], 'A'); put(base, tip[0] + 1, tip[1], 'A'); put(base, tip[0], tip[1] - 1, 'a')
+        cv.put(x, y, 'F1'); cv.put(x + 1, y, 'F4' if i > 2 else 'F3')
+    cv.put(tip[0], tip[1], 'A2'); cv.put(tip[0] + 1, tip[1], 'A1'); cv.put(tip[0], tip[1] - 1, 'A1')
 
-    # ---- crook (leans slightly, so you see along it), hook and lantern with oval cap
+
+def draw_crook(cv, c, dy, lantern_dx):
+    """Shepherd's crook (2 px, lit left column, knots), a hook at the top and a small lantern hanging from it."""
     xb, xt, ytop = c + 8, c + 9, 11 + dy
     for y in range(ytop, GROUND + 1):
-        x = round(xb + (xt - xb) * (GROUND - y) / (GROUND - ytop))
-        put(base, x, y, '3'); put(base, x + 1, y, '1')
-    put(base, xb, GROUND, 'O'); put(base, xb + 1, GROUND, 'O')
+        i = GROUND - y
+        x = round(xb + (xt - xb) * i / (GROUND - ytop))
+        lit, sh = ('W3', 'W1') if i > 14 else ('W2', 'W1')
+        if i % 7 == 4:
+            lit, sh = 'W1', 'W0'                                  # knot
+        cv.put(x, y, lit); cv.put(x + 1, y, sh)
+    cv.put(xb, GROUND, 'W0'); cv.put(xb + 1, GROUND, 'W0')
     hook = [(0, -1), (1, -2), (2, -2), (3, -1)]
-    for i, (hx_, hy_) in enumerate(hook):
-        put(base, xt + hx_, ytop + hy_, '4' if i in (1, 2) else '3')
-        put(base, xt + hx_, ytop + hy_ - 1, 'O')
-        put(base, xt + hx_, ytop + hy_ + 1, '1' if i else '3')
-    put(base, xt + 3, ytop, 'T')
+    for i, (a, b) in enumerate(hook):
+        cv.put(xt + a, ytop + b, 'W4' if i == 1 else 'W3')
+        cv.put(xt + a, ytop + b - 1, 'W0')
+        cv.put(xt + a, ytop + b + 1, 'W1' if i else 'W2')
+    cv.put(xt + 3, ytop, 'T0')
     lx, ly = xt + 1 + lantern_dx, ytop + 1
-    grid(base, [".TUT.", "TuUuT", "TGyGT", "TyWyT", "TvvvT", ".TDT."], lx, ly)
-    for (x, y), ch in {(1, 2): 'G', (2, 2): 'y', (3, 2): 'G', (1, 3): 'y', (2, 3): 'W', (3, 3): 'y'}.items():
-        put(light, lx + x, ly + y, ch)
+    cage = [('', 'T0', 'T3', 'T0', ''), ('T1', 'T2', 'T4', 'T2', 'T0'), ('T1', 'G1', 'G2', 'G1', 'T0'),
+            ('T1', 'G2', 'G3', 'G1', 'T0'), ('T1', 'T2', 'T1', 'T1', 'T0'), ('', 'T0', 'T0', 'T0', '')]
+    for j, row in enumerate(cage):
+        for i, ch in enumerate(row):
+            if ch:
+                cv.put(lx + i, ly + j, ch, 'flame' if ch in MGLOW else '')
     # right glove on the staff
     gy0 = 39 + dy
-    gxs = round(xb + (xt - xb) * (GROUND - gy0) / (GROUND - ytop)) - 1
-    grid(base, ["lhh", "Lhl", "LLL"], gxs, gy0)
+    gx = round(xb + (xt - xb) * (GROUND - gy0) / (GROUND - ytop)) - 1
+    for (a, b), ch in (((0, 0), 'L2'), ((1, 0), 'L3'), ((2, 0), 'L2'), ((0, 1), 'L1'), ((1, 1), 'L2'),
+                       ((2, 1), 'L1'), ((0, 2), 'L0'), ((1, 2), 'L0'), ((2, 2), 'L0')):
+        cv.put(gx + a, gy0 + b, ch)
 
-    # ---- free arm (hat tip): sleeve from the shoulder, glove in front of the brim
-    if hand is not None:
+
+def draw_figure(dy=0, hat_dy=0, lantern_dx=0, flutter=0, legs=STAND_LEGS, hand=None):
+    """Returns (base, light, eye_xy) for one 64x64 cell."""
+    cv = Canvas()
+    c = CX
+    draw_sack(cv, c, dy)
+    (nx, nl), (fx, fl) = legs
+    draw_leg(cv, c + fx - 2, fl, False, 44 + dy)
+    draw_leg(cv, c + nx - 2, nl, True, 44 + dy)
+    draw_poncho(cv, c, dy)
+    ex, ey = draw_head(cv, c, dy, hat_dy)
+    draw_bell(cv, c, 35 + dy)
+    draw_hat(cv, c, dy + hat_dy, flutter)
+    draw_crook(cv, c, dy, lantern_dx)
+    if hand is not None:                                          # hat tip: sleeve from the shoulder, glove
         hxp, hyp = c + hand[0], hand[1] + dy
-        for (x, y) in line_px(c - 3, yt + 3, hxp + 1, hyp + 2):
-            put(base, x - 1, y, 'P'); put(base, x, y, 'q'); put(base, x + 1, y, 'D')
-        grid(base, ["lhh", "Lhl", "LLL"], hxp - 1, hyp - 1)
+        for (x, y) in line_px(c - 3, 38 + dy, hxp + 1, hyp + 2):
+            cv.put(x - 1, y, 'P1'); cv.put(x, y, 'P5'); cv.put(x + 1, y, 'P0')
+        for (a, b), ch in (((0, 0), 'L2'), ((1, 0), 'L3'), ((2, 0), 'L2'), ((0, 1), 'L1'), ((1, 1), 'L2'),
+                           ((2, 1), 'L1'), ((0, 2), 'L0'), ((1, 2), 'L0'), ((2, 2), 'L0')):
+            cv.put(hxp - 1 + a, hyp - 1 + b, ch)
+    base, light = cv.images()
     return base, light, (ex, ey)
 
 

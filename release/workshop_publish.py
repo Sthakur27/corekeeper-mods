@@ -110,7 +110,7 @@ COVER_NOTES = {
     "MerchantRestock": "Cover is made from in-game screenshots of the Caveling and Fishing Merchants' shops and the Fishing Merchant (HDR captures tone-mapped); title banner and a stopwatch icon added.",
     "CoinDrops": "Cover is assembled from game art, not a gameplay moment: the game's orange slime sprite and Copper Sword icon, plus an Ancient Coin and the stack-count digits cut from in-game screenshots (HDR captures tone-mapped; the coin rebuilt from its unobscured quarter), over a blurred cave screenshot; title banner and plus/equals signs added.",
     "AutoLoadouts": "Cover is made from an in-game screenshot (the mod's \"Linked to loadout\" bubble and the hotbar; HDR capture tone-mapped); title banner and highlight added.",
-    "BossMerchants": "Cover is assembled from the mod's own merchant and idol sprites on grass taken from an in-game screenshot (HDR capture tone-mapped); title banner and ALPHA plaque added.",
+    "BossMerchants": "Cover artwork generated with AI from the mod's own merchant and idol designs; not an in-game screenshot.",
 }
 
 # Steam collection with every individual mod (+ CoreLib); processed first so other descriptions can link it.

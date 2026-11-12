@@ -43,35 +43,42 @@ CELL = 64
 GROUND = 53  # last opaque row (top-down) inside a cell, as on the vanilla Caveling Merchant
 
 
+# ------------------------------------------------------------------------------------------- palette (vanilla)
+# Restyle (2026-11-12, Sid's in-game screenshot: Old Hemlock read off-style next to the vanilla Caveling Merchant;
+# Tilly had the same faults: a big flat bright-yellow hat, a pale pink body, a round blob silhouette). This pass
+# follows the vanilla merchants instead:
+#   - dark, muted ramps (5-7 close steps per material, all picked from the finisher's vanilla-sampled master
+#     palette) shaded in irregular ~2x2 clusters (grain()), so straw and larva skin read as texture, not fills;
+#     the bright steps only appear as small clusters on top-left planes (hat crown, larva back, tin rim);
+#   - straw hat in dark ochre/brown straw with woven rings, not lemon yellow; larva body a dusky rose with
+#     dark seams, not pale pink; head capsule a deep violet instead of near-black (so outlines never go black);
+#   - no separate outline colour: each part's silhouette ring is its own ramp's darkest step (one step lighter
+#     on the lit top/left side), like vanilla's edges;
+#   - narrower body and brim, with mass moved into thin props: frayed straw ends off the brim, a tall Bloat Oat
+#     stalk and a glow tulip on a thin stem out of the basket, a long watering-can spout, stubby prolegs;
+#   - glow (Merchant_Light) stays a few small spots on the two tulip blooms.
 def hx(s):
     return tuple(int(s[i:i + 2], 16) for i in (0, 2, 4))
 
 
-# ------------------------------------------------------------------------------------------- palette (vanilla)
-BODY = [hx(c) for c in ('bb803f', 'd69776', 'eebebc', 'f9efc3')]          # larva_idle
-BODY_OUT = hx('5e2a28')
-BODY_SEAM = hx('bb803f')
-HEAD = [hx(c) for c in ('23281e', '23281e', '4e3c6d', 'a555a4')]  # larva head capsule + mandibles
-HEAD_OUT = hx('0b1917')
-COLLAR = [hx('c5460a'), hx('da6210')]
-LEG = [hx('23281e'), hx('4e3c6d'), hx('4e3c6d')]
-CHEEK = hx('c76369')
-EYE = hx('23281e')
-STRAW = [hx(c) for c in ('915b26', 'b58047', 'e2a12c', 'f2df3a')]         # FarmerHelm
-STRAW_OUT = hx('614822')
-BAND = [hx('824223'), hx('b43221'), hx('c5460a')]
-WICKER = [hx(c) for c in ('614822', '915b26', 'b58047', 'e2a12c')]        # Wood icon
-WICKER_OUT = hx('39341f')
-TIN = [hx(c) for c in ('47677e', '677fae', 'a1aedd', 'd6dbfa')]           # LargeWaterCan / Bucket
-TIN_OUT = hx('2a4e4a')
-LEAF = {'o': hx('0f5630'), 'V': hx('0a6d27'), 'v': hx('239029'), 'G': hx('5ca537'), 'g': hx('a3ce4a')}
-TULIP = {'U': hx('143eab'), 'T': hx('165dd9'), 't': hx('1885d8'), 'c': hx('19bdc6'), 'C': hx('4ad8ae'),
-         'X': hx('94f7dd')}
-OAT = {'n': hx('614822'), 'h': hx('b58047'), 'y': hx('e2a12c'), 'Y': hx('f2df3a'), 'W': hx('f9efc3')}
-BERRY = {'R': hx('5e2a28'), 'r': hx('b43221'), 'e': hx('c76369')}
-GLOW = {'1': hx('4ad8ae'), '2': hx('94f7dd'), '3': hx('ffffff')}
-GRID_PAL = {**LEAF, **TULIP, **OAT, **BERRY}
-LIT_OUT_INIT = {'5e2a28': '824223', '614822': '915b26', '39341f': '614822', '0b1917': '23281e', '2a4e4a': '47677e'}
+def ramp(*cs):
+    return [hx(c) for c in cs]
+
+
+STRAW = ramp('352a1c', '49351d', '614822', '6e481f', '855525', '915b26', 'ab834c')   # dark ochre straw
+STRAW_HI = hx('c18f47')                                                               # tiny crown accent
+BAND = ramp('5e2a28', '822e13', 'a24027')                                             # hat band
+BODY = ramp('562e29', '612624', '6b4545', '813530', '997171', 'b76a6a', 'e5a69f')    # dusky rose larva
+BODY_HI = hx('e5a69f')
+HEAD = ramp('1f102a', '2b213b', '4b3e6b', '4c376f', '6a4388', '895392')               # violet head capsule
+COLLAR = ramp('612624', '822e13', 'a24027', 'c5460a')
+WICK = ramp('201d15', '383420', '474130', '624f32', '645d53', 'a98963')               # grey-brown wicker
+LEAF = ramp('0a3926', '0f5630', '2b5432', '356a2c', '4c8d32', '5ca537')
+TULIP = ramp('0f2960', '143eab', '165dd9', '1885d8')
+OAT = ramp('614822', '855525', '9b5f23', 'c18f47')
+TIN = ramp('232930', '47677e', '50667d', '677fae', '90a0c4', 'a1aedd')
+EYEC = hx('d4b987')
+GLOW = {'1': hx('0f9e88'), '2': hx('4ad8ae'), '3': hx('94f7dd')}
 
 
 # ------------------------------------------------------------------------------------------- drawing helpers
@@ -91,7 +98,17 @@ class Layer:
         return im
 
 
-LIGHT = (-0.38, -0.80, 0.46)  # camera looks down at ~3/4: up-facing planes catch the most light
+def grain(x, y):
+    """Deterministic cluster grain in {-1, 0, 1}: constant over irregular ~2x2 blocks (never single pixels)."""
+    bx, by = (x + (y // 2) % 2) // 2, y // 2
+    h = (bx * 73856093 ^ by * 19349663) & 0xffff
+    return (h % 5) // 2 - 1 if h % 7 else 0
+
+
+def qv(v, r, lo=1, hi=None):
+    """Quantise light value v (0..1) onto r[lo:hi] (the darkest step is kept for the silhouette ring)."""
+    rr = r[lo:hi]
+    return rr[max(0, min(len(rr) - 1, int(v * len(rr))))]
 
 
 def ellipse_mask(cx, cy, rx, ry):
@@ -104,36 +121,37 @@ def ellipse_mask(cx, cy, rx, ry):
     return m
 
 
-def shade_ellipse(L, cx, cy, rx, ry, ramp, cuts=(-0.05, 0.42, 0.78), clip=None, flat=1.0):
-    """Fill an ellipse with a top-left lit ramp (ramp dark->light, len(cuts)+1 shades). Returns the mask."""
-    m = ellipse_mask(cx, cy, rx, ry)
-    if clip:
-        m = {p for p in m if clip(*p)}
-    for (x, y) in m:
+def part(L, pix, r, ring=True, lo=1):
+    """Draw {(x, y): rgb} with a 1 px ring in the ramp's own dark tones: r[lo] on the shadow (bottom/right)
+    side, r[lo + 1] on the lit top/left side. Vanilla edges are mid/dark shades of the material, not one line
+    (r[0] stays for seams and occlusion inside the part)."""
+    if ring:
+        rp = {}
+        for (x, y) in pix:
+            for a, b in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                p = (x + a, y + b)
+                if p in pix:
+                    continue
+                lit = (a, b) in ((-1, 0), (0, -1))
+                if not lit:
+                    rp[p] = r[lo]
+                elif p not in rp:
+                    rp[p] = r[lo + 1]
+        for p, c in rp.items():
+            L.put(p[0], p[1], c)
+    for p, c in pix.items():
+        L.put(p[0], p[1], c)
+
+
+def ball(cx, cy, rx, ry, r, base=0.62, kx=0.42, ky=0.5, kz=0.25, g=0.16, lo=1, hi=None):
+    """Ellipse shaded from the top-left with cluster grain: {(x, y): rgb}."""
+    out = {}
+    for (x, y) in ellipse_mask(cx, cy, rx, ry):
         nx, ny = (x + 0.5 - cx) / rx, (y + 0.5 - cy) / ry
-        nz = math.sqrt(max(0.0, 1 - nx * nx - ny * ny)) * flat
-        n = math.sqrt(nx * nx + ny * ny + nz * nz) or 1
-        i = (nx * LIGHT[0] + ny * LIGHT[1] + nz * LIGHT[2]) / n
-        k = sum(1 for c in cuts if i > c)
-        L.put(x, y, ramp[min(k, len(ramp) - 1)])
-    return m
-
-
-LIT_OUT = {hx(a): hx(b) for a, b in LIT_OUT_INIT.items()}  # dark outline colour -> lighter tinted colour used on the lit (top/left) edges
-
-
-def outline(L, mask, colour, only=None):
-    lit = LIT_OUT.get(colour, colour)
-    done = {}
-    for (x, y) in mask:
-        for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
-            q = (x + dx, y + dy)
-            if q not in mask and (only is None or only(*q)):
-                # an outline pixel lit from the top-left: shape lies below/right of it on both axes
-                litq = (q[0] + 1, q[1]) in mask and (q[0], q[1] + 1) in mask and (q[0] - 1, q[1]) not in mask                     and (q[0], q[1] - 1) not in mask
-                done[q] = lit if litq else colour
-    for q, c in done.items():
-        L.put(q[0], q[1], c)
+        nz = math.sqrt(max(0.0, 1 - nx * nx - ny * ny))
+        v = base - kx * nx - ky * ny + kz * (nz - 0.5) + g * grain(x, y)
+        out[(x, y)] = qv(v, r, lo, hi)
+    return out
 
 
 def grid(L, rows, ox, oy, pal, sway=None):
@@ -147,223 +165,220 @@ def grid(L, rows, ox, oy, pal, sway=None):
 
 # ------------------------------------------------------------------------------------------- character parts
 # Scale: sized to the vanilla Caveling Merchant (its body is ~20 px wide and ~29 px tall from the floor; Tilly's
-# hat/basket/can silhouette stays <= 26 px wide and ~570 opaque px per frame, like vanilla). Feet on row 53.
-# Plants in the back basket (origin = top-left at basket x0-1, rim row-8). Rows 0-4 sway with the idle breath.
+# hat/basket/can silhouette stays <= 26 px wide and ~540 opaque px per frame, like vanilla). Feet on row 53.
+# Back-basket plants (origin = top-left at basket x0-2, rim row-12). Rows 0-8 sway with the idle breath: a tall
+# Bloat Oat stalk (thin, drooping ear) and a glow tulip on a thin stem, low leafy sprouts at the rim.
 PLANTS = [
-    '.UU..oo..',
-    'UXcUoYho.',
-    'UtTUoyyo.',
-    '.UU.ohho.',
-    '.ov..oho.',
-    'oGvoGvho.',
-    'ogvoGvVo.',
-    '.ovVoVoo.',
-    '..oVoVo..',
+    '..hh.......',
+    '.hyYh......',
+    '.nyyh......',
+    '..nhn......',
+    '...hn...o..',
+    '....n..oGo.',
+    'UU..n..vVo.',
+    'TcU.n..ov..',
+    'tTU.n..v...',
+    '.Uo.n.ov...',
+    '.v..n.v....',
+    'ovGonoGv...',
+    'oVvonvVo...',
+    'VoVvVvo....',
+    'v.oVoV.....',
+    'o..........',
 ]
-# Glow tulip tucked in the hat band (origin set in draw_hat).
+PLANT_PAL = {'o': LEAF[0], 'V': LEAF[1], 'v': LEAF[3], 'G': LEAF[4], 'g': LEAF[5],
+             'U': TULIP[0], 'T': TULIP[1], 't': TULIP[2], 'c': TULIP[3],
+             'n': OAT[0], 'h': OAT[1], 'y': OAT[2], 'Y': OAT[3]}
+BASKET_TULIP_GLOW = [(1, 7, '2'), (1, 8, '1'), (0, 7, '1')]
+# Glow tulip tucked in the hat band (origin set in draw_hat): bloom on a short stem leaning out.
 HAT_TULIP = [
-    '.UU.',
-    'UXcU',
-    'UtTU',
-    '.Uo.',
-    '..v.',
+    '.UU',
+    'UcT',
+    'UtU',
+    '.v.',
 ]
-HAT_TULIP_GLOW = [(1, 1, '3'), (2, 1, '2'), (1, 2, '2'), (2, 2, '1'), (0, 1, '1'), (3, 2, '1')]
-BASKET_TULIP_GLOW = [(1, 1, '3'), (2, 1, '2'), (1, 2, '2'), (2, 2, '1'), (0, 1, '1')]
-# Tin watering can hanging at the hip (spout to the right), 7x5, seen from above: oval top with the dark opening.
+HAT_TULIP_GLOW = [(1, 1, '3'), (2, 1, '2'), (1, 2, '1'), (2, 2, '1')]
+# Tin watering can at the hip, seen from above: oval top with the dark opening, long thin spout ending in a rose.
 CAN = [
-    '.###...',
-    '#zmM#.#',
-    '#MMs##s',
-    '#sssS#.',
-    '.####..',
+    '.aSa....',
+    'azMsa.bb',
+    'aMssSbSb',
+    'aMssSb..',
+    '.aSSSb..',
+    '..aaa...',
 ]
-CAN_PAL = {'z': hx('23281e'), '#': TIN_OUT, 'm': TIN[3], 'M': TIN[2], 's': TIN[1], 'S': TIN[0]}
+CAN_PAL = {'z': TIN[0], 'a': TIN[1], 'b': TIN[1], 'S': TIN[2], 's': TIN[3], 'M': TIN[4], 'm': TIN[5]}
 
 
 def draw_body(L, P):
-    """Larva body: four stacked segments, feet, seams and the dark silhouette outline."""
+    """Larva body: four stacked segments shaded in clusters, dark seams, stubby prolegs and feet."""
     b = P['bob']
     lean = P.get('lean', 0)
     segs = [  # bottom -> top
-        (30.0 + lean * 0.3, 48.6, 6.4 + 0.3 * b, 3.0 - 0.2 * b),
-        (30.2 + lean * 0.5, 46.0 + b * 0.6, 6.0, 2.6),
-        (30.4 + lean * 0.8, 43.6 + b * 0.9, 5.5, 2.4),
-        (30.7 + lean, 41.4 + b, 4.9, 2.3),
+        (30.0 + lean * 0.3, 48.8, 5.5 + 0.3 * b, 2.6 - 0.2 * b),
+        (30.2 + lean * 0.5, 46.2 + b * 0.6, 5.1, 2.3),
+        (30.4 + lean * 0.8, 43.8 + b * 0.9, 4.7, 2.1),
+        (30.7 + lean, 41.6 + b, 4.2, 2.0),
     ]
-    body = Layer()
-    masks = []
-    # draw top segment first so lower (nearer) segments overlap it
-    for (cx, cy, rx, ry) in reversed(segs):
-        m = shade_ellipse(body, cx, cy, rx, ry, BODY)
-        masks.append((m, cy))
-    union = set().union(*[m for m, _ in masks])
-    # seams: top edge of each lower segment drawn inside the segment above
-    for m, cy in masks[1:]:
+    for fx, dy in ((P['footB'], P['footBy']), (P['footF'], P['footFy'])):   # feet behind the bottom segment
+        foot = {}
+        for (x, y) in ellipse_mask(fx, 52.0 + dy, 1.5, 1.0):
+            foot[(x, y)] = HEAD[3] if (y < 52 + dy and x < fx + 0.5) else HEAD[2]
+        part(L, foot, HEAD, lo=2)
+    body = {}
+    seam = set()
+    for k, (cx, cy, rx, ry) in enumerate(reversed(segs)):   # top segment first; lower (nearer) ones overlap
+        m = ball(cx, cy, rx, ry, BODY, base=0.47 - 0.03 * k, kx=0.5, ky=0.5, kz=0.3, g=0.24, lo=2, hi=6)
+        top = min(y for _, y in m)
         for (x, y) in m:
-            if y < cy and (x, y - 1) not in m and (x, y - 1) in union:
-                body.put(x, y - 1, BODY_SEAM)
-    feet = []
-    for fx, dy in ((P['footB'], P['footBy']), (P['footF'], P['footFy'])):
-        feet.append(ellipse_mask(fx, 52.0 + dy, 1.8, 1.2))
-    feetL = Layer()
-    for fm in feet:
-        for (x, y) in fm:
-            feetL.put(x, y, LEG[1] if y < 52 else LEG[0])
-        outline(feetL, fm, HEAD_OUT)
-    for p, c in feetL.px.items():
-        L.put(*p, c)
-    top = segs[-1]
-    for (x, y) in list(body.px):  # top band of the upper segment sits in the collar's shadow
-        if y == int(top[1] - top[3]) + 1:
-            body.put(x, y, BODY[1] if body.px[(x, y)] in (BODY[2], BODY[3]) else BODY[0])
-    for (x, y), c in list(body.px.items()):  # underside facing the floor
+            if k and y == top and (x, y - 1) in body:      # the segment's upper rim tucks under the one above
+                seam.add((x, y))
+        body.update(m)
+    for p in seam:
+        body[p] = BODY[1] if (p[0] + p[1]) % 5 else BODY[2]
+    for cx, cy, rx, ry in segs:   # a small lit cluster on the back of each segment: the only light steps
+        x0, y0 = int(cx - rx * 0.45), int(cy - ry * 0.55)
+        for (x, y), c in (((x0, y0), BODY[6]), ((x0 + 1, y0), BODY[6]), ((x0, y0 + 1), BODY[5]),
+                          ((x0 + 1, y0 + 1), BODY[5])):
+            if (x, y) in body and (x, y) not in seam:
+                body[(x, y)] = c
+    sx, sy, srx, _ = segs[2]
+    body[(int(sx - srx * 0.45), int(sy - 1))] = BODY_HI
+    body[(int(sx - srx * 0.45) + 1, int(sy - 1))] = BODY_HI
+    union = set(body)
+    for (x, y) in list(body):   # underside facing the floor
         if (x, y + 1) not in union and y > segs[0][1]:
-            body.put(x, y, BODY[0])
-    for p, c in body.px.items():
-        L.put(*p, c)
-    outline(L, union, BODY_OUT)
+            body[(x, y)] = BODY[2]
+    part(L, body, BODY)
+    for (cx, cy, rx, ry) in segs[1:3]:   # stubby prolegs poking out on both sides (break the round outline)
+        for side in (-1, 1):
+            x = int(round(cx + side * (rx + 1.2)))
+            y = int(cy + 0.6)
+            if (x, y) not in L.px:
+                L.put(x, y, HEAD[2])
+                L.put(x, y + 1, HEAD[1])
     return segs
 
 
 def draw_basket(L, P):
-    """Wicker seed basket on the back (left), seen from above: oval rim (top plane, brightest) around a dark
-    opening the plants grow out of, front face in weave bands darkening downward, curved oval bottom."""
+    """Wicker seed basket on the back (left), seen from above: oval rim around a dark soil opening, front face
+    in weave bands darkening downward, curved oval bottom; plants grow out of the opening."""
     dy = P['bob'] + P.get('basket', 0)
-    cx, x0, x1 = 20.6, 17, 24
-    rim_cy, bot_cy = 36.0 + dy, 45.4 + dy
-    rx, ry = 4.4, 1.8
-    face = set()
+    cx, x0, x1 = 21.4, 18, 24
+    rim_cy, bot_cy = 36.4 + dy, 45.6 + dy
+    rx, ry = 3.9, 1.5
+    face = {}
     for y in range(int(rim_cy), int(bot_cy) + 2):
         for x in range(x0, x1 + 1):
-            if y > bot_cy:  # curved bottom edge
+            if y > bot_cy:
                 nx, ny = (x + 0.5 - cx) / rx, (y + 0.5 - bot_cy) / ry
                 if nx * nx + ny * ny > 1:
                     continue
-            face.add((x, y))
+            t = (y - rim_cy) / (bot_cy - rim_cy + 1)
+            nx = (x + 0.5 - cx) / rx
+            v = 0.7 - 0.5 * t - 0.35 * nx + 0.14 * grain(x, y)
+            r = int(y - rim_cy)
+            v += 0.16 if ((x - x0) // 2 + r // 2) % 2 else -0.12   # basket weave in 2x2 clusters
+            face[(x, y)] = qv(v, WICK, 2, 6)
     rim = ellipse_mask(cx, rim_cy, rx, ry)
-    hole = ellipse_mask(cx + 0.2, rim_cy + 0.2, rx - 1.3, ry - 0.8)
-    for (x, y) in face:
-        r = y - int(rim_cy)
-        band = (r // 3) % 2
-        k = 2 if band == 0 else 1
-        if (x - x0) <= 1 and band == 0:
-            k = 3
-        if (x - x0) >= 6:
-            k -= 1
-        if y >= bot_cy - 1:
-            k -= 1  # darker underside
-        if x - x0 in (3, 6) and r % 3 == 2:
-            k -= 1
-        L.put(x, y, WICKER[max(0, min(3, k))])
-    for (x, y) in rim:  # rim top plane
-        L.put(x, y, WICKER[3] if x < cx + 1 else WICKER[2])
-    for (x, y) in hole:  # opening: soil, darker at the back
-        L.put(x, y, WICKER_OUT if y <= rim_cy else WICKER[0])
-    outline(L, face | rim, WICKER_OUT)
-    # plants grow out of the opening; then the front lip of the rim covers their stems
-    po = (x0 - 1, int(rim_cy) - 8)
-    sw = P.get('sway', 0)
-    grid(L, PLANTS, po[0], po[1], GRID_PAL, sway=lambda j: sw if j <= 4 else 0)
+    hole = ellipse_mask(cx + 0.2, rim_cy + 0.1, rx - 1.2, ry - 0.6)
     for (x, y) in rim:
+        nx = (x + 0.5 - cx) / rx
+        face[(x, y)] = WICK[5] if (nx < -0.2 and y < rim_cy) else (WICK[4] if nx < 0.5 else WICK[3])
+    for (x, y) in hole:
+        face[(x, y)] = WICK[0] if y <= rim_cy else STRAW[1]
+    part(L, face, WICK)
+    po = (x0 - 1, int(rim_cy) - 14)
+    sw = P.get('sway', 0)
+    grid(L, PLANTS, po[0], po[1], PLANT_PAL, sway=lambda j: sw if j <= 9 else 0)
+    for (x, y) in rim:   # front lip of the rim covers the stems
         if y >= rim_cy and (x, y) not in hole:
-            L.put(x, y, WICKER[3] if x < cx else WICKER[2])
+            L.put(x, y, WICK[4] if x < cx + 1 else WICK[3])
     return po, sw
 
 
 def draw_head(L, P):
-    """Dark glossy larva head capsule with cream bead eyes, purple mandibles and an orange collar."""
+    """Glossy violet larva head capsule with small cream bead eyes, mandibles and a rust collar."""
     b = P['bob']
     lean = P.get('lean', 0)
-    cx, cy = 31.6 + lean, 35.2 + b
-    # orange collar between head and body
-    cm = shade_ellipse(L, cx - 0.6, cy + 3.3, 4.0, 1.2, [COLLAR[0], COLLAR[0], COLLAR[1], COLLAR[1]])
-    outline(L, cm, BODY_OUT, only=lambda x, y: y > cy + 3)
-    m = shade_ellipse(L, cx, cy, 4.4, 3.7, HEAD, cuts=(-0.2, 0.55, 0.9))
-    outline(L, m, HEAD_OUT)
-    ey = int(cy) + 1  # face sits low on the head: we look down on it
-    eyes = [(int(cx + 1.0), ey), (int(cx + 3.4), ey)]
-    if P.get('happy'):
-        for ex, _ in eyes:
-            L.put(ex, ey + 1, BODY[3])
-            L.put(ex - 1, ey + 2, BODY[2])
-            L.put(ex + 1, ey + 2, BODY[2])
-    else:
-        for ex, _ in eyes:
-            L.put(ex, ey, BODY[3])
-            L.put(ex, ey + 1, BODY[2])
-    # mandibles at the front-bottom
-    mx, my = int(cx + 2.4), int(cy + 3.0)
-    for (x, y, c) in ((mx, my, HEAD[3]), (mx + 1, my, HEAD[2]), (mx + 2, my, HEAD_OUT), (mx - 1, my + 1, HEAD[3]),
-                      (mx, my + 1, HEAD_OUT), (mx + 1, my + 1, HEAD_OUT)):
+    cx, cy = 31.6 + lean, 35.4 + b
+    col = ball(cx - 0.5, cy + 3.2, 3.4, 1.1, COLLAR, base=0.6, kx=0.6, ky=0.4, g=0.1, lo=1)
+    part(L, col, COLLAR)
+    head = ball(cx, cy, 3.8, 3.2, HEAD, base=0.58, kx=0.45, ky=0.6, kz=0.3, g=0.15, lo=1, hi=5)
+    for (x, y), c in (((int(cx - 2), int(cy - 1)), HEAD[5]), ((int(cx - 1), int(cy - 1)), HEAD[5]),
+                      ((int(cx - 2), int(cy)), HEAD[4])):   # gloss cluster
+        if (x, y) in head:
+            head[(x, y)] = c
+    part(L, head, HEAD)
+    ey = int(cy) + 1   # face sits low on the head: we look down on it
+    eyes = [(int(cx + 0.6), ey), (int(cx + 2.8), ey)]
+    for ex, _ in eyes:
+        L.put(ex, ey, EYEC)
+        L.put(ex, ey + 1, HEAD[1])
+    mx, my = int(cx + 1.6), int(cy + 2.9)
+    for (x, y, c) in ((mx, my, HEAD[4]), (mx + 1, my, HEAD[3]), (mx + 2, my, HEAD[1]), (mx, my + 1, HEAD[1]),
+                      (mx + 1, my + 1, HEAD[0])):
         L.put(x, y, c)
     return (cx, cy), eyes
 
 
 def draw_hat(L, P):
-    """Straw sun hat seen from above: wide oval brim (its top surface is the brightest plane), a short crown whose
-    top is a bright oval, a dark front edge showing the brim's thickness and a shadow cast on the head below."""
+    """Straw sun hat from above: oval brim with woven rings in clusters (top plane, but dark straw), a short
+    crown whose top oval carries the only light straw, a darker front edge, frayed straw ends at both sides."""
     b = P['bob']
     lean = P.get('lean', 0)
     lift = P.get('lift', 0)
     tilt = P.get('tilt', 0)
     dy = b + lift
-    bx, by = 31.0 + lean, 30.6 + dy
-    brx, bry = 8.4, 3.0
-    crx = 3.9
+    bx, by = 31.0 + lean, 30.8 + dy
+    brx, bry = 7.4, 3.0
+    crx = 3.3
     ccx = 30.8 + lean + tilt * 0.5
-    hat = Layer()
-    # shadow of the brim on the head (occlusion)
-    y = int(by + bry)
-    for x in range(int(bx - 5), int(bx + 6)):
-        if L.px.get((x, y)) in (HEAD[2], HEAD[3]):
-            L.put(x, y, HEAD[0])
+    y = int(by + bry) + 1   # brim shadow on the head below
+    for x in range(int(bx - 4), int(bx + 5)):
+        if L.px.get((x, y)) in HEAD[2:]:
+            L.put(x, y, HEAD[1])
+    hat = {}
     brim = ellipse_mask(bx, by, brx, bry)
-    for (x, y) in brim:
-        nx, ny = (x + 0.5 - bx) / brx, (y + 0.5 - by) / bry
-        k = 3 if (nx < 0.15 and ny < 0.35) else 2
-        if nx > 0.55 or ny > 0.55:
-            k = 2 if k == 3 else 1
-        hat.put(x, y, STRAW[k])
-    inner = ellipse_mask(bx, by - 0.2, brx - 2.4, bry - 1.0)
-    for (x, y) in inner:  # one stitched seam following the oval
-        if (x, y + 1) not in inner and abs(x + 0.5 - bx) > 3.5:
-            hat.put(x, y, STRAW[1])
-    for (x, y) in brim:  # brim thickness: the front edge row is the darker vertical face
-        if (x, y + 1) not in brim:
-            hat.put(x, y, STRAW[1] if x < bx + 3 else STRAW[0])
-    top_cy = by - 3.4
-    side = set()
+    for (x, yy) in brim:
+        nx, ny = (x + 0.5 - bx) / brx, (yy + 0.5 - by) / bry
+        r = math.sqrt(nx * nx + ny * ny)
+        v = 0.6 - 0.35 * nx - 0.3 * ny + 0.16 * grain(x, yy)
+        if 0.62 < r < 0.8 and (x + yy) % 4:     # woven ring, broken
+            v -= 0.22
+        hat[(x, yy)] = qv(v, STRAW, 2, 7)
+    for (x, yy) in brim:   # brim thickness: the front edge row is the darker vertical face
+        if (x, yy + 1) not in brim:
+            hat[(x, yy)] = STRAW[2] if x < bx + 2 else STRAW[1]
+    top_cy = by - 3.8
     for yy in range(int(top_cy), int(by) + 1):
-        for x in range(int(ccx - 5), int(ccx + 6)):
-            if abs((x + 0.5 - ccx) / crx) <= 1:
-                side.add((x, yy))
-    for (x, yy) in side:
+        for x in range(int(ccx - 4), int(ccx + 5)):
+            nx = (x + 0.5 - ccx) / crx
+            if abs(nx) <= 1:
+                if yy == int(by) - 1:
+                    hat[(x, yy)] = BAND[2] if nx < -0.3 else (BAND[1] if nx < 0.5 else BAND[0])
+                else:
+                    hat[(x, yy)] = qv(0.62 - 0.5 * nx + 0.14 * grain(x, yy), STRAW, 2, 6)
+    for (x, yy) in ellipse_mask(ccx, top_cy, crx, 1.3):
         nx = (x + 0.5 - ccx) / crx
-        k = 2 if nx < -0.2 else (1 if nx < 0.5 else 0)
-        if yy == int(by) - 1:
-            hat.put(x, yy, BAND[k])
-        else:
-            hat.put(x, yy, STRAW[k + 1] if k < 2 else STRAW[2])
-    ctop = ellipse_mask(ccx, top_cy, crx, 1.5)
-    for (x, yy) in ctop:
-        hat.put(x, yy, STRAW[3] if (x + 0.5 - ccx) / crx < 0.3 else STRAW[2])
-    for (x, yy) in ctop:  # crown dent
-        if yy == int(top_cy) and abs(x + 0.5 - ccx) < 1.5:
-            hat.put(x, yy, STRAW[1])
-    full = brim | side | ctop
-    for p, c in hat.px.items():
-        L.put(*p, c)
-    outline(L, full, STRAW_OUT)
-    to = (int(ccx + 1.5), int(by) - 5)  # glow tulip tucked in the band, front-right of the crown
-    grid(L, HAT_TULIP, to[0], to[1], GRID_PAL)
+        hat[(x, yy)] = qv(0.78 - 0.5 * nx + 0.14 * grain(x, yy), STRAW, 3, 7)
+    hat[(int(ccx - 1), int(top_cy))] = STRAW_HI     # 2 px warm accent on the crown's lit top
+    hat[(int(ccx - 2), int(top_cy))] = STRAW_HI
+    hat[(int(ccx), int(top_cy))] = STRAW[3]         # crown dent
+    hat[(int(ccx + 1), int(top_cy))] = STRAW[3]
+    part(L, hat, STRAW)
+    xl, xr = int(bx - brx) - 1, int(bx + brx)   # frayed straw ends poking out of the brim edge (thin, no ring)
+    for (x, yy, c) in ((xl - 1, int(by), STRAW[4]), (xl - 2, int(by) + 1, STRAW[2]), (xl, int(by) - 2, STRAW[3]),
+                       (xr + 1, int(by) + 1, STRAW[2]), (xr + 1, int(by) + 2, STRAW[1]), (xr, int(by) - 2, STRAW[2])):
+        L.put(x, yy, c)
+    to = (int(ccx + 1.5), int(by) - 5)
+    grid(L, HAT_TULIP, to[0], to[1], PLANT_PAL)
     return to
 
 
 def draw_strap_and_can(L, P):
     b = P['bob']
     lean = P.get('lean', 0)
-    # strap from the left shoulder across the chest down to the right hip
     pts = [(25, 39), (26, 40), (27, 41), (28, 42), (29, 43), (30, 44), (31, 45), (32, 46), (33, 46)]
     for (x, y) in pts:
         yy = y + (b if y < 44 else 0)
@@ -375,9 +390,10 @@ def draw_strap_and_can(L, P):
 
 def draw_arm(L, P):
     ax, ay = P['arm']
-    m = shade_ellipse(L, ax, ay, 1.6, 1.2, LEG)
-    outline(L, m, HEAD_OUT)
-    L.put(int(ax + 1.6), int(ay), HEAD[3])  # claw tip
+    m = ball(ax, ay, 1.4, 1.1, HEAD, base=0.6, g=0.0, lo=2, hi=5)
+    part(L, m, HEAD, lo=2)
+    L.put(int(ax + 1.6), int(ay), HEAD[4])   # claw tip
+    L.put(int(ax + 1.6), int(ay) + 1, HEAD[2])
 
 
 def draw_frame(P):
@@ -388,16 +404,14 @@ def draw_frame(P):
     _, eyes = draw_head(main, P)
     to = draw_hat(main, P)
     draw_arm(main, P)
-    # glow overlays (only on opaque body pixels so the light never floats off the sprite)
     pulse = P.get('pulse', 0)
-    for (x, y, k) in HAT_TULIP_GLOW[:4 + pulse]:
+    for (x, y, k) in HAT_TULIP_GLOW[:2 + pulse]:
         light.put(to[0] + x, to[1] + y, GLOW[k])
-    for (x, y, k) in BASKET_TULIP_GLOW[:3 + pulse]:
+    for (x, y, k) in BASKET_TULIP_GLOW[:1 + pulse]:
         light.put(po[0] + x + sw, po[1] + y, GLOW[k])
     light.px = {p: c for p, c in light.px.items() if p in main.px}
-    if not P.get('happy'):
-        for (x, y) in eyes:
-            eye.put(int(x), y, (255, 255, 255))
+    for (x, y) in eyes:   # glints stay on during the wave too (the wave clip reuses Eye_10)
+        eye.put(int(x), y, (255, 255, 255))
     return main, light, eye
 
 

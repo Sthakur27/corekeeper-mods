@@ -4,6 +4,8 @@
 
 Spend less time repeating chores and more time exploring. Sid's Overhaul brings the individual mods in this repository into one package: easier farming and fishing, equipment tools, merchant supplies, and adjustable combat and progression.
 
+**New in 1.16.2:** More NPCs (Alpha) 0.1.1: all eight merchants and their idols have new art in a darker, vanilla-like style. Quick Buff 1.5.1: permanent stat bonuses (for example from enchanted gear) no longer count as an active buff, so those potions and foods can still be used.
+
 **New in 1.16.1:** Boss Bonus Loot: Ghorm drops Amber Larva 10% of the time, and four permanent-buff foods now have a 15% boss drop each: Anniversary Cake (Glurch), Splendid Amalgam (Igneous), Golden Chocolate (Crydra) and Paradise Fruit Basket (Druidra).
 
 **New in 1.16.0: more merchants.** More NPCs (Alpha) adds eight boss merchants and replaces Potion Seller in the Overhaul. New features: Auto Loadout Switch (Ctrl+L links the item you're holding to the current loadout) and Valuable Value (valuables sell to merchants for 10x, adjustable from 1x to 100x; buy prices unchanged). Enchanting 0.3.0 adds experimental Thunderstrike, Piercing, Flame, Static Familiars and Soul Siphon. Coin Drops also pays for enemies that burn, bleed or are poisoned to death after you hit them. Build Tools: Swap says in chat why nothing was swapped, and a new setting turns off its shovel/pickaxe requirement.

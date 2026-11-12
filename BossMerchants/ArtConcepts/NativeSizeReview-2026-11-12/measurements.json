@@ -1,0 +1,797 @@
+{
+  "ppu": 16,
+  "prefabScale": [
+    1,
+    1,
+    1
+  ],
+  "guides": "Manual body envelopes on idle frame zero, exclusive x1/y1. Exclude staffs, raised tools, antennae, feathers and projecting hat brims; preserve species-specific body shape. Pixel dimensions are physical at PPU16 and prefab scale1. These semantic annotations are design judgments, not automatically segmented anatomy.",
+  "npcs": {
+    "blocks": {
+      "native": {
+        "visiblePx": [
+          22,
+          23
+        ],
+        "opaquePixels": 324,
+        "visibleWorldUnits": [
+          1.375,
+          1.4375
+        ]
+      },
+      "before": {
+        "visiblePx": [
+          21,
+          24
+        ],
+        "opaquePixels": 347,
+        "visibleWorldUnits": [
+          1.3125,
+          1.5
+        ]
+      },
+      "after": {
+        "visiblePx": [
+          21,
+          24
+        ],
+        "opaquePixels": 347,
+        "visibleWorldUnits": [
+          1.3125,
+          1.5
+        ]
+      },
+      "nativeBodyPx": [
+        14,
+        20
+      ],
+      "beforeBodyPx": [
+        17,
+        16
+      ],
+      "afterBodyGuidePx": [
+        17,
+        16
+      ],
+      "reason": "Brick-shell body17x16 has comparable envelope area to native14x20; full21x24 silhouette already matches native22x23. Retain squat shell proportions."
+    },
+    "decor": {
+      "native": {
+        "visiblePx": [
+          22,
+          37
+        ],
+        "opaquePixels": 366,
+        "visibleWorldUnits": [
+          1.375,
+          2.3125
+        ]
+      },
+      "before": {
+        "visiblePx": [
+          24,
+          32
+        ],
+        "opaquePixels": 496,
+        "visibleWorldUnits": [
+          1.5,
+          2.0
+        ]
+      },
+      "after": {
+        "visiblePx": [
+          22,
+          29
+        ],
+        "opaquePixels": 412,
+        "visibleWorldUnits": [
+          1.375,
+          1.8125
+        ]
+      },
+      "nativeBodyPx": [
+        14,
+        15
+      ],
+      "beforeBodyPx": [
+        15,
+        15
+      ],
+      "afterBodyGuidePx": [
+        14,
+        14
+      ],
+      "reason": "Body15x15 is near native14x15. Small reduction brings body width to14; raised lantern is excluded from sizing."
+    },
+    "explosives": {
+      "native": {
+        "visiblePx": [
+          22,
+          23
+        ],
+        "opaquePixels": 324,
+        "visibleWorldUnits": [
+          1.375,
+          1.4375
+        ]
+      },
+      "before": {
+        "visiblePx": [
+          20,
+          25
+        ],
+        "opaquePixels": 307,
+        "visibleWorldUnits": [
+          1.25,
+          1.5625
+        ]
+      },
+      "after": {
+        "visiblePx": [
+          20,
+          25
+        ],
+        "opaquePixels": 307,
+        "visibleWorldUnits": [
+          1.25,
+          1.5625
+        ]
+      },
+      "nativeBodyPx": [
+        14,
+        20
+      ],
+      "beforeBodyPx": [
+        17,
+        15
+      ],
+      "afterBodyGuidePx": [
+        17,
+        15
+      ],
+      "reason": "Squat molten body17x15 has no greater envelope area than native14x20; full20x25 including fuse is comparable to native22x23. Keep the original import limits."
+    },
+    "potions": {
+      "native": {
+        "visiblePx": [
+          20,
+          48
+        ],
+        "opaquePixels": 573,
+        "visibleWorldUnits": [
+          1.25,
+          3.0
+        ]
+      },
+      "before": {
+        "visiblePx": [
+          28,
+          49
+        ],
+        "opaquePixels": 768,
+        "visibleWorldUnits": [
+          1.75,
+          3.0625
+        ]
+      },
+      "after": {
+        "visiblePx": [
+          18,
+          32
+        ],
+        "opaquePixels": 321,
+        "visibleWorldUnits": [
+          1.125,
+          2.0
+        ]
+      },
+      "nativeBodyPx": [
+        11,
+        19
+      ],
+      "beforeBodyPx": [
+        22,
+        31
+      ],
+      "afterBodyGuidePx": [
+        14,
+        20
+      ],
+      "reason": "Reduce body22x31 to about14x20: native merchant width range11-14 and body height19-20. Staff height does not determine body size."
+    },
+    "eggs": {
+      "native": {
+        "visiblePx": [
+          22,
+          23
+        ],
+        "opaquePixels": 324,
+        "visibleWorldUnits": [
+          1.375,
+          1.4375
+        ]
+      },
+      "before": {
+        "visiblePx": [
+          25,
+          32
+        ],
+        "opaquePixels": 563,
+        "visibleWorldUnits": [
+          1.5625,
+          2.0
+        ]
+      },
+      "after": {
+        "visiblePx": [
+          18,
+          23
+        ],
+        "opaquePixels": 295,
+        "visibleWorldUnits": [
+          1.125,
+          1.4375
+        ]
+      },
+      "nativeBodyPx": [
+        14,
+        20
+      ],
+      "beforeBodyPx": [
+        25,
+        27
+      ],
+      "afterBodyGuidePx": [
+        18,
+        19
+      ],
+      "reason": "Compact scarab body25x27 is compared to squat native merchant, not tall narrow Void robe. Target about18x19 retains broad shell/egg silhouette. Original32px animation cells remain."
+    },
+    "hydras": {
+      "native": {
+        "visiblePx": [
+          16,
+          34
+        ],
+        "opaquePixels": 378,
+        "visibleWorldUnits": [
+          1.0,
+          2.125
+        ]
+      },
+      "before": {
+        "visiblePx": [
+          33,
+          45
+        ],
+        "opaquePixels": 876,
+        "visibleWorldUnits": [
+          2.0625,
+          2.8125
+        ]
+      },
+      "after": {
+        "visiblePx": [
+          24,
+          33
+        ],
+        "opaquePixels": 462,
+        "visibleWorldUnits": [
+          1.5,
+          2.0625
+        ]
+      },
+      "nativeBodyPx": [
+        16,
+        34
+      ],
+      "beforeBodyPx": [
+        33,
+        45
+      ],
+      "afterBodyGuidePx": [
+        24,
+        33
+      ],
+      "reason": "All three heads are anatomy, not staff-like accessories. Match native tall body height34; permit width24 vs16 for three heads and coil. Explicit morphology allowance, not an inferred native measurement."
+    },
+    "farmanimals": {
+      "native": {
+        "visiblePx": [
+          22,
+          37
+        ],
+        "opaquePixels": 366,
+        "visibleWorldUnits": [
+          1.375,
+          2.3125
+        ]
+      },
+      "before": {
+        "visiblePx": [
+          31,
+          49
+        ],
+        "opaquePixels": 817,
+        "visibleWorldUnits": [
+          1.9375,
+          3.0625
+        ]
+      },
+      "after": {
+        "visiblePx": [
+          23,
+          36
+        ],
+        "opaquePixels": 427,
+        "visibleWorldUnits": [
+          1.4375,
+          2.25
+        ]
+      },
+      "nativeBodyPx": [
+        14,
+        15
+      ],
+      "beforeBodyPx": [
+        18,
+        23
+      ],
+      "afterBodyGuidePx": [
+        14,
+        17
+      ],
+      "reason": "Body18x23 becomes about13x17, near native fisherman14x15. Staff/feather/hat-brim protrusions excluded."
+    },
+    "seeds": {
+      "native": {
+        "visiblePx": [
+          22,
+          37
+        ],
+        "opaquePixels": 366,
+        "visibleWorldUnits": [
+          1.375,
+          2.3125
+        ]
+      },
+      "before": {
+        "visiblePx": [
+          32,
+          36
+        ],
+        "opaquePixels": 714,
+        "visibleWorldUnits": [
+          2.0,
+          2.25
+        ]
+      },
+      "after": {
+        "visiblePx": [
+          24,
+          27
+        ],
+        "opaquePixels": 404,
+        "visibleWorldUnits": [
+          1.5,
+          1.6875
+        ]
+      },
+      "nativeBodyPx": [
+        14,
+        15
+      ],
+      "beforeBodyPx": [
+        19,
+        20
+      ],
+      "afterBodyGuidePx": [
+        15,
+        15
+      ],
+      "reason": "Larva body19x20 becomes about14x15, matching native fisherman body; projecting straw hat and basket remain proportional."
+    }
+  },
+  "items": {
+    "blocks": {
+      "native": {
+        "visiblePx": [
+          16,
+          15
+        ],
+        "opaquePixels": 237,
+        "visibleWorldUnits": [
+          1.0,
+          0.9375
+        ]
+      },
+      "before": {
+        "visiblePx": [
+          16,
+          15
+        ],
+        "opaquePixels": 186,
+        "visibleWorldUnits": [
+          1.0,
+          0.9375
+        ]
+      },
+      "after": {
+        "visiblePx": [
+          16,
+          15
+        ],
+        "opaquePixels": 186,
+        "visibleWorldUnits": [
+          1.0,
+          0.9375
+        ]
+      },
+      "smallIconPx": [
+        [
+          11,
+          10
+        ],
+        [
+          10,
+          9
+        ],
+        [
+          10,
+          9
+        ]
+      ],
+      "reason": "Current16x15 matches native16x15 wide low object; fewer filled pixels. Keep."
+    },
+    "decor": {
+      "native": {
+        "visiblePx": [
+          14,
+          16
+        ],
+        "opaquePixels": 190,
+        "visibleWorldUnits": [
+          0.875,
+          1.0
+        ]
+      },
+      "before": {
+        "visiblePx": [
+          12,
+          16
+        ],
+        "opaquePixels": 134,
+        "visibleWorldUnits": [
+          0.75,
+          1.0
+        ]
+      },
+      "after": {
+        "visiblePx": [
+          12,
+          16
+        ],
+        "opaquePixels": 134,
+        "visibleWorldUnits": [
+          0.75,
+          1.0
+        ]
+      },
+      "smallIconPx": [
+        [
+          10,
+          11
+        ],
+        [
+          9,
+          11
+        ],
+        [
+          9,
+          11
+        ]
+      ],
+      "reason": "Current12x16 is narrower and sparser than native14x16. Keep."
+    },
+    "explosives": {
+      "native": {
+        "visiblePx": [
+          11,
+          15
+        ],
+        "opaquePixels": 142,
+        "visibleWorldUnits": [
+          0.6875,
+          0.9375
+        ]
+      },
+      "before": {
+        "visiblePx": [
+          12,
+          16
+        ],
+        "opaquePixels": 123,
+        "visibleWorldUnits": [
+          0.75,
+          1.0
+        ]
+      },
+      "after": {
+        "visiblePx": [
+          11,
+          15
+        ],
+        "opaquePixels": 101,
+        "visibleWorldUnits": [
+          0.6875,
+          0.9375
+        ]
+      },
+      "smallIconPx": [
+        [
+          7,
+          10
+        ],
+        [
+          8,
+          11
+        ],
+        [
+          7,
+          10
+        ]
+      ],
+      "reason": "Core is a compact cylinder like Slime Oil: reduce12x16 to native11x15 envelope; match native small-icon7x10 budget."
+    },
+    "potions": {
+      "native": {
+        "visiblePx": [
+          11,
+          15
+        ],
+        "opaquePixels": 142,
+        "visibleWorldUnits": [
+          0.6875,
+          0.9375
+        ]
+      },
+      "before": {
+        "visiblePx": [
+          12,
+          16
+        ],
+        "opaquePixels": 159,
+        "visibleWorldUnits": [
+          0.75,
+          1.0
+        ]
+      },
+      "after": {
+        "visiblePx": [
+          11,
+          15
+        ],
+        "opaquePixels": 137,
+        "visibleWorldUnits": [
+          0.6875,
+          0.9375
+        ]
+      },
+      "smallIconPx": [
+        [
+          7,
+          10
+        ],
+        [
+          8,
+          11
+        ],
+        [
+          7,
+          9
+        ]
+      ],
+      "reason": "Jar is directly comparable to native oil can: reduce12x16 to11x15; match native small-icon7x10 budget."
+    },
+    "eggs": {
+      "native": {
+        "visiblePx": [
+          14,
+          16
+        ],
+        "opaquePixels": 190,
+        "visibleWorldUnits": [
+          0.875,
+          1.0
+        ]
+      },
+      "before": {
+        "visiblePx": [
+          12,
+          16
+        ],
+        "opaquePixels": 156,
+        "visibleWorldUnits": [
+          0.75,
+          1.0
+        ]
+      },
+      "after": {
+        "visiblePx": [
+          12,
+          16
+        ],
+        "opaquePixels": 156,
+        "visibleWorldUnits": [
+          0.75,
+          1.0
+        ]
+      },
+      "smallIconPx": [
+        [
+          10,
+          11
+        ],
+        [
+          8,
+          11
+        ],
+        [
+          8,
+          11
+        ]
+      ],
+      "reason": "Current12x16 egg effigy is within native14x16. Keep."
+    },
+    "hydras": {
+      "native": {
+        "visiblePx": [
+          14,
+          16
+        ],
+        "opaquePixels": 197,
+        "visibleWorldUnits": [
+          0.875,
+          1.0
+        ]
+      },
+      "before": {
+        "visiblePx": [
+          13,
+          16
+        ],
+        "opaquePixels": 114,
+        "visibleWorldUnits": [
+          0.8125,
+          1.0
+        ]
+      },
+      "after": {
+        "visiblePx": [
+          13,
+          16
+        ],
+        "opaquePixels": 114,
+        "visibleWorldUnits": [
+          0.8125,
+          1.0
+        ]
+      },
+      "smallIconPx": [
+        [
+          11,
+          10
+        ],
+        [
+          9,
+          11
+        ],
+        [
+          9,
+          11
+        ]
+      ],
+      "reason": "Current13x16 effigy is within native14x16. Keep."
+    },
+    "farmanimals": {
+      "native": {
+        "visiblePx": [
+          14,
+          16
+        ],
+        "opaquePixels": 197,
+        "visibleWorldUnits": [
+          0.875,
+          1.0
+        ]
+      },
+      "before": {
+        "visiblePx": [
+          12,
+          16
+        ],
+        "opaquePixels": 117,
+        "visibleWorldUnits": [
+          0.75,
+          1.0
+        ]
+      },
+      "after": {
+        "visiblePx": [
+          12,
+          16
+        ],
+        "opaquePixels": 117,
+        "visibleWorldUnits": [
+          0.75,
+          1.0
+        ]
+      },
+      "smallIconPx": [
+        [
+          11,
+          10
+        ],
+        [
+          8,
+          11
+        ],
+        [
+          8,
+          11
+        ]
+      ],
+      "reason": "Current12x16 including feathers is within native14x16. Keep."
+    },
+    "seeds": {
+      "native": {
+        "visiblePx": [
+          14,
+          16
+        ],
+        "opaquePixels": 190,
+        "visibleWorldUnits": [
+          0.875,
+          1.0
+        ]
+      },
+      "before": {
+        "visiblePx": [
+          15,
+          16
+        ],
+        "opaquePixels": 170,
+        "visibleWorldUnits": [
+          0.9375,
+          1.0
+        ]
+      },
+      "after": {
+        "visiblePx": [
+          14,
+          15
+        ],
+        "opaquePixels": 154,
+        "visibleWorldUnits": [
+          0.875,
+          0.9375
+        ]
+      },
+      "smallIconPx": [
+        [
+          10,
+          11
+        ],
+        [
+          10,
+          11
+        ],
+        [
+          10,
+          11
+        ]
+      ],
+      "reason": "Small reduction of current15x16 pot to14x15 gives breathing room within native14x16 item envelope."
+    }
+  }
+}

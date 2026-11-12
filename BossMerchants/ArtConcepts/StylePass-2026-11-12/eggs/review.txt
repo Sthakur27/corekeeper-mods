@@ -1,0 +1,3 @@
+Ankhra + Brood Egg Idol — review-only concept generated with built-in image_gen.
+Strong points: compact rounded scarab silhouette; broad carapace top establishes overhead camera; small low-set face, protective arms and bright egg convey character. Olive/teal shell and ochre accents match the restrained Hemlock direction without copying the character. Idol repeats the scarab clutching an egg and has a clearly shaded base.
+Limits: concept pixels retain softness and do not establish a uniform native pixel grid; side limbs/legs need anatomy cleanup at true game size; idol ornament may need simplification to 16x16. Smaller repeat is not a native-scale proof. No animation, runtime replacement or installation was performed.

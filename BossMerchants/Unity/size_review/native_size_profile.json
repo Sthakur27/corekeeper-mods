@@ -1,0 +1,30 @@
+{
+  "status": "Review only: do not rebuild/install until the comparison is reviewed",
+  "measurement": "Manual body envelopes on idle frame zero, exclusive x1/y1. Exclude staffs, raised tools, antennae, feathers and projecting hat brims; preserve species-specific body shape. Pixel dimensions are physical at PPU16 and prefab scale1. These semantic annotations are design judgments, not automatically segmented anatomy.",
+  "nativeBodies": {
+    "caveling": {"frame": "native-caveling", "box": [27, 35, 38, 54], "note": "Hood/face, torso and feet; tall staff and rear luggage excluded."},
+    "fishing": {"frame": "native-fishing", "box": [9, 23, 23, 38], "note": "Head/body/feet under the upper hat tip; lantern, pole and rear gear excluded."},
+    "slime": {"frame": "native-slime", "box": [10, 6, 24, 26], "note": "Head/beard/body/feet; raised pickaxe and outer backpack excluded."},
+    "void": {"frame": "native-void", "box": [0, 1, 16, 35], "note": "Whole head and robed body; no tall carried prop in idle."}
+  },
+  "npcs": {
+    "blocks": {"reference": "slime", "bodyBox": [6, 10, 23, 26], "maxSpriteSize": [21, 24], "reason": "Brick-shell body17x16 has comparable envelope area to native14x20; full21x24 silhouette already matches native22x23. Retain squat shell proportions."},
+    "decor": {"reference": "fishing", "bodyBox": [10, 23, 25, 38], "maxSpriteSize": [22, 30], "reason": "Body15x15 is near native14x15. Small reduction brings body width to14; raised lantern is excluded from sizing."},
+    "explosives": {"reference": "slime", "bodyBox": [6, 11, 23, 26], "maxSpriteSize": [24, 25], "reason": "Squat molten body17x15 has no greater envelope area than native14x20; full20x25 including fuse is comparable to native22x23. Keep the original import limits."},
+    "potions": {"reference": "caveling", "bodyBox": [24, 23, 46, 54], "maxSpriteSize": [18, 32], "reason": "Reduce body22x31 to about14x20: native merchant width range11-14 and body height19-20. Staff height does not determine body size."},
+    "eggs": {"reference": "slime", "bodyBox": [3, 8, 28, 35], "maxSpriteSize": [18, 23], "reason": "Compact scarab body25x27 is compared to squat native merchant, not tall narrow Void robe. Target about18x19 retains broad shell/egg silhouette. Original32px animation cells remain."},
+    "hydras": {"reference": "void", "bodyBox": [15, 9, 48, 54], "maxSpriteSize": [24, 33], "reason": "All three heads are anatomy, not staff-like accessories. Match native tall body height34; permit width24 vs16 for three heads and coil. Explicit morphology allowance, not an inferred native measurement."},
+    "farmanimals": {"reference": "fishing", "bodyBox": [26, 31, 44, 54], "maxSpriteSize": [23, 36], "reason": "Body18x23 becomes about13x17, near native fisherman14x15. Staff/feather/hat-brim protrusions excluded."},
+    "seeds": {"reference": "fishing", "bodyBox": [22, 34, 41, 54], "maxSpriteSize": [24, 27], "reason": "Larva body19x20 becomes about14x15, matching native fisherman body; projecting straw hat and basket remain proportional."}
+  },
+  "items": {
+    "blocks": {"reference": "3932_PileOfChum", "maxSpriteSize": [16, 16], "smallIconSize": [10, 11], "reason": "Current16x15 matches native16x15 wide low object; fewer filled pixels. Keep."},
+    "decor": {"reference": "3930_MysteriousIdol", "maxSpriteSize": [16, 16], "smallIconSize": [10, 11], "reason": "Current12x16 is narrower and sparser than native14x16. Keep."},
+    "explosives": {"reference": "3931_SlimeOil", "maxSpriteSize": [11, 15], "smallIconSize": [7, 10], "reason": "Core is a compact cylinder like Slime Oil: reduce12x16 to native11x15 envelope; match native small-icon7x10 budget."},
+    "potions": {"reference": "3931_SlimeOil", "maxSpriteSize": [11, 15], "smallIconSize": [7, 10], "reason": "Jar is directly comparable to native oil can: reduce12x16 to11x15; match native small-icon7x10 budget."},
+    "eggs": {"reference": "3930_MysteriousIdol", "maxSpriteSize": [16, 16], "smallIconSize": [10, 11], "reason": "Current12x16 egg effigy is within native14x16. Keep."},
+    "hydras": {"reference": "3937_VoidMerchantIdol", "maxSpriteSize": [16, 16], "smallIconSize": [10, 11], "reason": "Current13x16 effigy is within native14x16. Keep."},
+    "farmanimals": {"reference": "3937_VoidMerchantIdol", "maxSpriteSize": [16, 16], "smallIconSize": [10, 11], "reason": "Current12x16 including feathers is within native14x16. Keep."},
+    "seeds": {"reference": "3930_MysteriousIdol", "maxSpriteSize": [14, 15], "smallIconSize": [10, 11], "reason": "Small reduction of current15x16 pot to14x15 gives breathing room within native14x16 item envelope."}
+  }
+}

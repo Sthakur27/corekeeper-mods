@@ -31,7 +31,8 @@ Items sold here have fixed sell prices of one fifth of their 1x buy price, so no
 
 ## Alpha status and limits
 
-- Every merchant and idol has its own pixel art, drawn over the vanilla merchant animations. Ottoline's lantern glow still uses the vanilla colours.
+- Every merchant and idol uses the approved Hemlock-style art direction: overhead shapes, compact silhouettes and shaded pixel clusters. Concepts and transparent source art were made with AI image generation, then imported into native-size, hard-alpha sprites with a limited palette.
+- Animations use the vanilla clip timing with subtle idle breathing, walking sway, greeting nods and slime arrival reveals. These are modest pixel motions rather than individually redrawn articulated poses. Ottoline's misplaced vanilla lantern overlay is hidden while her graphic is in use and restored when it returns to the pool.
 - Not yet tested in a world or in multiplayer.
 - The shop window shows 24 items (8x3). A merchant with more wares (Old Hemlock) scrolls: use the mouse wheel over the window. Scrolling needs a mouse; controllers only see the first 24.
 
@@ -42,4 +43,7 @@ Requires **CoreLib** and **Mod Options** on the host/server and every client.
 ## Development
 
 - `Scripts/`: catalog and prices (`Catalog.cs`), shop list (`MerchantStock.cs`), idol drops, merchant spawning, stock and price systems, runtime art swap (`Visuals.cs`), shared 8x3 buy-window layout.
-- `Unity/`: `dump_vanilla.py` (vanilla merchant/idol prefabs → JSON), `extract_reference.py` / `extract_idol_reference.py` + `make_<key>_art.py` and `finish_art.py` (merchant sheets and idols in `Art/final`, designs in `docs/designs`), `gen_assets.py` + `Editor/Builder` (prefabs, text, skins) and `build_bundle.py` (Unity 6000.0.59f2 + Mod SDK) followed by `verify_bundle.py`.
+- `Unity/Art/approved_sources/`: generated source cutouts and exact prompts. `import_approved_art.py` builds native-size sprites and inspection previews under `Art/approved_build`; add `--apply` to copy validated output to `Art/merchants`, `Art/idols`, and `Art/final`. `validate_approved_art.py` independently checks native layouts, transparency, palettes, ground contact, animation variation and overlay alignment.
+- `gen_assets.py` + `Editor/Builder` create prefabs, text and skins; `build_bundle.py` builds Windows/Linux bundles with Unity 6000.0.59f2 and the Mod SDK; `verify_bundle.py` checks them. Ankhra retains her vanilla animation GUIDs/counts with wider 32px replacement frames and explicit bottom-centre pivots.
+- `update_combined_art.py INPUT OUTPUT` updates only the 42 More NPCs textures and Ankhra's skin pivots in an existing Overhaul bundle. It verifies exact source pixels and that all unrelated serialized objects/resource streams are unchanged before writing the output.
+- The older `make_<key>_art.py` scripts and `finish_art.py` document the previous procedural art pipeline; do not run them over this approved pass. Native reference extraction remains in `dump_vanilla.py`, `extract_reference.py` and `extract_idol_reference.py`.

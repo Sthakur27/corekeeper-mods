@@ -100,19 +100,71 @@ namespace BossMerchants
         private bool _idol;
         private SpriteRenderer[] _renderers;
         private SpriteObject[] _spriteObjects;
+        private bool _fishingLightsCached;
+        private SpriteRenderer _fishingLight;
+        private SpriteRenderer _fishingGlow;
+        private bool _fishingLightsSuppressed;
+        private bool _fishingLightWasOff;
+        private bool _fishingGlowWasOff;
         private readonly Dictionary<Sprite, Sprite> _back = new Dictionary<Sprite, Sprite>();
         private readonly List<(SpriteObject sprite, DataBlockRef<SpriteAssetSkin> skin)> _skinned =
             new List<(SpriteObject, DataBlockRef<SpriteAssetSkin>)>();
 
         public void Begin(Catalog.Merchant merchant, bool idol)
         {
+            RestoreFishingLights(); // repeated Begin must not save our forced-off state as vanilla's
             _merchant = merchant;
             _idol = idol;
             if (_renderers == null) _renderers = GetComponentsInChildren<SpriteRenderer>(true);
             if (_spriteObjects == null) _spriteObjects = GetComponentsInChildren<SpriteObject>(true);
+            if (!idol && merchant.Key == "Decor") SuppressFishingLights();
             ApplySkin();
             enabled = _renderers.Length > 0;
             Swap();
+        }
+
+        // The Fisher rig's fixed atlas lantern and its child flare no longer line up with Ottoline's
+        // artwork. Resolve these two renderers once per pooled graphic; leave the shadow untouched.
+        private void SuppressFishingLights()
+        {
+            if (!_fishingLightsCached)
+            {
+                _fishingLightsCached = true;
+                foreach (var r in _renderers)
+                    if (r != null && r.sprite != null && r.sprite.name == "Fisher_merchant_light"
+                        && r.transform.name == "SRLight")
+                    {
+                        _fishingLight = r;
+                        break;
+                    }
+                if (_fishingLight != null)
+                    foreach (var r in _renderers)
+                        if (r != null && r.transform.parent == _fishingLight.transform
+                            && r.transform.name == "Glow")
+                        {
+                            _fishingGlow = r;
+                            break;
+                        }
+            }
+            if (_fishingLight != null)
+            {
+                _fishingLightWasOff = _fishingLight.forceRenderingOff;
+                _fishingLight.forceRenderingOff = true;
+            }
+            if (_fishingGlow != null)
+            {
+                _fishingGlowWasOff = _fishingGlow.forceRenderingOff;
+                _fishingGlow.forceRenderingOff = true;
+            }
+            _fishingLightsSuppressed = true;
+        }
+
+        private void RestoreFishingLights()
+        {
+            if (!_fishingLightsSuppressed) return;
+            if (_fishingLight != null) _fishingLight.forceRenderingOff = _fishingLightWasOff;
+            if (_fishingGlow != null) _fishingGlow.forceRenderingOff = _fishingGlowWasOff;
+            _fishingLightsSuppressed = false;
         }
 
         /// <summary>SpriteObject graphics: skin only the sprites whose asset the skin targets (a mismatch logs a hitch).</summary>
@@ -132,6 +184,7 @@ namespace BossMerchants
 
         public void End()
         {
+            RestoreFishingLights();
             if (_renderers != null)
                 foreach (var r in _renderers)
                     if (r != null && r.sprite != null && _back.TryGetValue(r.sprite, out var original)) r.sprite = original;

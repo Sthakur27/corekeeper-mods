@@ -10,9 +10,11 @@ Drawn in Core Keeper's top-down 3/4 view (docs/perspective_rules.md): visible to
 Clip frame order (from the game's AnimationClips):
   0-9   SlimeMerchantIdleR      10-15 SlimeMerchantMoveR      32-37 SlimeMerchantWaveR (+ Float)
   16-31 SlimeMerchantStand: 16-19 asleep, 20-31 getting up, then 6-9 of the idle
-Fizzwick: a lava slime split off from Igneous, wearing an iron blast helmet with a lit fuse (sits where the vanilla
-candle glow is), soot goggles, a bomb belt, and always a bomb in hand. Asleep it melts into a cooling puddle
-with the helmet and bomb beside it, then pulls itself back together.
+Fizzwick: a crusted lava slime split off from Igneous (cooled crust plates, molten core showing in cracks and a melt
+band at the floor), wearing an iron blast helmet with a lit fuse, soot goggles, a fuse-cord sash with a mini bomb,
+a linstock (match pole) held on the back side, and always a bomb in hand. Asleep it melts into a cooling puddle
+with the helmet, bomb and linstock set down beside it, then pulls itself back together.
+Restyled 2026-11-12 to sit beside the vanilla merchants (see the restyle note above the drawing code).
 
 Writes:
   Art/merchants/explosives/explosives__Slime_merchant.png + sheets.json
@@ -37,7 +39,7 @@ def hx(s):
     return (int(s[1:3], 16), int(s[3:5], 16), int(s[5:7], 16), 255)
 
 
-# Palette (Igneous / lava slime materials + vanilla bomb steel + rope leather)
+# Idol palette (unchanged by the 2026-11-12 restyle; the idol keeps its approved look)
 LAVA = [hx(c) for c in ('#91210b', '#b43221', '#da6210', '#e2a12c', '#f2df3a', '#f7eec7')]
 LAVA_OL = hx('#5e2a28')
 CRUST = [hx(c) for c in ('#232930', '#383447', '#484454', '#645d53', '#8f7b77')]
@@ -45,7 +47,6 @@ STEEL = [hx(c) for c in ('#2a4e4a', '#47677e', '#677fae', '#a1aedd')]
 STEEL_OL = hx('#073c31')
 LEATHER = [hx(c) for c in ('#39341f', '#614822', '#915b26', '#b58047')]
 SPARK = [hx(c) for c in ('#c5460a', '#da6210', '#f2df3a', '#f7eec7')]
-SMOKE = hx('#8f7b77')
 
 
 def clamp(v, a, b):
@@ -82,23 +83,62 @@ def is_border(mask, x, y):
     return any((x + dx, y + dy) not in mask for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)))
 
 
-def circle(cx, cy, r):
-    return {(x, y) for x in range(int(cx - r) - 1, int(cx + r) + 2) for y in range(int(cy - r) - 1, int(cy + r) + 2)
-            if (x + .5 - cx) ** 2 + (y + .5 - cy) ** 2 <= r * r}
-
-
-# ---------------------------------------------------------------------------------------------- character parts
-# Top-down 3/4 view (perspective_rules.md): the camera looks down, so every part shows its top plane (brightest),
-# a front face (mid-tone, darker toward the floor) and a curved oval bottom edge. Light comes from above/top-left.
-
 def ellipse(cx, cy, rx, ry):
     return {(x, y) for x in range(int(cx - rx) - 1, int(cx + rx) + 2) for y in range(int(cy - ry) - 1, int(cy + ry) + 2)
             if ((x + .5 - cx) / rx) ** 2 + ((y + .5 - cy) / ry) ** 2 <= 1.0}
 
 
-def body_mask(cx, T, B, A, r1, flare=1.5):
-    """Slime mound seen from above: domed top half (radius r1 down from T), a wider squarish-round lower half
-    (superellipse) spreading onto the floor; the bottom row is the flat contact with the ground."""
+# ---------------------------------------------------------------------------------------------- restyle
+# Restyle (2026-11-12, after Sid's in-game screenshot of Old Hemlock beside a vanilla merchant): the previous Fizzwick
+# was a wide (25 px) flat-orange lava blob with a near-black outline: one big saturated light area, 1-2-shade fills,
+# 60% of the silhouette near-black. This pass follows the vanilla merchants instead:
+#   - the body is Igneous' cooled crust: muted warm-grey/mauve plates (7 close steps) shaded in ~2x2 grain clusters;
+#     the molten core only shows in the 1 px seams between plates and a dark-red melt band where he meets the floor,
+#     so orange is a network of thin lines, not a fill; the brightest lava steps are kept for seam junctions only;
+#   - no separate outline colour: each part's silhouette ring is a dark step of its own ramp (one step lighter on the
+#     lit top/left), and finish_art.py darkens edges next to solid mass further;
+#   - narrower body (~16 px) with the mass moved into thin props: a 2 px linstock (cannoneer's match pole) held up on
+#     the back side with a smouldering slow-match, the bomb held out on a thin molten arm, the fuse on the helmet;
+#   - glow is only tiny embers: the helmet fuse spark, the slow-match tip and the bomb fuse (2-4 px each); the rig
+#     has no Light layer of its own.
+def ramp(*hexes):
+    return [hx('#' + h) for h in hexes]
+
+
+# picked from the finisher's master palette (vanilla-sampled) so the palette lock keeps them
+CR = ramp('232930', '383447', '484454', '655561', '645d53', '82706d', '997171', 'a69298')   # crust
+LV = ramp('2f0000', '5e2a28', '8c130d', 'b43221', 'cf4200', 'e46005', 'e2a12c', 'f2df3a')             # molten
+ST = ramp('142b5c', '232930', '2a4e4a', '316471', '4b708a', '677fae', '90a0c4', 'a1aedd', 'd7dcfb')   # iron
+LE = ramp('23281e', '39341f', '49351d', '614822', '915b26', 'b58047')                                # rope/wood
+IRON = ramp('232930', '383447', '484454', '4b708a', '677fae', '90a0c4', 'a1aedd', 'd7dcfb')       # bomb iron
+EMBER = ramp('cf4200', 'e46005', 'f2df3a', 'f7eec7')
+SMOKE = hx('#645d53')
+
+
+def grain(x, y):
+    """Deterministic cluster grain in {-1, 0, 1}: constant over irregular ~2x2 blocks (never single pixels)."""
+    bx, by = (x + (y // 2) % 2) // 2, y // 2
+    h = (bx * 73856093 ^ by * 19349663) & 0xffff
+    return (h % 5) // 2 - 1 if h % 7 else 0
+
+
+def pick(r, i):
+    return r[clamp(int(i), 0, len(r) - 1)]
+
+
+def ring(cv, mask, r, lit_i=2, dark_i=1, skip=()):
+    """Silhouette ring of a part in its own ramp: dark step on the shadow side, one lighter on the lit top/left."""
+    for (x, y) in mask:
+        if (x, y) in skip or not is_border(mask, x, y):
+            continue
+        lit = (x - 1, y) not in mask or (x, y - 1) not in mask
+        shadow = (x + 1, y) not in mask or (x, y + 1) not in mask
+        cv.put(x, y, r[dark_i] if shadow or not lit else r[lit_i])
+
+
+def body_mask(cx, T, B, A, r1, flare=1.0):
+    """Slime mound seen from above: domed top half (radius r1 down from T), a slightly wider lower half spreading
+    onto the floor; the last ~3 rows round off into the oval floor contact."""
     cyc = T + r1
     rb = B + 1 - cyc
     m = set()
@@ -109,15 +149,15 @@ def body_mask(cx, T, B, A, r1, flare=1.5):
             if dy <= 0:
                 inside = (dx / A) ** 2 + (dy / r1) ** 2 <= 1.0
             else:
-                a = A + flare * (dy / rb) + 0.8 * math.sin(math.pi * min(1.0, dy / rb))
-                k = max(0.0, (dy - (rb - 3.0)) / 3.2)      # round off only the last ~3 rows: oval floor contact
+                a = A * (0.97 + 0.16 * math.sin(math.pi * min(1.0, 0.85 * dy / rb))) + flare * (dy / rb) ** 2
+                k = max(0.0, (dy - (rb - 4.0)) / 4.3)
                 inside = abs(dx) <= a * math.sqrt(max(0.0, 1 - k * k))
             if inside:
                 m.add((x, y))
     return m
 
 
-LIGHT = (-0.25, -0.85, 0.46)   # from above / top-left, camera looking down
+LIGHT = (-0.3, -0.8, 0.52)   # from above / top-left, camera looking down
 
 
 def shade(x, y, cx, T, B, A, r1):
@@ -129,272 +169,282 @@ def shade(x, y, cx, T, B, A, r1):
     nz = math.sqrt(max(0.0, 1 - nx * nx - ny * ny))
     L = nx * LIGHT[0] + ny * LIGHT[1] + nz * LIGHT[2]
     if dy > 0:
-        L -= 0.5 * (dy / rb) ** 2.2   # front face darkens toward the floor
+        L -= 0.35 * (dy / rb) ** 2.0   # front face darkens toward the floor
     return L
 
 
-SEAM = [0, 0, 1, 1, 1, 0, 0, -1, -1, 0]   # designed 2-3 px steps for the crust edge, never single-pixel noise
+# Designed cracks in the crust (body-local: u = -1..1 across the body, w = rows from the top for a 17-row body),
+# each a polyline; the molten core shows through them. They stay off the face (goggles + grin) and the sash.
+CRACKS = [
+    [(-0.70, 8.0), (-0.86, 10.0), (-0.70, 12.0), (-0.88, 14.0)],        # left flank
+    [(-0.70, 12.0), (-0.45, 13.0)],                                     # its branch
+    [(0.72, 7.0), (0.60, 9.0), (0.82, 11.0), (0.70, 13.0)],             # right flank
+]
 
 
-def clean(idx):
-    """Remove isolated single pixels in an index map (no speckle): take the majority 4-neighbour."""
-    out = dict(idx)
-    for (x, y), v in idx.items():
-        nb = [idx[p] for p in ((x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)) if p in idx]
-        if len(nb) >= 3 and all(n != v for n in nb):
-            out[(x, y)] = max(sorted(set(nb)), key=nb.count)
+def crack_pixels(cx, T, B, A):
+    """{(x, y): heat 0..1} for the crack polylines at this body size; heat is highest at the polyline middles."""
+    sy = (B - T) / 17.0
+    out = {}
+    for poly in CRACKS:
+        pts = [(cx + u * A, T + w * sy) for u, w in poly]
+        segs = len(pts) - 1
+        for si in range(segs):
+            (x0, y0), (x1, y1) = pts[si], pts[si + 1]
+            n = int(max(abs(x1 - x0), abs(y1 - y0))) + 1
+            for k in range(n + 1):
+                t = k / n
+                x, y = int(math.floor(lerp(x0, x1, t))), int(math.floor(lerp(y0, y1, t)))
+                pos = (si + t) / segs
+                out[(x, y)] = max(out.get((x, y), 0.0), 1.0 - abs(pos - 0.5) * 1.6)
     return out
 
 
-def draw_body(cv, cx, T, B, A, r1, crust_frac=0.0, glow=True, bubble=None, plates=True, shadow_mask=None):
-    m = body_mask(cx, T, B, A, r1)
-    cy1 = T + r1
-    border = {p for p in m if is_border(m, *p)}
-    top_ell = ellipse(cx, cy1, A, r1)
-    lava_idx, crust_idx = {}, {}
-    seam_row = {x: T + int(round(crust_frac * 2 * r1)) + SEAM[x % len(SEAM)] for x in range(CELL)}
+MELT_EDGE = [1, 1, 0, -1, -1, 0, 1, 1, 1, 0, 0, -1, 0, 1]   # designed 2-3 px steps (drips up into the crust)
+
+
+def draw_body(cv, cx, T, B, A, r1, melt=3, crust=1.0, hot=True, bubble=None, shadow_mask=(), flare=1.0):
+    """Crusted Igneous slime. melt = rows of exposed dark melt along the floor; crust < 1 lowers the crust line
+    (asleep: more crust, cooling). Returns the body mask."""
+    m = body_mask(cx, T, B, A, r1, flare)
+    melt_row = B - melt + 1
+    cracks = crack_pixels(cx, T, B, A)
+    idx = {}
     for (x, y) in m:
-        if (x, y) in border:
-            continue
         L = shade(x, y, cx, T, B, A, r1)
-        i = 4 if L > 0.86 else 3 if L > 0.62 else 2 if L > 0.28 else 1 if L > -0.05 else 0
-        if crust_frac > 0 and y < seam_row[x]:
-            crust_idx[(x, y)] = {4: 4, 3: 3, 2: 2, 1: 1, 0: 1}[i]
-        else:
-            lava_idx[(x, y)] = i
-    if shadow_mask:                     # occlusion under overhangs (helmet brim)
-        for p in shadow_mask:
-            if p in lava_idx:
-                lava_idx[p] = max(0, min(lava_idx[p], 2) - 1)
-            if p in crust_idx:
-                crust_idx[p] = max(1, crust_idx[p] - 1)
-    lava_idx, crust_idx = clean(lava_idx), clean(crust_idx)
-    for p, i in lava_idx.items():
-        cv.put(*p, LAVA[i])
-    for p, i in crust_idx.items():
-        cv.put(*p, CRUST[i])
-    if crust_frac > 0:   # glowing seam where crust meets melt: one continuous line
-        for (x, y) in lava_idx:
-            if (x, y - 1) in crust_idx:
-                cv.put(x, y, LAVA[4] if glow else LAVA[3])
-    for (x, y) in border:   # outline: lighter on the lit top/left of the top plane, dark maroon elsewhere
-        lit = y < cy1 and (x + .5 - cx) < A * 0.3
-        if crust_frac > 0 and y < seam_row[x]:
-            cv.put(x, y, CRUST[1] if lit else CRUST[0])
-        else:
-            cv.put(x, y, LAVA[0] if lit else LAVA_OL)
-    if plates and crust_frac == 0:
-        draw_plates(cv, m, top_ell, cx, cy1, A, r1)
+        v = clamp((L + 0.3) / 1.1, 0, 1)
+        g = grain(int(x - cx + 40), y - T)
+        if y >= melt_row + MELT_EDGE[int(x - cx + 40) % len(MELT_EDGE)]:   # molten floor band, ragged top edge
+            idx[(x, y)] = ('L', clamp(int(3.6 + v * 2.6) + g - (1 if y == B else 0), 3, 6 if hot else 5))
+            continue
+        if (x, y) in cracks and not is_border(m, x, y):              # molten core showing through a crack
+            heat = cracks[(x, y)] * (1.0 if hot else 0.4)
+            idx[(x, y)] = ('L', clamp(int(3.0 + heat * 2.6 + v * 1.0), 3, 6 if heat > 0.8 and v > 0.4 else 5))
+            continue
+        i = 4.5 + v * 4.0 + 1.1 * g
+        idx[(x, y)] = ('C', clamp(int(i), 2, 7))
+    # plate thickness: the crust row right above a seam is one step darker (plates sit on the melt)
+    for (x, y), (k, i) in list(idx.items()):
+        below = idx.get((x, y + 1))
+        if k == 'C' and below and below[0] == 'L':
+            idx[(x, y)] = ('C', max(2, i - 2))
+    for p in shadow_mask:                                           # occlusion under the helmet brim
+        if p in idx:
+            k, i = idx[p]
+            idx[p] = (k, max(1, i - 2))
     if bubble:
         bx, by, popped = bubble
-        if (bx, by) in m and (bx, by - 1) in m:
-            cv.put(bx, by, LAVA[5] if popped else LAVA[4])
-            cv.put(bx + (1 if popped else 0), by - (0 if popped else 1), LAVA[4] if popped else LAVA[5])
+        for (px_, py_), c in (((bx, by), LV[6] if popped else LV[5]), ((bx + 1, by), LV[5] if popped else LV[4])):
+            if (px_, py_) in m and not is_border(m, px_, py_):
+                idx[(px_, py_)] = ('L', 6 if c == LV[6] else 5 if c == LV[5] else 4)
+    for (x, y), (k, i) in idx.items():
+        cv.put(x, y, pick(CR if k == 'C' else LV, i))
+    # silhouette: crust parts ring in crust darks, the melt band in molten darks
+    for (x, y) in m:
+        if not is_border(m, x, y):
+            continue
+        k = idx[(x, y)][0]
+        lit = ((x - 1, y) not in m or (x, y - 1) not in m) and x + .5 < cx + A * 0.2 and y < T + r1
+        if k == 'C':
+            cv.put(x, y, CR[5] if lit else CR[3])
+        else:
+            cv.put(x, y, LV[4] if y < B else LV[3])
     return m
 
 
-def draw_plates(cv, m, top_ell, cx, cy1, A, r1):
-    """Cooled Igneous crust plates lying on the top plane (left and right shoulders), each with a glowing crack."""
-    y0 = int(cy1 - r1 * 0.35)
-    # left shoulder plate: 3 rows, catches the most light
-    for j, (dx0, w) in enumerate(((2, 3), (1, 4), (2, 3))):
-        y = y0 + j
-        xs = [x for (x, yy) in m if yy == y]
-        if not xs:
-            continue
-        xl = min(xs)
-        for k in range(w):
-            x = xl + dx0 + k
-            c = CRUST[4] if (j == 0 and k < 2) else CRUST[3] if j < 2 else CRUST[2]
-            if k == w - 1 and j > 0:
-                c = CRUST[2]
-            cv.put(x, y, c)
-        if j == 1:
-            cv.put(xl + dx0 + w, y, LAVA[4])
-    # right shoulder plate: 2 rows, darker (away from light)
-    for j, (dx0, w) in enumerate(((3, 3), (2, 3))):
-        y = y0 + 1 + j
-        xs = [x for (x, yy) in m if yy == y]
-        if not xs:
-            continue
-        xr = max(xs)
-        for k in range(w):
-            cv.put(xr - dx0 - k + 1 - 1, y, CRUST[2] if j == 0 else CRUST[1])
-        if j == 0:
-            cv.put(xr - dx0 - w, y, LAVA[3])
-
-
-def draw_helmet(cv, hxc, hy, spark=None, lit=True):
-    """Blast helmet seen from above: oval brim (top surface lit) around a domed crown with a riveted band.
-    hxc/hy = brim centre. Returns the brim mask (for the shadow it casts)."""
-    BR, CR = 7.0, 3.6
-    brim = ellipse(hxc, hy, BR, 2.5)
-    dome_top = {p for p in ellipse(hxc - 0.5, hy - 1.0, CR, 4.6) if p[1] + .5 <= hy - 1.0}
-    dome_low = ellipse(hxc - 0.5, hy - 1.0, CR, 1.3)
-    dome = dome_top | dome_low
+def draw_helmet(cv, hxc, hy, spark=0, lit=True):
+    """Iron blast helmet seen from above: oval brim (lit top surface) round a small domed crown with a rivet band and
+    a short fuse. Returns (mask, brim shadow)."""
+    BR, CRW = 4.8, 3.0
+    brim = ellipse(hxc, hy, BR, 1.7)
+    dome = {p for p in ellipse(hxc - 0.4, hy - 0.8, CRW, 3.1) if p[1] + .5 <= hy - 0.2}
     for (x, y) in brim:
         if (x, y) in dome:
             continue
         nx = (x + .5 - hxc) / BR
-        if is_border(brim, x, y):
-            c = STEEL[0] if (y + .5 < hy and nx < 0.3) else STEEL_OL
-        elif y + .5 < hy + 0.8:
-            c = STEEL[3] if nx < -0.1 else STEEL[2]
+        g = grain(x - int(hxc) + 40, y)
+        if y + .5 < hy + 0.4:
+            i = 7 - (1 if nx > 0.25 else 0) + (g if g < 0 else 0)
         else:
-            c = STEEL[1]                   # front edge of the brim
-        cv.put(x, y, c)
-    band_y = {}
+            i = 4 + (1 if nx < -0.2 else 0)                         # front edge of the brim, in shadow
+        cv.put(x, y, pick(ST, i))
+    ring(cv, brim - dome, ST, lit_i=6, dark_i=4)
+    bottom = {}
     for (x, y) in dome:
-        band_y[x] = max(band_y.get(x, -99), y)
-    for (x, y) in dome:
-        nx = (x + .5 - (hxc - 0.5)) / CR
-        if is_border(dome, x, y) and not (y == band_y[x]):
-            c = STEEL[0] if (y + .5 < hy - 2.5 and nx < 0.3) else STEEL_OL
-        elif y >= band_y[x] - 1:           # riveted band where the crown meets the brim (curves with the oval)
-            c = STEEL_OL if y == band_y[x] else (STEEL[3] if x % 3 == 0 else STEEL[1])
-        elif nx > 0.45:
-            c = STEEL[1]
-        elif y + .5 < hy - 2.5 and nx < 0.25:
-            c = STEEL[3]                   # crown top: brightest plane
-        else:
-            c = STEEL[2]
-        cv.put(x, y, c)
+        bottom[x] = max(bottom.get(x, -99), y)
     top = min(y for (_, y) in dome)
-    sx = int(hxc - 2.0)
-    cv.put(sx, top + 1, hx('#d7dcfb'))
-    # short wick on the crown, tilted back, then the spark
+    for (x, y) in dome:
+        nx = (x + .5 - (hxc - 0.4)) / CRW
+        if y == bottom[x]:
+            c = ST[2] if x % 2 else ST[4]                            # rivet band where the crown meets the brim
+        elif y <= top + 1 and nx < 0.2:
+            c = ST[7]                                                # crown top: brightest plane, a couple of px
+        elif nx > 0.4:
+            c = ST[3]
+        else:
+            c = ST[6] if (x + y) % 3 else ST[5]
+        cv.put(x, y, c)
+    ring(cv, dome, ST, lit_i=5, dark_i=3, skip={(x, bottom[x]) for x in bottom})
+    cv.put(int(hxc - 1.6), top + 1, ST[8])                           # one specular dot
+    # short fuse out of the crown (rope), leaning back, then a 2-3 px spark
     wx = int(hxc) + 1
-    cv.put(wx, top, LEATHER[1])
-    cv.put(wx, top - 1, LEATHER[2])
-    tip = (wx + 1, top - 2)
+    cv.put(wx, top - 1, LE[3])
+    cv.put(wx + 1, top - 2, LE[4])
+    tip = (wx + 1, top - 3)
     if not lit:
-        cv.put(*tip, CRUST[1])
-        if spark is not None and spark % 2 == 0:
+        cv.put(*tip, CR[3])
+        if spark % 2 == 0:
             cv.put(tip[0] + 1, tip[1] - 1, SMOKE)
-            cv.put(tip[0] + 1, tip[1] - 2, SMOKE)
     else:
         for dx, dy, c in SPARKS[spark % len(SPARKS)]:
             cv.put(tip[0] + dx, tip[1] + dy, c)
-    # shadow the brim casts on the slime: the rows just below its front edge
-    shadow = set()
-    for (x, y) in brim:
-        if (x, y + 1) not in brim:
-            shadow.add((x, y + 1))
+    shadow = {(x, y + 1) for (x, y) in brim if (x, y + 1) not in brim}
     return brim | dome, shadow
 
 
 SPARKS = [
-    [(0, 0, SPARK[3]), (0, -1, SPARK[2]), (1, 0, SPARK[1]), (-1, 0, SPARK[1])],
-    [(0, 0, SPARK[2]), (0, -1, SPARK[3]), (1, -1, SPARK[1]), (0, -2, SPARK[0])],
-    [(0, 0, SPARK[3]), (1, 0, SPARK[2]), (1, -1, SPARK[1]), (-1, 0, SPARK[0])],
+    [(0, 0, EMBER[2]), (0, -1, EMBER[1])],
+    [(0, 0, EMBER[3]), (1, -1, EMBER[0])],
+    [(0, 0, EMBER[2]), (-1, -1, EMBER[1])],
 ]
-
-GOGGLE = ['.ab.', 'aLkb', '.bb.']          # foreshortened: seen from above the lenses are short
-GOGGLE_LEG = {'a': STEEL[2], 'b': STEEL_OL, 'L': STEEL[3], 'k': CRUST[0]}
-SHUT = ['....', 'oooo', '....']
 
 
 def draw_face(cv, body, cx, gy, open_eyes=True, mouth=True):
-    gx = int(cx) - 1
-    for x in list(range(gx - 2, gx)) + [gx + 4] + list(range(gx + 9, gx + 11)):
+    """Soot goggles on a leather strap (two short round lenses: dark glass with a fire glint) and a molten grin."""
+    gx = int(round(cx)) - 4
+    for x in range(gx - 4, gx + 12):
         if (x, gy + 1) in body and not is_border(body, x, gy + 1):
-            cv.put(x, gy + 1, LEATHER[1])
-    g = GOGGLE if open_eyes else SHUT
-    leg = GOGGLE_LEG if open_eyes else {'o': LAVA_OL}
-    cv.grid(gx, gy, g, leg)
-    cv.grid(gx + 5, gy, g, leg)
+            cv.put(x, gy + 1, LE[3] if x < cx else LE[2])
+    if open_eyes:
+        cv.grid(gx, gy, ['.ab..ab.', 'bLkcbLkc', '.cc..cc.'],
+                {'a': ST[7], 'b': ST[5], 'c': ST[3], 'L': LV[6], 'k': CR[1]})
+    else:
+        cv.grid(gx, gy + 1, ['.cc..cc.'], {'c': CR[1]})
     if mouth:
-        my = gy + 4
-        cv.put(gx + 2, my, LAVA_OL)
-        cv.put(gx + 7, my, LAVA_OL)
-        for x in range(gx + 3, gx + 7):
-            cv.put(x, my + 1, LAVA_OL)
-        cv.put(gx + 4, my + 1, LAVA[5])
-        cv.put(gx + 5, my + 1, LAVA[5])
+        cv.grid(gx + 2, gy + 4, ['d....d', '.dood.'], {'d': CR[2], 'o': LV[5]})
 
 
-MINI = ['o3o', '321', 'o1o']
-MINI_LEG = {'o': STEEL_OL, '3': STEEL[3], '2': STEEL[2], '1': STEEL[1]}
+ROPE = ramp('645d53', 'a98963', 'd4b987', 'fae6bc')
 
 
-def draw_belt(cv, body, cx, A, B):
-    """Bomb belt round the base; seen from above it curves DOWN at the front like the bottom oval."""
-    for x in range(int(cx - A) - 1, int(cx + A) + 2):
-        nx = (x + .5 - cx) / (A + .5)
-        if abs(nx) > 1:
-            continue
-        y = B - 3 + int(round(1.5 * (1 - nx * nx)))
-        for dy, c in ((0, LEATHER[2]), (1, LEATHER[1])):
-            if (x, y + dy) in body and not is_border(body, x, y + dy):
-                cv.put(x, y + dy, c)
-    x = int(cx) - 5
-    nx = (x + .5 - cx) / (A + .5)
-    y = B - 3 + int(round(1.5 * (1 - nx * nx))) - 1
-    cv.grid(x - 1, y, MINI, MINI_LEG)
+def draw_sash(cv, body, cx, T, B, A):
+    """Coiled fuse cord worn as a sash from the back shoulder down to the front hip (2 px, twisted), with two mini
+    bombs clipped on: a thin light line across the crust instead of a light area."""
+    sy = (B - T) / 17.0
+    x0, y0 = cx - A * 0.95, T + 6.0 * sy
+    x1, y1 = cx + A * 0.95, B - 3.0
+    n = int(abs(x1 - x0)) + 1
+    line = []
+    for k in range(n + 1):
+        x = int(math.floor(lerp(x0, x1, k / n)))
+        y = int(math.floor(lerp(y0, y1, k / n)))
+        line.append((x, y))
+        for dy, c in ((0, ROPE[3] if k % 3 else ROPE[2]), (1, ROPE[1] if k % 3 == 1 else ROPE[2])):
+            if (x, y + dy) in body:
+                cv.put(x, y + dy, c if not is_border(body, x, y + dy) else ROPE[1] if dy else ROPE[2])
+    bx, by = line[int(0.25 * (len(line) - 1))]
+    cv.grid(bx - 1, by - 1, ['.ab', 'abc', 'bcd'], {'a': IRON[5], 'b': IRON[4], 'c': IRON[3], 'd': IRON[2]})
 
 
-BOMB = [                      # sphere lit from above: bright top, dark underside
-    '..ooo..',
-    '.ps33o.',
-    'p33332o',
-    'o22221o',
-    'o21110o',
-    '.o100o.',
-    '..ooo..',
+BOMB = [                      # sphere lit from above/left: bright top, dark underside, own-ramp rim
+    '.3554.',
+    '376653',
+    '465543',
+    '354432',
+    '233321',
+    '.2221.',
 ]
-BOMB_LEG = {'o': STEEL_OL, 'p': STEEL[0], 's': hx('#d7dcfb'), '3': STEEL[3], '2': STEEL[2], '1': STEEL[1], '0': STEEL[0]}
 
 
 def draw_bomb(cv, x0, y0, spark=0, lit=True):
-    cv.grid(x0, y0, BOMB, BOMB_LEG)
-    cv.put(x0 + 3, y0 - 1, LEATHER[1])    # fuse stands up from the top, tilted back
-    cv.put(x0 + 4, y0 - 2, LEATHER[2])
+    cv.grid(x0, y0, BOMB, {k: IRON[int(k)] for k in '1234567'})
+    cv.put(x0 + 1, y0 + 1, ST[8])
+    cv.put(x0 + 3, y0 - 1, LE[3])         # fuse stands up from the top, tilted back
+    cv.put(x0 + 4, y0 - 2, LE[4])
     if lit:
-        cv.put(x0 + 4, y0 - 3, SPARK[3] if spark % 2 == 0 else SPARK[2])
-        cv.put(x0 + 5, y0 - 3, SPARK[1])
+        cv.put(x0 + 4, y0 - 3, EMBER[2] if spark % 2 == 0 else EMBER[3])
         if spark % 3 == 1:
-            cv.put(x0 + 4, y0 - 4, SPARK[0])
+            cv.put(x0 + 5, y0 - 4, EMBER[0])
     else:
-        cv.put(x0 + 4, y0 - 3, CRUST[1])
+        cv.put(x0 + 4, y0 - 3, CR[3])
 
 
-def draw_hand(cv, hx_, hy):
-    m = ellipse(hx_, hy, 2.4, 1.9)
-    for (x, y) in m:
-        if is_border(m, x, y):
-            c = LAVA[0] if y < hy - .5 else LAVA_OL
-        else:
-            c = LAVA[3] if y < hy else LAVA[1]
-        cv.put(x, y, c)
+def draw_arm(cv, body, x0, y0, x1, y1):
+    """Thin molten pseudopod (2 px) from the body edge to the hand point, crusted on top."""
+    n = max(abs(x1 - x0), abs(y1 - y0), 1)
+    for i in range(n + 1):
+        x = int(round(lerp(x0, x1, i / n)))
+        y = int(round(lerp(y0, y1, i / n)))
+        if (x, y) not in body:
+            cv.put(x, y, CR[4] if i % 3 else CR[5])
+        if (x, y + 1) not in body:
+            cv.put(x, y + 1, LV[3] if i % 2 else LV[2])
 
 
-CX = 14.5
-A0 = 9.0
-R1 = 7.0
-TOP = 10          # body top row; helmet crown reaches ~y=6, spark ~y=3 (where the vanilla candle glow is)
-BOMB_X = 21
+def draw_linstock(cv, x, y_top, y_bot, ember=0, lit=True, lean=0):
+    """Cannoneer's linstock: 2 px wooden pole (lit left column, shaded right), forked iron head, smouldering
+    slow-match coiled round it with a 2 px ember at the tip. lean shifts the top sideways (1 px per ~7 rows)."""
+    n = y_bot - y_top
+    for k in range(n + 1):
+        y = y_top + k
+        xx = x + int(round(lean * (1 - k / max(n, 1))))
+        knot = k % 6 == 3
+        cv.put(xx, y, LE[3] if knot else LE[5])
+        cv.put(xx + 1, y, LE[3] if knot else LE[4])
+    xt = x + lean
+    cv.grid(xt - 1, y_top - 3, ['a..a', 'baab'], {'a': ST[5], 'b': ST[2]})   # forked head
+    cv.put(xt - 1, y_top - 1, LE[3])                                         # slow-match wound round the fork
+    cv.put(xt + 2, y_top - 1, LE[2])
+    if lit:
+        cv.put(xt - 1, y_top - 4, EMBER[2] if ember % 2 == 0 else EMBER[1])
+        cv.put(xt - 1, y_top - 3, EMBER[0])
+        if ember % 3 == 2:
+            cv.put(xt - 2, y_top - 5, SMOKE)
+    else:
+        cv.put(xt - 1, y_top - 4, CR[3])
 
 
-def character(T=TOP, B=GROUND, A=A0, r1=R1, cx=CX, crust=0.0, glow=True, spark=0, bubble=None,
-              eyes=True, mouth=True, bomb=(BOMB_X, None), hand=True, hand_dy=0, helmet=None, helmet_lit=True,
-              belt=True, extras=()):
+def draw_linstock_down(cv, x0, x1, y):
+    """Linstock lying on the floor behind the puddle (asleep)."""
+    for x in range(x0, x1 + 1):
+        cv.put(x, y, LE[3] if x % 6 else LE[2])
+        cv.put(x, y + 1, LE[1])
+    cv.grid(x1 + 1, y - 1, ['ab', 'b.', 'ab'], {'a': ST[5], 'b': ST[2]})
+
+
+CX = 14.0
+A0 = 7.0
+R1 = 7.5
+TOP = 8          # body top row; helmet crown ~y=6, fuse spark ~y=2
+MELT = 3
+BOMB_X = 20
+
+
+def character(T=TOP, B=GROUND, A=A0, r1=R1, cx=CX, melt=MELT, hot=True, spark=0, bubble=None,
+              eyes=True, mouth=True, bomb=(BOMB_X, None), arm=True, hand_dy=0, helmet=None, helmet_lit=True,
+              belt=True, stick=True, stick_down=False, stick_lean=0, extras=()):
     cv = Canvas(CELL, CELL)
     cy1 = T + r1
-    hxc, hy = helmet if helmet else (cx + 0.5, T + 2.0)
-    rest_y = int(cy1)
+    hxc, hy = helmet if helmet else (cx + 0.5, T + 1.5)
+    rest_y = int(cy1) + 1
     by = bomb[1] if bomb[1] is not None else rest_y
-    # pre-compute the brim shadow so the body can be shaded with it
+    if stick_down:
+        draw_linstock_down(cv, 3, 21, B - 1)
     probe = Canvas(CELL, CELL)
     _, shadow = draw_helmet(probe, hxc, hy, spark=spark, lit=helmet_lit)
-    body = draw_body(cv, cx, T, B, A, r1, crust, glow, bubble=bubble, shadow_mask=shadow)
+    body = draw_body(cv, cx, T, B, A, r1, melt=melt, hot=hot, bubble=bubble, shadow_mask=shadow)
+    if stick:     # held on the back (left) side by a short pseudopod; pole foot on the floor
+        sx = int(cx - A0) - 3
+        draw_linstock(cv, sx, T - 2 + (1 if B < GROUND else 0), B, ember=spark, lean=stick_lean)
+        draw_arm(cv, body, int(cx - A) + 1, int(cy1) + 1, sx + 2, int(cy1))
     if eyes is not None:
-        draw_face(cv, body, cx, min(int(hy) + 4, B - 4), open_eyes=eyes, mouth=mouth)
+        draw_face(cv, body, cx, min(int(hy) + 3, B - 5), open_eyes=eyes, mouth=mouth)
     if belt:
-        draw_belt(cv, body, cx, A, B)
+        draw_sash(cv, body, cx, T, B, A)
     draw_helmet(cv, hxc, hy, spark=spark, lit=helmet_lit)
-    if hand:
-        draw_hand(cv, bomb[0] + 3.5, min(rest_y + 6.5, B - 2.5) + hand_dy)
     if bomb[0] is not None:
+        if arm:
+            draw_arm(cv, body, int(cx + A) - 1, int(cy1) + 2, bomb[0] + 1, min(by + 4, B - 2) + hand_dy)
         draw_bomb(cv, bomb[0], by, spark=spark + 1)
     for x, y, c in extras:
         cv.put(x, y, c)
@@ -403,43 +453,43 @@ def character(T=TOP, B=GROUND, A=A0, r1=R1, cx=CX, crust=0.0, glow=True, spark=0
 
 def frames():
     out = []
-    # 0-9 idle: breathe (top sinks 1px, spreads), fuse flickers, one bubble rises on the front and pops
+    # 0-9 idle: breathe (top sinks 1px, spreads), fuse + slow-match flicker, a bubble rises in a seam and pops
     dh = [0, 0, 0, 1, 1, 1, 1, 0, 0, 0]
-    bub = {4: (8, 21, False), 5: (8, 20, False), 6: (8, 19, False), 7: (8, 18, False), 8: (8, 17, True)}
+    bub = {4: (10, 21, False), 5: (10, 20, False), 6: (10, 19, False), 7: (10, 18, False), 8: (10, 17, True)}
     for i in range(10):
-        out.append(character(T=TOP + dh[i], A=A0 + 0.5 * dh[i], spark=i % 3, bubble=bub.get(i)))
-    # 10-15 move: squash, stretch, hop, drips left on the ground
-    mv = [(0, 0.0, 0), (1, 0.5, 0), (2, 1.0, 0), (-1, -0.5, -1), (-2, -1.0, -2), (0, 0.0, -1)]
-    drips = {3: [(4, 25, LAVA[2]), (5, 25, LAVA[1])], 4: [(2, 25, LAVA[1]), (3, 25, LAVA[1])], 5: [(1, 25, LAVA[0])]}
+        out.append(character(T=TOP + dh[i], A=A0 + 0.4 * dh[i], spark=i % 3, bubble=bub.get(i)))
+    # 10-15 move: squash, stretch, hop, molten drips left on the floor
+    mv = [(0, 0.0, 0), (1, 0.4, 0), (2, 0.8, 0), (-1, -0.4, -1), (-2, -0.8, -2), (0, 0.0, -1)]
+    drips = {3: [(6, 25, LV[3]), (7, 25, LV[2])], 4: [(5, 25, LV[2]), (6, 25, LV[2])], 5: [(5, 25, LV[1])]}
     for i, (dT, dA, lift) in enumerate(mv):
         out.append(character(T=TOP + dT + lift, B=GROUND + lift, A=A0 + dA, spark=i % 3, extras=drips.get(i, ())))
-    # 16-19 asleep: a flat cooling crust puddle (all top plane), helmet + bomb set down beside it, fuse smoking
+    # 16-19 asleep: a flat cooling crust puddle, helmet + bomb set down beside it, linstock on the floor, fuse smoking
     for i in range(4):
         T = GROUND - 6 - (i % 2)
-        out.append(character(T=T, A=11.5, r1=2.5 + 0.5 * (i % 2), crust=0.55, glow=i % 2 == 0, spark=i, eyes=False,
-                             mouth=False, bomb=(BOMB_X + 1, GROUND - 6), hand=False, helmet=(9.5, GROUND - 4.0),
-                             helmet_lit=False, belt=False))
-    # 20-31 getting up: the puddle gathers into Fizzwick, helmet rides up onto him, goggles on, bomb picked up
+        out.append(character(T=T, A=9.5, r1=2.5 + 0.5 * (i % 2), melt=1, hot=i % 2 == 0, spark=i, eyes=False,
+                             mouth=False, bomb=(BOMB_X + 1, GROUND - 6), arm=False, helmet=(8.5, GROUND - 4.0),
+                             helmet_lit=False, belt=False, stick=False, stick_down=True))
+    # 20-31 getting up: the puddle gathers into Fizzwick, helmet rides up onto him, goggles on, bomb + linstock picked up
     for k in range(12):
         t = (k + 1) / 12.0
         e = t * t * (3 - 2 * t)
         T = int(round(lerp(GROUND - 6, TOP, e)))
         r1 = lerp(2.5, R1, e)
         holding = t > 0.6
-        tgt = (CX + 0.5, T + 2.0)
-        hel = (lerp(9.5, tgt[0], e), lerp(GROUND - 4.0, tgt[1], e))
-        out.append(character(T=T, A=round(lerp(11.5, A0, e) * 2) / 2, r1=r1, crust=0.55 * (1 - e) if t < 0.85 else 0.0,
-                             glow=k % 2 == 0, spark=k % 3, eyes=(t >= 0.5) if t >= 0.4 else None, mouth=t >= 0.7,
-                             bomb=(BOMB_X, None) if holding else (BOMB_X + 1, GROUND - 6), hand=holding,
-                             helmet=hel, helmet_lit=t > 0.45, belt=t >= 0.5))
-    # 32-37 wave: tosses the bomb up and catches it
+        tgt = (CX + 0.5, T + 1.5)
+        hel = (lerp(8.5, tgt[0], e), lerp(GROUND - 4.0, tgt[1], e))
+        out.append(character(T=T, A=round(lerp(9.5, A0, e) * 2) / 2, r1=r1, melt=1 if t < 0.5 else MELT,
+                             hot=k % 2 == 0, spark=k % 3, eyes=(t >= 0.5) if t >= 0.4 else None, mouth=t >= 0.7,
+                             bomb=(BOMB_X, None) if holding else (BOMB_X + 1, GROUND - 6), arm=holding,
+                             helmet=hel, helmet_lit=t > 0.45, belt=t >= 0.5, stick=holding, stick_down=not holding))
+    # 32-37 wave: tosses the bomb up and catches it, linstock raised a little
     toss = [0, -3, -6, -8, -4, 0]
     hand = [0, -2, -3, -3, -2, 0]
     sq = [0, 1, 0, 0, 0, 1]
     for i in range(6):
         T = TOP + sq[i]
-        out.append(character(T=T, A=A0 + 0.5 * sq[i], spark=i % 3,
-                             bomb=(BOMB_X, int(T + R1) + toss[i]), hand_dy=hand[i]))
+        out.append(character(T=T, A=A0 + 0.4 * sq[i], spark=i % 3,
+                             bomb=(BOMB_X, int(T + R1) + 1 + toss[i]), hand_dy=hand[i]))
     return out
 
 
@@ -556,7 +606,7 @@ def validate(sheet, rects, idols):
     for gname, g in (('IDOL_ICON', IDOL_ICON), ('IDOL_SMALL', IDOL_SMALL)):
         if len(g) != 16 or any(len(r) != 16 for r in g):
             errs.append(f'{gname} grid is not 16x16')
-    for gname, g, w in (('BOMB', BOMB, 7), ('GOGGLE', GOGGLE, 4)):
+    for gname, g, w in (('BOMB', BOMB, 6),):
         if any(len(r) != w for r in g):
             errs.append(f'{gname} grid rows not {w} wide')
     for name, im in idols.items():

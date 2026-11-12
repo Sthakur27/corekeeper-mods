@@ -2,7 +2,7 @@
 
     python -I BossMerchants/Unity/make_decor_art.py
 
-Everything is drawn from code (part masks + a top-left-lit ramp shader + coloured outlines); no vanilla pixels
+Everything is drawn from code (part masks + a top-left-lit cluster-grain ramp shader, own-ramp edges); no vanilla pixels
 are copied. Outputs:
   Art/merchants/decor/decor__Fisher_merchant.png   260x120 sheet on the FishingMerchant rig (26x40 cells)
   Art/merchants/decor/sheets.json                  rig entry (same schema as Art/merchants/skins.json)
@@ -200,160 +200,285 @@ def tentacle(w, h, p0, p1, p2, w0=2, w1=1):
 
 
 # ---------------------------------------------------------------------------------------------- merchant
+# Restyle (2026-11-12, after Old Hemlock's in-game restyle): the previous Ottoline read as a compact dark blob
+# with a flat pale-cyan brim, near-black outlines all round and 4-step fills. This pass draws her the way the
+# vanilla merchants are drawn (all four were measured; she is tuned toward the Fisher she shares a rig with):
+#   - 6-8 close shades per material, quantised from a per-pixel light value with a ~2x2 cluster grain (never
+#     single pixels), so every surface has form shading instead of one or two flat fills;
+#   - no separate outline colour: each part's silhouette ring is a dark step of its own ramp (one step lighter
+#     on the lit top/left side); finish_art.py darkens edges that bound solid mass a little further;
+#   - the mass goes into thin props: six thin tentacles fanned out on the floor, the thin lantern arm, a slim
+#     rolled rug, the lampshade's fringe; the mantle itself is small;
+#   - the brim's top plane is a lit-left -> shaded-right gradient, not one flat light colour; the only bright
+#     accents are the lantern panes (on the rig's built-in glow spot), the monocle glint and eye whites.
+RP = {   # every value is a master-palette colour (vanilla-sampled), so the finisher's palette lock keeps them
+    'body': ['1f102a', '2b213b', '4e3c6d', '723e8a', '954d94', 'a555a4', 'c069d8', 'd96fa5', 'df8eb8'],
+    'hat': ['142b5c', '2a4e4a', '316471', '39728b', '3d7983', '4b708a', '599dbb', '6e9bb9', '62b9c5'],
+    'gold': ['39341f', '614822', '915b26', 'b58047', 'c97f26', 'e2a12c', 'e7b645', 'f2df3a'],
+    'rug': ['5e2a28', '822e13', '91210b', 'a24027', 'b43221', 'c16436', 'e88b69'],
+    'sucker': ['723e8a', 'c76369', 'de8e9a', 'e5a69f'],
+    'eye': ['2b215f', '677fae', 'a5cada', 'd7dcfb', 'ffffff'],
+    'pane': ['e2a12c', 'f2df3a', 'fceb4f', 'fae6bc'],
+    'moss': ['2b5432', '356a2c', '4c8d32'],
+    'cream': ['d4b987', 'e9d9a2'],
+}
+RP = {k: [hexc(h) for h in v] for k, v in RP.items()}
+LDIR = _norm((-0.45, -0.75, 0.6))   # light from above, top-left
+
+
+def grain(x, y):
+    """Deterministic cluster grain in {-1, 0, 1}: constant over irregular ~2x2 blocks (never single pixels)."""
+    bx, by = (x + (y // 2) % 2) // 2, y // 2
+    h = (bx * 73856093 ^ by * 19349663) & 0xffff
+    return (h % 5) // 2 - 1 if h % 7 else 0
+
+
+class Paint:
+    """Back-to-front pixel canvas. part() fills a mask from a light value per pixel (quantised onto the
+    ramp's lighter steps) and rings it with the ramp's own dark steps."""
+
+    def __init__(self, w, h):
+        self.w, self.h = w, h
+        self.px = {}
+
+    def put(self, x, y, c):
+        if 0 <= x < self.w and 0 <= y < self.h:
+            self.px[(x, y)] = c
+
+    def part(self, mask, ramp, vfn, lo=2, hi=None, ring=True, ring_dark=1, ring_lit=2, g=0.13):
+        r = RP[ramp]
+        steps = r[lo:hi] if hi else r[lo:]
+        if ring:
+            ringpx = {}
+            for (x, y) in mask:
+                for a, b in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                    p = (x + a, y + b)
+                    if p in mask:
+                        continue
+                    if (a, b) in ((-1, 0), (0, -1)):
+                        ringpx.setdefault(p, r[ring_lit])
+                    else:
+                        ringpx[p] = r[ring_dark]
+            for (x, y), c in ringpx.items():
+                self.put(x, y, c)
+        for (x, y) in mask:
+            v = vfn(x, y) + g * grain(x, y)
+            self.put(x, y, steps[max(0, min(len(steps) - 1, int(v * len(steps))))])
+
+    def image(self):
+        im = Image.new('RGBA', (self.w, self.h), (0, 0, 0, 0))
+        p = im.load()
+        for (x, y), c in self.px.items():
+            p[x, y] = c
+        return im
+
+
+def ell(cx, cy, rx, ry):
+    return {(x, y) for y in range(int(cy - ry) - 1, int(cy + ry) + 2) for x in range(int(cx - rx) - 1, int(cx + rx) + 2)
+            if ((x + 0.5 - cx) / rx) ** 2 + ((y + 0.5 - cy) / ry) ** 2 <= 1.0}
+
+
+def sphere_v(cx, cy, rx, ry, bias=0.0):
+    def v(x, y):
+        nx, ny = (x + 0.5 - cx) / rx, (y + 0.5 - cy) / ry
+        rr = min(1.0, nx * nx + ny * ny)
+        n = _norm((nx, ny, (1 - rr) ** 0.5 + 0.1))
+        return 0.15 + 0.85 * max(0.0, n[0] * LDIR[0] + n[1] * LDIR[1] + n[2] * LDIR[2]) + bias
+    return v
+
+
+def curve(p0, p1, p2, n=16):
+    """Pixel path along a quadratic bezier: [(x, y, t)] without duplicates, base first."""
+    out, seen = [], set()
+    for k in range(n + 1):
+        t = k / n
+        x = (1 - t) ** 2 * p0[0] + 2 * (1 - t) * t * p1[0] + t * t * p2[0]
+        y = (1 - t) ** 2 * p0[1] + 2 * (1 - t) * t * p1[1] + t * t * p2[1]
+        q = (int(round(x)), int(round(y)))
+        if q not in seen:
+            seen.add(q)
+            out.append((q[0], q[1], t))
+    return out
+
+
+def draw_tentacle(cv, p0, p1, p2, thick=0.5, suckers=True):
+    """A thin tentacle seen from above: a lit top line (light near the base, darker toward the tip), a shaded
+    underside column toward the base, a dark ring only on the shadow side (bottom/right) so neighbouring
+    tentacles stay separate lines, and a pale sucker pair under the tip."""
+    path = curve(p0, p1, p2)
+    flat = abs(p2[0] - p0[0]) >= abs(p2[1] - p0[1])
+    top, under = {}, {}
+    for x, y, t in path:
+        top[(x, y)] = t
+    for x, y, t in path:
+        q = (x, y + 1) if flat else (x + 1, y)
+        if t < thick and q not in top:
+            under[q] = t
+    r = RP['body']
+    side = (0, 1) if flat else (1, 0)
+    for (x, y), t in list(under.items()) + list(top.items()):   # shadow-side ring, darker toward the base
+        q = (x + side[0], y + side[1])
+        if q not in top and q not in under:
+            cv.put(q[0], q[1], r[3] if t < 0.3 else r[4])
+    for (x, y), t in under.items():
+        cv.put(x, y, r[5] if (grain(x, y) + 1) * 0.15 + t < 0.45 else r[4])
+    for (x, y), t in top.items():
+        v = 1.05 - 0.5 * t + 0.12 * grain(x, y)
+        cv.put(x, y, r[7] if v > 0.95 else r[6] if v > 0.7 else r[5] if v > 0.45 else r[4])
+    if suckers and len(path) > 5:
+        k = int(len(path) * 0.65)
+        for j, (x, y, _) in enumerate(path[k:k + 2]):
+            q = (x, y + 1) if flat else (x + 1, y)
+            cv.put(q[0], q[1], RP['sucker'][2] if j == 0 else RP['sucker'][1])
+    return path
+
+
 def frame(i):
-    """One 26x40 cell at vanilla Fisher scale: the body mass sits in rows ~17-37 like the vanilla fisher
-    (mantle ~11x9, hat brim 15x4), the lantern is held up on one thin tentacle at the vanilla lantern spot,
-    the rolled rug leans on her left where the vanilla tackle box sits."""
+    """One 26x40 cell at vanilla Fisher scale, ground row 37. Lantern on the rig's glow spot (LANTERN)."""
     lx, dy = LANTERN[i]
-    ly = dy
     anim = 'idle' if i < 16 else 'move' if i < 24 else 'wave'
-    c = Canvas(CW, CH)
-    cx, cy = 12, 26 + dy  # mantle centre
+    cv = Paint(CW, CH)
+    cx, cy = 12, 26 + dy          # mantle centre
+    x0, y0 = 15 + lx, 7 + dy      # lantern top-left (vanilla glow spot)
 
-    # Seen from above at the game's 3/4 angle: the hat's top opening and brim are ovals, the face sits low on
-    # the mantle, the tentacles lie on the floor around her and show their lit tops.
+    # rug, rolled, leaning on her left (behind the body): slim cylinder, lit left column, gold bands
+    bounce = 0 if anim != 'move' else (i % 2)
+    top_y = 22 + dy + bounce
+    rug, rv = set(), {}
+    for y in range(top_y, 37):
+        t = (y - top_y) / (36 - top_y)
+        xc = int(round(4 + 2 * t))
+        for k, xx in enumerate((xc - 1, xc, xc + 1)):
+            rug.add((xx, y))
+            rv[(xx, y)] = (0.95, 0.65, 0.35)[k] - 0.2 * t
+    cv.part(rug, 'rug', lambda x, y: rv[(x, y)], lo=3, ring_dark=0, ring_lit=1, g=0.1)
+    for k, y in enumerate((top_y + 4, top_y + 10)):        # gold bands (lit left, shaded right)
+        xs = sorted(x for (x, yy) in rug if yy == y)
+        for j, x in enumerate(xs):
+            cv.put(x, y, RP['gold'][(5, 4, 2)[j]])
+    ys = top_y + 7
+    xs = sorted(x for (x, yy) in rug if yy == ys)
+    cv.put(xs[0], ys, RP['hat'][6]); cv.put(xs[1], ys, RP['hat'][4]); cv.put(xs[2], ys, RP['hat'][2])
+    cap = ell(3.5, top_y - 0.5, 1.7, 1.2)                   # rolled end seen from above, spiral facing up
+    cv.part(cap, 'rug', lambda x, y: 0.7 - 0.3 * (x - 2), lo=3, ring_dark=0, ring_lit=1, g=0)
+    cv.put(3, top_y - 1, RP['cream'][1]); cv.put(2, top_y - 1, RP['cream'][0]); cv.put(3, top_y, RP['rug'][1])
+    cv.put(7, 37, RP['cream'][0]); cv.put(8, 37, RP['cream'][1])   # fringe on the floor
 
-    # lantern (vanilla glow position), held up from below by one thin tentacle out of her right side
-    x0, y0 = 15 + lx, 7 + ly
-    arm = tentacle(CW, CH, (16, 24 + dy), (22, 20 + dy), (x0 + 2, y0 + 6), 2, 1)
-    c.add(arm, BODY)
-    c.put(20, 20 + dy, SUCKER[3])  # one sucker on the inner curve
-    c.put(20, 21 + dy, SUCKER[1])
-
-    # tentacles lying on the floor in an oval footprint under her (tops lit, undersides dark)
+    # tentacles fanned out on the floor (lit tops, pale suckers under the tips), a dark footprint under her
     ph = [0, 0, 1, 1, 0, 0, -1, -1][(i // 2) % 8] if anim == 'idle' else 0
-    legs = [  # base, control, tip, curl direction
-        ((8, 30), (5, 33), (6, 36), 1),
-        ((11, 31), (10, 34), (10, 36), -1),
-        ((14, 31), (15, 34), (15, 36), 1),
-        ((17, 30), (20, 33), (19, 36), -1),
-    ]
-    feet = ellipse(CW, CH, (7, 28 + dy, 17, 32))
-    tips = []
-    for n, (b, ctl, t, d) in enumerate(legs):
+    legs = [((9, 30), (6, 33), (8, 36), (9, 35)),
+            ((12, 31), (11, 34), (12, 36), (13, 35)),
+            ((14, 31), (16, 34), (17, 36), (18, 35)),
+            ((16, 30), (20, 31), (22, 34), (22, 33)),
+            ((8, 29), (5, 30), (5, 33), (6, 33))]
+    foot = ell(cx + 0.5, 30.5 + dy, 4.5, 1.6)
+    cv.part(foot, 'body', lambda x, y: 0.45 - 0.15 * (x - cx) / 4, lo=2, hi=5, ring=False)
+    for n, (b, ctl, t, curl) in enumerate(legs):
         if anim == 'move':
             sway = [0, 1, 1, 0, 0, -1, -1, 0][(i - 16 + n * 3) % 8]
             lift = 1 if (i - 16 + n) % 4 == 0 else 0
         else:
-            sway = ph if n % 2 == 0 else -ph
-            lift = 0
-        sway = max(0, sway) if n == 0 else min(0, sway) if n == 3 else sway
-        tx, ty = t[0] + sway, t[1] - lift
-        feet |= tentacle(CW, CH, (b[0], b[1] + dy), (ctl[0] + sway, ctl[1]), (tx, ty), 2, 1)
-        tips.append((tx, ty, d))
-    c.add(feet, BODY)
-    for tx, ty, d in tips:  # curled tip: lit top with a sucker under it
-        c.put(tx + d, ty - 1, BODY[3])
-        c.put(tx, ty, SUCKER[2])
+            sway, lift = (ph if n % 2 == 0 else -ph), 0
+        sway = min(0, sway) if n == 4 else max(0, sway) if n == 3 else sway
+        tip = (t[0] + sway, t[1] - lift)
+        draw_tentacle(cv, (b[0], b[1] + dy), (ctl[0] + sway, ctl[1] + dy * (n in (3, 4))), tip)
+        cv.put(curl[0] + sway, curl[1] - lift, RP['body'][5])     # curled tip catches the light
 
-    # mantle: a compact ellipsoid lit from above; the hat hides its crown
-    head = ellipse(CW, CH, (cx - 5, cy - 4, cx + 5, cy + 4))
-    c.add(head, BODY, sphere=(cx + 0.5, cy + 0.5, 5.5, 4.5))
-    c.put(cx + 4, cy + 1, BODY[1])  # mottle pair on the shaded side
-    c.put(cx + 4, cy + 2, BODY[1])
-    c.put(cx - 4, cy + 1, MOSS[3])  # a small moss patch
-    c.put(cx - 4, cy + 2, MOSS[2])
+    # lantern arm out of her right side, up to the rig's glow spot
+    draw_tentacle(cv, (16, 25 + dy), (22, 19 + dy), (x0 + 2, y0 + 6), thick=0.45)
 
-    # face, low on the mantle (we look down on her): 2x2 eyes, gold monocle on her right eye
+    # mantle: a small ellipsoid lit from above, the hat hides its crown
+    mantle = ell(cx + 0.5, cy + 0.5, 4.6, 4.2)
+    sv = sphere_v(cx + 0.5, cy + 0.5, 4.6, 4.2, bias=0.0)
+    hb0 = cy - 5   # occlusion under the brim's overhang: the mantle's top rows sit in the hat's shadow
+    cv.part(mantle, 'body', lambda x, y: sv(x, y) - (0.5 if y <= hb0 + 5 else 0.25 if y == hb0 + 6 else 0),
+            lo=3, hi=8, ring_dark=2, ring_lit=3, g=0.12)
+    cv.put(cx - 4, cy + 1, RP['body'][7]); cv.put(cx - 4, cy, RP['body'][6])   # lit flank
+    cv.put(cx - 3, cy + 2, RP['moss'][2]); cv.put(cx - 3, cy + 3, RP['moss'][1]); cv.put(cx - 2, cy + 3, RP['moss'][0])
+    cv.put(cx + 3, cy + 3, RP['body'][3]); cv.put(cx + 4, cy + 2, RP['body'][3])   # mottle on the shaded side
+
+    # face, low on the mantle: 2x2 eyes under a lit brow, gold monocle on her right eye
     blink = anim == 'idle' and i in (11, 12)
     ey = cy + 1
     for ex in (cx - 2, cx + 2):
-        c.put(ex, ey - 1, BODY[3])  # lit brow ridge (a top plane)
-        c.put(ex + 1, ey - 1, BODY[3])
+        cv.put(ex, ey - 1, RP['body'][6]); cv.put(ex + 1, ey - 1, RP['body'][5])
         if blink:
-            c.put(ex, ey, BODY[0])
-            c.put(ex + 1, ey, BODY[0])
+            cv.put(ex, ey, RP['body'][2]); cv.put(ex + 1, ey, RP['body'][2])
             continue
-        c.put(ex, ey, WHITE)
-        c.put(ex + 1, ey, EYE[3])
-        c.put(ex, ey + 1, EYE[2])
-        c.put(ex + 1, ey + 1, EYE[0])
-    mx = cx + 2  # monocle ring around the right eye (mx..mx+1, ey..ey+1)
-    ring = ((mx, ey - 1), (mx + 1, ey - 1), (mx + 2, ey), (mx + 2, ey + 1), (mx + 1, ey + 2), (mx, ey + 2),
-            (mx - 1, ey + 1), (mx - 1, ey))
-    for x, y in ring:
-        c.put(x, y, GOLD[4] if y < ey else GOLD[3] if x < mx else GOLD[1])
-    c.put(mx, ey - 1, WHITE)
-    c.put(mx + 3, ey + 2, GOLD[2])  # chain
+        cv.put(ex, ey, RP['eye'][3]); cv.put(ex + 1, ey, RP['eye'][2])
+        cv.put(ex, ey + 1, RP['eye'][1]); cv.put(ex + 1, ey + 1, RP['eye'][0])
+    mx = cx + 2
+    for x, y in ((mx, ey - 1), (mx + 1, ey - 1), (mx + 2, ey), (mx + 2, ey + 1), (mx + 1, ey + 2), (mx, ey + 2),
+                 (mx - 1, ey + 1), (mx - 1, ey)):
+        cv.put(x, y, RP['gold'][6] if y < ey else RP['gold'][4] if x < mx else RP['gold'][2])
+    cv.put(mx, ey - 1, RP['cream'][1])
+    cv.put(mx + 3, ey + 2, RP['gold'][2]); cv.put(mx + 3, ey + 3, RP['gold'][1])   # chain
 
-    # rug, rolled, leaning on her left side: the top end is an oval with its spiral facing up
-    bounce = 0 if anim != 'move' else (i % 2)
-    ry0 = 21 + dy + bounce
-    rug = poly(CW, CH, [(3, ry0 + 1), (5, ry0), (7, 34), (5, 35)]) | ellipse(CW, CH, (4, 33 - bounce, 7, 35 - bounce))
-    c.add(rug, RUG)
-    for k in range(2, 14):  # gold bands with a teal stripe between
-        y = ry0 + k
-        xs = sorted(x for (x, yy) in rug if yy == y)
-        if len(xs) < 2:
-            continue
-        if k in (3, 10):
-            for j, x in enumerate(xs):
-                c.put(x, y, GOLD[3] if j == 0 else GOLD[2] if j < len(xs) - 1 else GOLD[1])
-        elif k in (6, 7):
-            c.put(xs[len(xs) // 2], y, TEAL[3] if k == 6 else CREAM)
-    cap = ellipse(CW, CH, (2, ry0 - 2, 5, ry0 + 1))  # rolled end seen from above
-    c.add(cap, RUG, flat=3)
-    c.put(3, ry0 - 1, CREAM)
-    c.put(4, ry0, RUG[1])  # spiral centre
-    c.put(6, 35 - bounce, CREAM)  # fringe on the floor
-    wrap = tentacle(CW, CH, (9, 28 + dy), (4, 30 + dy), (6, 27 + dy), 2, 1)  # one tentacle hugs the rug
-    c.add(wrap, BODY)
-    c.put(5, 29 + dy, SUCKER[3])
+    # one tentacle hugs the rug
+    draw_tentacle(cv, (cx - 3, cy + 1), (3, cy + 2), (5, cy - 1), thick=0.6, suckers=False)
 
-    # lampshade hat: wide oval brim, short cone of slate-teal cloth, oval top opening with a gold rim
+    # lampshade hat: oval brim (top plane lit left -> shaded right), short pleated cone, gold rim + fringe
     lift = [1, 1, 2, 2, 1, 1][i - 24] if anim == 'wave' else 0
-    hb = cy - 4 - lift  # brim centre line
-    brim = ellipse(CW, CH, (5, hb - 2, 19, hb + 1))
-    c.add(brim, SHADE, flat=3)
-    for (x, y) in brim:  # brim top plane is the lightest; its front lip turns down into gold trim
-        c.put(x, y, SHADE[4] if x < 11 else SHADE[3])
+    hb = cy - 5 - lift
+    brx, bry = 5.8, 1.8
+    brim = ell(cx + 0.5, hb - 0.3, brx, bry)
+    cv.part(brim, 'hat', lambda x, y: 0.8 - 0.45 * (x + 0.5 - cx) / brx - 0.1 * (y - hb), lo=3, hi=9,
+            ring_dark=1, ring_lit=2, g=0.14)
     front = {}
     for (x, y) in brim:
         front[x] = max(front.get(x, -1), y)
-    for x, y in front.items():
-        c.put(x, y, GOLD[3] if x < 9 else GOLD[2] if x < 15 else GOLD[1])
+    for x, y in front.items():   # front lip turns down into gold trim, fringe hanging off it
+        t = (x - min(front)) / max(1, max(front) - min(front))
+        cv.put(x, y + 1, RP['gold'][6 if t < 0.25 else 5 if t < 0.55 else 4 if t < 0.85 else 3])
+        if min(front) < x < max(front):   # the band's lower, shaded half
+            cv.put(x, y + 2, RP['gold'][4 if t < 0.35 else 3 if t < 0.7 else 2])
     sw = (i // 3) % 2 if anim != 'move' else i % 2
-    for x, y in sorted(front.items()):  # tassels hanging from the lip
-        if (x + sw) % 2 == 0 and 6 < x < 18:
-            c.put(x, y + 1, GOLD[2] if x < 12 else GOLD[1], pid=len(c.parts) - 1)
-    ht = hb - 4  # top opening centre line
-    cone = poly(CW, CH, [(9, ht), (14, ht), (16, hb - 1), (8, hb - 1)])
-    c.add(cone, SHADE, bias=1)  # the cloth faces up-ish: keep it a step lighter than the shaded mantle
-    for f in (0.3, 0.7):  # pleats converge toward the opening
-        for y in range(ht + 1, hb - 1):
-            t = (y - ht) / max(1, hb - 1 - ht)
-            x = round((9 + f * 5) + t * ((8 + f * 8) - (9 + f * 5)))
-            if (x, y) in cone:
-                c.put(x, y, SHADE[1])
-    opening = ellipse(CW, CH, (9, ht - 1, 14, ht + 1))
-    c.add(opening, GOLD, flat=3)
-    for (x, y) in opening:
-        if y == ht and 10 <= x <= 13:
-            c.put(x, y, SHADE[0] if x > 10 else SHADE[1])  # inside of the shade, in shadow
-    c.put(10, ht - 1, GOLD[4])
-    c.put(11, ht - 1, WHITE)
-    if anim == 'wave':  # a tentacle lifts the brim
-        c.add(tentacle(CW, CH, (9, cy + 3), (4, cy + 1), (6, hb + 1), 2, 1), BODY)
+    for x, y in sorted(front.items()):
+        if (x + sw) % 2 == 0 and min(front) + 1 < x < max(front) - 1:
+            cv.put(x, y + 3, RP['gold'][3] if x < cx + 2 else RP['gold'][2])
+    ht = hb - 5
+    cone = set()
+    for y in range(ht, hb - 1):
+        t = (y - ht) / max(1, hb - 2 - ht)
+        a, b = int(round(10 - 1.6 * t)), int(round(14 + 1.6 * t))
+        for x in range(a, b + 1):
+            cone.add((x, y))
 
-    # lantern: 5 wide, lit cap, two glowing panes, darker base, handle ring
+    def cone_v(x, y):
+        t = (y - ht) / max(1, hb - 2 - ht)
+        a, b = 10 - 1.6 * t, 14 + 1.6 * t
+        u = (x + 0.5 - a) / (b - a + 1)
+        v = 0.8 - 0.7 * u
+        if abs(u - 0.38) < 0.08 or abs(u - 0.72) < 0.08:   # pleats: dark folds
+            v -= 0.25
+        return v
+    cv.part(cone, 'hat', cone_v, lo=2, hi=8, ring_dark=1, ring_lit=3, g=0.1)
+    rim = ell(cx + 0.5, ht - 0.2, 3.3, 1.5)            # gold rim of the top opening
+    cv.part(rim, 'gold', lambda x, y: 0.95 - 0.7 * (x + 0.5 - cx + 3) / 6.6, lo=2, ring_dark=1, ring_lit=3, g=0)
+    inner = ell(cx + 0.5, ht - 0.2, 2.1, 0.7)          # inside of the shade, in shadow
+    cv.part(inner, 'hat', lambda x, y: 0.6 if x < cx else 0.2, lo=0, hi=3, ring=False, g=0)
+    cv.put(cx - 2, ht - 2, RP['gold'][7])                      # rim glint
+    if anim == 'wave':   # a tentacle lifts the brim
+        draw_tentacle(cv, (cx - 3, cy + 3), (3, cy + 1), (cx - 5, hb + 1), thick=0.6, suckers=False)
+
+    # lantern: 5 wide, lit gold cap, two warm panes (small), dark base, handle ring
     lant = {(x, y) for x in range(x0, x0 + 5) for y in range(y0 + 1, y0 + 4)}
     lant |= {(x, y0) for x in range(x0 + 1, x0 + 4)} | {(x, y0 + 4) for x in range(x0 + 1, x0 + 4)}
-    c.add(lant, GOLD)
+    cv.part(lant, 'gold', lambda x, y: 0.9 - 0.18 * (x - x0) - 0.1 * (y - y0), lo=1, ring_dark=1, ring_lit=2, g=0)
     for y in range(y0 + 1, y0 + 4):
-        for x in (x0 + 1, x0 + 3):
-            c.put(x, y, GLOW[4] if y == y0 + 2 else GLOW[3] if y < y0 + 3 else GLOW[2])
-        c.put(x0 + 2, y, GOLD[1])
-        c.put(x0, y, GOLD[3] if y < y0 + 3 else GOLD[2])
-        c.put(x0 + 4, y, GOLD[1])
-    c.put(x0 + 1, y0, GOLD[4])
-    c.put(x0 + 2, y0, WHITE)
-    c.put(x0 + 3, y0, GOLD[3])
+        cv.put(x0 + 1, y, RP['pane'][3] if y == y0 + 2 else RP['pane'][2] if y == y0 + 1 else RP['pane'][1])
+        cv.put(x0 + 3, y, RP['pane'][2] if y == y0 + 2 else RP['pane'][1] if y == y0 + 1 else RP['pane'][0])
+        cv.put(x0 + 2, y, RP['gold'][2])
+        cv.put(x0, y, RP['gold'][(4, 5, 3)[y - y0 - 1]])
+    cv.put(x0 + 1, y0, RP['gold'][6]); cv.put(x0 + 2, y0, RP['gold'][5]); cv.put(x0 + 3, y0, RP['gold'][4])
     for x in range(x0 + 1, x0 + 4):
-        c.put(x, y0 + 4, GOLD[1])
-    c.put(x0 + 2, y0 - 1, GOLD[3])  # handle ring
-
-    c.outline()
-    return c.image()
+        cv.put(x, y0 + 4, RP['gold'][1])
+    cv.put(x0 + 2, y0 - 1, RP['gold'][2])
+    for (x, y) in [(x0 - 1, y0 + 1), (x0 - 1, y0 + 2), (x0 + 5, y0 + 1), (x0 + 5, y0 + 2), (x0 + 5, y0 + 3),
+                   (x0 - 1, y0 + 3), (x0, y0 - 0), (x0 + 4, y0), (x0, y0 + 4), (x0 + 4, y0 + 4), (x0 + 1, y0 - 1),
+                   (x0 + 3, y0 - 1), (x0 + 1, y0 + 5), (x0 + 3, y0 + 5), (x0 + 2, y0 - 2)]:
+        cv.px.pop((x, y), None)   # the lantern ring is trimmed back to vanilla's 5x5 + handle footprint
+    return cv.image()
 
 
 def build_sheet():

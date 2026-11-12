@@ -271,6 +271,7 @@ namespace QuickBuff.Systems
                     if (!singlePotion && skipActive && AllBuffsActive(conditions, conditionsTable, em.GetBuffer<ConditionsBuffer>(player, true), currentTick, tickRate, skipSeconds))
                     {
                         result.skippedActive++;
+                        LogSkip(item.objectID, conditions, conditionsTable, em.GetBuffer<ConditionsBuffer>(player, true), currentTick, tickRate);
                         continue;
                     }
 
@@ -376,11 +377,67 @@ namespace QuickBuff.Systems
             {
                 Condition condition = active[i].condition;
                 if (condition.conditionData.conditionID != id || condition.toBeRemoved) continue;
+                if (IsStanding(condition)) continue; // a standing bonus (e.g. an equipment enchant), not a food/potion buff
                 if (!condition.removeTick.IsValid || !currentTick.IsValid) return float.MaxValue; // no expiry
                 int ticksLeft = condition.removeTick.TicksSince(currentTick);
                 return ticksLeft <= 0 ? 0f : ticksLeft / (float)tickRate;
             }
             return -1f; // not active
+        }
+
+        /// <summary>
+        /// Entries that are not a timed food/potion buff: infinite durations (stat bonuses other mods keep on the player)
+        /// and zero/negative durations (standing entries the game keeps without an expiry).
+        /// </summary>
+        private static bool IsStanding(in Condition condition)
+        {
+            float duration = condition.conditionData.duration;
+            return float.IsPositiveInfinity(duration) || duration <= 0f;
+        }
+
+        /// <summary>Player.log line naming what made an item count as still active.</summary>
+        private static void LogSkip(ObjectID item, NativeArray<ConditionData> conditions, ConditionsTableCD table, DynamicBuffer<ConditionsBuffer> active,
+            NetworkTick currentTick, uint tickRate)
+        {
+            var parts = new List<string>();
+            for (int i = 0; i < conditions.Length; i++)
+            {
+                if (!IsBuff(conditions[i], table)) continue;
+                ConditionID id = conditions[i].conditionID;
+                for (int j = 0; j < active.Length; j++)
+                {
+                    Condition c = active[j].condition;
+                    if (c.conditionData.conditionID != id || c.toBeRemoved) continue;
+                    string left = !c.removeTick.IsValid || !currentTick.IsValid ? "no expiry" : $"{c.removeTick.TicksSince(currentTick) / (float)tickRate:0}s left";
+                    parts.Add($"{id} value {c.conditionData.value} duration {c.conditionData.duration} ({left}){(IsStanding(c) ? " standing" : "")}");
+                }
+            }
+            Debug.Log($"[QuickBuff] skipped {item}: {(parts.Count == 0 ? "no matching entries" : string.Join("; ", parts))}");
+        }
+
+        /// <summary>
+        /// AddOrRefreshCondition only replaces an entry of the same ID whose duration is not longer than the new one,
+        /// and adds nothing when such an entry blocks it. A never-expiring entry of that ID would swallow the timed buff,
+        /// so those entries are set aside for the call and appended back afterwards. Returns true when a new entry was added.
+        /// </summary>
+        private static bool AddTimedCondition(ConditionData data, DynamicBuffer<ConditionsBuffer> conditionsBuffer, ConditionsTableCD conditionsTable,
+            NetworkTick currentTick, uint tickRate, DynamicBuffer<SummarizedConditionsBuffer> summarizedConditions)
+        {
+            var standing = new List<ConditionsBuffer>();
+            for (int i = conditionsBuffer.Length - 1; i >= 0; i--)
+            {
+                Condition condition = conditionsBuffer[i].condition;
+                if (condition.conditionData.conditionID != data.conditionID || !IsStanding(condition)) continue;
+                standing.Add(conditionsBuffer[i]);
+                conditionsBuffer.RemoveAt(i);
+            }
+
+            int lengthBefore = conditionsBuffer.Length;
+            EntityUtility.AddOrRefreshCondition(data, conditionsBuffer, conditionsTable, currentTick, tickRate, summarizedConditions);
+            bool added = lengthBefore != conditionsBuffer.Length;
+
+            for (int i = standing.Count - 1; i >= 0; i--) conditionsBuffer.Add(standing[i]);
+            return added;
         }
 
         private void ApplyEffects(Entity player, ObjectDataCD item, NativeArray<ConditionData> conditions, ConditionsTableCD conditionsTable,
@@ -444,9 +501,7 @@ namespace QuickBuff.Systems
                         continue;
                 }
 
-                int lengthBefore = conditionsBuffer.Length;
-                EntityUtility.AddOrRefreshCondition(data, conditionsBuffer, conditionsTable, currentTick, tickRate, summarizedConditions);
-                bool added = lengthBefore != conditionsBuffer.Length;
+                bool added = AddTimedCondition(data, conditionsBuffer, conditionsTable, currentTick, tickRate, summarizedConditions);
                 ConditionInfoBlob info = conditionsTable.GetConditionInfo(data.conditionID);
                 if ((added || !info.isUnique) && info.effect == ConditionEffect.MaxHealthPermanent)
                     PushEffectEvent(player, new EffectEventCD { effectID = EffectID.EatIncreaseMaxHealthItem, entity = player }, currentTick);

@@ -24,7 +24,7 @@ namespace BossMerchants
     public sealed class BossMerchantsMod : IMod
     {
         public const string Name = "BossMerchants";
-        public const string Version = "0.1.0";
+        public const string Version = "0.1.1";
 
         private static bool _appliedViaDatabase;
         private static Setting<string> _price;

@@ -75,8 +75,11 @@ PAL = {k: hx(v) for k, v in PAL.items()}
 # foreshortened ovals in the lightest ramp step, front faces are mid-tone and darken downwards, round things are
 # ovals, and the face sits low under a wide oval brim. Parts are built from ellipses / curved bands and shaded in
 # clean bands (light from the top-left); no dithering.
-CX = 30                      # body centre column
-EYE_OFF = (3, 32)            # eye glint position relative to (CX, 0) before the bob
+# Vanilla scale (2026-11-12 size fix): the CavelingMerchant rig shows the sprite 1:1 at 16 px/unit, so Wren is drawn
+# at the vanilla merchant's size: whole figure incl. crook + lantern <= 26 px wide and <= 47 px tall, body about
+# 17-20 px wide, ~480-650 opaque px per frame (vanilla ~570), feet on row 53 like vanilla.
+CX = 28                      # body centre column (vanilla body spans x 19..38)
+EYE_OFF = (3, 31)            # eye glint position relative to (CX, 0) before the bob
 
 # ---------------------------------------------------------------- animation tables
 IDLE_DY = [0, 0, 0, 0, 1, 1, 1, 1, 0, 0]
@@ -85,11 +88,15 @@ IDLE_FLUTTER = [0, 0, 0, 0, 1, 1, 1, 1, 0, 0]
 WALK_DY = [0, -1, 0, -1, 0, -1, 0, -1]
 WALK_LANTERN = [0, -1, -1, 0, 0, 1, 1, 0]
 #            (near boot x offset, lift), (far boot x offset, lift), relative to CX
-WALK_LEGS = [((4, 0), (-5, 0)), ((1, 0), (-1, 1)), ((-3, 0), (2, 0)), ((0, 1), (-3, 0)),
-             ((4, 0), (-5, 0)), ((1, 0), (-1, 1)), ((-3, 0), (2, 0)), ((0, 1), (-3, 0))]
+WALK_LEGS = [((3, 0), (-5, 0)), ((1, 0), (-3, 1)), ((-2, 0), (1, 0)), ((0, 1), (-4, 0)),
+             ((3, 0), (-5, 0)), ((1, 0), (-3, 1)), ((-2, 0), (1, 0)), ((0, 1), (-4, 0))]
 STAND_LEGS = ((2, 0), (-4, 0))
 # hat tip: hand position relative to (CX, 0), hat lift
-WAVE = [((-4, 38), 0), ((-6, 33), 0), ((-9, 27), 0), ((-9, 24), -3), ((-9, 24), -3), ((-9, 25), -2)]
+WAVE = [((-3, 37), 0), ((-5, 33), 0), ((-7, 28), 0), ((-7, 25), -2), ((-7, 25), -2), ((-7, 26), -1)]
+
+# hat / head geometry (relative to CX and the bob)
+BRIM = (-0.5, 25.0, 9.6, 3.3)          # dx, cy, rx, ry
+HEAD = (1.0, 31.5, 4.6, 3.8)
 
 
 def put(img, x, y, ch):
@@ -152,10 +159,12 @@ def paint(img, mask, keyfn, out_tl=None, out_br=None):
             put(img, x, y, keyfn(x, y))
 
 
-def draw_boot(img, x0, lift, near):
-    """Small boot seen from above: light top plane, leather front, dark sole."""
-    y0 = GROUND - 3 - lift
-    rows = (["lhhl", "LllL", "LlllL", "DLLLD"] if near else ["LllL", "LLlL", "LLLLL", "DDDDD"])
+def draw_boot(img, x0, lift, near, top=44):
+    """Slate trouser leg down from under the poncho, then a small boot: light top plane, leather front, dark sole."""
+    y0 = GROUND - 2 - lift
+    for y in range(top, y0):
+        put(img, x0 + 1, y, 'V' if near else 'v'); put(img, x0 + 2, y, 'v' if near else 'T')
+    rows = (["lhhl", "LllL", "DLLD"] if near else ["LllL", "LLLL", "DDDD"])
     grid(img, rows, x0, y0)
 
 
@@ -166,36 +175,34 @@ def draw_figure(dy=0, hat_dy=0, lantern_dx=0, flutter=0, legs=STAND_LEGS, hand=N
     c = CX
 
     # ---- back gear: burlap feed sack (mouth seen from above), lasso coil (an oval ring), horseshoe charm
-    sx0, sy0 = c - 9, 38 + dy
-    sack = ell(sx0, sy0, 4.6, 6.8)
-    paint(base, sack, lambda x, y: band(-((x + .5 - sx0) / 4.6) * .6 - ((y + .5 - sy0) / 6.8) * .8,
-                                         (-0.5, 0.15, 0.65), '123i'), out_tl='2', out_br='1')
-    mouth = ell(sx0, 32 + dy, 3.8, 1.7)
+    sx0, sy0, srx, sry = c - 6, 38.0 + dy, 3.0, 4.6
+    sack = ell(sx0, sy0, srx, sry)
+    paint(base, sack, lambda x, y: band(-((x + .5 - sx0) / srx) * .6 - ((y + .5 - sy0) / sry) * .8,
+                                         (-0.35, 0.3, 0.8), '1233'), out_tl='3', out_br='1')
+    mouth = ell(sx0, 33.8 + dy, 2.4, 1.2)
     paint(base, mouth, lambda x, y: '1', out_tl='i', out_br='3')
-    for x in range(sx0 - 3, sx0 + 2):
-        put(base, x, 32 + dy, 'D' if x < sx0 else '1')
-    put(base, sx0 - 1, 33 + dy, 'O'); put(base, sx0, 33 + dy, '3'); put(base, sx0 + 1, 33 + dy, 'O')   # rope tie
-    rcx, rcy = c - 12, 43 + dy
-    ring = ell(rcx, rcy, 4.4, 2.8) - ell(rcx, rcy - 0.3, 2.4, 1.2)
+    put(base, sx0 - 1, 34 + dy, 'O'); put(base, sx0, 34 + dy, '3')                            # rope tie
+    rcx, rcy = c - 7, 43.5 + dy
+    ring = ell(rcx, rcy, 3.0, 2.0) - ell(rcx, rcy - 0.2, 1.5, 0.8)
     for (x, y) in ring:
         tw = ((x * 2 + y) // 2) % 3
         put(base, x, y, '5' if (y < rcy and tw == 0) else ('3' if tw != 2 else '2'))
     tl, br = edges(ring)
     for p in br:
         put(base, p[0], p[1], 'O')
-    grid(base, ["V.v", "V.v", ".vT"], c - 15, 46 + dy)
+    grid(base, ["V.v", ".vT"], c - 10, 46 + dy)                                               # horseshoe
 
     # ---- legs: two small boots
     (nx, nl), (fx, fl) = legs
-    draw_boot(base, c + fx - 2, fl, False)
-    draw_boot(base, c + nx - 2, nl, True)
+    draw_boot(base, c + fx - 2, fl, False, 44 + dy)
+    draw_boot(base, c + nx - 2, nl, True, 44 + dy)
 
     # ---- poncho: squat cone, oval shoulders on top, oval curved hem, curved stripes
-    yt, hy, rxh, ryh, w0 = 33 + dy, 46 + dy, 11.5, 3.0, 7.0
+    yt, hy, rxh, ryh, w0 = 35 + dy, 45 + dy, 8.2, 2.4, 5.0
     pon = set()
     for y in range(yt, int(hy + ryh) + 1):
         hw = w0 + (rxh - w0) * min(1.0, (y - yt) / (hy - yt))
-        for x in range(c - 13, c + 14):
+        for x in range(c - 10, c + 11):
             dx = x + 0.5 - c
             if abs(dx) <= hw and y + 0.5 <= hy + ryh * max(0.0, 1 - (dx / rxh) ** 2) ** 0.5:
                 pon.add((x, y))
@@ -208,105 +215,106 @@ def draw_figure(dy=0, hat_dy=0, lantern_dx=0, flutter=0, legs=STAND_LEGS, hand=N
         u = (x + 0.5 - c) / rxh
         t = (y - yt) / (hy - yt)
         v = -0.75 * u - 0.55 * t
-        if y == hem_y(x, 6) or y == hem_y(x, 7):           # brass zigzag band (low contrast)
-            zig = ((x + (y - hem_y(x, 6)) * 2) // 2) % 2
-            return band(v, (-0.35,), 'aA') if zig == 0 or y == hem_y(x, 6) else 'a'
-        if y == hem_y(x, 10):                              # slate stripe
+        if y == hem_y(x, 4):                               # brass zigzag band (low contrast, one row at this scale)
+            return band(v, (-0.35,), 'aA') if x % 2 == 0 else 'a'
+        if y == hem_y(x, 5) and x % 2 == 1:
+            return 'a'
+        if y == hem_y(x, 7):                               # slate stripe
             return band(v, (-0.3,), 'vV')
-        if y >= hem_y(x, 12):                              # darker hem underside
+        if y >= hem_y(x, 9):                               # darker hem underside
             return 'P'
         return band(v, (-0.45, 0.3), 'Ppq')
     paint(base, pon, pon_key, out_tl='P', out_br='D')
-    for x in range(c - 11, c + 12, 2):                      # fringe under the hem
-        y = hem_y(x, 13) + 1
+    for x in range(c - 7, c + 8, 2):                        # fringe under the hem
+        y = hem_y(x, 10) + 1
         if (x, y - 1) in pon:
             put(base, x, y, 'P')
-    put(base, c - 11, hem_y(c - 11, 12) + 1, 'A'); put(base, c + 11, hem_y(c + 11, 12) + 1, 'A')   # tassels
+    put(base, c - 8, hem_y(c - 8, 9) + 1, 'A'); put(base, c + 7, hem_y(c + 7, 9) + 1, 'A')   # tassels
     # slate patch with a stitch on the lit side
-    grid(base, ["VVv", "VQv", "vvv"], c - 6, yt + 8)
+    grid(base, ["VQ", "vv"], c - 5, yt + 7)
     # shoulders: top plane of the poncho, lightest
-    sh = ell(c, yt + 1.2, w0 + 1.5, 2.8)
-    paint(base, sh, lambda x, y: band(-((x + .5 - c) / (w0 + 1.5)) - ((y - yt) / 2.8) * .4, (-0.6, 0.15), 'pqQ'),
+    sh = ell(c, yt + 1.0, w0 + 1.2, 2.2)
+    paint(base, sh, lambda x, y: band(-((x + .5 - c) / (w0 + 1.2)) - ((y - yt) / 2.2) * .4, (-0.6, 0.15), 'pqQ'),
           out_tl='q', out_br='P')
     # sack strap across the chest with a brass buckle
-    for (x, y) in line_px(c - 6, yt + 1, c + 7, yt + 10):
+    for (x, y) in line_px(c - 4, yt + 1, c + 5, yt + 7):
         put(base, x, y, 'l'); put(base, x, y + 1, 'L')
-    grid(base, ["A4", "aA"], c - 1, yt + 4)
+    put(base, c, yt + 4, 'A')                                         # buckle
 
     # ---- head: blue feathered ball, mostly under the brim; face low, beak with a lit top
-    hcx, hcy = c + 1, 32.0 + dy
-    head = ell(hcx, hcy, 6.0, 4.8)
-    paint(base, head, lambda x, y: band(-((x + .5 - hcx) / 6.2) * .55 - ((y + .5 - hcy) / 4.8) * .85,
+    hcx, hcy, hrx, hry = c + HEAD[0], HEAD[1] + dy, HEAD[2], HEAD[3]
+    head = ell(hcx, hcy, hrx, hry)
+    paint(base, head, lambda x, y: band(-((x + .5 - hcx) / hrx) * .55 - ((y + .5 - hcy) / hry) * .85,
                                          (-0.55, -0.05, 0.45), 'bBcC'), out_tl='b', out_br='n')
-    _brim = ell(c - 0.5, 22.5 + dy + hat_dy, 14.0, 4.6)
+    _brim = ell(c + BRIM[0], BRIM[1] + dy + hat_dy, BRIM[2], BRIM[3])
+    hbr = edges(head)[1]
     for (x, y) in head:                                               # occlusion under the brim
         if (x, y - 1) in _brim:
             put(base, x, y, 'n')
-        elif (x, y - 2) in _brim and (x, y) not in edges(head)[1]:
+        elif (x, y - 2) in _brim and (x, y) not in hbr:
             put(base, x, y, 'b')
-    grid(base, ["kgy.", "kGgy", ".kGk"], c + 6, 32 + dy)             # beak: top plane catches light
+    grid(base, ["kgy", "kGg", ".k."], c + 5, 31 + dy)                 # beak: top plane catches light
     ex, ey = c + EYE_OFF[0], EYE_OFF[1] + dy
     grid(base, ["nn", "nn"], ex, ey)
-    grid(base, ["...w", "..wC"], c + 2, 33 + dy)                       # cheek light
+    grid(base, [".w", "wC"], c + 3, 33 + dy)                          # cheek light
     # collar bell (brass, oval top)
-    grid(base, [".A4.", "1aA1", ".11."], c + 3, yt + 4)
+    grid(base, [".A.", "aA4", ".1."], c + 2, yt + 2)
 
     # ---- hat: wide oval brim (top plane lit, front edge thickness), cylindrical crown with an oval top
     hdy = dy + hat_dy
-    bcx, bcy, brx, bry = c - 0.5, 22.5 + hdy, 14.0, 4.6
+    bcx, bcy, brx, bry = c + BRIM[0], BRIM[1] + hdy, BRIM[2], BRIM[3]
     brim = ell(bcx, bcy, brx, bry)
-    under = {(x, y + 1) for (x, y) in brim} | {(x, y + 2) for (x, y) in brim if y + 0.5 > bcy}
+    under = {(x, y + 1) for (x, y) in brim} | {(x, y + 2) for (x, y) in brim if y + 0.5 > bcy + 1}
     rim = under - brim
     for (x, y) in rim:                                                # brim thickness / underside, front only
         if y > bcy:
             put(base, x, y, '1' if (x, y + 1) not in under else '2')
     paint(base, brim, lambda x, y: band(-((x + .5 - bcx) / brx) * .5 - ((y + .5 - bcy) / bry) * .75,
                                          (-0.55, -0.1, 0.4), '3456'), out_tl='4', out_br='2')
-    ccx, crx, ctop, cbot = c - 1.5, 5.8, 15.0 + hdy, 22.0 + hdy
+    ccx, crx, ctop, cbot = c - 1.0, 4.0, 18.0 + hdy, 23.5 + hdy
     crown = set()
     for y in range(int(ctop), int(cbot) + 2):
         for x in range(int(ccx - crx) - 1, int(ccx + crx) + 2):
             dx = (x + 0.5 - ccx) / crx
-            if abs(dx) <= 1 and y + 0.5 <= cbot + 1.6 * max(0.0, 1 - dx * dx) ** 0.5 and y >= ctop:
+            if abs(dx) <= 1 and y + 0.5 <= cbot + 1.2 * max(0.0, 1 - dx * dx) ** 0.5 and y >= ctop:
                 crown.add((x, y))
-    paint(base, crown, lambda x, y: band(-((x + .5 - ccx) / crx) - ((y - ctop) / 8) * .3, (-0.4, 0.35), '234'),
+    paint(base, crown, lambda x, y: band(-((x + .5 - ccx) / crx) - ((y - ctop) / 6) * .3, (-0.4, 0.35), '234'),
           out_tl='3', out_br='1')
     for x in range(int(ccx - crx), int(ccx + crx) + 1):               # rust hat band following the crown curve
         dx = (x + 0.5 - ccx) / crx
-        yb = round(cbot - 1 + 1.6 * max(0.0, 1 - dx * dx) ** 0.5)
+        yb = round(cbot - 1 + 1.2 * max(0.0, 1 - dx * dx) ** 0.5)
         if (x, yb) in crown:
             put(base, x, yb, 'q' if dx < -0.3 else ('p' if dx < 0.5 else 'P'))
-            put(base, x, yb - 1, 'p' if dx < 0.5 else 'P')
-    ctopm = ell(ccx, ctop + 0.5, crx, 2.4)
-    paint(base, ctopm, lambda x, y: band(-((x + .5 - ccx) / crx) - ((y + .5 - ctop) / 2.4) * .3, (-0.5, 0.2), '456'),
+    ctopm = ell(ccx, ctop + 0.5, crx, 1.8)
+    paint(base, ctopm, lambda x, y: band(-((x + .5 - ccx) / crx) - ((y + .5 - ctop) / 1.8) * .3, (-0.5, 0.2), '456'),
           out_tl='5', out_br='3')
-    for x in range(int(ccx) - 2, int(ccx) + 3):                       # pinch crease on the crown top
+    for x in range(int(ccx) - 1, int(ccx) + 2):                       # pinch crease on the crown top
         put(base, x, int(ctop) + 1, '4')
     # Azeos feather tucked in the band, pointing up and back
     fx0, fy0 = int(ccx - crx) + 1, int(cbot) - 2
-    tip = (fx0 - 4 - (1 if flutter else 0), fy0 - 9)
+    tip = (fx0 - 3 - (1 if flutter else 0), fy0 - 7)
     for i, (x, y) in enumerate(line_px(fx0, fy0, tip[0], tip[1])):
-        put(base, x, y, 'n'); put(base, x + 1, y, 'B' if i > 2 else 'c'); put(base, x + 2, y, 'n' if i > 4 else '.')
+        put(base, x, y, 'n'); put(base, x + 1, y, 'B' if i > 2 else 'c')
     put(base, tip[0], tip[1], 'A'); put(base, tip[0] + 1, tip[1], 'A'); put(base, tip[0], tip[1] - 1, 'a')
 
     # ---- crook (leans slightly, so you see along it), hook and lantern with oval cap
-    xb, xt, ytop = c + 13, c + 15, 9 + dy
+    xb, xt, ytop = c + 8, c + 9, 11 + dy
     for y in range(ytop, GROUND + 1):
         x = round(xb + (xt - xb) * (GROUND - y) / (GROUND - ytop))
         put(base, x, y, '3'); put(base, x + 1, y, '1')
     put(base, xb, GROUND, 'O'); put(base, xb + 1, GROUND, 'O')
-    hook = [(0, -1), (1, -2), (2, -3), (3, -3), (4, -2), (5, -1)]
+    hook = [(0, -1), (1, -2), (2, -2), (3, -1)]
     for i, (hx_, hy_) in enumerate(hook):
         put(base, xt + hx_, ytop + hy_, '4' if i in (1, 2) else '3')
         put(base, xt + hx_, ytop + hy_ - 1, 'O')
         put(base, xt + hx_, ytop + hy_ + 1, '1' if i else '3')
-    put(base, xt + 5, ytop, 'T')
-    lx, ly = xt + 3 + lantern_dx, ytop + 1
+    put(base, xt + 3, ytop, 'T')
+    lx, ly = xt + 1 + lantern_dx, ytop + 1
     grid(base, [".TUT.", "TuUuT", "TGyGT", "TyWyT", "TvvvT", ".TDT."], lx, ly)
     for (x, y), ch in {(1, 2): 'G', (2, 2): 'y', (3, 2): 'G', (1, 3): 'y', (2, 3): 'W', (3, 3): 'y'}.items():
         put(light, lx + x, ly + y, ch)
     # right glove on the staff
-    gy0 = 38 + dy
+    gy0 = 39 + dy
     gxs = round(xb + (xt - xb) * (GROUND - gy0) / (GROUND - ytop)) - 1
     grid(base, ["lhh", "Lhl", "LLL"], gxs, gy0)
 
@@ -314,7 +322,7 @@ def draw_figure(dy=0, hat_dy=0, lantern_dx=0, flutter=0, legs=STAND_LEGS, hand=N
     if hand is not None:
         hxp, hyp = c + hand[0], hand[1] + dy
         for (x, y) in line_px(c - 3, yt + 3, hxp + 1, hyp + 2):
-            put(base, x - 1, y, 'P'); put(base, x, y, 'q'); put(base, x + 1, y, 'p'); put(base, x + 2, y, 'D')
+            put(base, x - 1, y, 'P'); put(base, x, y, 'q'); put(base, x + 1, y, 'D')
         grid(base, ["lhh", "Lhl", "LLL"], hxp - 1, hyp - 1)
     return base, light, (ex, ey)
 

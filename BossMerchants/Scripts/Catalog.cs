@@ -109,6 +109,18 @@ namespace BossMerchants
                     E(ObjectID.StoneskinPotion, 200), E(ObjectID.EnragePotion, 200), E(ObjectID.GuardiansPotion, 250),
                     E(ObjectID.MinionPotion, 250), E(ObjectID.GreaterHealingPotion, 300),
                     E(ObjectID.GreaterManaPotion, 300), E(ObjectID.UnusualPotion, 500), E(ObjectID.RecallIdol, 500),
+                    // The food and drinks the two vanilla vending machines dispense (VendingMachineAuthoring.items),
+                    // priced near what the machines charge (InventoryUtility.GetCoinValue, buy). These prices are
+                    // global, so the machines charge them too. The machines' non-food items (Lucky Ring, Core
+                    // Figurine, Oracle Card "Metropolis", Pest Egg, Electro-Pest Figurine) are not sold here and
+                    // keep vanilla prices (Pest Egg is priced by the Eggs merchant).
+                    // Vending Machine:
+                    E(ObjectID.CavelingCrunch, 95), E(ObjectID.GlazedHeartberry, 80), E(ObjectID.TentacleJerky, 95),
+                    E(ObjectID.CavelingCoffee, 110), E(ObjectID.HeartberrySoda, 100), E(ObjectID.CrystalWater, 85),
+                    // Snacks Vending Machine:
+                    E(ObjectID.AFDrink1, 40), E(ObjectID.AFDrink2, 40), E(ObjectID.AFDrink3, 40),
+                    E(ObjectID.AFDrink4, 40), E(ObjectID.AFDrink5, 40), E(ObjectID.AFDrink6, 40),
+                    E(ObjectID.AFBottledAnomaly, 40),
                 },
             },
             // Ankhra the Clutch-Keeper (Brood Egg Idol): dropped by ScarabBoss.

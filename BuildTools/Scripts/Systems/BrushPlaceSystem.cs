@@ -61,6 +61,9 @@ namespace BuildTools.Systems
         private uint _tickRate;
         private readonly Dictionary<Entity, uint> _nextTick = new Dictionary<Entity, uint>();
         private readonly List<Job> _jobs = new List<Job>();
+        // Players already told why their current Swap press changed nothing (cleared on release).
+        private readonly HashSet<Entity> _swapNoted = new HashSet<Entity>();
+        private bool _singlePlayer;
 
         protected override void OnCreate()
         {
@@ -120,10 +123,15 @@ namespace BuildTools.Systems
                 if (takeover) StripVanillaAnchor(player, held, ref info);
                 if (!server || (!takeover && !brushOn)) continue;
 
-                if (slot.secondInteractBlockedUntilRelease || !input.IsButtonStateSet(CommandInputButtonStateNames.SecondInteract_HeldDown)) continue;
+                if (slot.secondInteractBlockedUntilRelease || !input.IsButtonStateSet(CommandInputButtonStateNames.SecondInteract_HeldDown))
+                {
+                    _swapNoted.Remove(player);
+                    continue;
+                }
                 if (_nextTick.TryGetValue(player, out uint next) && (int)(now - next) < 0) continue;
                 _jobs.Add(new Job { player = player, bits = bits, category = category, takeover = takeover });
             }
+            if (server) _singlePlayer = players.Length == 1;
             players.Dispose();
             if (_jobs.Count == 0) return;
             if (_worldInfo.IsEmptyIgnoreFilter || _physics.IsEmptyIgnoreFilter || _physicsHistory.IsEmptyIgnoreFilter ||
@@ -270,7 +278,7 @@ namespace BuildTools.Systems
             var found = new NativeList<PlacementHandler.EntityAndInfoFromPlacement>(Allocator.Temp);
             var inventoryChanges = EntityManager.GetBuffer<InventoryChangeBuffer>(shared.inventoryUpdateBufferEntity);
             var tileUpdates = EntityManager.GetBuffer<TileUpdateBuffer>(shared.tileUpdateBufferEntity);
-            bool free = godMode || creativeWorld;
+            bool free = godMode || creativeWorld || !BuildToolsMod.SwapNeedsTools;
             bool hasPickaxe = free || HasToolType(player, blob, ObjectType.MiningPick);
             bool hasShovel = free || HasToolType(player, blob, ObjectType.Shovel);
 
@@ -278,6 +286,7 @@ namespace BuildTools.Systems
             bool groundPass = isTile && ToggleNeedsGround(cells, job, ref info, in shared);
 
             int placed = 0;
+            string swapSkip = null; // why the last swappable cell was left alone
             foreach (var cell in cells)
             {
                 if (placed >= budget) break;
@@ -304,7 +313,12 @@ namespace BuildTools.Systems
                 if (_tileAccessor.GetType(pos, layer, out var old) && !(layer == TileType.ground && IsWetOrPit(pos)))
                 {
                     if (old.tileset == info.tileset || !job.bits.Replace) continue;
-                    if (!CanReplace(pos, layer, old, playerPos, creativeWorld, hasPickaxe, hasShovel, blob, out var oldItem)) continue;
+                    string why = WhyNoReplace(pos, layer, old, playerPos, creativeWorld, hasPickaxe, hasShovel, blob);
+                    if (why != null)
+                    {
+                        swapSkip = why;
+                        continue;
+                    }
 
                     EntityUtility.RemoveTile(old.tileset, layer, pos, tileUpdates, _tileAccessor);
                     EntityUtility.AddTile(info.tileset, layer, pos, creativeWorld, tileUpdates);
@@ -327,6 +341,13 @@ namespace BuildTools.Systems
                     playerEntity = player,
                 });
                 placed++;
+            }
+
+            if (placed == 0 && swapSkip != null && _swapNoted.Add(player))
+            {
+                Debug.Log($"[{BuildToolsMod.Name}] Swap changed nothing: {swapSkip}.");
+                // The server world shares the process (and the chat window) with the player only in single player.
+                if (_singlePlayer) ChatNote.Show("Swap: " + swapSkip);
             }
 
             tilesChecked.Dispose();
@@ -417,17 +438,18 @@ namespace BuildTools.Systems
             }
         }
 
-        private bool CanReplace(int2 pos, TileType layer, TileCD old, float3 playerPos, bool creative, bool hasPickaxe, bool hasShovel,
-            BlobAssetReference<PugDatabase.PugDatabaseBank> blob, out ObjectDataCD oldItem)
+        /// <summary>Why this tile can't be swapped out (shown to the player when a Swap press changes nothing), or null if it can.</summary>
+        private string WhyNoReplace(int2 pos, TileType layer, TileCD old, float3 playerPos, bool creative, bool hasPickaxe, bool hasShovel,
+            BlobAssetReference<PugDatabase.PugDatabaseBank> blob)
         {
-            oldItem = PugDatabase.GetObjectData(old.tileset, layer, blob);
-            if (math.distance(playerPos.xz, new float2(pos.x, pos.y)) > ReplaceReach) return false;
-            if (_tileAccessor.HasType(pos, TileType.immune)) return false;
-            if (!creative && (oldItem.objectID == ObjectID.WallObsidianBlock || oldItem.objectID == ObjectID.GroundObsidianBlock)) return false;
-            if (layer == TileType.wall) return hasPickaxe;
+            var oldItem = PugDatabase.GetObjectData(old.tileset, layer, blob);
+            if (math.distance(playerPos.xz, new float2(pos.x, pos.y)) > ReplaceReach) return "too far away";
+            if (_tileAccessor.HasType(pos, TileType.immune)) return "that block can't be broken";
+            if (!creative && (oldItem.objectID == ObjectID.WallObsidianBlock || oldItem.objectID == ObjectID.GroundObsidianBlock)) return "obsidian can't be swapped";
+            if (layer == TileType.wall) return hasPickaxe ? null : "needs a pickaxe in your inventory to swap walls";
             // Taking floor out from under a wall would remove the wall with it.
-            if (_tileAccessor.HasType(pos, TileType.wall)) return false;
-            return hasShovel;
+            if (_tileAccessor.HasType(pos, TileType.wall)) return "there's a wall on that floor";
+            return hasShovel ? null : "needs a shovel in your inventory to swap floors";
         }
 
         /// <summary>

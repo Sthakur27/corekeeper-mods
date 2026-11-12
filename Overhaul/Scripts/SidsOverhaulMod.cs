@@ -21,7 +21,7 @@ namespace SidsOverhaul
     public sealed class SidsOverhaulMod : IMod
     {
         public const string Name = "SidsOverhaul";
-        public const string Version = "1.15.1";
+        public const string Version = "1.16.0";
 
         public void EarlyInit()
         {
@@ -45,7 +45,6 @@ namespace SidsOverhaul
             Page("AutoReplant", "Auto Replant", "Auto Replant: ", AutoReplant.AutoReplantMod.SettingsHint, AutoReplant.AutoReplantMod.RegisterSettings);
             Page("QuickBuff", "Quick Buff", "Quick Buff: ", QuickBuff.QuickBuffMod.SettingsHint, QuickBuff.QuickBuffMod.RegisterSettings);
             Page("BuffDurationFloor", "Longer Buffs", "Buff Floor: ", BuffDurationFloor.BuffDurationFloorMod.SettingsHint, BuffDurationFloor.BuffDurationFloorMod.RegisterSettings);
-            Page("PotionSeller", "Potion Seller", "Potion Seller: ", PotionSeller.PotionSellerMod.SettingsHint, PotionSeller.PotionSellerMod.RegisterSettings);
             Page("FishSeller", "Fish Seller", "Fish Seller: ", FishSeller.FishSellerMod.SettingsHint, FishSeller.FishSellerMod.RegisterSettings);
             Page("MerchantRestock", "Merchant Restock", "Merchant Restock: ", MerchantRestock.MerchantRestockMod.SettingsHint, MerchantRestock.MerchantRestockMod.RegisterSettings);
             Page("ValuableValue", "Valuable Value", "Valuable Value: ", ValuableValue.ValuableValueMod.SettingsHint, ValuableValue.ValuableValueMod.RegisterSettings);
@@ -65,7 +64,7 @@ namespace SidsOverhaul
             Page("ArmorDye", "Armor Dye", "Armor Dye: ", ArmorDye.DyeSettings.SettingsHint, ArmorDye.DyeSettings.RegisterSettings);
             Page("BuildTools", "Build Tools", "Build Tools: ", BuildTools.BuildToolsMod.SettingsHint, BuildTools.BuildToolsMod.RegisterSettings);
             Page("MushroomSlayer", "Mushroom Slayer", "Mushroom Slayer: ", MushroomSlayer.MushroomSlayerMod.SettingsHint, MushroomSlayer.MushroomSlayerMod.RegisterSettings);
-            Page("BossMerchants", "Boss Merchants", "Boss Merchants: ", BossMerchants.BossMerchantsMod.SettingsHint, BossMerchants.BossMerchantsMod.RegisterSettings);
+            Page("BossMerchants", "More NPCs", "Boss Merchants: ", BossMerchants.BossMerchantsMod.SettingsHint, BossMerchants.BossMerchantsMod.RegisterSettings);
             Debug.Log($"[{Name}] Loaded all features.");
         }
 

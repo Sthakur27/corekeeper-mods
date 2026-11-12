@@ -8,7 +8,7 @@ using Object = UnityEngine.Object;
 namespace BossMerchants
 {
     /// <summary>
-    /// Boss Merchants (alpha): eight new merchant NPCs, each summoned by an idol that a boss drops.
+    /// More NPCs (alpha, internal id BossMerchants): eight new merchant NPCs, each summoned by an idol that a boss drops.
     ///
     ///  - Objects (bundle): per merchant an NPC copied from a vanilla merchant prefab and an idol copied from a
     ///    vanilla merchant idol (Unity/Editor/Builder). Graphics reuse the vanilla merchant / idol graphics
@@ -41,7 +41,7 @@ namespace BossMerchants
         public void Init()
         {
             if (InOverhaul(this)) return; // the overhaul builds one page per feature
-            var section = SettingsPages.Create(this, "Boss Merchants").Hint(SettingsHint);
+            var section = SettingsPages.Create(this, "More NPCs").Hint(SettingsHint);
             RegisterSettings(section);
             section.Build();
         }

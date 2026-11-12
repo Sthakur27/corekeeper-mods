@@ -30,7 +30,7 @@ namespace BuildTools
     public sealed class BuildToolsMod : IMod
     {
         public const string Name = "BuildTools";
-        public const string Version = "0.6.5";
+        public const string Version = "0.6.6";
 
         public const string IncreaseKeyBind = "BuildTools_IncreaseSize";
         public const string DecreaseKeyBind = "BuildTools_DecreaseSize";
@@ -52,6 +52,7 @@ namespace BuildTools
         private static Setting<bool> _remember;
         private static Setting<bool> _roofingNeverWears;
         private static Setting<bool> _overrideCans;
+        private static Setting<bool> _swapNeedsTools;
         private static Setting<string> _swapKey;
 
         /// <summary>True: the Swap key turns Swap on and off. False: Swap is on while the key is held.</summary>
@@ -59,6 +60,7 @@ namespace BuildTools
 
         public static bool RememberSizes => _remember?.Value ?? true;
         public static bool RoofingNeverWears => _roofingNeverWears?.Value ?? true;
+        public static bool SwapNeedsTools => _swapNeedsTools?.Value ?? true;
 
         /// <summary>The brush the preview draws; Active only while a brush-able placeable is held.</summary>
         public static class ClientBrush
@@ -124,6 +126,7 @@ namespace BuildTools
                 .Stepper(out _ceiling, "Max tool size (shovel, hoe, roofing, paint)", ToolSizes.MinCeiling, ToolSizes.MaxCeiling, ToolSizes.DefaultCeiling)
                 .Toggle(out _remember, "Remember sizes per tool and block type", true)
                 .Choice(out _swapKey, "Swap key (Left Alt)", SwapKeyModes, SwapKeyModes[0])
+                .Toggle(out _swapNeedsTools, "Swap needs a shovel (floors) or pickaxe (walls) in your inventory", true)
                 .Toggle(out _overrideCans, "Override Bigger Watering Cans sizes (cans up to max tool size)", false)
                 .Toggle(out _roofingNeverWears, "Roofing gadget never wears out", true);
 
@@ -140,7 +143,7 @@ namespace BuildTools
             // Cans follow the Build Tools max unless Bigger Watering Cans runs and is not overridden.
             ToolSizes.RaiseWateringCans = !WateringCanMod.Active || (_overrideCans?.Value ?? false);
             ToolSizes.Version++;
-            Debug.Log($"[{Name}] Max tool size {ToolSizes.Ceiling}x{ToolSizes.Ceiling}, watering cans {(ToolSizes.RaiseWateringCans ? "raised" : "kept at Bigger Watering Cans sizes")}, remember sizes {RememberSizes}, roofing never wears {RoofingNeverWears}.");
+            Debug.Log($"[{Name}] Max tool size {ToolSizes.Ceiling}x{ToolSizes.Ceiling}, watering cans {(ToolSizes.RaiseWateringCans ? "raised" : "kept at Bigger Watering Cans sizes")}, remember sizes {RememberSizes}, roofing never wears {RoofingNeverWears}, swap needs tools {SwapNeedsTools}.");
         }
 
         /// <summary>True when this feature is running inside Sid's Overhaul (one combined mod).</summary>

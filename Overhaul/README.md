@@ -4,6 +4,8 @@
 
 Spend less time repeating chores and more time exploring. Sid's Overhaul brings the individual mods in this repository into one package: easier farming and fishing, equipment tools, merchant supplies, and adjustable combat and progression.
 
+**New in 1.16.0: more merchants.** More NPCs (Alpha) adds eight boss merchants and replaces Potion Seller in the Overhaul. New features: Auto Loadout Switch (Ctrl+L links the item you're holding to the current loadout) and Valuable Value (valuables sell to merchants for 10x, adjustable from 1x to 100x; buy prices unchanged). Enchanting 0.3.0 adds experimental Thunderstrike, Piercing, Flame, Static Familiars and Soul Siphon. Coin Drops also pays for enemies that burn, bleed or are poisoned to death after you hit them. Build Tools: Swap says in chat why nothing was swapped, and a new setting turns off its shovel/pickaxe requirement.
+
 **New in 1.15.1:** Potion of Return now costs 25 Gold Bars to craft (was 10), and 2,500 coins at the Caveling Merchant (was 800).
 
 **New in 1.15.0: coins and prices.** Coin Drops now only pays for your kills (including your pets, minions, arrows and bombs; traps and enemy-on-enemy kills drop nothing) and drops half as many coins by default. The Coin Pouch slot now also shows next to the hotbar at merchants, chests and crafting stations. Potion Seller: the Caveling Merchant also sells the Potion of Return (800 coins); Healing Potions now cost 100 and Recall Idols 500.
@@ -69,6 +71,7 @@ Prefer to pick individual mods? Use [Sid's Core Keeper Mods collection](https://
 | Feature | What it does |
 |---|---|
 | Shared Loadout Gear & Vanity + Five Loadouts | Fill empty equipment slots from lower loadouts, use separate vanity outfits, and add two loadout tabs. |
+| Auto Loadout Switch | Link an item to a loadout with Ctrl+L, and the game switches to that loadout whenever you start holding it. |
 | Ender Stash | A personal 40-slot stash accessed through an Ender Chest bought from the Fishing Merchant; travels with your character and stays safe on death. |
 | Coin Pouch | A coin slot under the vanity pants: picked-up Ancient Coins go there automatically, up to 99,999, shared by every loadout; merchants take payment from it, and it shows next to the hotbar while you shop. |
 | Runic Storage | Craft a storage workbench, connect storage units, and upgrade them through nine tiers from 40 to 360 slots per unit. One-click category tabs (Materials, Weapons, Tools, Armor, Blocks, Furniture and more) filter the shared inventory, and Sort groups it by category. Inspired by Magic Storage for Terraria. |
@@ -85,8 +88,9 @@ Prefer to pick individual mods? Use [Sid's Core Keeper Mods collection](https://
 | Faster Mushrooms | Tune spread and mushroom regrowth near players. |
 | Fast Auto Fishing | Automate fishing and shorten waiting and animations; special boss fishing keeps its bite timing. |
 | Better Fishing Loot | Adjust the chance of valuable non-fish fishing loot. |
-| Potion Seller | Add potions, explosives and Titan summon items to merchant shops. |
+| More NPCs (Alpha) | Eight new merchants, one per boss: beat the boss, place the idol it drops in a room with a free bed, and its merchant moves in. They sell blocks, decor, grenades and bombs, potions, pet eggs, hydra goods, farm animals and seeds. Replaces Potion Seller: its leftover items are cleared from the vanilla merchants' shops. Not fully tested yet. |
 | Fish Seller | Buy fish and Shiny Larva Meat, and scroll through expanded shops. |
+| Valuable Value | Valuable items sell to merchants for 10x their normal price (Mod Options: 1x to 100x); buy prices stay the same. |
 | Merchant Restock | Choose a restock interval for all merchants or individual merchant types. |
 | Infinite Ore Boulders | Keep drilling ore boulders without depleting them. |
 | Movable Ore Boulders | Mine an untouched ore boulder loose (Maze Block mining power) and place it next to your drills. Mining boulders gives no ore. Optional setting to move drilled boulders too (refills them, off by default). May not work with other mods that change ore boulder mining or destruction. |

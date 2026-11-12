@@ -199,44 +199,43 @@ def shade_top(cv, mask, ramp, spec=True):
 
 
 # ---------------------------------------------------------------- heads (facing right, seen from above)
-# The top of the skull and the top of the snout are the lit top plane (h/s); the eye sits low on the side of
-# the face (b), the jaw underside is in shadow (d). o outline, n nostril, m mouth line, w tooth, t tongue,
-# k open-mouth dark, c/C crest (horns / crystals / leaves).
+# Vanilla-scale heads (8 px wide): the top of the skull/snout is the lit top plane (s/h), the eye sits low on the
+# side of the face (b row), the jaw underside is in shadow (d). o outline, n nostril, m mouth line, w tooth,
+# t tongue, k open-mouth dark, c/C crest (horns / crystals / leaves).
 JAW_SHUT = [
-    'odbbbbbmmmmmo',
-    '.oddwdwdddoo.',
-    '..ooooooo....',
+    '.oddmmmmo',
+    '..oooooo.',
 ]
 JAW_OPEN = [
-    'odbbbbwkkkkoo',
-    '.oddktttt....',
-    '.odddddwo....',
-    '..oooooo.....',
+    '.oddwkkoo',
+    '.oddttoo.',
+    '..ooooo..',
 ]
 TOP_FIRE = [
-    '..cC....cC...',
-    '.oCCooooCCo..',
-    'ohsshhhhhbbo.',
-    'ohshhhhhhhhoo',
-    'obhhhhhhhhhno',
-    'obbebbbbbbbbo',
+    '.C...C...',
+    '.coooCoo.',
+    'ohsshhhoo',
+    'ohshhhhho',
+    'obhhhhhno',
+    'obebbbbbo',
 ]
 TOP_ICE = [
-    '..cCcC.......',
-    '.ocCcCoooo...',
-    'ohsshhhhhbbo.',
-    'ohshhhhhhhhoo',
-    'obhhhhhhhhhno',
-    'obbebbbbbbbbo',
+    '..cCc....',
+    '.oCcCooo.',
+    'ohsshhhoo',
+    'ohshhhhho',
+    'obhhhhhno',
+    'obebbbbbo',
 ]
 TOP_NATURE = [
-    'cC.cC........',
-    'oCCoCCoooo...',
-    'ohsshhhhhbbo.',
-    'ohshhhhhhhhoo',
-    'obhhhhhhhhhno',
-    'obbebbbbbbbbo',
+    'cC.Cc....',
+    'oCCCCooo.',
+    'ohsshhhoo',
+    'ohshhhhho',
+    'obhhhhhno',
+    'obebbbbbo',
 ]
+HEAD_W = 9
 PAL_FIRE = {'o': P['fi0'], 'd': P['fi1'], 'b': P['fi2'], 'h': P['fi3'], 's': P['bo1x'], 'e': P['fiL3'],
             'n': P['fiL0'], 'm': P['fiL0'], 't': P['tongue'], 'w': P['tooth'], 'k': P['fiL0'],
             'c': P['fiL3'], 'C': P['fiL2']}
@@ -254,22 +253,18 @@ RAMP_ICE = [P['ic0'], P['ic1'], P['ic2'], P['ic3'], P['ic4']]
 RAMP_FIRE = [P['fi0'], P['fi1'], P['fi2'], P['fi3'], P['bo1x']]
 RAMP_GOLD = [P['go1'], P['go2'], P['go3'], P['go4'], P['go4']]
 
-PENDANT = [  # gold-framed tri-gem on the sash
-    '.ooo.',
-    'oZgGo',
-    'gNIFg',
-    'oGGGo',
-    '.ooo.',
+PENDANT = [  # tiny gold-framed tri-gem on the sash
+    '.Z.',
+    'NIF',
+    '.G.',
 ]
 PAL_PENDANT = {'o': P['go0'], 'g': P['go3'], 'G': P['go2'], 'Z': P['go4'], 'N': P['gr4'], 'I': P['ic5'], 'F': P['fiL2']}
 
 PURSE = [  # seen from above: the tied top and the bag's upper bulge catch the light
-    '..oo..',
-    '.oyyo.',
-    'oLLLlo',
-    'oLllko',
-    'olllko',
-    '.oooo.',
+    '.yo.',
+    'oLlo',
+    'olko',
+    '.oo.',
 ]
 PAL_PURSE = {'o': P['le0'], 'l': P['le2'], 'L': P['le3'], 'k': P['le1'], 'y': P['go4']}
 
@@ -281,6 +276,9 @@ def head(base, light, key, x, y, open_mouth, flip=False):
 
 
 # ---------------------------------------------------------------- one frame
+# Scale: drawn to the vanilla Caveling Merchant's footprint (body ~16 px wide, whole silhouette <= 28 x 47,
+# ~570 opaque px per frame, ground row 53, centred on x ~31 like vanilla). The three necks stand in for the
+# vanilla staff/lantern height; the centre (ice) head sits near the vanilla lantern glow (~(33,20)).
 def frame(kind, i):
     """Return (base, light, eye) canvases for frame i of 'idle' (10), 'move' (8) or 'wave' (6)."""
     base, light, eye = Canvas(), Canvas(), Canvas()
@@ -301,9 +299,9 @@ def frame(kind, i):
         ph = 2 * math.pi * i / 8
         by = [0, -1, -1, 0, 0, -1, -1, 0][i]
         band = i % 4
-        hn = (round(math.sin(ph + 1.5)), round(0.8 * math.sin(ph + 0.5)))
-        hi = (round(math.sin(ph + 0.8)), round(0.8 * math.sin(ph + 2.0)))
-        hf = (1 + round(math.sin(ph)), round(0.8 * math.sin(ph + 3.5)))
+        hn = (round(0.7 * math.sin(ph + 1.5)), round(0.8 * math.sin(ph + 0.5)))
+        hi = (round(0.7 * math.sin(ph + 0.8)), round(0.8 * math.sin(ph + 2.0)))
+        hf = (round(0.7 * math.sin(ph)), round(0.8 * math.sin(ph + 3.5)))
         tail = round(1.2 * math.sin(ph + 1.0))
     elif kind == 'wave':
         # all three heads rear up to greet the customer one after another; mouths open at the peak
@@ -313,103 +311,105 @@ def frame(kind, i):
         open_ = {'n': i in (3, 4), 'i': i in (2, 3), 'f': i in (1, 2, 3)}
         tail = [0, 1, 1, 0, -1, 0][i]
 
-    # ---- coil seen from above: a wide oval ring of tail on the floor. Its top surface is the lit band, the
-    # hole in the middle shows the floor, the torso rises out of the back of it, the front half overlaps.
-    cx, cy = 31.0, 46.6
-    outer = ellipse(cx, cy, 16.0, 7.2)
-    inner = ellipse(cx + 0.5, cy - 0.6, 8.6, 3.0)
+    # ---- coil seen from above: an oval ring of tail on the floor (lit top band, floor visible in the hole);
+    # the torso rises out of its back half, the front half overlaps the torso base.
+    cx, cy = 31.0, 49.3
+    outer = ellipse(cx, cy, 10.2, 4.7)
+    inner = ellipse(cx + 0.4, cy - 0.5, 5.0, 1.6)
     ring = {p for p in outer - inner if p[1] <= GROUND}
-    back = {p for p in ring if p[1] < cy - 0.6}
-    front = {p for p in ring if p[1] >= cy - 0.6}
-    tip = tube(bez((19.0, 49.0), (13.0, 48.5 - tail), (12.0, 42.5 - tail), 8), 2.4, 1.1)
+    back = {p for p in ring if p[1] < cy - 0.5}
+    front = {p for p in ring if p[1] >= cy - 0.5}
+    tip = tube(bez((23.5, 51.0), (20.0, 50.5 - tail), (20.0, 46.5 - tail), 6), 1.5, 0.7)
     shade_top(base, tip, RAMP_SLATE)
     shade_top(base, back, RAMP_SLATE)
 
     # ---- torso: squat and foreshortened; the shoulders are a lit top plane
-    torso = ellipse(32.5, 37.0 + by, 5.8, 6.0) | ellipse(31.5, 42.0 + by, 7.0, 4.6)
+    torso = ellipse(31.5, 40.6 + by, 4.6, 4.8) | ellipse(31.0, 44.6 + by, 5.5, 3.6)
     torso = {p for p in torso if p[1] <= cy + 0.5}
     shade_top(base, torso, RAMP_SLATE)
-    # bone belly plates on the facing (right) side: lit top edge of each plate, shadowed lower edge
-    for y in range(33, 47):
+    # bone belly plates on the facing (right) side
+    for y in range(38, 49):
         row = sorted(x for (x, yy) in torso if yy == y + by)
         if not row:
             continue
         xr = row[-1] - 1
-        for x in (xr - 2, xr - 1, xr):
+        for x in (xr - 1, xr):
             if (x, y + by) in torso and base.px.get((x, y + by)) != P['sl0']:
-                c = P['bo1x'] if y % 2 == 0 else (P['bo4'] if x == xr - 2 and y < 40 else P['bo3'])
+                c = P['bo1x'] if y % 2 == 0 else (P['bo4'] if x == xr - 1 and y < 43 else P['bo3'])
                 base.put(x, y + by, c)
     # purple sash from the left shoulder to the right hip (lit upper edge, dark lower edge)
-    for k in range(12):
-        x = 27 + round(k * 0.75)
-        y = 34 + k + by
-        for w, c in enumerate((P['pu2'], P['pu1'], P['pu0'])):
+    for k in range(9):
+        x = 27 + round(k * 0.7)
+        y = 38 + k + by
+        for w, c in enumerate((P['pu2'], P['pu0'])):
             if (x + w, y) in torso and base.px.get((x + w, y)) != P['sl0']:
                 base.put(x + w, y, c)
 
     # front half of the coil over the torso base, with scale seams that slide when moving
     shade_top(base, front, RAMP_SLATE)
-    for x in range(16, 48):
+    for x in range(21, 42):
         col = sorted(y for (xx, y) in front if xx == x)
-        if len(col) < 5:
+        if len(col) < 4:
             continue
-        if (x + band) % 5 == 0:
-            for y in col[2:-2]:
+        if (x + band) % 4 == 0:
+            for y in col[1:-1]:
                 if base.px.get((x, y)) == P['sl2']:
                     base.put(x, y, P['sl1'])
-    # occlusion: the floor-side underside of the torso where it sinks into the coil
+    # occlusion: the underside of the torso where it sinks into the coil
     for (x, y) in list(torso):
-        if (x, y + 1) in front and (x, y) not in front and base.px.get((x, y)) not in (P['sl0'],):
+        if (x, y + 1) in front and (x, y) not in front and base.px.get((x, y)) != P['sl0']:
             base.put(x, y, P['sl1'])
 
-    blit(base, PURSE, PAL_PURSE, 38, 40 + by)
+    blit(base, PURSE, PAL_PURSE, 36, 46 + by)
 
     # ---- torc around the neck bases, an oval seen from above: back half first, necks, then front half
-    torc_outer = ellipse(32.5, 32.8 + by, 7.4, 3.4)
-    torc_inner = ellipse(32.5, 32.0 + by, 4.4, 1.3)
+    torc_outer = ellipse(31.5, 37.2 + by, 5.0, 2.0)
+    torc_inner = ellipse(31.5, 36.7 + by, 2.6, 0.7)
     torc = torc_outer - torc_inner
-    torc_back = {p for p in torc if p[1] < 32.2 + by}
+    torc_back = {p for p in torc if p[1] < 36.9 + by}
     torc_front = torc - torc_back
     shade_top(base, torc_back, RAMP_GOLD, spec=False)
 
-    # ---- necks (back to front) with heads; the nature head looks away (left), the others face the customer
-    H = 13
-    pos = {'n': (12 + hn[0], 18 + hn[1] + by), 'i': (27 + hi[0], 11 + hi[1] + by), 'f': (39 + hf[0], 20 + hf[1] + by)}
-    attach = {'n': (pos['n'][0] + H - 4, pos['n'][1] + 7), 'i': (pos['i'][0] + 3, pos['i'][1] + 7),
-              'f': (pos['f'][0] + 3, pos['f'][1] + 7)}
-    necks = {'n': ((29, 33 + by), (22 + hn[0] * 0.5, 33 + by), RAMP_GREEN),
-             'i': ((32.5, 32 + by), (31 + hi[0] * 0.5, 25 + by), RAMP_ICE),
-             'f': ((36, 33 + by), (42 + hf[0] * 0.5, 34 + by), RAMP_FIRE)}
-    for k in ('n', 'i', 'f'):
+    # ---- necks (back to front) with heads: the tall ice neck in the middle (behind), the nature head looks
+    # away (left), the fire head faces the customer (right)
+    pos = {'n': (18 + hn[0], 22 + hn[1] + by), 'i': (29 + hi[0], 15 + hi[1] + by), 'f': (35 + hf[0], 23 + hf[1] + by)}
+    attach = {'n': (pos['n'][0] + HEAD_W - 3, pos['n'][1] + 7), 'i': (pos['i'][0] + 2.5, pos['i'][1] + 7),
+              'f': (pos['f'][0] + 2.5, pos['f'][1] + 7)}
+    necks = {'n': ((29.0, 37.5 + by), (24 + hn[0] * 0.5, 37 + by), RAMP_GREEN),
+             'i': ((31.5, 37 + by), (28.5 + hi[0] * 0.5, 29 + by), RAMP_ICE),
+             'f': ((34.0, 37.5 + by), (38.5 + hf[0] * 0.5, 37 + by), RAMP_FIRE)}
+    for k in ('i', 'n', 'f'):
         sh, ctrl, ramp = necks[k]
         pts = bez(sh, ctrl, attach[k], 12)
-        m = tube(pts, 3.1, 2.5)
+        m = tube(pts, 2.4, 1.8)
         shade_top(base, m, ramp)
         if k == 'f':   # lava cracks down the fire neck: short 2-px fissures
-            for t in (7, 10):
+            for t in (5, 8):
                 x, y = pts[t]
-                for q in ((int(x), int(y) + 1), (int(x) + 1, int(y) + 1)):
+                for q in ((int(x), int(y)), (int(x), int(y) + 1)):
                     if q in m and base.px.get(q) not in (ramp[0], ramp[3], ramp[4]):
                         base.put(q[0], q[1], P['fiL1'])
                         light.put(q[0], q[1], P['fiL1'])
         # occlusion under the jaw where the head overhangs the neck
         hx, hy = pos[k]
-        for x in range(hx, hx + H):
-            q = (x, hy + 10)
+        for x in range(hx, hx + HEAD_W):
+            q = (x, hy + 8)
             if q in m and base.px.get(q) != ramp[0]:
                 base.put(q[0], q[1], ramp[1])
         head(base, light, k, pos[k][0], pos[k][1], open_[k], flip=(k == 'n'))
 
     shade_top(base, torc_front, RAMP_GOLD, spec=False)
-    base.put(29, int(34.3 + by), P['go4'])
-    base.put(30, int(34.3 + by), P['go4'])
+    base.put(28, int(38.6 + by), P['go4'])
+    base.put(29, int(38.6 + by), P['go4'])
 
     # pendant over the sash; its gems glow (eye layer, which stays put during the wave)
-    blit(base, PENDANT, PAL_PENDANT, 30, 37 + by, light=eye, lightkeys='NIF')
+    blit(base, PENDANT, PAL_PENDANT, 30, 40 + by, light=eye, lightkeys='NIF')
     # overlays only keep glow pixels that are still visible on top in the base
     for ov in (light, eye):
         ov.px = {q: c for q, c in ov.px.items() if base.px.get(q) == c}
     return base, light, eye
+
+
 FRAMES = [('idle', i) for i in range(10)] + [('move', i) for i in range(8)] + [('wave', i) for i in range(6)]
 
 

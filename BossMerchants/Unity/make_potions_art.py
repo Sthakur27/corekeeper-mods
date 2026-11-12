@@ -136,18 +136,22 @@ def frustum(cx, ytop, rx0, ry0, ybot, rx1, ry1, hem_dx=0):
     return body | top | bottom, top
 
 
+# Scale: drawn to the vanilla CavelingMerchant body (Sid's in-game note 2026-11-12: the first pass rendered bulkier
+# than vanilla merchants and the player). Budget per frame: <= 26 px wide, <= 47 tall, ~575 opaque px like vanilla;
+# feet centred under the pivot (x 32) on the vanilla ground row 53.
 def draw_robe(cv, dy, hem_dx):
     """Moss robe: a squat bell. The hem is an oval that curves toward the viewer; folds run down the front."""
-    cx, ytop, ybot = 32, 35 + dy, 48 + dy
-    pix, top = frustum(cx, ytop, 6.0, 2.0, ybot, 8.5, 3.0, hem_dx)
+    cx, ytop, ybot = 32, 38 + dy, 48 + dy
+    rx0, rx1, ry1 = 5.1, 7.2, 2.5
+    pix, top = frustum(cx, ytop, rx0, 1.7, ybot, rx1, ry1, hem_dx)
     out = {}
     for (x, y) in pix:
-        t = (y - ytop) / (ybot + 3 - ytop)
-        nx = (x - cx - hem_dx * t * t) / 8.5
-        v = 0.78 - 0.55 * t - 0.32 * nx
+        t = (y - ytop) / (ybot + ry1 - ytop)
+        nx = (x - cx - hem_dx * t * t) / rx1
+        v = 0.8 - 0.55 * t - 0.32 * nx
         # folds: two soft creases following the bell
         for f in (-0.3, 0.32):
-            fx = cx + f * (6.0 + 2.5 * t) + hem_dx * t * t
+            fx = cx + f * (rx0 + (rx1 - rx0) * t) + hem_dx * t * t
             if y > ytop + 3 and abs(x - fx) < 0.6:
                 v -= 0.22
             elif y > ytop + 3 and 0.6 <= fx - x < 1.6:
@@ -155,20 +159,20 @@ def draw_robe(cv, dy, hem_dx):
         out[(x, y)] = q(v, 'robe')
     # Ivy stain along the hem's front oval
     for (x, y) in list(out):
-        hem_y = ybot + 3.0 * math.sqrt(max(0.0, 1 - ((x - cx - hem_dx) / 8.5) ** 2))
-        if y >= hem_y - 1.2:
-            out[(x, y)] = 'o' if x < cx - 3 + hem_dx else 'n' if x < cx + 4 + hem_dx else 'm'
-    # drips (2 px clusters)
+        hem_y = ybot + ry1 * math.sqrt(max(0.0, 1 - ((x - cx - hem_dx) / rx1) ** 2))
+        if y >= hem_y - 1.1:
+            out[(x, y)] = 'o' if x < cx - 2 + hem_dx else 'n' if x < cx + 3 + hem_dx else 'm'
+    # drips (1 px under the stain)
     for dxp in (-4, 3):
         x = cx + dxp + hem_dx
-        hy = int(ybot + 3.0 * math.sqrt(max(0.0, 1 - (dxp / 8.5) ** 2)))
+        hy = int(ybot + ry1 * math.sqrt(max(0.0, 1 - (dxp / rx1) ** 2)))
         out[(x, hy + 1)] = 'n' if dxp < 0 else 'm'
     cv.part(out, 'K')
     # belt: a copper band following the body's oval (curves down at the front)
     belt = {}
-    by, brx = 40 + dy, 7.0
+    by, brx = 41 + dy, 6.0
     for x in range(int(cx - brx), int(cx + brx) + 1):
-        yy = by + 2.0 * math.sqrt(max(0.0, 1 - ((x - cx) / (brx + 0.5)) ** 2))
+        yy = by + 1.7 * math.sqrt(max(0.0, 1 - ((x - cx) / (brx + 0.5)) ** 2))
         nx = (x - cx) / brx
         belt[(x, int(round(yy)))] = 'X' if x == cx - 3 else 'x' if nx < -0.3 else 'v' if nx < 0.5 else 'u'
         belt[(x, int(round(yy)) + 1)] = 'u' if nx > 0.2 else 'v'
@@ -176,7 +180,7 @@ def draw_robe(cv, dy, hem_dx):
         cv.put(p[0], p[1], ch)
     # two little vials hanging off the belt: cork tops seen from above
     for (vx, liquid) in ((cx - 4, 'onm'), (cx + 2, 'ihg')):
-        vy = int(round(by + 2.0 * math.sqrt(max(0.0, 1 - ((vx - cx) / 7.5) ** 2)))) + 2
+        vy = int(round(by + 1.7 * math.sqrt(max(0.0, 1 - ((vx - cx) / 6.5) ** 2)))) + 2
         cv.part({(vx, vy): 'X', (vx + 1, vy): 'u', (vx, vy + 1): liquid[0], (vx + 1, vy + 1): liquid[1],
                  (vx, vy + 2): liquid[1], (vx + 1, vy + 2): liquid[2]}, 'K')
 
@@ -184,61 +188,61 @@ def draw_robe(cv, dy, hem_dx):
 def draw_capelet(cv, dy):
     """Purple capelet over the shoulders; its top plane faces the camera and catches the light."""
     cx = 32
-    pix, top = frustum(cx, 32 + dy, 5.5, 2.2, 36 + dy, 8.0, 2.6)
+    pix, top = frustum(cx, 35 + dy, 4.7, 1.9, 38 + dy, 6.8, 2.2)
     out = {}
     for (x, y) in pix:
-        t = (y - (32 + dy)) / 6.6
-        nx = (x - cx) / 8.0
+        t = (y - (35 + dy)) / 5.4
+        nx = (x - cx) / 6.8
         v = 0.95 - 0.75 * t - 0.35 * nx
         out[(x, y)] = q(v, 'purple')
     for (x, y) in list(out):   # pink trim along the front edge
-        edge = 36 + dy + 2.6 * math.sqrt(max(0.0, 1 - ((x - cx) / 8.0) ** 2))
-        if y >= edge - 0.9:
-            out[(x, y)] = 'o' if x < cx - 3 else 'n' if x < cx + 4 else 'm'
+        edge = 38 + dy + 2.2 * math.sqrt(max(0.0, 1 - ((x - cx) / 6.8) ** 2))
+        if y >= edge - 0.8:
+            out[(x, y)] = 'o' if x < cx - 3 else 'n' if x < cx + 3 else 'm'
     cv.part(out, 'k')
 
 
 def draw_head(cv, dy, blink):
     """Hood seen from above: a big lit crown, the bone beak mask low at the front, beak tilting down."""
-    cx, cy = 33, 25 + dy
-    rx, ry = 7.0, 6.2
+    cx, cy = 33, 29 + dy
+    rx, ry = 6.0, 5.3
     hood = {}
     for (x, y) in ellipse(cx, cy, rx, ry):
         nxv, nyv = (x - cx) / rx, (y - cy) / ry
         v = 0.46 - 0.32 * nxv - 0.6 * nyv + 0.18 * (1 - nxv * nxv - nyv * nyv)
         hood[(x, y)] = q(v, 'purple')
     # drooping tip curling back over the flask
-    for (x, y), v in (((26, 18), 0.95), ((27, 18), 0.9), ((26, 19), 0.8), ((27, 19), 0.85), ((28, 19), 0.9),
-                      ((28, 20), 0.8), ((29, 20), 0.85), ((25, 18), 0.7)):
+    for (x, y), v in (((26, 24), 0.95), ((27, 24), 0.9), ((26, 25), 0.8), ((27, 25), 0.85), ((28, 25), 0.9),
+                      ((28, 26), 0.8), ((29, 26), 0.85), ((25, 24), 0.7)):
         hood[(x, y + dy)] = q(v, 'purple')
     # top plane of the hood catches the light: a warm highlight cluster on the crown
-    for (x, y) in ((30, 20), (31, 20), (32, 20), (29, 21), (30, 21), (31, 21), (30, 22)):
+    for (x, y) in ((30, 25), (31, 25), (32, 25), (29, 26), (30, 26), (31, 26), (30, 27)):
         if (x, y + dy) in hood:
             hood[(x, y + dy)] = 'Q'
     cv.part(hood, 'k')
     # face opening: shadowed hollow under the hood's front brim, mask set low into it
-    for p in ellipse(36.5, 29.5 + dy, 4.6, 3.0):
+    for p in ellipse(36.0, 32.6 + dy, 3.9, 2.5):
         cv.put(p[0], p[1], 'P')
     mask = {}
-    for (x, y) in ellipse(37.5, 30.3 + dy, 4.0, 2.5):
-        mask[(x, y)] = 'e' if y < 29 + dy else 'd' if y < 31 + dy else 'c'
+    for (x, y) in ellipse(36.8, 33.3 + dy, 3.4, 2.1):
+        mask[(x, y)] = 'e' if y < 32.5 + dy else 'd' if y < 34 + dy else 'c'
     # beak: tapered wedge pointing right and down; lit top ridge, dark underside
-    for i in range(7):
-        x = 40 + i
-        y0 = int(round(29 + dy + i * 0.5))
-        h = 3 if i < 3 else 2 if i < 6 else 1
+    for i in range(5):
+        x = 38 + i
+        y0 = int(round(32 + dy + i * 0.5))
+        h = 3 if i < 2 else 2 if i < 4 else 1
         for j in range(h):
             mask[(x, y0 + j)] = 'e' if j == 0 else 'c' if j < h - 1 else 'b'
     cv.part(mask, 'k')
     # brim shadow: the hood's front edge overhangs the mask
-    for x in range(33, 41):
-        y = int(round(27 + dy + 0.15 * (x - 33)))
+    for x in range(33, 40):
+        y = int(round(31 + dy + 0.15 * (x - 33)))
         if cv.px.get((x, y), ('',))[0] in 'PpqrQ':
             cv.put(x, y, 'P')
     # goggle lens: 2x2, glowing (eye sheet), ringed
-    for (x, y) in ((34, 29), (34, 30), (35, 31), (36, 31)):
+    for (x, y) in ((33, 32), (33, 33), (34, 34), (35, 34)):
         cv.put(x, y + dy, 'k')
-    for (x, y), ch in (((35, 29), 'y'), ((36, 29), 'y'), ((35, 30), 'y'), ((36, 30), 'Y')):
+    for (x, y), ch in (((34, 32), 'y'), ((35, 32), 'y'), ((34, 33), 'y'), ((35, 33), 'Y')):
         if blink:
             cv.put(x, y + dy, 'f')
         else:
@@ -247,13 +251,13 @@ def draw_head(cv, dy, blink):
 
 def draw_flask(cv, dx, dy, level, bubbles):
     """Round glass flask on the back. From above: the brew's surface is an oval, the cork top is an oval."""
-    cx, cy, r = 25 + dx, 25 + dy, 6.4
+    cx, cy, r = 26 + dx, 29 + dy, 5.4
     ball = ellipse(cx, cy, r, r)
     sy = cy + level                      # brew surface height
     out = {}
     for (x, y) in ball:
         half = math.sqrt(max(0.0, r * r - (sy - cy) ** 2))
-        on_surface = ((x - cx) / max(half, 1)) ** 2 + ((y - sy) / 1.6) ** 2 <= 1.0
+        on_surface = ((x - cx) / max(half, 1)) ** 2 + ((y - sy) / 1.4) ** 2 <= 1.0
         if on_surface:
             out[(x, y)] = 'O' if x < cx + half * 0.3 else 'o'
         elif y > sy:
@@ -264,7 +268,7 @@ def draw_flask(cv, dx, dy, level, bubbles):
             nxv, nyv = (x - cx) / r, (y - cy) / r
             out[(x, y)] = 'e' if nxv + nyv < -1.05 else 'i' if nxv + nyv < -0.2 else 'h'
     # glass highlight (deliberate 3 px cluster on the top-left of the glass)
-    for p, ch in (((cx - 3, cy - 4), 'w'), ((cx - 4, cy - 3), 'e'), ((cx - 2, cy - 5), 'e')):
+    for p, ch in (((cx - 3, cy - 3), 'w'), ((cx - 4, cy - 2), 'e'), ((cx - 2, cy - 4), 'e')):
         if p in out:
             out[p] = ch
     for bx, by in bubbles:
@@ -272,17 +276,17 @@ def draw_flask(cv, dx, dy, level, bubbles):
         if p in out and p[1] > sy + 1 and out[p] in 'mn':
             out[p] = 'O'
     neck = {}
-    for y in range(cy - 11, cy - 5):
-        for x in range(cx - 2, cx + 2):
+    for y in range(cy - 9, cy - 4):
+        for x in range(cx - 2, cx + 1):
             neck[(x, y)] = 'e' if x == cx - 2 else 'i' if x == cx - 1 else 'h'
     cv.part(neck, 'G', 'flask')
     cv.part(out, 'G', 'flask')
     # cork: a short copper cylinder whose top is a bright oval
     cork = {}
-    for (x, y) in ellipse(cx - 0.5, cy - 12, 2.6, 1.3):
-        cork[(x, y)] = 'X' if (x < cx - 1 and y < cy - 12) else 'x'
-    for x in range(cx - 3, cx + 2):
-        cork[(x, cy - 11)] = 'v' if x < cx else 'u'
+    for (x, y) in ellipse(cx - 1, cy - 10, 2.2, 1.1):
+        cork[(x, y)] = 'X' if (x < cx - 1 and y < cy - 10) else 'x'
+    for x in range(cx - 3, cx + 1):
+        cork[(x, cy - 9)] = 'v' if x < cx - 1 else 'u'
     cv.part(cork, 'k')
     # vine wrapped round the bulb with two leaf clusters
     vine = {}
@@ -290,12 +294,12 @@ def draw_flask(cv, dx, dy, level, bubbles):
         if math.hypot(x - cx, y - cy) > r - 0.6:
             continue
         s = (x - cx) - 0.75 * (y - cy)
-        if -5.8 < s < -4.4:
-            vine[(x, y)] = '7' if s > -5.1 else '6'
+        if -4.9 < s < -3.7:
+            vine[(x, y)] = '7' if s > -4.3 else '6'
     for p, ch in vine.items():
         cv.put(p[0], p[1], ch, 'vine')
-    for leaf in (((cx - 8, cy - 1), (cx - 7, cy - 1), (cx - 8, cy), (cx - 7, cy)),
-                 ((cx - 2, cy + 6), (cx - 1, cy + 6), (cx - 2, cy + 7))):
+    for leaf in (((cx - 6, cy - 1), (cx - 5, cy - 1), (cx - 6, cy), (cx - 5, cy)),
+                 ((cx - 2, cy + 5), (cx - 1, cy + 5), (cx - 2, cy + 6))):
         cv.part({p: '9' if i == 0 else '8' if i < 3 else '7' for i, p in enumerate(leaf)}, 'K', 'vine')
 
 
@@ -313,9 +317,9 @@ def capsule(p0, p1, rad):
 
 
 ARM_POSES = {  # shoulder, hand (cell coords at body_dy 0)
-    'down': ((38, 35), (41, 40)),
-    'mid': ((38, 35), (42, 36)),
-    'up': ((38, 35), (43, 32)),
+    'down': ((37, 37), (40, 42)),
+    'mid': ((37, 37), (40, 38)),
+    'up': ((37, 37), (40, 34)),
 }
 
 
@@ -324,31 +328,29 @@ def draw_arm(cv, dy, pose, adx, ady):
     hx, hy = hx + adx, hy + dy + ady
     sy += dy
     sleeve = {}
-    for (x, y) in capsule((sx, sy), (hx, hy), 1.7):
-        v = 0.85 - 0.35 * ((y - min(sy, hy)) / 6.0) - 0.15 * (x - sx) / 4
+    for (x, y) in capsule((sx, sy), (hx, hy), 1.5):
+        v = 0.85 - 0.35 * ((y - min(sy, hy)) / 5.0) - 0.15 * (x - sx) / 3
         sleeve[(x, y)] = q(v, 'robe')
     cv.part(sleeve, 'K')
-    # vial standing in the hand: small bulb, glass neck, cork whose top is a lit oval
-    vial = {(hx, hy - 5): 'X', (hx + 1, hy - 5): 'x', (hx, hy - 4): 'i', (hx + 1, hy - 4): 'h'}
-    for j, row in enumerate(('Oon', 'onm', 'nmm')):
-        for i, ch in enumerate(row):
-            vial[(hx - 1 + i + 1, hy - 3 + j)] = ch
+    # vial standing in the hand: small bulb, cork whose top is a lit oval
+    vial = {(hx, hy - 4): 'X', (hx + 1, hy - 4): 'x', (hx, hy - 3): 'i', (hx + 1, hy - 3): 'h',
+            (hx, hy - 2): 'O', (hx + 1, hy - 2): 'n', (hx, hy - 1): 'n', (hx + 1, hy - 1): 'm'}
     cv.part(vial, 'k')
     glove = {}
-    for (x, y) in ellipse(hx + 0.5, hy + 0.5, 1.6, 1.2):
-        glove[(x, y)] = 'x' if y <= hy else 'v' if x <= hx + 1 else 'u'
+    for (x, y) in ellipse(hx + 0.5, hy + 0.4, 1.4, 1.1):
+        glove[(x, y)] = 'x' if y <= hy else 'v' if x <= hx else 'u'
     cv.part(glove, 'k')
 
 
 def draw_feet(cv, feet):
     for fx, lift in feet:
         boot = {}
-        for (x, y) in ellipse(fx + 1, 51.6 - lift, 1.8, 1.0):
-            boot[(x, y)] = 'x' if y < 51.6 - lift else 'v' if x < fx + 2 else 'u'
+        for (x, y) in ellipse(fx + 1, 51.6 - lift, 1.6, 1.0):
+            boot[(x, y)] = 'x' if y < 51.6 - lift else 'v' if x < fx + 1 else 'u'
         cv.part(boot, 'k')
 
 
-def frame(body_dy=0, flask_dx=0, level=-1, bubbles=(), feet=((29, 0), (34, 0)),
+def frame(body_dy=0, flask_dx=0, level=-1, bubbles=(), feet=((28, 0), (33, 0)),
           arm='down', arm_dx=0, arm_dy=0, blink=False, hem_dx=0):
     cv = Canvas()
     draw_flask(cv, flask_dx, body_dy, level, bubbles)
@@ -356,7 +358,7 @@ def frame(body_dy=0, flask_dx=0, level=-1, bubbles=(), feet=((29, 0), (34, 0)),
     draw_feet(cv, feet)   # toes peek out in front of the hem
     draw_capelet(cv, body_dy)
     # copper strap from the flask over the capelet (top plane of the strap lit)
-    for i, (x, y) in enumerate(((29, 32), (30, 33), (31, 34), (32, 34), (33, 35))):
+    for i, (x, y) in enumerate(((29, 35), (30, 36), (31, 37), (32, 37), (33, 38))):
         cv.put(x, y + body_dy, 'x' if i < 2 else 'v')
     draw_head(cv, body_dy, blink)
     draw_arm(cv, body_dy, arm, arm_dx, arm_dy)
@@ -365,8 +367,8 @@ def frame(body_dy=0, flask_dx=0, level=-1, bubbles=(), feet=((29, 0), (34, 0)),
 
 def bubble_set(t):
     out = []
-    for col, phase in ((-3, 0), (1, 4), (3, 7)):
-        out.append((col, 6 - ((t + phase) % 7)))
+    for col, phase in ((-3, 0), (1, 3), (3, 5)):
+        out.append((col, 5 - ((t + phase) % 6)))
     return out
 
 
@@ -379,8 +381,8 @@ def build_frames():
         frames.append(frame(body_dy=idle_dy[t], level=idle_lv[t], bubbles=bubble_set(t), blink=(t == 8),
                             arm_dy=1 if t in (5, 6) else 0))
     # move: alternating steps, bob, hem swings, flask lags behind the stride
-    feet = [((28, 0), (35, 1)), ((29, 0), (35, 2)), ((30, 0), (34, 1)), ((31, 0), (33, 0)),
-            ((32, 1), (32, 0)), ((31, 2), (31, 0)), ((30, 1), (32, 0)), ((29, 0), (34, 0))]
+    feet = [((28, 0), (34, 1)), ((29, 0), (34, 2)), ((30, 0), (33, 1)), ((31, 0), (33, 0)),
+            ((32, 1), (32, 0)), ((31, 2), (31, 0)), ((30, 1), (32, 0)), ((28, 0), (33, 0))]
     move_dy = [0, 1, 1, 0, 0, 1, 1, 0]
     flask = [0, 0, -1, -1, 0, 0, -1, -1]
     lv = [-1, -2, -1, 0, -1, -2, -1, 0]

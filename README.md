@@ -26,6 +26,8 @@ Use the Overhaul or the individual versions of its features. Installing both run
 | [Drill Pod (Alpha)](DrillUnit/README.md) | End-game hover craft from the Rift Statue: crosses water, lava and pits, drills through walls, lays floor or digs pits around you. Alpha, single player tested. |
 | [Enchanting (Alpha)](Enchanting/README.md) | Random enchantments for weapons, tools and armor from an Enchanting Table, paid with Gold Bars and Ancient Coins; up to three per item. Alpha, single player tested. |
 | [Coin Drops](CoinDrops/README.md) | Enemies you kill (yourself or your pets, minions, arrows and bombs) drop Ancient Coins, scaled by their max health; bosses drop a big pile. |
+| [Auto Loadout Switch](AutoLoadouts/README.md) | Link an item to a loadout with Ctrl+L, and the game switches to that loadout whenever you start holding it. |
+| [More NPCs (Alpha)](BossMerchants/README.md) | Eight new merchants, one per boss: place the idol a boss drops in a room with a free bed and its merchant moves in, selling blocks, decor, explosives, potions, pet eggs, hydra goods, farm animals and seeds. |
 | [Armor Dye](ArmorDye/README.md) | Color individual armor pieces, weapons and tools. |
 | [Pet Editor](PetEditor/README.md) | Change a pet's level, talents and color. |
 | [Item Spawner](ItemSpawner/README.md) | Host/admin spawn browser: search every item (modded ones too), take one or a full stack, spawn gear and tools above their base level, and cook any dish from two ingredients. Requires CoreLib and Runic Storage. |

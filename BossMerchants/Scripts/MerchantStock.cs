@@ -23,7 +23,8 @@ namespace BossMerchants
         public const int Rows = 3;
         public const int Slots = Columns * Rows;
 
-        private static bool _warned;
+        /// <summary>Inventory slots for a list of <paramref name="entries"/>: whole rows, at least one window.</summary>
+        public static int SlotsFor(int entries) => math.max(Slots, (entries + Columns - 1) / Columns * Columns);
 
         public static Catalog.Merchant TargetOf(EntityManager em, Entity e)
         {
@@ -73,17 +74,14 @@ namespace BossMerchants
                 }
             }
 
-            int want = startIndex + Slots;
+            // One slot per list entry, rounded up to whole rows, at least one full window. A longer list scrolls
+            // (Patches/BuyScroll). Never shrinks.
+            int want = startIndex + SlotsFor(list.Length);
             if (em.GetBuffer<ContainedObjectsBuffer>(e, true).Length < want)
             {
                 var contained = em.GetBuffer<ContainedObjectsBuffer>(e);
                 while (contained.Length < want) contained.Add(default);
                 changed = true;
-            }
-            if (!_warned && list.Length > Slots)
-            {
-                _warned = true;
-                Debug.LogWarning($"[{BossMerchantsMod.Name}] {merchant.Key} merchant lists {list.Length} items but shows {Slots}; the rest are not stocked.");
             }
             return changed;
         }

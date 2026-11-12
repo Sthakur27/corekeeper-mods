@@ -1,7 +1,7 @@
 {
     "guid": "b055e7c4a1d24f6e8a3c9d1e5f7a2b60",
     "name": "BossMerchants",
-    "displayName": "Boss Merchants (Alpha)",
+    "displayName": "More NPCs (Alpha)",
     "skipSafetyChecks": false,
     "disableScripts": false,
     "accessesExtraAssemblies": true,
@@ -29,6 +29,10 @@
             "guid": ""
         },
         {
+            "path": "Scripts/Patches/BuyScroll.cs",
+            "guid": ""
+        },
+        {
             "path": "Scripts/Patches/BuyUIPatches.cs",
             "guid": ""
         },
@@ -42,6 +46,10 @@
         },
         {
             "path": "Scripts/Systems/IdolDropSystem.cs",
+            "guid": ""
+        },
+        {
+            "path": "Scripts/Systems/LegacyPotionSellerCleanup.cs",
             "guid": ""
         },
         {

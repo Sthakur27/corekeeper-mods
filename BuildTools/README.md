@@ -28,7 +28,7 @@ Inspired by **Placement Plus** and **Roofing Gadget Plus**. Build Tools is a sep
   - *Auto*: while any cell under the brush has no floor yet, a swipe only lays floor; once it is all floored, the next swipe builds walls.
   - *Floor only*: places the floor version of the block.
   - *Walls only*: places walls and never puts down floor.
-- **Swap**: a different block of the same layer is swapped for the one you hold, and the old block goes to your inventory. Left Alt turns Swap on and off with a chat message (or, with the setting on Hold, Swap is on while you hold it). Outside creative it needs a pickaxe (walls) or a shovel (floors) somewhere in your inventory, and it never touches obsidian or indestructible tiles.
+- **Swap**: a different block of the same layer is swapped for the one you hold, and the old block goes to your inventory. Left Alt turns Swap on and off with a chat message (or, with the setting on Hold, Swap is on while you hold it). Outside creative it needs a pickaxe (walls) or a shovel (floors) somewhere in your inventory (a setting turns this off), and it never touches obsidian or indestructible tiles. If a press swaps nothing, a chat line says why (no shovel, too far, a wall on that floor, ...).
 - Free cells follow the normal placement rules (reach, line of sight, blocked spots, tilled ground for seeds); each cell uses one item from the stack. Wall-mounted items and objects bigger than one tile always place one at a time.
 
 ## Roofing gadget
@@ -38,7 +38,7 @@ Inspired by **Placement Plus** and **Roofing Gadget Plus**. Build Tools is a sep
 
 ## Settings
 
-Mod Options > Build Tools: Max tool size, Remember sizes per tool and block type, Swap key (Toggle or Hold, default Toggle), Override Bigger Watering Cans sizes (default off), Roofing gadget never wears out.
+Mod Options > Build Tools: Max tool size, Remember sizes per tool and block type, Swap key (Toggle or Hold, default Toggle), Swap needs a shovel or pickaxe (default on), Override Bigger Watering Cans sizes (default off), Roofing gadget never wears out.
 
 ## Requirements
 

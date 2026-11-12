@@ -25,7 +25,7 @@ At the default multiplier, ordinary fish use the game's usual buy-price formula 
 
 Requires **CoreLib and Mod Options** on the host and every client. The host's settings control multiplayer prices and stock.
 
-- Use **Potion Seller 1.4.0 or newer** if you also run it. Its summons and Ender Stash's chest remain in the Fishing Merchant's stock.
+- Works alongside **More NPCs** and **Potion Seller** (1.4.0 or newer). Potion Seller's Titan summons and Ender Stash's chest stay in the Fishing Merchant's stock.
 - Pair with **Merchant Restock** to shorten the wait for refills.
 - Existing merchants receive a one-time restock when the new wares are first added.
 - **Controller scrolling is not supported yet.** A controller can access the first three rows; use the mouse wheel to reach later rows.

@@ -32,7 +32,6 @@ namespace SidsOverhaul
             { "AutoReplant", "Auto Replant" },
             { "QuickBuff", "Quick Buff" },
             { "BuffDurationFloor", "Longer Buffs" },
-            { "PotionSeller", "Potion Seller" },
             { "FishSeller", "Fish Seller" },
             { "MerchantRestock", "Merchant Restock" },
             { "ValuableValue", "Valuable Value" },
@@ -63,7 +62,7 @@ namespace SidsOverhaul
             { "DrillUnit", "Drill Pod (Alpha)" },
             { "Enchanting", "Enchanting (Alpha)" },
             { "AutoLoadouts", "Auto Loadout Switch" },
-            { "BossMerchants", "Boss Merchants (Alpha)" },
+            { "BossMerchants", "More NPCs (Alpha)" },
         };
 
         public const string Hint = "Turn whole sub-mods on or off. Changes take effect after restarting the game. "

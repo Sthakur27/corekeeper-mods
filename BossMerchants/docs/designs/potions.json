@@ -20,6 +20,19 @@
   {"item": "GreaterHealingPotion", "price": 300},
   {"item": "GreaterManaPotion", "price": 300},
   {"item": "UnusualPotion", "price": 500},
-  {"item": "RecallIdol", "price": 500}
+  {"item": "RecallIdol", "price": 500},
+  {"item": "CavelingCrunch", "price": 95},
+  {"item": "GlazedHeartberry", "price": 80},
+  {"item": "TentacleJerky", "price": 95},
+  {"item": "CavelingCoffee", "price": 110},
+  {"item": "HeartberrySoda", "price": 100},
+  {"item": "CrystalWater", "price": 85},
+  {"item": "AFDrink1", "price": 40},
+  {"item": "AFDrink2", "price": 40},
+  {"item": "AFDrink3", "price": 40},
+  {"item": "AFDrink4", "price": 40},
+  {"item": "AFDrink5", "price": 40},
+  {"item": "AFDrink6", "price": 40},
+  {"item": "AFBottledAnomaly", "price": 40}
  ]
 }

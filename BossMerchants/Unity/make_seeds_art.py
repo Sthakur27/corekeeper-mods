@@ -146,55 +146,50 @@ def grid(L, rows, ox, oy, pal, sway=None):
 
 
 # ------------------------------------------------------------------------------------------- character parts
-# Plants in the back basket (origin = top-left at basket x-1, y-12). Rows 0-6 sway with the idle breath.
+# Scale: sized to the vanilla Caveling Merchant (its body is ~20 px wide and ~29 px tall from the floor; Tilly's
+# hat/basket/can silhouette stays <= 26 px wide and ~570 opaque px per frame, like vanilla). Feet on row 53.
+# Plants in the back basket (origin = top-left at basket x0-1, rim row-8). Rows 0-4 sway with the idle breath.
 PLANTS = [
-    '...UU.............',
-    '..UXcU......oo....',
-    '..UctU.....oYyo...',
-    '..UtTU....oyYho...',
-    '...UU.....ohyyo...',
-    '...ov..oo.oyhyo...',
-    '...ov.oGgo.ohho...',
-    '..oGvooGvo.oho.oo.',
-    '.oGgvooGvVo.ho.oGo',
-    '.ogvvVoGvoroo.ovvo',
-    '..ovvVoGvorero.ovo',
-    '..oovVovooRrRovVo.',
-    '...ooVoVoo.RRoVo..',
+    '.UU..oo..',
+    'UXcUoYho.',
+    'UtTUoyyo.',
+    '.UU.ohho.',
+    '.ov..oho.',
+    'oGvoGvho.',
+    'ogvoGvVo.',
+    '.ovVoVoo.',
+    '..oVoVo..',
 ]
-# Glow tulip tucked in the hat band (origin set in draw_frame).
+# Glow tulip tucked in the hat band (origin set in draw_hat).
 HAT_TULIP = [
-    '.UU..',
-    'UXcU.',
-    'UctTU',
-    'UtTTU',
-    '.UUo.',
-    '..ov.',
+    '.UU.',
+    'UXcU',
+    'UtTU',
+    '.Uo.',
+    '..v.',
 ]
-HAT_TULIP_GLOW = [(1, 1, '3'), (2, 1, '2'), (1, 2, '2'), (2, 2, '1'), (3, 2, '1'), (2, 3, '1')]
-BASKET_TULIP_GLOW = [(3, 1, '3'), (4, 1, '2'), (3, 2, '2'), (4, 2, '1'), (4, 3, '1')]
-# Tin watering can hanging at the hip (spout to the right), 9x7. '#'=outline.
-CAN = [  # seen from above: oval top with the dark opening
-    '.#####...',
-    '#mzzzs#.#',
-    '#mMMss##s',
-    '#MMsssS#.',
-    '#Msss SS#'.replace(' ', 's'),
-    '.#SSSS#..',
-    '..####...',
+HAT_TULIP_GLOW = [(1, 1, '3'), (2, 1, '2'), (1, 2, '2'), (2, 2, '1'), (0, 1, '1'), (3, 2, '1')]
+BASKET_TULIP_GLOW = [(1, 1, '3'), (2, 1, '2'), (1, 2, '2'), (2, 2, '1'), (0, 1, '1')]
+# Tin watering can hanging at the hip (spout to the right), 7x5, seen from above: oval top with the dark opening.
+CAN = [
+    '.###...',
+    '#zmM#.#',
+    '#MMs##s',
+    '#sssS#.',
+    '.####..',
 ]
 CAN_PAL = {'z': hx('23281e'), '#': TIN_OUT, 'm': TIN[3], 'M': TIN[2], 's': TIN[1], 'S': TIN[0]}
 
 
 def draw_body(L, P):
-    """Larva body: three stacked segments, feet, seams and the dark silhouette outline."""
+    """Larva body: four stacked segments, feet, seams and the dark silhouette outline."""
     b = P['bob']
     lean = P.get('lean', 0)
     segs = [  # bottom -> top
-        (31 + lean * 0.3, 47.9, 8.8 + 0.4 * b, 4.0 - 0.25 * b),
-        (31.2 + lean * 0.5, 44.6 + b * 0.6, 8.3, 3.5),
-        (31.5 + lean * 0.8, 41.5 + b * 0.9, 7.6, 3.3),
-        (31.9 + lean, 38.8 + b, 6.8, 3.1),
+        (30.0 + lean * 0.3, 48.6, 6.4 + 0.3 * b, 3.0 - 0.2 * b),
+        (30.2 + lean * 0.5, 46.0 + b * 0.6, 6.0, 2.6),
+        (30.4 + lean * 0.8, 43.6 + b * 0.9, 5.5, 2.4),
+        (30.7 + lean, 41.4 + b, 4.9, 2.3),
     ]
     body = Layer()
     masks = []
@@ -208,11 +203,9 @@ def draw_body(L, P):
         for (x, y) in m:
             if y < cy and (x, y - 1) not in m and (x, y - 1) in union:
                 body.put(x, y - 1, BODY_SEAM)
-    # belly sheen: the segments' front-lower quarter gets one lighter row
     feet = []
     for fx, dy in ((P['footB'], P['footBy']), (P['footF'], P['footFy'])):
-        fm = ellipse_mask(fx, 51.9 + dy, 2.3, 1.5)
-        feet.append(fm)
+        feet.append(ellipse_mask(fx, 52.0 + dy, 1.8, 1.2))
     feetL = Layer()
     for fm in feet:
         for (x, y) in fm:
@@ -220,17 +213,16 @@ def draw_body(L, P):
         outline(feetL, fm, HEAD_OUT)
     for p, c in feetL.px.items():
         L.put(*p, c)
-    allm = union
     top = segs[-1]
-    for (x, y) in list(body.px):
-        if int(top[1] - top[3]) + 1 <= y <= int(top[1] - top[3]) + 2:
+    for (x, y) in list(body.px):  # top band of the upper segment sits in the collar's shadow
+        if y == int(top[1] - top[3]) + 1:
             body.put(x, y, BODY[1] if body.px[(x, y)] in (BODY[2], BODY[3]) else BODY[0])
     for (x, y), c in list(body.px.items()):  # underside facing the floor
         if (x, y + 1) not in union and y > segs[0][1]:
             body.put(x, y, BODY[0])
     for p, c in body.px.items():
         L.put(*p, c)
-    outline(L, allm, BODY_OUT)
+    outline(L, union, BODY_OUT)
     return segs
 
 
@@ -238,11 +230,11 @@ def draw_basket(L, P):
     """Wicker seed basket on the back (left), seen from above: oval rim (top plane, brightest) around a dark
     opening the plants grow out of, front face in weave bands darkening downward, curved oval bottom."""
     dy = P['bob'] + P.get('basket', 0)
-    cx, x0, x1 = 19.5, 14, 25
-    rim_cy, bot_cy = 31.5 + dy, 45.0 + dy
-    rx, ry = 6.3, 2.6
+    cx, x0, x1 = 20.6, 17, 24
+    rim_cy, bot_cy = 36.0 + dy, 45.4 + dy
+    rx, ry = 4.4, 1.8
     face = set()
-    for y in range(int(rim_cy), int(bot_cy) + 3):
+    for y in range(int(rim_cy), int(bot_cy) + 2):
         for x in range(x0, x1 + 1):
             if y > bot_cy:  # curved bottom edge
                 nx, ny = (x + 0.5 - cx) / rx, (y + 0.5 - bot_cy) / ry
@@ -250,18 +242,18 @@ def draw_basket(L, P):
                     continue
             face.add((x, y))
     rim = ellipse_mask(cx, rim_cy, rx, ry)
-    hole = ellipse_mask(cx + 0.2, rim_cy + 0.2, rx - 1.6, ry - 1.0)
+    hole = ellipse_mask(cx + 0.2, rim_cy + 0.2, rx - 1.3, ry - 0.8)
     for (x, y) in face:
         r = y - int(rim_cy)
         band = (r // 3) % 2
         k = 2 if band == 0 else 1
         if (x - x0) <= 1 and band == 0:
             k = 3
-        if (x - x0) >= 8:
+        if (x - x0) >= 6:
             k -= 1
         if y >= bot_cy - 1:
             k -= 1  # darker underside
-        if x - x0 in (4, 8) and r % 3 == 2:
+        if x - x0 in (3, 6) and r % 3 == 2:
             k -= 1
         L.put(x, y, WICKER[max(0, min(3, k))])
     for (x, y) in rim:  # rim top plane
@@ -270,9 +262,9 @@ def draw_basket(L, P):
         L.put(x, y, WICKER_OUT if y <= rim_cy else WICKER[0])
     outline(L, face | rim, WICKER_OUT)
     # plants grow out of the opening; then the front lip of the rim covers their stems
-    po = (x0 - 2, int(rim_cy) - 12)
+    po = (x0 - 1, int(rim_cy) - 8)
     sw = P.get('sway', 0)
-    grid(L, PLANTS[:11], po[0], po[1], GRID_PAL, sway=lambda j: sw if j <= 6 else 0)
+    grid(L, PLANTS, po[0], po[1], GRID_PAL, sway=lambda j: sw if j <= 4 else 0)
     for (x, y) in rim:
         if y >= rim_cy and (x, y) not in hole:
             L.put(x, y, WICKER[3] if x < cx else WICKER[2])
@@ -283,28 +275,27 @@ def draw_head(L, P):
     """Dark glossy larva head capsule with cream bead eyes, purple mandibles and an orange collar."""
     b = P['bob']
     lean = P.get('lean', 0)
-    cx, cy = 33.6 + lean, 32.2 + b
+    cx, cy = 31.6 + lean, 35.2 + b
     # orange collar between head and body
-    cm = shade_ellipse(L, cx - 0.8, cy + 3.9, 5.2, 1.6, [COLLAR[0], COLLAR[0], COLLAR[1], COLLAR[1]])
+    cm = shade_ellipse(L, cx - 0.6, cy + 3.3, 4.0, 1.2, [COLLAR[0], COLLAR[0], COLLAR[1], COLLAR[1]])
     outline(L, cm, BODY_OUT, only=lambda x, y: y > cy + 3)
-    m = shade_ellipse(L, cx, cy, 5.8, 4.9, HEAD, cuts=(-0.2, 0.55, 0.9))
+    m = shade_ellipse(L, cx, cy, 4.4, 3.7, HEAD, cuts=(-0.2, 0.55, 0.9))
     outline(L, m, HEAD_OUT)
     ey = int(cy) + 1  # face sits low on the head: we look down on it
-    eyes = [(35 + lean, ey), (38 + lean, ey)]
+    eyes = [(int(cx + 1.0), ey), (int(cx + 3.4), ey)]
     if P.get('happy'):
         for ex, _ in eyes:
-            L.put(int(ex), ey + 1, BODY[3])
-            L.put(int(ex) - 1, ey + 2, BODY[2])
-            L.put(int(ex) + 1, ey + 2, BODY[2])
+            L.put(ex, ey + 1, BODY[3])
+            L.put(ex - 1, ey + 2, BODY[2])
+            L.put(ex + 1, ey + 2, BODY[2])
     else:
         for ex, _ in eyes:
-            L.put(int(ex), ey, BODY[3])
-            L.put(int(ex), ey + 1, BODY[2])
+            L.put(ex, ey, BODY[3])
+            L.put(ex, ey + 1, BODY[2])
     # mandibles at the front-bottom
-    mx, my = int(cx + 3), int(cy + 3.6)
-    for (x, y, c) in ((mx, my, HEAD[3]), (mx + 1, my, HEAD[2]), (mx + 2, my + 1, HEAD[2]), (mx + 1, my + 1, HEAD_OUT),
-                      (mx - 2, my + 1, HEAD[3]), (mx - 1, my + 1, HEAD[2]), (mx, my + 2, HEAD_OUT), (mx + 2, my + 2, HEAD_OUT),
-                      (mx + 3, my + 1, HEAD_OUT), (mx + 2, my, HEAD_OUT)):
+    mx, my = int(cx + 2.4), int(cy + 3.0)
+    for (x, y, c) in ((mx, my, HEAD[3]), (mx + 1, my, HEAD[2]), (mx + 2, my, HEAD_OUT), (mx - 1, my + 1, HEAD[3]),
+                      (mx, my + 1, HEAD_OUT), (mx + 1, my + 1, HEAD_OUT)):
         L.put(x, y, c)
     return (cx, cy), eyes
 
@@ -317,52 +308,54 @@ def draw_hat(L, P):
     lift = P.get('lift', 0)
     tilt = P.get('tilt', 0)
     dy = b + lift
-    bx, by = 33.0 + lean, 25.8 + dy
-    ccx = 32.8 + lean + tilt * 0.5
+    bx, by = 31.0 + lean, 30.6 + dy
+    brx, bry = 8.4, 3.0
+    crx = 3.9
+    ccx = 30.8 + lean + tilt * 0.5
     hat = Layer()
     # shadow of the brim on the head (occlusion)
-    y = int(by + 4.3)
-    for x in range(int(bx - 7), int(bx + 8)):
+    y = int(by + bry)
+    for x in range(int(bx - 5), int(bx + 6)):
         if L.px.get((x, y)) in (HEAD[2], HEAD[3]):
             L.put(x, y, HEAD[0])
-    brim = ellipse_mask(bx, by, 12.4, 4.3)
+    brim = ellipse_mask(bx, by, brx, bry)
     for (x, y) in brim:
-        nx, ny = (x + 0.5 - bx) / 12.4, (y + 0.5 - by) / 4.3
+        nx, ny = (x + 0.5 - bx) / brx, (y + 0.5 - by) / bry
         k = 3 if (nx < 0.15 and ny < 0.35) else 2
         if nx > 0.55 or ny > 0.55:
             k = 2 if k == 3 else 1
         hat.put(x, y, STRAW[k])
-    inner = ellipse_mask(bx, by - 0.2, 9.6, 3.0)
+    inner = ellipse_mask(bx, by - 0.2, brx - 2.4, bry - 1.0)
     for (x, y) in inner:  # one stitched seam following the oval
-        if (x, y + 1) not in inner and abs(x - bx) > 5:
+        if (x, y + 1) not in inner and abs(x + 0.5 - bx) > 3.5:
             hat.put(x, y, STRAW[1])
     for (x, y) in brim:  # brim thickness: the front edge row is the darker vertical face
         if (x, y + 1) not in brim:
-            hat.put(x, y, STRAW[1] if x < bx + 4 else STRAW[0])
-    top_cy = by - 5.0
+            hat.put(x, y, STRAW[1] if x < bx + 3 else STRAW[0])
+    top_cy = by - 3.4
     side = set()
     for yy in range(int(top_cy), int(by) + 1):
-        for x in range(int(ccx - 6), int(ccx + 7)):
-            if abs((x + 0.5 - ccx) / 5.4) <= 1:
+        for x in range(int(ccx - 5), int(ccx + 6)):
+            if abs((x + 0.5 - ccx) / crx) <= 1:
                 side.add((x, yy))
     for (x, yy) in side:
-        nx = (x + 0.5 - ccx) / 5.4
+        nx = (x + 0.5 - ccx) / crx
         k = 2 if nx < -0.2 else (1 if nx < 0.5 else 0)
-        if int(by) - 1 <= yy <= int(by):
+        if yy == int(by) - 1:
             hat.put(x, yy, BAND[k])
         else:
             hat.put(x, yy, STRAW[k + 1] if k < 2 else STRAW[2])
-    ctop = ellipse_mask(ccx, top_cy, 5.4, 2.1)
+    ctop = ellipse_mask(ccx, top_cy, crx, 1.5)
     for (x, yy) in ctop:
-        hat.put(x, yy, STRAW[3] if (x + 0.5 - ccx) / 5.4 < 0.3 else STRAW[2])
+        hat.put(x, yy, STRAW[3] if (x + 0.5 - ccx) / crx < 0.3 else STRAW[2])
     for (x, yy) in ctop:  # crown dent
-        if yy == int(top_cy) and abs(x + 0.5 - ccx) < 2:
+        if yy == int(top_cy) and abs(x + 0.5 - ccx) < 1.5:
             hat.put(x, yy, STRAW[1])
     full = brim | side | ctop
     for p, c in hat.px.items():
         L.put(*p, c)
     outline(L, full, STRAW_OUT)
-    to = (int(ccx + 1.5), int(by) - 6)  # glow tulip tucked in the band, front-right of the crown
+    to = (int(ccx + 1.5), int(by) - 5)  # glow tulip tucked in the band, front-right of the crown
     grid(L, HAT_TULIP, to[0], to[1], GRID_PAL)
     return to
 
@@ -371,20 +364,20 @@ def draw_strap_and_can(L, P):
     b = P['bob']
     lean = P.get('lean', 0)
     # strap from the left shoulder across the chest down to the right hip
-    pts = [(26, 35), (27, 36), (28, 37), (29, 38), (30, 39), (31, 40), (32, 41), (33, 42), (34, 43), (35, 44), (36, 44)]
-    for i, (x, y) in enumerate(pts):
-        yy = y + (b if y < 42 else 0)
+    pts = [(25, 39), (26, 40), (27, 41), (28, 42), (29, 43), (30, 44), (31, 45), (32, 46), (33, 46)]
+    for (x, y) in pts:
+        yy = y + (b if y < 44 else 0)
         L.put(x + int(lean * 0.6), yy, BAND[1])
         L.put(x + int(lean * 0.6), yy + 1, BAND[0])
     swing = P.get('canSwing', 0)
-    grid(L, CAN, 35 + swing + int(lean * 0.4), 44, CAN_PAL)
+    grid(L, CAN, 33 + swing + int(lean * 0.4), 46, CAN_PAL)
 
 
 def draw_arm(L, P):
     ax, ay = P['arm']
-    m = shade_ellipse(L, ax, ay, 2.0, 1.5, LEG)
+    m = shade_ellipse(L, ax, ay, 1.6, 1.2, LEG)
     outline(L, m, HEAD_OUT)
-    L.put(int(ax + 2.0), int(ay), HEAD[3])  # claw tip
+    L.put(int(ax + 1.6), int(ay), HEAD[3])  # claw tip
 
 
 def draw_frame(P):
@@ -395,12 +388,13 @@ def draw_frame(P):
     _, eyes = draw_head(main, P)
     to = draw_hat(main, P)
     draw_arm(main, P)
-    # glow overlays
+    # glow overlays (only on opaque body pixels so the light never floats off the sprite)
     pulse = P.get('pulse', 0)
     for (x, y, k) in HAT_TULIP_GLOW[:4 + pulse]:
         light.put(to[0] + x, to[1] + y, GLOW[k])
     for (x, y, k) in BASKET_TULIP_GLOW[:3 + pulse]:
         light.put(po[0] + x + sw, po[1] + y, GLOW[k])
+    light.px = {p: c for p, c in light.px.items() if p in main.px}
     if not P.get('happy'):
         for (x, y) in eyes:
             eye.put(int(x), y, (255, 255, 255))
@@ -415,32 +409,30 @@ def frames():
     pulse = [0, 0, 1, 1, 2, 2, 1, 1, 0, 0]
     for i in range(10):
         b = breath[i]
-        out['idle'].append(dict(bob=b, sway=sway[i], pulse=pulse[i], footB=26.5, footBy=0, footF=35.5, footFy=0,
-                                arm=(38.6, 40.4 + b), canSwing=0))
+        out['idle'].append(dict(bob=b, sway=sway[i], pulse=pulse[i], footB=26.0, footBy=0, footF=33.5, footFy=0,
+                                arm=(35.6, 42.4 + b), canSwing=0))
     bob = [0, 1, 1, 0, 0, 1, 1, 0]
     ff = [1, 1, 0, -1, -1, -1, 0, 1]
-    lift = [0, 0, 0, -1, 0, 0, 0, 0]
     swayM = [0, -1, -1, 0, 1, 1, 0, 0]
     for i in range(8):
         f = ff[i]
         out['move'].append(dict(bob=bob[i], sway=swayM[i], pulse=1, lean=1 if i in (1, 2, 5, 6) else 0,
-                                footB=26.5 - f, footBy=-1 if f > 0 and i in (0, 7) else 0,
-                                footF=35.5 + f, footFy=-1 if f < 0 and i in (3, 4) else 0,
-                                arm=(38.6 + (1 if i in (1, 2, 5, 6) else 0), 40.4 + bob[i] - (1 if ff[i] > 0 else 0)),
+                                footB=26.0 - f, footBy=-1 if f > 0 and i in (0, 7) else 0,
+                                footF=33.5 + f, footFy=-1 if f < 0 and i in (3, 4) else 0,
+                                arm=(35.6 + (1 if i in (1, 2, 5, 6) else 0), 42.4 + bob[i] - (1 if ff[i] > 0 else 0)),
                                 canSwing=-1 if i in (2, 3, 4) else 0, basket=-bob[i]))
     wave = [  # tip the hat: (arm, lift, happy)
-        ((39.6, 37.0), 0, False),
-        ((40.8, 31.0), 0, False),
-        ((41.4, 26.6), -2, True),
-        ((41.6, 25.4), -3, True),
-        ((41.4, 26.6), -2, True),
-        ((39.8, 35.5), 0, False),
+        ((36.2, 40.0), 0, False),
+        ((37.2, 35.0), 0, False),
+        ((37.8, 30.6), -2, True),
+        ((38.0, 29.6), -3, True),
+        ((37.8, 30.6), -2, True),
+        ((36.4, 38.6), 0, False),
     ]
     for (arm, lft, happy) in wave:
-        out['wave'].append(dict(bob=0, sway=0, pulse=2, footB=26.5, footBy=0, footF=35.5, footFy=0, arm=arm,
+        out['wave'].append(dict(bob=0, sway=0, pulse=2, footB=26.0, footBy=0, footF=33.5, footFy=0, arm=arm,
                                 lift=lft, happy=happy, tilt=1 if lft else 0))
     return out
-
 
 # ------------------------------------------------------------------------------------------- sheets
 def load_rig():

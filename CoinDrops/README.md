@@ -2,7 +2,7 @@
 
 Every enemy you kill drops **Ancient Coins**. Tougher enemies drop more, and bosses drop a big pile.
 
-Kills by your pets, minions, arrows and bombs count. Enemies that die to traps, other enemies or the environment drop nothing, so automated mob farms don't print coins.
+Kills by your pets, minions, arrows and bombs count, and so do enemies that burn, bleed or are poisoned to death within 20 seconds of you (or your minions) hitting them. Enemies that die to traps, other enemies or the environment drop nothing, so automated mob farms don't print coins.
 
 ## How many coins
 

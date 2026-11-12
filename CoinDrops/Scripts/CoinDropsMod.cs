@@ -15,7 +15,7 @@ namespace CoinDrops
     public sealed class CoinDropsMod : IMod
     {
         public const string Name = "CoinDrops";
-        public const string Version = "1.1.0";
+        public const string Version = "1.1.1";
 
         public const string SettingsHint = "Enemies killed by a player (or their pets, minions and bombs) drop Ancient Coins: "
             + "half the square root of their max health at the default 0.5x "

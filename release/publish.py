@@ -90,7 +90,10 @@ def setup(mid, folder, version, deps, changelog="Initial release."):
     """Finish a page created in the browser: description, tags, dependencies, file."""
     folder = os.path.join(ROOT, folder) if not os.path.isabs(folder) else folder
     title, summary, desc = readme_parts(folder)
-    call("PUT", f"/games/{GAME}/mods/{mid}", {"summary": summary, "description": desc, "visible": "1"})
+    # community_options 132097 = comments + allow collections (pages made in the browser start at 0, and
+    # mod.io refuses to put them in a collection). Collections also reject mods with mod.io dependencies.
+    call("PUT", f"/games/{GAME}/mods/{mid}", {"summary": summary, "description": desc, "visible": "1",
+                                             "community_options": "132097"})
     call("POST", f"/games/{GAME}/mods/{mid}/tags", {f"tags[{i}]": t for i, t in enumerate(TAGS)})
     if deps:
         call("POST", f"/games/{GAME}/mods/{mid}/dependencies", {f"dependencies[{i}]": d for i, d in enumerate(deps)})

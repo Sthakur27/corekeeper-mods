@@ -1,0 +1,25 @@
+{
+ "key": "potions",
+ "merchantName": "Old Hemlock",
+ "merchantBlurb": "Hemlock brews only with Ivy's ooze. Smells awful, works wonders. Mostly.",
+ "idolName": "Ivy Culture Jar",
+ "idolDescription": "A living lump of Ivy the Poisonous Mass, sealed under glass. Place it in a room with a bed to attract an apothecary.",
+ "boss": "PoisonSlimeBoss",
+ "rig": "CavelingMerchantEntity",
+ "stock": [
+  {"item": "ManaPotion", "price": 50},
+  {"item": "PoisonAidPotion", "price": 75},
+  {"item": "BurnResistancePotion", "price": 75},
+  {"item": "HealingPotion", "price": 100},
+  {"item": "KeenPotion", "price": 150},
+  {"item": "MagicPotion", "price": 150},
+  {"item": "StoneskinPotion", "price": 200},
+  {"item": "EnragePotion", "price": 200},
+  {"item": "GuardiansPotion", "price": 250},
+  {"item": "MinionPotion", "price": 250},
+  {"item": "GreaterHealingPotion", "price": 300},
+  {"item": "GreaterManaPotion", "price": 300},
+  {"item": "UnusualPotion", "price": 500},
+  {"item": "RecallIdol", "price": 500}
+ ]
+}

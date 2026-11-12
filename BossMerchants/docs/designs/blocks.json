@@ -1,0 +1,132 @@
+{
+ "key": "blocks",
+ "merchantName": "Grout",
+ "merchantBlurb": "Mortar's just slime that learned patience. Walls from every biome, stacked fresh!",
+ "idolName": "Slick Cornerstone",
+ "idolDescription": "A clay cornerstone glazed in slime from Morpha the Aquatic Mass. Set it in a room with a free bed and a slime mason may move in.",
+ "boss": "SlipperySlimeBoss",
+ "rig": "SlimeMerchantEntity",
+ "concept": "Grout is a slippery slime that lives inside a hollow clay-brick block like a hermit crab in its shell, keeps a stone-brick block glued on top with slime mortar, wears a crown of Morpha-style slime spikes and carries a mason's trowel. It arrives by rising out of a slime pool and hoisting its top block into place.",
+ "stock": [
+  {
+   "id": "WallDirtBlock",
+   "price": 5,
+   "stock": 99
+  },
+  {
+   "id": "WallStoneBlock",
+   "price": 5,
+   "stock": 99
+  },
+  {
+   "id": "WallClayBlock",
+   "price": 5,
+   "stock": 99
+  },
+  {
+   "id": "WallWoodBlock",
+   "price": 5,
+   "stock": 99
+  },
+  {
+   "id": "WallStoneBricksBlock",
+   "price": 10,
+   "stock": 99
+  },
+  {
+   "id": "WallGrassBlock",
+   "price": 5,
+   "stock": 99
+  },
+  {
+   "id": "WallMoldBlock",
+   "price": 5,
+   "stock": 99
+  },
+  {
+   "id": "WallLimestoneBlock",
+   "price": 10,
+   "stock": 99
+  },
+  {
+   "id": "WallSandBlock",
+   "price": 10,
+   "stock": 99
+  },
+  {
+   "id": "WallTurfBlock",
+   "price": 10,
+   "stock": 99
+  },
+  {
+   "id": "WallMeadowBlock",
+   "price": 10,
+   "stock": 99
+  },
+  {
+   "id": "WallMossBlock",
+   "price": 10,
+   "stock": 99
+  },
+  {
+   "id": "WallDesertBlock",
+   "price": 10,
+   "stock": 99
+  },
+  {
+   "id": "WallSnowBlock",
+   "price": 10,
+   "stock": 99
+  },
+  {
+   "id": "WallOasisBlock",
+   "price": 10,
+   "stock": 99
+  },
+  {
+   "id": "WallLavaBlock",
+   "price": 15,
+   "stock": 99
+  },
+  {
+   "id": "WallGlassBlock",
+   "price": 15,
+   "stock": 99
+  },
+  {
+   "id": "WallCoralBlock",
+   "price": 15,
+   "stock": 99
+  },
+  {
+   "id": "WallScarletBlock",
+   "price": 20,
+   "stock": 99
+  },
+  {
+   "id": "WallObsidianBlock",
+   "price": 20,
+   "stock": 99
+  },
+  {
+   "id": "WallCrystalBlock",
+   "price": 25,
+   "stock": 99
+  },
+  {
+   "id": "WallGleamWoodBlock",
+   "price": 25,
+   "stock": 99
+  },
+  {
+   "id": "WallDarkStoneBlock",
+   "price": 25,
+   "stock": 99
+  },
+  {
+   "id": "WallGalaxiteBlock",
+   "price": 30,
+   "stock": 99
+  }
+ ]
+}

@@ -1,0 +1,30 @@
+{
+    "guid": "7e7d763eec014c23ac6e914094cdb33b",
+    "name": "ValuableValue",
+    "displayName": "Valuable Value",
+    "skipSafetyChecks": false,
+    "disableScripts": false,
+    "accessesExtraAssemblies": true,
+    "disableHarmonyPatching": true,
+    "requiredOn": 3,
+    "files": [
+        {
+            "path": "Scripts/ValuableValueMod.cs",
+            "guid": ""
+        },
+        {
+            "path": "Scripts/Systems/ValuablePriceSystem.cs",
+            "guid": ""
+        }
+    ],
+    "dependencies": [
+        {
+            "modName": "CoreLib",
+            "required": true
+        },
+        {
+            "modName": "ModOptions",
+            "required": true
+        }
+    ]
+}

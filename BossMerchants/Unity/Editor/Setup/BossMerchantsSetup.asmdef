@@ -1,0 +1,6 @@
+{
+    "name": "BossMerchantsSetup.Editor",
+    "references": [ "PugMod.Importer" ],
+    "includePlatforms": [ "Editor" ],
+    "autoReferenced": false
+}

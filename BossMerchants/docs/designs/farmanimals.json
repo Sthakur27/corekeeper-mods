@@ -1,0 +1,126 @@
+{
+ "key": "farmanimals",
+ "merchantName": "Wren Hayfeather",
+ "merchantBlurb": "Fresh from the meadows under Azeos' wings: calves, kids and chicks, and everything to keep 'em fenced, fed and saddled.",
+ "idolName": "Skyherd Bell",
+ "idolDescription": "A brass cowbell plumed with feathers shed by Azeos the Sky Titan. Set it in a room with a free bed and a wandering rancher will come to the ringing.",
+ "boss": "BirdBoss",
+ "rig": "CavelingMerchantEntity",
+ "stock": [
+  {
+   "name": "RolyPolyBaby",
+   "price": 100,
+   "stock": 2
+  },
+  {
+   "name": "CowBaby",
+   "price": 150,
+   "stock": 2
+  },
+  {
+   "name": "GoatBaby",
+   "price": 150,
+   "stock": 2
+  },
+  {
+   "name": "DodoBaby",
+   "price": 200,
+   "stock": 2
+  },
+  {
+   "name": "CamelBaby",
+   "price": 300,
+   "stock": 2
+  },
+  {
+   "name": "TurtleBaby",
+   "price": 300,
+   "stock": 2
+  },
+  {
+   "name": "RaptorBaby",
+   "price": 500,
+   "stock": 1
+  },
+  {
+   "name": "CattleCage",
+   "price": 130,
+   "stock": 5
+  },
+  {
+   "name": "Leash",
+   "price": 55,
+   "stock": 3
+  },
+  {
+   "name": "CattleFeedTray",
+   "price": 35,
+   "stock": 5
+  },
+  {
+   "name": "Saddle",
+   "price": 315,
+   "stock": 2
+  },
+  {
+   "name": "ImprovedSaddle",
+   "price": 970,
+   "stock": 1
+  },
+  {
+   "name": "HeartBerry",
+   "price": 10,
+   "stock": 20
+  },
+  {
+   "name": "CritterWorm",
+   "price": 10,
+   "stock": 20
+  },
+  {
+   "name": "GreenKelp",
+   "price": 10,
+   "stock": 20
+  },
+  {
+   "name": "WoodFence",
+   "price": 5,
+   "stock": 99
+  },
+  {
+   "name": "WoodFenceGate",
+   "price": 10,
+   "stock": 20
+  },
+  {
+   "name": "StoneFence",
+   "price": 5,
+   "stock": 99
+  },
+  {
+   "name": "StoneFenceGate",
+   "price": 35,
+   "stock": 20
+  },
+  {
+   "name": "WallStrawBlock",
+   "price": 5,
+   "stock": 99
+  },
+  {
+   "name": "WovenStrawFloor",
+   "price": 5,
+   "stock": 99
+  },
+  {
+   "name": "Milk",
+   "price": 10,
+   "stock": 10
+  },
+  {
+   "name": "Wool",
+   "price": 10,
+   "stock": 20
+  }
+ ]
+}

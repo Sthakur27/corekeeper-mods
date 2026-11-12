@@ -48,6 +48,7 @@ namespace SidsOverhaul
             Page("PotionSeller", "Potion Seller", "Potion Seller: ", PotionSeller.PotionSellerMod.SettingsHint, PotionSeller.PotionSellerMod.RegisterSettings);
             Page("FishSeller", "Fish Seller", "Fish Seller: ", FishSeller.FishSellerMod.SettingsHint, FishSeller.FishSellerMod.RegisterSettings);
             Page("MerchantRestock", "Merchant Restock", "Merchant Restock: ", MerchantRestock.MerchantRestockMod.SettingsHint, MerchantRestock.MerchantRestockMod.RegisterSettings);
+            Page("ValuableValue", "Valuable Value", "Valuable Value: ", ValuableValue.ValuableValueMod.SettingsHint, ValuableValue.ValuableValueMod.RegisterSettings);
             Page("FasterMushrooms", "Faster Mushrooms", "Mushrooms: ", FasterMushrooms.FasterMushroomsMod.SettingsHint, FasterMushrooms.FasterMushroomsMod.RegisterSettings);
             Page("BossBonusLoot", "Boss Bonus Loot", "Boss Bonus Loot: ", BossBonusLoot.BossBonusLootMod.SettingsHint, BossBonusLoot.BossBonusLootMod.RegisterSettings);
             Page("CoinDrops", "Coin Drops", "Coin Drops: ", CoinDrops.CoinDropsMod.SettingsHint, CoinDrops.CoinDropsMod.RegisterSettings);
@@ -64,6 +65,7 @@ namespace SidsOverhaul
             Page("ArmorDye", "Armor Dye", "Armor Dye: ", ArmorDye.DyeSettings.SettingsHint, ArmorDye.DyeSettings.RegisterSettings);
             Page("BuildTools", "Build Tools", "Build Tools: ", BuildTools.BuildToolsMod.SettingsHint, BuildTools.BuildToolsMod.RegisterSettings);
             Page("MushroomSlayer", "Mushroom Slayer", "Mushroom Slayer: ", MushroomSlayer.MushroomSlayerMod.SettingsHint, MushroomSlayer.MushroomSlayerMod.RegisterSettings);
+            Page("BossMerchants", "Boss Merchants", "Boss Merchants: ", BossMerchants.BossMerchantsMod.SettingsHint, BossMerchants.BossMerchantsMod.RegisterSettings);
             Debug.Log($"[{Name}] Loaded all features.");
         }
 

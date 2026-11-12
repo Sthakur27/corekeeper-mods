@@ -1,0 +1,73 @@
+{
+ "key": "eggs",
+ "rig": "VoidMerchantEntity",
+ "kind": "spriteAsset",
+ "textures": [
+  {
+   "output": "eggs/eggs__voidMerchant_idle.png",
+   "replacesTexture": "voidMerchant_idle",
+   "size": [
+    128,
+    35
+   ],
+   "spriteAsset": "voidMerchant",
+   "spriteAssetAddress": [
+    9202072890546798702,
+    -5828687261374344469
+   ],
+   "animationGuid": "580fae3f-66dc-4b7a-900c-ee7986f742e6",
+   "slot": "m_animations[].m_spriteData.texture",
+   "pivot": [
+    0.5,
+    0.0
+   ],
+   "srcFrameCount": 8,
+   "fps": 10.0,
+   "loop": 1
+  },
+  {
+   "output": "eggs/eggs__voidMerchant_move.png",
+   "replacesTexture": "voidMerchant_move",
+   "size": [
+    96,
+    34
+   ],
+   "spriteAsset": "voidMerchant",
+   "spriteAssetAddress": [
+    9202072890546798702,
+    -5828687261374344469
+   ],
+   "animationGuid": "7128f66e-0c6d-4aed-949e-93fdcd9f5138",
+   "slot": "m_animations[].m_spriteData.texture",
+   "pivot": [
+    0.5,
+    0.0
+   ],
+   "srcFrameCount": 6,
+   "fps": 11.0,
+   "loop": 1
+  },
+  {
+   "output": "eggs/eggs__voidMerchant_emote.png",
+   "replacesTexture": "voidMerchant_emote",
+   "size": [
+    621,
+    37
+   ],
+   "spriteAsset": "voidMerchant",
+   "spriteAssetAddress": [
+    9202072890546798702,
+    -5828687261374344469
+   ],
+   "animationGuid": "e1e86c38-70e3-402a-a63f-ecb6d1f3edf0",
+   "slot": "m_animations[].m_spriteData.texture",
+   "pivot": [
+    0.3478260934352875,
+    0.0
+   ],
+   "srcFrameCount": 27,
+   "fps": 14.0,
+   "loop": 0
+  }
+ ]
+}

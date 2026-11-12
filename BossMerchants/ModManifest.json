@@ -1,0 +1,90 @@
+{
+    "guid": "b055e7c4a1d24f6e8a3c9d1e5f7a2b60",
+    "name": "BossMerchants",
+    "displayName": "Boss Merchants (Alpha)",
+    "skipSafetyChecks": false,
+    "disableScripts": false,
+    "accessesExtraAssemblies": true,
+    "disableHarmonyPatching": false,
+    "requiredOn": 3,
+    "files": [
+        {
+            "path": "Scripts/BossMerchantsConfig.cs",
+            "guid": ""
+        },
+        {
+            "path": "Scripts/BossMerchantsMod.cs",
+            "guid": ""
+        },
+        {
+            "path": "Scripts/Catalog.cs",
+            "guid": ""
+        },
+        {
+            "path": "Scripts/MerchantStock.cs",
+            "guid": ""
+        },
+        {
+            "path": "Scripts/Patches/BuyUILayoutClaim.cs",
+            "guid": ""
+        },
+        {
+            "path": "Scripts/Patches/BuyUIPatches.cs",
+            "guid": ""
+        },
+        {
+            "path": "Scripts/Patches/ObjectAuthoringPatch.cs",
+            "guid": ""
+        },
+        {
+            "path": "Scripts/Patches/RequiredIdolPatch.cs",
+            "guid": ""
+        },
+        {
+            "path": "Scripts/Systems/IdolDropSystem.cs",
+            "guid": ""
+        },
+        {
+            "path": "Scripts/Systems/MerchantSpawnSystem.cs",
+            "guid": ""
+        },
+        {
+            "path": "Scripts/Systems/MerchantStockSystem.cs",
+            "guid": ""
+        },
+        {
+            "path": "Scripts/Systems/PriceSystem.cs",
+            "guid": ""
+        },
+        {
+            "path": "Scripts/Visuals.cs",
+            "guid": ""
+        },
+        {
+            "path": "Bundles/BossMerchants_Windows.assetbundle",
+            "guid": ""
+        },
+        {
+            "path": "Bundles/BossMerchants_Windows.assetbundle.manifest",
+            "guid": ""
+        },
+        {
+            "path": "Bundles/BossMerchants_Linux.assetbundle",
+            "guid": ""
+        },
+        {
+            "path": "Bundles/BossMerchants_Linux.assetbundle.manifest",
+            "guid": ""
+        }
+    ],
+    "dependencies": [
+        {
+            "modName": "CoreLib",
+            "required": true
+        },
+        {
+            "modName": "ModOptions",
+            "required": true
+        }
+    ]
+}

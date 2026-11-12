@@ -19,7 +19,7 @@ GUID = "5d1a0c3e9b7f4e21a8c6d4b2f0e19a73"  # fixed forever, identifies the mod
 MODS = [
     "ModOptions", "LoadoutSharing", "FiveLoadouts", "SkillXPMultiplier", "FastAutoFishing", "MagicMirror", "SolariteDrill", "ConnectedStorage",
     "DurabilityMultiplier", "BuffDurationFloor", "FasterMushrooms", "BiggerWateringCans",
-    "BetterFishingLoot", "AutoReplant", "QuickBuff", "PotionSeller", "FishSeller", "MerchantRestock", "DifficultyTuning", "KeepMinions", "PetEditor", "BossBonusLoot", "EnderStash", "VehicleSpeed", "GoldenChance", "InfiniteOreBoulders", "BoulderMover", "StimHits", "ArmorDye", "MushroomSlayer", "BuildTools", "FasterMachines", "ItemSpawner", "CoinDrops", "WormholePotion", "CoinPouch", "DrillUnit", "Enchanting",
+    "BetterFishingLoot", "AutoReplant", "QuickBuff", "PotionSeller", "FishSeller", "MerchantRestock", "DifficultyTuning", "KeepMinions", "PetEditor", "BossBonusLoot", "EnderStash", "VehicleSpeed", "GoldenChance", "InfiniteOreBoulders", "BoulderMover", "StimHits", "ArmorDye", "MushroomSlayer", "BuildTools", "FasterMachines", "ItemSpawner", "CoinDrops", "WormholePotion", "CoinPouch", "DrillUnit", "Enchanting", "AutoLoadouts", "BossMerchants", "ValuableValue",
 ]
 # Bundles whose MonoScripts bind to the old assembly name.
 # MasterPetPlus is NOT included: it is a fork of Parcew's Master Pet and mod.io took it down;
@@ -27,7 +27,7 @@ MODS = [
 # ORDER MATTERS: the loader registers ONE data-block loader per mod guid (ScriptableData.AddDataBlocksLoader
 # rejects the second bundle: "Data block loader already added"), so only the first bundle's data blocks
 # (SpriteAsset, TextDataBlock, Entity/GraphicalObjectDataBlock) are seen. FastAutoFishing has none.
-# ConnectedStorage/OverhaulBundles contains storage, EnderStash, MagicMirror, SolariteDrill, WormholePotion, DrillUnit and Enchanting data blocks in
+# ConnectedStorage/OverhaulBundles contains storage, EnderStash, MagicMirror, SolariteDrill, WormholePotion, DrillUnit, Enchanting and BossMerchants data blocks in
 # one SDK-built bundle per platform. Never include their separate bundles here.
 BUNDLE_MODS = {"ConnectedStorage": "SidsStorageAssets", "FastAutoFishing": "mikufish"}
 # Folder each bundle is read from (default "Bundles"), and optional bundle filename prefixes to keep
@@ -44,7 +44,7 @@ def patch_bundle(src, dst, old_assembly):
         if obj.type.name == "MonoScript":
             tree = obj.read_typetree()
             assembly = tree.get("m_AssemblyName", "")
-            included = {old_assembly, "ConnectedStorage", "ConnectedStorageBrowser", "EnderStash", "MagicMirror", "SolariteDrill", "WormholePotion", "DrillUnit", "Enchanting", "SidsItemAssets"} if old_assembly == "SidsStorageAssets" else {old_assembly}
+            included = {old_assembly, "ConnectedStorage", "ConnectedStorageBrowser", "EnderStash", "MagicMirror", "SolariteDrill", "WormholePotion", "DrillUnit", "Enchanting", "BossMerchants", "SidsItemAssets"} if old_assembly == "SidsStorageAssets" else {old_assembly}
             if assembly.removesuffix(".dll") in included:
                 tree["m_AssemblyName"] = NAME + (".dll" if assembly.endswith(".dll") else "")
                 obj.save_typetree(tree)

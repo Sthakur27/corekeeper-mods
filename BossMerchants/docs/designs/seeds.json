@@ -1,0 +1,134 @@
+{
+ "key": "seeds",
+ "merchantName": "Tilly the Seedgrub",
+ "merchantBlurb": "Mother always said I'd grow up someday. I grew a garden instead!",
+ "idolName": "Brood Seedpot",
+ "idolDescription": "A clay pot of brood soil torn from the Hive Mother's nest. A seed-hoarding grub may move into a room with a free bed.",
+ "boss": "LarvaHiveBoss",
+ "rig": "CavelingMerchantEntity",
+ "concept": "A larva from the Hive Mother's brood that never pupated and took up gardening: straw hat with a Glow Tulip, wicker seed basket, tin watering can on a strap; tips its hat to greet.",
+ "bossWhy": "Hive Mother over Glurch: the merchant is one of her larvae (larva body/head palette), the idol uses hive-flesh and clay from her Clay Caves arena; a Glurch idol would read as another slime merchant next to the vanilla Slime Merchant.",
+ "stockNotes": "Vanilla prices all these at sellValue -1 (=1 coin sell / 5 buy), too cheap for biome-gated seeds, so prices step up with roughly the biome where each seed is first found (5-15 early caves, 20-30 mid biomes, 40 Lunacorn) and stock 20 per restock. Tools/pouches priced like the other boss merchants' mid-tier items (Pet eggs 500+); Large pouch 2500 and Octarine Seeder/hoes left out so the shop does not skip crafting progression. Sell price = price/5, no resale profit.",
+ "stock": [
+  {
+   "id": "RootSeed",
+   "price": 5,
+   "stock": 20
+  },
+  {
+   "id": "HeartBerrySeed",
+   "price": 10,
+   "stock": 20
+  },
+  {
+   "id": "GlowingTulipSeed",
+   "price": 10,
+   "stock": 20
+  },
+  {
+   "id": "BombPepperSeed",
+   "price": 15,
+   "stock": 20
+  },
+  {
+   "id": "CarrockSeed",
+   "price": 15,
+   "stock": 20
+  },
+  {
+   "id": "PuffungiSeed",
+   "price": 15,
+   "stock": 20
+  },
+  {
+   "id": "GrubKapokSeed",
+   "price": 20,
+   "stock": 20
+  },
+  {
+   "id": "BloatOatSeed",
+   "price": 20,
+   "stock": 20
+  },
+  {
+   "id": "CoralRootSeed",
+   "price": 20,
+   "stock": 20
+  },
+  {
+   "id": "PewpayaSeed",
+   "price": 25,
+   "stock": 20
+  },
+  {
+   "id": "GleamRootSeed",
+   "price": 25,
+   "stock": 20
+  },
+  {
+   "id": "PinegrappleSeed",
+   "price": 30,
+   "stock": 20
+  },
+  {
+   "id": "GrumpkinSeed",
+   "price": 30,
+   "stock": 20
+  },
+  {
+   "id": "SunriceSeed",
+   "price": 30,
+   "stock": 20
+  },
+  {
+   "id": "LunacornSeed",
+   "price": 40,
+   "stock": 10
+  },
+  {
+   "id": "PlanterBox",
+   "price": 25,
+   "stock": 10
+  },
+  {
+   "id": "WaterCan",
+   "price": 50,
+   "stock": 1
+  },
+  {
+   "id": "LargeWaterCan",
+   "price": 250,
+   "stock": 1
+  },
+  {
+   "id": "StoneSeeder",
+   "price": 300,
+   "stock": 1
+  },
+  {
+   "id": "SeedExtractor",
+   "price": 300,
+   "stock": 1
+  },
+  {
+   "id": "Sprinkler",
+   "price": 400,
+   "stock": 3
+  },
+  {
+   "id": "SeedAndCropsPouch",
+   "price": 250,
+   "stock": 1
+  },
+  {
+   "id": "MediumSeedAndCropsPouch",
+   "price": 750,
+   "stock": 1
+  },
+  {
+   "id": "LargeSeedAndCropsPouch",
+   "price": 2500,
+   "stock": 1
+  }
+ ]
+}

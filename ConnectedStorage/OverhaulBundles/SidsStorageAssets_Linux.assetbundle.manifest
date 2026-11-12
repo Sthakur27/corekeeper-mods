@@ -9,6 +9,370 @@
             "guid": "9a7be0588ae0d2041bba2a0d7088859e"
         },
         {
+            "path": "Assets/BossMerchants/Textures/bossMerchant_SeedsIdol_smallIcon.png",
+            "guid": "47aeb69ce9f2dc39f4d65378670c74e1"
+        },
+        {
+            "path": "Assets/BossMerchants/Textures/bossMerchant_SeedsIdol_placed.png",
+            "guid": "1f4b43c898255175da709de70be76d0a"
+        },
+        {
+            "path": "Assets/BossMerchants/Textures/bossMerchant_SeedsIdol_icon.png",
+            "guid": "4c00ca564b5b001790d7b73fdc7bacfe"
+        },
+        {
+            "path": "Assets/BossMerchants/Textures/bossMerchant_Seeds__Merchant_Light.png",
+            "guid": "f789ad74f406a1dc6734b35c21dee36e"
+        },
+        {
+            "path": "Assets/BossMerchants/Textures/bossMerchant_Seeds__Merchant_Eye.png",
+            "guid": "dd2eeffca0c5cefa6153f5c32d62db9d"
+        },
+        {
+            "path": "Assets/BossMerchants/Textures/bossMerchant_Seeds__Merchant.png",
+            "guid": "932704573071c031060246a5cced5d6c"
+        },
+        {
+            "path": "Assets/BossMerchants/Textures/bossMerchant_PotionsIdol_smallIcon.png",
+            "guid": "e3b3e6120200d068712c187f6a8c5da2"
+        },
+        {
+            "path": "Assets/BossMerchants/Textures/bossMerchant_PotionsIdol_placed.png",
+            "guid": "d3d908de5b4092858128f41a53d97b78"
+        },
+        {
+            "path": "Assets/BossMerchants/Textures/bossMerchant_PotionsIdol_icon.png",
+            "guid": "b0faddc6c6b395522a2be8ce8fdc9ac3"
+        },
+        {
+            "path": "Assets/BossMerchants/Textures/bossMerchant_Potions__Merchant_Light.png",
+            "guid": "4b3c7f7009e516d141aba4f7a735eb1e"
+        },
+        {
+            "path": "Assets/BossMerchants/Textures/bossMerchant_Potions__Merchant_Eye.png",
+            "guid": "cc88ad765a2df52a03a90c9d2f84a614"
+        },
+        {
+            "path": "Assets/BossMerchants/Textures/bossMerchant_Potions__Merchant.png",
+            "guid": "e9359ddad7ccf138d2277e9e137665c0"
+        },
+        {
+            "path": "Assets/BossMerchants/Textures/bossMerchant_HydrasIdol_smallIcon.png",
+            "guid": "316e4314e664f055692d9043431804ae"
+        },
+        {
+            "path": "Assets/BossMerchants/Textures/bossMerchant_HydrasIdol_placed.png",
+            "guid": "6e9db3c5ec4ee71170d793e806418bbd"
+        },
+        {
+            "path": "Assets/BossMerchants/Textures/bossMerchant_HydrasIdol_icon.png",
+            "guid": "7f2facb2480cd2c5fd5ec45cf8fd0cdb"
+        },
+        {
+            "path": "Assets/BossMerchants/Textures/bossMerchant_Hydras__Merchant_Light.png",
+            "guid": "540bd5d41c18437b327f3965349c96e2"
+        },
+        {
+            "path": "Assets/BossMerchants/Textures/bossMerchant_Hydras__Merchant_Eye.png",
+            "guid": "a28497a368c89bc7dff412e2db659eba"
+        },
+        {
+            "path": "Assets/BossMerchants/Textures/bossMerchant_Hydras__Merchant.png",
+            "guid": "49e1516f7af7558c92e8424fd5d18d0d"
+        },
+        {
+            "path": "Assets/BossMerchants/Textures/bossMerchant_FarmAnimalsIdol_smallIcon.png",
+            "guid": "b8c4f7f3ea6d4c3b0c5d0bd86bb5b003"
+        },
+        {
+            "path": "Assets/BossMerchants/Textures/bossMerchant_FarmAnimalsIdol_placed.png",
+            "guid": "a57940cf33f4b70a40a0abffb052229b"
+        },
+        {
+            "path": "Assets/BossMerchants/Textures/bossMerchant_FarmAnimalsIdol_icon.png",
+            "guid": "23242bd09b3ba381c373451d76db6e50"
+        },
+        {
+            "path": "Assets/BossMerchants/Textures/bossMerchant_FarmAnimals__Merchant_Light.png",
+            "guid": "ab60887698f0e95097037a119d6f69f4"
+        },
+        {
+            "path": "Assets/BossMerchants/Textures/bossMerchant_FarmAnimals__Merchant_Eye.png",
+            "guid": "db84bd4c9e35eac9d790d5774e73ee6d"
+        },
+        {
+            "path": "Assets/BossMerchants/Textures/bossMerchant_FarmAnimals__Merchant.png",
+            "guid": "eaa96d92cac5418e798be62e929933cb"
+        },
+        {
+            "path": "Assets/BossMerchants/Textures/bossMerchant_ExplosivesIdol_smallIcon.png",
+            "guid": "f21ed0938533bbcac149331ce0fc2da2"
+        },
+        {
+            "path": "Assets/BossMerchants/Textures/bossMerchant_ExplosivesIdol_placed.png",
+            "guid": "4ff23900c02b5514ec37218d1644e7fd"
+        },
+        {
+            "path": "Assets/BossMerchants/Textures/bossMerchant_ExplosivesIdol_icon.png",
+            "guid": "797a45fc999d77b6fac1751c7c5f2710"
+        },
+        {
+            "path": "Assets/BossMerchants/Textures/bossMerchant_Explosives__Slime_merchant.png",
+            "guid": "d6df597294758e28f1a9d78f8bcde2e2"
+        },
+        {
+            "path": "Assets/BossMerchants/Textures/bossMerchant_EggsIdol_smallIcon.png",
+            "guid": "a5ccebe325cdb3a95a10174957e467d4"
+        },
+        {
+            "path": "Assets/BossMerchants/Textures/bossMerchant_EggsIdol_placed.png",
+            "guid": "b9daf92c695bf1144951abef89b07907"
+        },
+        {
+            "path": "Assets/BossMerchants/Textures/bossMerchant_EggsIdol_icon.png",
+            "guid": "799eb273da171ebcf8708b5f9a740316"
+        },
+        {
+            "path": "Assets/BossMerchants/Textures/bossMerchant_Eggs_skin_voidMerchant_move.png",
+            "guid": "a75d4c57dad1e5eb4f928dd3d4ffbb05"
+        },
+        {
+            "path": "Assets/BossMerchants/Textures/bossMerchant_Eggs_skin_voidMerchant_idle.png",
+            "guid": "ba445b96f9ac6ae52ee981f7f86d67c3"
+        },
+        {
+            "path": "Assets/BossMerchants/Textures/bossMerchant_Eggs_skin_voidMerchant_emote.png",
+            "guid": "39698a5c68cb8ff2b0fb8f118f17f64f"
+        },
+        {
+            "path": "Assets/BossMerchants/Textures/bossMerchant_DecorIdol_smallIcon.png",
+            "guid": "2b2889d1275b64bee8dd86dacf8f2036"
+        },
+        {
+            "path": "Assets/BossMerchants/Textures/bossMerchant_DecorIdol_placed.png",
+            "guid": "28bc6e58bb390e91ba2d63f7e30e5682"
+        },
+        {
+            "path": "Assets/BossMerchants/Textures/bossMerchant_DecorIdol_icon.png",
+            "guid": "e1ebf54f744f8240bd176eeb3d1e41c7"
+        },
+        {
+            "path": "Assets/BossMerchants/Textures/bossMerchant_Decor__Fisher_merchant.png",
+            "guid": "51d7c457acc1fdaf8f77bdb6bf267ad5"
+        },
+        {
+            "path": "Assets/BossMerchants/Textures/bossMerchant_BlocksIdol_smallIcon.png",
+            "guid": "ba0e2246f4454260fde2891378e8f3c5"
+        },
+        {
+            "path": "Assets/BossMerchants/Textures/bossMerchant_BlocksIdol_placed.png",
+            "guid": "03eca8abfc7e26438aa76c67fa944188"
+        },
+        {
+            "path": "Assets/BossMerchants/Textures/bossMerchant_BlocksIdol_icon.png",
+            "guid": "1f40e8fa91e3fe9836abb23ae10a5e95"
+        },
+        {
+            "path": "Assets/BossMerchants/Textures/bossMerchant_Blocks__Slime_merchant.png",
+            "guid": "a57aaaebe8c46b5aaf02d0184201cb99"
+        },
+        {
+            "path": "Assets/BossMerchants/Prefabs/BossMerchants_SeedsMerchantEntity.prefab",
+            "guid": "d7b3f1e7667af3f499bbb1fcda6eb89c"
+        },
+        {
+            "path": "Assets/BossMerchants/Prefabs/BossMerchants_SeedsIdolEntity.prefab",
+            "guid": "fcc6bd4ef7226e740a6e7d12c15ec1a7"
+        },
+        {
+            "path": "Assets/BossMerchants/Prefabs/BossMerchants_PotionsMerchantEntity.prefab",
+            "guid": "429b7105751b5ef4b8d4669aedf5c399"
+        },
+        {
+            "path": "Assets/BossMerchants/Prefabs/BossMerchants_PotionsIdolEntity.prefab",
+            "guid": "21ae0a0b0125005468bd55a3ae74744d"
+        },
+        {
+            "path": "Assets/BossMerchants/Prefabs/BossMerchants_HydrasMerchantEntity.prefab",
+            "guid": "205ecdf284aa04347ad0a4b54d77c801"
+        },
+        {
+            "path": "Assets/BossMerchants/Prefabs/BossMerchants_HydrasIdolEntity.prefab",
+            "guid": "4a28df351cbcdcb46a1cd46f5dd0ff27"
+        },
+        {
+            "path": "Assets/BossMerchants/Prefabs/BossMerchants_FarmAnimalsMerchantEntity.prefab",
+            "guid": "983a62a9aa758c04ba0bab1e098132ac"
+        },
+        {
+            "path": "Assets/BossMerchants/Prefabs/BossMerchants_FarmAnimalsIdolEntity.prefab",
+            "guid": "00ef38b4ca03b794e9b43cd69bc8b0f8"
+        },
+        {
+            "path": "Assets/BossMerchants/Prefabs/BossMerchants_ExplosivesMerchantEntity.prefab",
+            "guid": "e45bbc7a0e986784ab79599f3750ab7d"
+        },
+        {
+            "path": "Assets/BossMerchants/Prefabs/BossMerchants_ExplosivesIdolEntity.prefab",
+            "guid": "60919e90346eca9419280131ad46e3bf"
+        },
+        {
+            "path": "Assets/BossMerchants/Prefabs/BossMerchants_EggsMerchantEntity.prefab",
+            "guid": "ac4ff43ed5ad1a64b95862f107ed328e"
+        },
+        {
+            "path": "Assets/BossMerchants/Prefabs/BossMerchants_EggsIdolEntity.prefab",
+            "guid": "4f2301dd75bf4e04d8cfebd37a06da85"
+        },
+        {
+            "path": "Assets/BossMerchants/Prefabs/BossMerchants_DecorMerchantEntity.prefab",
+            "guid": "f6c033b065930fd449af03aba35dff61"
+        },
+        {
+            "path": "Assets/BossMerchants/Prefabs/BossMerchants_DecorIdolEntity.prefab",
+            "guid": "39538a2b6098b314d849bb3bcbdc419c"
+        },
+        {
+            "path": "Assets/BossMerchants/Prefabs/BossMerchants_BlocksMerchantEntity.prefab",
+            "guid": "e3b3e01ba6ba4e740bc350762b424fd5"
+        },
+        {
+            "path": "Assets/BossMerchants/Prefabs/BossMerchants_BlocksIdolEntity.prefab",
+            "guid": "f02f0d6c9b2acb94d96c75cd5f18da9c"
+        },
+        {
+            "path": "Assets/BossMerchants/Data/TextDataBlock/Items/BossMerchants_SeedsMerchant.asset",
+            "guid": "b055e7c4a1d24f6e8a3c9d1e0000100e"
+        },
+        {
+            "path": "Assets/BossMerchants/Data/TextDataBlock/Items/BossMerchants_SeedsIdol.asset",
+            "guid": "b055e7c4a1d24f6e8a3c9d1e0000100f"
+        },
+        {
+            "path": "Assets/BossMerchants/Data/TextDataBlock/Items/BossMerchants_PotionsMerchant.asset",
+            "guid": "b055e7c4a1d24f6e8a3c9d1e00001006"
+        },
+        {
+            "path": "Assets/BossMerchants/Data/TextDataBlock/Items/BossMerchants_PotionsIdol.asset",
+            "guid": "b055e7c4a1d24f6e8a3c9d1e00001007"
+        },
+        {
+            "path": "Assets/BossMerchants/Data/TextDataBlock/Items/BossMerchants_HydrasMerchant.asset",
+            "guid": "b055e7c4a1d24f6e8a3c9d1e0000100a"
+        },
+        {
+            "path": "Assets/BossMerchants/Data/TextDataBlock/Items/BossMerchants_HydrasIdol.asset",
+            "guid": "b055e7c4a1d24f6e8a3c9d1e0000100b"
+        },
+        {
+            "path": "Assets/BossMerchants/Data/TextDataBlock/Items/BossMerchants_FarmAnimalsMerchant.asset",
+            "guid": "b055e7c4a1d24f6e8a3c9d1e0000100c"
+        },
+        {
+            "path": "Assets/BossMerchants/Data/TextDataBlock/Items/BossMerchants_FarmAnimalsIdol.asset",
+            "guid": "b055e7c4a1d24f6e8a3c9d1e0000100d"
+        },
+        {
+            "path": "Assets/BossMerchants/Data/TextDataBlock/Items/BossMerchants_ExplosivesMerchant.asset",
+            "guid": "b055e7c4a1d24f6e8a3c9d1e00001004"
+        },
+        {
+            "path": "Assets/BossMerchants/Data/TextDataBlock/Items/BossMerchants_ExplosivesIdol.asset",
+            "guid": "b055e7c4a1d24f6e8a3c9d1e00001005"
+        },
+        {
+            "path": "Assets/BossMerchants/Data/TextDataBlock/Items/BossMerchants_EggsMerchant.asset",
+            "guid": "b055e7c4a1d24f6e8a3c9d1e00001008"
+        },
+        {
+            "path": "Assets/BossMerchants/Data/TextDataBlock/Items/BossMerchants_EggsIdol.asset",
+            "guid": "b055e7c4a1d24f6e8a3c9d1e00001009"
+        },
+        {
+            "path": "Assets/BossMerchants/Data/TextDataBlock/Items/BossMerchants_DecorMerchant.asset",
+            "guid": "b055e7c4a1d24f6e8a3c9d1e00001002"
+        },
+        {
+            "path": "Assets/BossMerchants/Data/TextDataBlock/Items/BossMerchants_DecorIdol.asset",
+            "guid": "b055e7c4a1d24f6e8a3c9d1e00001003"
+        },
+        {
+            "path": "Assets/BossMerchants/Data/TextDataBlock/Items/BossMerchants_BlocksMerchant.asset",
+            "guid": "b055e7c4a1d24f6e8a3c9d1e00001000"
+        },
+        {
+            "path": "Assets/BossMerchants/Data/TextDataBlock/Items/BossMerchants_BlocksIdol.asset",
+            "guid": "b055e7c4a1d24f6e8a3c9d1e00001001"
+        },
+        {
+            "path": "Assets/BossMerchants/Data/SpriteAssetSkin/bossMerchant_Eggs_skin.asset",
+            "guid": "844fe36f81ec8bb43abe89e25f645de9"
+        },
+        {
+            "path": "Assets/BossMerchants/Data/EntityAuthoringDataBlock/BossMerchants_SeedsMerchantEntity.asset",
+            "guid": "718f44701b21dfc4d90f6b29564b79d1"
+        },
+        {
+            "path": "Assets/BossMerchants/Data/EntityAuthoringDataBlock/BossMerchants_SeedsIdolEntity.asset",
+            "guid": "39fd44e9b4f46b444ac745f5f9f8eb68"
+        },
+        {
+            "path": "Assets/BossMerchants/Data/EntityAuthoringDataBlock/BossMerchants_PotionsMerchantEntity.asset",
+            "guid": "088eab264de31e34cb8af20a39d871fe"
+        },
+        {
+            "path": "Assets/BossMerchants/Data/EntityAuthoringDataBlock/BossMerchants_PotionsIdolEntity.asset",
+            "guid": "f6d2bf526d3b04747bc21e76e1eddbc4"
+        },
+        {
+            "path": "Assets/BossMerchants/Data/EntityAuthoringDataBlock/BossMerchants_HydrasMerchantEntity.asset",
+            "guid": "f5655698d8e36d54aab7cf4866f1f242"
+        },
+        {
+            "path": "Assets/BossMerchants/Data/EntityAuthoringDataBlock/BossMerchants_HydrasIdolEntity.asset",
+            "guid": "0b3f4767ca4768540bfab9179a9dd7db"
+        },
+        {
+            "path": "Assets/BossMerchants/Data/EntityAuthoringDataBlock/BossMerchants_FarmAnimalsMerchantEntity.asset",
+            "guid": "60450625159c7334388cf9d3b0944c78"
+        },
+        {
+            "path": "Assets/BossMerchants/Data/EntityAuthoringDataBlock/BossMerchants_FarmAnimalsIdolEntity.asset",
+            "guid": "7d9fb17f1a18b7942840b543aff17375"
+        },
+        {
+            "path": "Assets/BossMerchants/Data/EntityAuthoringDataBlock/BossMerchants_ExplosivesMerchantEntity.asset",
+            "guid": "419a280e51606104bafc14e2ffae737e"
+        },
+        {
+            "path": "Assets/BossMerchants/Data/EntityAuthoringDataBlock/BossMerchants_ExplosivesIdolEntity.asset",
+            "guid": "563c73b96c8fc5f4a8a0d438e333e8b5"
+        },
+        {
+            "path": "Assets/BossMerchants/Data/EntityAuthoringDataBlock/BossMerchants_EggsMerchantEntity.asset",
+            "guid": "c9680ffab4ab2fd47891024db70a2e85"
+        },
+        {
+            "path": "Assets/BossMerchants/Data/EntityAuthoringDataBlock/BossMerchants_EggsIdolEntity.asset",
+            "guid": "160c38086be17f74e98912e6ae189562"
+        },
+        {
+            "path": "Assets/BossMerchants/Data/EntityAuthoringDataBlock/BossMerchants_DecorMerchantEntity.asset",
+            "guid": "92eba1714dd7b9e4a83b77e3f9cb1e78"
+        },
+        {
+            "path": "Assets/BossMerchants/Data/EntityAuthoringDataBlock/BossMerchants_DecorIdolEntity.asset",
+            "guid": "5d6407616e0cbf64a87b38fd547afb39"
+        },
+        {
+            "path": "Assets/BossMerchants/Data/EntityAuthoringDataBlock/BossMerchants_BlocksMerchantEntity.asset",
+            "guid": "61cf48ae8861adf45933b3ea1ce8a363"
+        },
+        {
+            "path": "Assets/BossMerchants/Data/EntityAuthoringDataBlock/BossMerchants_BlocksIdolEntity.asset",
+            "guid": "c84293064582536459e2d475e805621a"
+        },
+        {
             "path": "Assets/Enchanting/Textures/EnchantingTable_up.png",
             "guid": "3e9c0b7a51d24f8e8a6e3c1d0b9a0006"
         },

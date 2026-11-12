@@ -1,0 +1,4819 @@
+{
+ "prefabs": {
+  "CavelingMerchantEntity": [
+   {
+    "class": "#Transform"
+   },
+   {
+    "class": "EntityMonoBehaviourData",
+    "values": {
+     "objectInfo": {
+      "objectID": 3900,
+      "initialAmount": 1,
+      "variation": 0,
+      "variationIsDynamic": 0,
+      "variationToToggleTo": 0,
+      "objectType": 900,
+      "tags": [
+       39
+      ],
+      "rarity": 0,
+      "salvageMultiplier": 1.0,
+      "level": 0,
+      "sellValue": -1,
+      "buyValueMultiplier": 1.0,
+      "icon": {
+       "ref": null
+      },
+      "iconOffset": {
+       "x": 0.0,
+       "y": 0.0
+      },
+      "iconSkinAssetRef": {
+       "m_address": {
+        "m_low": 0,
+        "m_high": 0
+       }
+      },
+      "smallIcon": {
+       "ref": null
+      },
+      "isStackable": 0,
+      "prefabTileSize": {
+       "x": 1,
+       "y": 1
+      },
+      "prefabCornerOffset": {
+       "x": 0,
+       "y": 0
+      },
+      "centerIsAtEntityPosition": 0,
+      "additionalSprites": [],
+      "tileset": 0,
+      "tileType": 0,
+      "prefabInfo": {
+       "graphicalRef": {
+        "m_address": {
+         "m_low": 8540004133043647448,
+         "m_high": -3153110825902594965
+        }
+       },
+       "authoringRef": {
+        "m_address": {
+         "m_low": -6763001505310125757,
+         "m_high": 5057362953178659963
+        }
+       },
+       "prefab": {
+        "ref": null
+       },
+       "authoring": {
+        "ref": null
+       }
+      },
+      "craftingSettings": {
+       "canOnlyUseAnyMaterialsWithTag": 0,
+       "iconType": 0
+      },
+      "requiredObjectsToCraft": [],
+      "craftingTime": 0.0,
+      "appearInMapUI": 0,
+      "mapColor": {
+       "r": 0.0,
+       "g": 0.0,
+       "b": 0.0,
+       "a": 0.0
+      },
+      "isCustomScenePrefab": 0,
+      "languageGenders": []
+     },
+     "optionalPreviewPrefab": {
+      "ref": null
+     }
+    }
+   },
+   {
+    "class": "AnimationAuthoring",
+    "values": {
+     "orientationSupport": 1,
+     "largeAnimationHistorySupport": 0
+    }
+   },
+   {
+    "class": "MovementSpeedAuthoring",
+    "values": {
+     "speed": 10.0
+    }
+   },
+   {
+    "class": "HealthAuthoring",
+    "values": {
+     "dontCalculateHealthFromLevel": 0,
+     "overrideStartHealth": 0,
+     "normalizedOverrideStartHealth": 1.0,
+     "startHealth": 100000,
+     "maxHealth": 100000,
+     "maxHealthMultiplier": 1.0,
+     "hasHealthRegeneration": 1,
+     "healInCombatAsWell": 0,
+     "healthIncreasePercentPerFiveSeconds": 100,
+     "healDelayAfterLeavingCombat": 5.0,
+     "level": {
+      "ref": null
+     }
+    }
+   },
+   {
+    "class": "StateAuthoring",
+    "values": {}
+   },
+   {
+    "class": "IdleStateAuthoring",
+    "values": {
+     "playIdleAnimation": 1
+    }
+   },
+   {
+    "class": "DeathStateAuthoring",
+    "values": {
+     "overrideTimeBeforeDestroy": 0,
+     "timeBeforeDestroy": 0.0,
+     "timeBeforeLootDrop": 0.0,
+     "skipDeathAnimation": 0
+    }
+   },
+   {
+    "class": "TookDamageStateAuthoring",
+    "values": {
+     "duration": 0.30000001192092896,
+     "refreshStateOnNewDamageTaken": 0
+    }
+   },
+   {
+    "class": "PhysicsShapeAuthoring",
+    "values": {
+     "m_ShapeType": 2,
+     "m_PrimitiveCenter": {
+      "x": 0.0,
+      "y": 0.4000000059604645,
+      "z": 0.0
+     },
+     "m_PrimitiveSize": {
+      "x": 0.75,
+      "y": 0.75,
+      "z": 0.75
+     },
+     "m_PrimitiveOrientation": {
+      "Value": {
+       "x": 0.0,
+       "y": 0.0,
+       "z": 0.0
+      },
+      "RotationOrder": 4
+     },
+     "m_Capsule": {
+      "Height": 0.75,
+      "Radius": 0.375,
+      "Axis": 2
+     },
+     "m_Cylinder": {
+      "Height": 0.75,
+      "Radius": 0.375,
+      "Axis": 2
+     },
+     "m_CylinderSideCount": 20,
+     "m_SphereRadius": 0.375,
+     "m_MinimumSkinnedVertexWeight": 0.10000000149011612,
+     "m_ConvexHullGenerationParameters": {
+      "m_SimplificationTolerance": 0.014999999664723873,
+      "m_BevelRadius": 0.05000000074505806,
+      "m_MinimumAngle": 2.500000238418579
+     },
+     "m_CustomMesh": {
+      "ref": null
+     },
+     "m_ForceUnique": 0,
+     "m_Material": {
+      "m_SupportsTemplate": 1,
+      "m_Template": {
+       "ref": null
+      },
+      "m_CollisionResponse": {
+       "m_Override": 0,
+       "m_Value": 1
+      },
+      "m_Friction": {
+       "m_Override": 0,
+       "m_Value": {
+        "Value": 0.0,
+        "CombineMode": 0
+       }
+      },
+      "m_Restitution": {
+       "m_Override": 0,
+       "m_Value": {
+        "Value": 0.0,
+        "CombineMode": 1
+       }
+      },
+      "m_BelongsToCategories": {
+       "m_Override": 0,
+       "m_Value": {
+        "Category00": 0,
+        "Category01": 0,
+        "Category02": 0,
+        "Category03": 0,
+        "Category04": 1,
+        "Category05": 0,
+        "Category06": 0,
+        "Category07": 0,
+        "Category08": 0,
+        "Category09": 0,
+        "Category10": 0,
+        "Category11": 0,
+        "Category12": 0,
+        "Category13": 0,
+        "Category14": 0,
+        "Category15": 0,
+        "Category16": 0,
+        "Category17": 0,
+        "Category18": 0,
+        "Category19": 0,
+        "Category20": 0,
+        "Category21": 0,
+        "Category22": 0,
+        "Category23": 0,
+        "Category24": 0,
+        "Category25": 0,
+        "Category26": 0,
+        "Category27": 0,
+        "Category28": 0,
+        "Category29": 0,
+        "Category30": 0,
+        "Category31": 0
+       }
+      },
+      "m_CollidesWithCategories": {
+       "m_Override": 1,
+       "m_Value": {
+        "Category00": 1,
+        "Category01": 0,
+        "Category02": 0,
+        "Category03": 0,
+        "Category04": 1,
+        "Category05": 0,
+        "Category06": 0,
+        "Category07": 0,
+        "Category08": 1,
+        "Category09": 0,
+        "Category10": 0,
+        "Category11": 0,
+        "Category12": 0,
+        "Category13": 0,
+        "Category14": 0,
+        "Category15": 0,
+        "Category16": 0,
+        "Category17": 1,
+        "Category18": 0,
+        "Category19": 0,
+        "Category20": 0,
+        "Category21": 0,
+        "Category22": 0,
+        "Category23": 0,
+        "Category24": 0,
+        "Category25": 0,
+        "Category26": 0,
+        "Category27": 0,
+        "Category28": 0,
+        "Category29": 0,
+        "Category30": 0,
+        "Category31": 0
+       }
+      },
+      "m_CustomMaterialTags": {
+       "m_Override": 0,
+       "m_Value": {
+        "Tag00": 0,
+        "Tag01": 0,
+        "Tag02": 0,
+        "Tag03": 0,
+        "Tag04": 0,
+        "Tag05": 0,
+        "Tag06": 0,
+        "Tag07": 0
+       }
+      },
+      "m_SerializedVersion": 1
+     },
+     "m_SerializedVersion": 1
+    }
+   },
+   {
+    "class": "PhysicsShapeAuthoring",
+    "values": {
+     "m_ShapeType": 2,
+     "m_PrimitiveCenter": {
+      "x": 0.0,
+      "y": 0.4000000059604645,
+      "z": 0.0
+     },
+     "m_PrimitiveSize": {
+      "x": 0.75,
+      "y": 0.75,
+      "z": 0.75
+     },
+     "m_PrimitiveOrientation": {
+      "Value": {
+       "x": 0.0,
+       "y": 0.0,
+       "z": 0.0
+      },
+      "RotationOrder": 4
+     },
+     "m_Capsule": {
+      "Height": 0.75,
+      "Radius": 0.375,
+      "Axis": 2
+     },
+     "m_Cylinder": {
+      "Height": 0.75,
+      "Radius": 0.375,
+      "Axis": 2
+     },
+     "m_CylinderSideCount": 20,
+     "m_SphereRadius": 0.375,
+     "m_MinimumSkinnedVertexWeight": 0.10000000149011612,
+     "m_ConvexHullGenerationParameters": {
+      "m_SimplificationTolerance": 0.014999999664723873,
+      "m_BevelRadius": 0.05000000074505806,
+      "m_MinimumAngle": 2.500000238418579
+     },
+     "m_CustomMesh": {
+      "ref": null
+     },
+     "m_ForceUnique": 0,
+     "m_Material": {
+      "m_SupportsTemplate": 1,
+      "m_Template": {
+       "ref": null
+      },
+      "m_CollisionResponse": {
+       "m_Override": 0,
+       "m_Value": 3
+      },
+      "m_Friction": {
+       "m_Override": 0,
+       "m_Value": {
+        "Value": 0.0,
+        "CombineMode": 0
+       }
+      },
+      "m_Restitution": {
+       "m_Override": 0,
+       "m_Value": {
+        "Value": 0.0,
+        "CombineMode": 2
+       }
+      },
+      "m_BelongsToCategories": {
+       "m_Override": 0,
+       "m_Value": {
+        "Category00": 0,
+        "Category01": 0,
+        "Category02": 0,
+        "Category03": 1,
+        "Category04": 0,
+        "Category05": 0,
+        "Category06": 0,
+        "Category07": 0,
+        "Category08": 0,
+        "Category09": 0,
+        "Category10": 0,
+        "Category11": 0,
+        "Category12": 0,
+        "Category13": 0,
+        "Category14": 0,
+        "Category15": 0,
+        "Category16": 0,
+        "Category17": 0,
+        "Category18": 0,
+        "Category19": 0,
+        "Category20": 0,
+        "Category21": 0,
+        "Category22": 0,
+        "Category23": 0,
+        "Category24": 0,
+        "Category25": 0,
+        "Category26": 0,
+        "Category27": 0,
+        "Category28": 0,
+        "Category29": 0,
+        "Category30": 0,
+        "Category31": 0
+       }
+      },
+      "m_CollidesWithCategories": {
+       "m_Override": 0,
+       "m_Value": {
+        "Category00": 0,
+        "Category01": 0,
+        "Category02": 0,
+        "Category03": 1,
+        "Category04": 0,
+        "Category05": 0,
+        "Category06": 0,
+        "Category07": 0,
+        "Category08": 0,
+        "Category09": 0,
+        "Category10": 0,
+        "Category11": 0,
+        "Category12": 0,
+        "Category13": 0,
+        "Category14": 0,
+        "Category15": 0,
+        "Category16": 0,
+        "Category17": 0,
+        "Category18": 0,
+        "Category19": 0,
+        "Category20": 0,
+        "Category21": 0,
+        "Category22": 0,
+        "Category23": 0,
+        "Category24": 0,
+        "Category25": 0,
+        "Category26": 0,
+        "Category27": 0,
+        "Category28": 0,
+        "Category29": 0,
+        "Category30": 0,
+        "Category31": 0
+       }
+      },
+      "m_CustomMaterialTags": {
+       "m_Override": 0,
+       "m_Value": {
+        "Tag00": 0,
+        "Tag01": 0,
+        "Tag02": 0,
+        "Tag03": 0,
+        "Tag04": 0,
+        "Tag05": 0,
+        "Tag06": 0,
+        "Tag07": 0
+       }
+      },
+      "m_SerializedVersion": 1
+     },
+     "m_SerializedVersion": 1
+    }
+   },
+   {
+    "class": "PhysicsBodyAuthoring",
+    "values": {
+     "m_MotionType": 0,
+     "m_Smoothing": 0,
+     "m_Mass": 15.0,
+     "m_LinearDamping": 10.0,
+     "m_AngularDamping": Infinity,
+     "m_InitialLinearVelocity": {
+      "x": 0.0,
+      "y": 0.0,
+      "z": 0.0
+     },
+     "m_InitialAngularVelocity": {
+      "x": 0.0,
+      "y": 0.0,
+      "z": 0.0
+     },
+     "m_GravityFactor": 1.0,
+     "m_OverrideDefaultMassDistribution": 1,
+     "m_CenterOfMass": {
+      "x": 0.0,
+      "y": 0.0,
+      "z": 0.0
+     },
+     "m_Orientation": {
+      "Value": {
+       "x": 0.0,
+       "y": 0.0,
+       "z": 0.0
+      },
+      "RotationOrder": 4
+     },
+     "m_InertiaTensor": {
+      "x": Infinity,
+      "y": Infinity,
+      "z": Infinity
+     },
+     "m_WorldIndex": 0,
+     "m_CustomTags": {
+      "Tag00": 0,
+      "Tag01": 0,
+      "Tag02": 0,
+      "Tag03": 0,
+      "Tag04": 0,
+      "Tag05": 0,
+      "Tag06": 0,
+      "Tag07": 0
+     }
+    }
+   },
+   {
+    "class": "GhostAuthoringComponent",
+    "values": {
+     "DefaultGhostMode": 0,
+     "SupportedGhostModes": 3,
+     "OptimizationMode": 0,
+     "Importance": 3,
+     "prefabId": "6f3b36f5de49a074491767aad125d732",
+     "HasOwner": 0,
+     "SupportAutoCommandTarget": 0,
+     "TrackInterpolationDelay": 0,
+     "GhostGroup": 0,
+     "UsePreSerialization": 0,
+     "DontUsePredictionBackup": 0
+    }
+   },
+   {
+    "class": "RandomWalkStateAuthoring",
+    "values": {
+     "minWalkDistance": 2.0,
+     "maxWalkDistance": 4.0,
+     "maxWalkDuration": 5.0,
+     "minIdleDuration": 1.5,
+     "maxIdleDuration": 3.0,
+     "movementSpeedMultiplier": 1.0,
+     "overrideUseAuthoringBehaviourValuesForAllPatternBaseMovementProperties": 0,
+     "walkPatternBehaviourDefinition": {
+      "ref": null
+     }
+    }
+   },
+   {
+    "class": "SupportsConditionsAuthoring",
+    "values": {
+     "cantBeAffectedByAuras": 0,
+     "cantBeAffectedByEnvironment": 0,
+     "cantBeAffectedByHealing": 0,
+     "dontShowStatsTextOnItem": 0,
+     "initialConditions": [],
+     "initialConditionsWithRandomChance": []
+    }
+   },
+   {
+    "class": "FactionAuthoring",
+    "values": {
+     "faction": 11
+    }
+   },
+   {
+    "class": "IdleWhenNearbyPlayerStateAuthoring",
+    "values": {
+     "distanceToStartIdle": 1.5
+    }
+   },
+   {
+    "class": "InventoryAuthoring",
+    "values": {
+     "sizeX": 3,
+     "sizeY": 3,
+     "maxExtraSize": 0,
+     "canOnlyContainOneItemPerSlot": 0,
+     "objectsGetLockedInPlace": 0,
+     "cantAddObjectsToInventory": 0,
+     "autoTransferEnabled": 0,
+     "slotRequirements": [],
+     "itemsInInventory": [],
+     "addLootFromTable": 0
+    }
+   },
+   {
+    "class": "MerchantAuthoring",
+    "values": {
+     "items": [
+      {
+       "objectID": 9600,
+       "amount": 5,
+       "requirementToBeAvailable": 0
+      },
+      {
+       "objectID": 2503,
+       "amount": 3,
+       "requirementToBeAvailable": 0
+      },
+      {
+       "objectID": 2504,
+       "amount": 3,
+       "requirementToBeAvailable": 0
+      },
+      {
+       "objectID": 2505,
+       "amount": 3,
+       "requirementToBeAvailable": 0
+      },
+      {
+       "objectID": 1647,
+       "amount": 10,
+       "requirementToBeAvailable": 3
+      },
+      {
+       "objectID": 1600,
+       "amount": 5,
+       "requirementToBeAvailable": 3
+      },
+      {
+       "objectID": 8250,
+       "amount": 1,
+       "requirementToBeAvailable": 3
+      },
+      {
+       "objectID": 8252,
+       "amount": 1,
+       "requirementToBeAvailable": 3
+      },
+      {
+       "objectID": 2510,
+       "amount": 3,
+       "requirementToBeAvailable": 4
+      }
+     ]
+    }
+   },
+   {
+    "class": "CanClaimBedAuthoring",
+    "values": {}
+   },
+   {
+    "class": "CreateCharacterGuidAuthoring",
+    "values": {}
+   },
+   {
+    "class": "CoinAmountAuthoring",
+    "values": {
+     "Value": 0
+    }
+   },
+   {
+    "class": "ImmuneToPushBackAuthoring",
+    "values": {}
+   },
+   {
+    "class": "CanBeDiscoveredAuthoring",
+    "values": {
+     "distanceToDiscover": 5.0
+    }
+   },
+   {
+    "class": "BehaviourTagsAuthoring",
+    "values": {
+     "wantsToAttackTags": [],
+     "cantAttackTags": [],
+     "eatsTags": [],
+     "dataBlockRef": {
+      "m_address": {
+       "m_low": -638319326277819699,
+       "m_high": -3074621198175539239
+      }
+     }
+    }
+   },
+   {
+    "class": "ChaseStateAuthoring",
+    "values": {
+     "disabled": 0,
+     "skipVisibilityCheck": 0,
+     "moveSpeedMultiplier": 1.0,
+     "chaseAtDistance": 5.0,
+     "ignoreLowColliders": 0,
+     "preChaseDuration": 0.0,
+     "endChaseDuration": 0.0,
+     "idleDuration": 0.0,
+     "idleCooldown": 0.0,
+     "distanceToStartSideStepping": 0.0,
+     "distanceToKeepNoiseDisabled": 0,
+     "minDistanceToKeep": 0.699999988079071,
+     "maxDistanceToKeep": 0.699999988079071,
+     "obstacleAvoidDistance": 0.5,
+     "preferPathFind": 1,
+     "neverStopChasing": 1,
+     "needPathToChase": 0,
+     "chaseHeldObjects": [
+      3930
+     ],
+     "belongsToShape": {
+      "ref": "PhysicsShapeAuthoring"
+     }
+    }
+   },
+   {
+    "class": "NearbyEntitiesTrackerAuthoring",
+    "values": {
+     "detectsLayer": {
+      "Category00": 0,
+      "Category01": 1,
+      "Category02": 0,
+      "Category03": 0,
+      "Category04": 0,
+      "Category05": 0,
+      "Category06": 0,
+      "Category07": 0,
+      "Category08": 0,
+      "Category09": 0,
+      "Category10": 0,
+      "Category11": 0,
+      "Category12": 0,
+      "Category13": 0,
+      "Category14": 0,
+      "Category15": 0,
+      "Category16": 0,
+      "Category17": 0,
+      "Category18": 0,
+      "Category19": 0,
+      "Category20": 0,
+      "Category21": 0,
+      "Category22": 0,
+      "Category23": 0,
+      "Category24": 0,
+      "Category25": 0,
+      "Category26": 0,
+      "Category27": 0,
+      "Category28": 0,
+      "Category29": 0,
+      "Category30": 0,
+      "Category31": 0
+     },
+     "radius": 5.0,
+     "ignoreCooldown": 0
+    }
+   },
+   {
+    "class": "AffectedByAutomationAuthoring",
+    "values": {}
+   },
+   {
+    "class": "SpawnStateAuthoring",
+    "values": {
+     "duration": 0.25,
+     "animId": "spawn",
+     "facingDirection": {
+      "x": 0.0,
+      "y": 0.0
+     },
+     "removeTilesOnSpawn": 0,
+     "radiusToRemoveTilesWithin": 0.0,
+     "removeTilesOnSpawnOffset": {
+      "x": 0.0,
+      "y": 0.0
+     }
+    }
+   },
+   {
+    "class": "LinkedEntityGroupAuthoring",
+    "values": {}
+   },
+   {
+    "class": "LocalInteractableAuthoring",
+    "values": {
+     "useSecondInteraction": 0,
+     "interactSubIndex": 0
+    }
+   },
+   {
+    "class": "DropLootAuthoring",
+    "values": {
+     "hasLootTable": 1,
+     "lootTableID": 60,
+     "hasCustomLoot": 0,
+     "customLoot": {
+      "chance": 1.0,
+      "Values": []
+     },
+     "hasSeasonalLoot": 0,
+     "seasonalLootDrops": {
+      "lootDrops": []
+     },
+     "hasLootDropsOnUse": 0,
+     "onUseLootDrops": {
+      "lootTableID": 0,
+      "spawnEffects": 0,
+      "lootDrops": []
+     },
+     "hasLootDropsOnTakingDamage": 0,
+     "lootDropsWhenDamaged": {
+      "healthPercentageDamageToDeal": 0.0,
+      "minHealthPercentageToDropLoot": 0.0,
+      "damageToDealToDropLoot": 0,
+      "minHealthToDropLoot": 0,
+      "dropsLoot": 0,
+      "instantiateEntity": 0,
+      "minSpawnOffset": {
+       "x": 0.0,
+       "y": 0.0
+      },
+      "maxSpawnOffset": {
+       "x": 0.0,
+       "y": 0.0
+      },
+      "maxLimitToDropInNearbyArea": 0
+     }
+    }
+   }
+  ],
+  "SlimeMerchantEntity": [
+   {
+    "class": "#Transform"
+   },
+   {
+    "class": "EntityMonoBehaviourData",
+    "values": {
+     "objectInfo": {
+      "objectID": 3902,
+      "initialAmount": 1,
+      "variation": 0,
+      "variationIsDynamic": 0,
+      "variationToToggleTo": 0,
+      "objectType": 900,
+      "tags": [
+       39
+      ],
+      "rarity": 0,
+      "salvageMultiplier": 1.0,
+      "level": 0,
+      "sellValue": -1,
+      "buyValueMultiplier": 1.0,
+      "icon": {
+       "ref": null
+      },
+      "iconOffset": {
+       "x": 0.0,
+       "y": 0.0
+      },
+      "iconSkinAssetRef": {
+       "m_address": {
+        "m_low": 0,
+        "m_high": 0
+       }
+      },
+      "smallIcon": {
+       "ref": null
+      },
+      "isStackable": 0,
+      "prefabTileSize": {
+       "x": 1,
+       "y": 1
+      },
+      "prefabCornerOffset": {
+       "x": 0,
+       "y": 0
+      },
+      "centerIsAtEntityPosition": 0,
+      "additionalSprites": [],
+      "tileset": 0,
+      "tileType": 0,
+      "prefabInfo": {
+       "graphicalRef": {
+        "m_address": {
+         "m_low": -6956829279727106024,
+         "m_high": -2790820849247505654
+        }
+       },
+       "authoringRef": {
+        "m_address": {
+         "m_low": -5281555612526491528,
+         "m_high": 1801935698321403080
+        }
+       },
+       "prefab": {
+        "ref": null
+       },
+       "authoring": {
+        "ref": null
+       }
+      },
+      "craftingSettings": {
+       "canOnlyUseAnyMaterialsWithTag": 0,
+       "iconType": 0
+      },
+      "requiredObjectsToCraft": [],
+      "craftingTime": 0.0,
+      "appearInMapUI": 0,
+      "mapColor": {
+       "r": 0.0,
+       "g": 0.0,
+       "b": 0.0,
+       "a": 0.0
+      },
+      "isCustomScenePrefab": 0,
+      "languageGenders": []
+     },
+     "optionalPreviewPrefab": {
+      "ref": null
+     }
+    }
+   },
+   {
+    "class": "AnimationAuthoring",
+    "values": {
+     "orientationSupport": 1,
+     "largeAnimationHistorySupport": 0
+    }
+   },
+   {
+    "class": "MovementSpeedAuthoring",
+    "values": {
+     "speed": 10.0
+    }
+   },
+   {
+    "class": "HealthAuthoring",
+    "values": {
+     "dontCalculateHealthFromLevel": 0,
+     "overrideStartHealth": 0,
+     "normalizedOverrideStartHealth": 1.0,
+     "startHealth": 100000,
+     "maxHealth": 100000,
+     "maxHealthMultiplier": 1.0,
+     "hasHealthRegeneration": 1,
+     "healInCombatAsWell": 0,
+     "healthIncreasePercentPerFiveSeconds": 100,
+     "healDelayAfterLeavingCombat": 5.0,
+     "level": {
+      "ref": null
+     }
+    }
+   },
+   {
+    "class": "StateAuthoring",
+    "values": {}
+   },
+   {
+    "class": "IdleStateAuthoring",
+    "values": {
+     "playIdleAnimation": 1
+    }
+   },
+   {
+    "class": "DeathStateAuthoring",
+    "values": {
+     "overrideTimeBeforeDestroy": 0,
+     "timeBeforeDestroy": 0.0,
+     "timeBeforeLootDrop": 0.0,
+     "skipDeathAnimation": 0
+    }
+   },
+   {
+    "class": "TookDamageStateAuthoring",
+    "values": {
+     "duration": 0.30000001192092896,
+     "refreshStateOnNewDamageTaken": 0
+    }
+   },
+   {
+    "class": "PhysicsShapeAuthoring",
+    "values": {
+     "m_ShapeType": 2,
+     "m_PrimitiveCenter": {
+      "x": 0.0,
+      "y": 0.4000000059604645,
+      "z": 0.0
+     },
+     "m_PrimitiveSize": {
+      "x": 0.75,
+      "y": 0.75,
+      "z": 0.75
+     },
+     "m_PrimitiveOrientation": {
+      "Value": {
+       "x": 0.0,
+       "y": 0.0,
+       "z": 0.0
+      },
+      "RotationOrder": 4
+     },
+     "m_Capsule": {
+      "Height": 0.75,
+      "Radius": 0.375,
+      "Axis": 2
+     },
+     "m_Cylinder": {
+      "Height": 0.75,
+      "Radius": 0.375,
+      "Axis": 2
+     },
+     "m_CylinderSideCount": 20,
+     "m_SphereRadius": 0.375,
+     "m_MinimumSkinnedVertexWeight": 0.10000000149011612,
+     "m_ConvexHullGenerationParameters": {
+      "m_SimplificationTolerance": 0.014999999664723873,
+      "m_BevelRadius": 0.05000000074505806,
+      "m_MinimumAngle": 2.500000238418579
+     },
+     "m_CustomMesh": {
+      "ref": null
+     },
+     "m_ForceUnique": 0,
+     "m_Material": {
+      "m_SupportsTemplate": 1,
+      "m_Template": {
+       "ref": null
+      },
+      "m_CollisionResponse": {
+       "m_Override": 0,
+       "m_Value": 1
+      },
+      "m_Friction": {
+       "m_Override": 0,
+       "m_Value": {
+        "Value": 0.0,
+        "CombineMode": 0
+       }
+      },
+      "m_Restitution": {
+       "m_Override": 0,
+       "m_Value": {
+        "Value": 0.0,
+        "CombineMode": 1
+       }
+      },
+      "m_BelongsToCategories": {
+       "m_Override": 0,
+       "m_Value": {
+        "Category00": 0,
+        "Category01": 0,
+        "Category02": 0,
+        "Category03": 0,
+        "Category04": 1,
+        "Category05": 0,
+        "Category06": 0,
+        "Category07": 0,
+        "Category08": 0,
+        "Category09": 0,
+        "Category10": 0,
+        "Category11": 0,
+        "Category12": 0,
+        "Category13": 0,
+        "Category14": 0,
+        "Category15": 0,
+        "Category16": 0,
+        "Category17": 0,
+        "Category18": 0,
+        "Category19": 0,
+        "Category20": 0,
+        "Category21": 0,
+        "Category22": 0,
+        "Category23": 0,
+        "Category24": 0,
+        "Category25": 0,
+        "Category26": 0,
+        "Category27": 0,
+        "Category28": 0,
+        "Category29": 0,
+        "Category30": 0,
+        "Category31": 0
+       }
+      },
+      "m_CollidesWithCategories": {
+       "m_Override": 1,
+       "m_Value": {
+        "Category00": 1,
+        "Category01": 0,
+        "Category02": 0,
+        "Category03": 0,
+        "Category04": 1,
+        "Category05": 0,
+        "Category06": 0,
+        "Category07": 0,
+        "Category08": 1,
+        "Category09": 0,
+        "Category10": 0,
+        "Category11": 0,
+        "Category12": 0,
+        "Category13": 0,
+        "Category14": 0,
+        "Category15": 0,
+        "Category16": 0,
+        "Category17": 1,
+        "Category18": 0,
+        "Category19": 0,
+        "Category20": 0,
+        "Category21": 0,
+        "Category22": 0,
+        "Category23": 0,
+        "Category24": 0,
+        "Category25": 0,
+        "Category26": 0,
+        "Category27": 0,
+        "Category28": 0,
+        "Category29": 0,
+        "Category30": 0,
+        "Category31": 0
+       }
+      },
+      "m_CustomMaterialTags": {
+       "m_Override": 0,
+       "m_Value": {
+        "Tag00": 0,
+        "Tag01": 0,
+        "Tag02": 0,
+        "Tag03": 0,
+        "Tag04": 0,
+        "Tag05": 0,
+        "Tag06": 0,
+        "Tag07": 0
+       }
+      },
+      "m_SerializedVersion": 1
+     },
+     "m_SerializedVersion": 1
+    }
+   },
+   {
+    "class": "PhysicsShapeAuthoring",
+    "values": {
+     "m_ShapeType": 2,
+     "m_PrimitiveCenter": {
+      "x": 0.0,
+      "y": 0.4000000059604645,
+      "z": 0.0
+     },
+     "m_PrimitiveSize": {
+      "x": 0.75,
+      "y": 0.75,
+      "z": 0.75
+     },
+     "m_PrimitiveOrientation": {
+      "Value": {
+       "x": 0.0,
+       "y": 0.0,
+       "z": 0.0
+      },
+      "RotationOrder": 4
+     },
+     "m_Capsule": {
+      "Height": 0.75,
+      "Radius": 0.375,
+      "Axis": 2
+     },
+     "m_Cylinder": {
+      "Height": 0.75,
+      "Radius": 0.375,
+      "Axis": 2
+     },
+     "m_CylinderSideCount": 20,
+     "m_SphereRadius": 0.375,
+     "m_MinimumSkinnedVertexWeight": 0.10000000149011612,
+     "m_ConvexHullGenerationParameters": {
+      "m_SimplificationTolerance": 0.014999999664723873,
+      "m_BevelRadius": 0.05000000074505806,
+      "m_MinimumAngle": 2.500000238418579
+     },
+     "m_CustomMesh": {
+      "ref": null
+     },
+     "m_ForceUnique": 0,
+     "m_Material": {
+      "m_SupportsTemplate": 1,
+      "m_Template": {
+       "ref": null
+      },
+      "m_CollisionResponse": {
+       "m_Override": 0,
+       "m_Value": 3
+      },
+      "m_Friction": {
+       "m_Override": 0,
+       "m_Value": {
+        "Value": 0.0,
+        "CombineMode": 0
+       }
+      },
+      "m_Restitution": {
+       "m_Override": 0,
+       "m_Value": {
+        "Value": 0.0,
+        "CombineMode": 2
+       }
+      },
+      "m_BelongsToCategories": {
+       "m_Override": 0,
+       "m_Value": {
+        "Category00": 0,
+        "Category01": 0,
+        "Category02": 0,
+        "Category03": 1,
+        "Category04": 0,
+        "Category05": 0,
+        "Category06": 0,
+        "Category07": 0,
+        "Category08": 0,
+        "Category09": 0,
+        "Category10": 0,
+        "Category11": 0,
+        "Category12": 0,
+        "Category13": 0,
+        "Category14": 0,
+        "Category15": 0,
+        "Category16": 0,
+        "Category17": 0,
+        "Category18": 0,
+        "Category19": 0,
+        "Category20": 0,
+        "Category21": 0,
+        "Category22": 0,
+        "Category23": 0,
+        "Category24": 0,
+        "Category25": 0,
+        "Category26": 0,
+        "Category27": 0,
+        "Category28": 0,
+        "Category29": 0,
+        "Category30": 0,
+        "Category31": 0
+       }
+      },
+      "m_CollidesWithCategories": {
+       "m_Override": 0,
+       "m_Value": {
+        "Category00": 0,
+        "Category01": 0,
+        "Category02": 0,
+        "Category03": 1,
+        "Category04": 0,
+        "Category05": 0,
+        "Category06": 0,
+        "Category07": 0,
+        "Category08": 0,
+        "Category09": 0,
+        "Category10": 0,
+        "Category11": 0,
+        "Category12": 0,
+        "Category13": 0,
+        "Category14": 0,
+        "Category15": 0,
+        "Category16": 0,
+        "Category17": 0,
+        "Category18": 0,
+        "Category19": 0,
+        "Category20": 0,
+        "Category21": 0,
+        "Category22": 0,
+        "Category23": 0,
+        "Category24": 0,
+        "Category25": 0,
+        "Category26": 0,
+        "Category27": 0,
+        "Category28": 0,
+        "Category29": 0,
+        "Category30": 0,
+        "Category31": 0
+       }
+      },
+      "m_CustomMaterialTags": {
+       "m_Override": 0,
+       "m_Value": {
+        "Tag00": 0,
+        "Tag01": 0,
+        "Tag02": 0,
+        "Tag03": 0,
+        "Tag04": 0,
+        "Tag05": 0,
+        "Tag06": 0,
+        "Tag07": 0
+       }
+      },
+      "m_SerializedVersion": 1
+     },
+     "m_SerializedVersion": 1
+    }
+   },
+   {
+    "class": "PhysicsBodyAuthoring",
+    "values": {
+     "m_MotionType": 0,
+     "m_Smoothing": 0,
+     "m_Mass": 15.0,
+     "m_LinearDamping": 10.0,
+     "m_AngularDamping": Infinity,
+     "m_InitialLinearVelocity": {
+      "x": 0.0,
+      "y": 0.0,
+      "z": 0.0
+     },
+     "m_InitialAngularVelocity": {
+      "x": 0.0,
+      "y": 0.0,
+      "z": 0.0
+     },
+     "m_GravityFactor": 1.0,
+     "m_OverrideDefaultMassDistribution": 1,
+     "m_CenterOfMass": {
+      "x": 0.0,
+      "y": 0.0,
+      "z": 0.0
+     },
+     "m_Orientation": {
+      "Value": {
+       "x": 0.0,
+       "y": 0.0,
+       "z": 0.0
+      },
+      "RotationOrder": 4
+     },
+     "m_InertiaTensor": {
+      "x": Infinity,
+      "y": Infinity,
+      "z": Infinity
+     },
+     "m_WorldIndex": 0,
+     "m_CustomTags": {
+      "Tag00": 0,
+      "Tag01": 0,
+      "Tag02": 0,
+      "Tag03": 0,
+      "Tag04": 0,
+      "Tag05": 0,
+      "Tag06": 0,
+      "Tag07": 0
+     }
+    }
+   },
+   {
+    "class": "GhostAuthoringComponent",
+    "values": {
+     "DefaultGhostMode": 0,
+     "SupportedGhostModes": 3,
+     "OptimizationMode": 0,
+     "Importance": 3,
+     "prefabId": "4031e6f611370cf41b231c7f6a3eb680",
+     "HasOwner": 0,
+     "SupportAutoCommandTarget": 0,
+     "TrackInterpolationDelay": 0,
+     "GhostGroup": 0,
+     "UsePreSerialization": 0,
+     "DontUsePredictionBackup": 0
+    }
+   },
+   {
+    "class": "RandomWalkStateAuthoring",
+    "values": {
+     "minWalkDistance": 2.0,
+     "maxWalkDistance": 4.0,
+     "maxWalkDuration": 5.0,
+     "minIdleDuration": 1.5,
+     "maxIdleDuration": 3.0,
+     "movementSpeedMultiplier": 1.0,
+     "overrideUseAuthoringBehaviourValuesForAllPatternBaseMovementProperties": 0,
+     "walkPatternBehaviourDefinition": {
+      "ref": null
+     }
+    }
+   },
+   {
+    "class": "SupportsConditionsAuthoring",
+    "values": {
+     "cantBeAffectedByAuras": 0,
+     "cantBeAffectedByEnvironment": 0,
+     "cantBeAffectedByHealing": 0,
+     "dontShowStatsTextOnItem": 0,
+     "initialConditions": [],
+     "initialConditionsWithRandomChance": []
+    }
+   },
+   {
+    "class": "FactionAuthoring",
+    "values": {
+     "faction": 11
+    }
+   },
+   {
+    "class": "IdleWhenNearbyPlayerStateAuthoring",
+    "values": {
+     "distanceToStartIdle": 1.5
+    }
+   },
+   {
+    "class": "InventoryAuthoring",
+    "values": {
+     "sizeX": 3,
+     "sizeY": 3,
+     "maxExtraSize": 0,
+     "canOnlyContainOneItemPerSlot": 0,
+     "objectsGetLockedInPlace": 0,
+     "cantAddObjectsToInventory": 0,
+     "autoTransferEnabled": 0,
+     "slotRequirements": [],
+     "itemsInInventory": [],
+     "addLootFromTable": 0
+    }
+   },
+   {
+    "class": "MerchantAuthoring",
+    "values": {
+     "items": [
+      {
+       "objectID": 4052,
+       "amount": 1,
+       "requirementToBeAvailable": 0
+      },
+      {
+       "objectID": 4026,
+       "amount": 1,
+       "requirementToBeAvailable": 0
+      },
+      {
+       "objectID": 1223,
+       "amount": 3,
+       "requirementToBeAvailable": 0
+      },
+      {
+       "objectID": 1648,
+       "amount": 500,
+       "requirementToBeAvailable": 0
+      },
+      {
+       "objectID": 1640,
+       "amount": 10,
+       "requirementToBeAvailable": 0
+      },
+      {
+       "objectID": 1500,
+       "amount": 10,
+       "requirementToBeAvailable": 0
+      },
+      {
+       "objectID": 1505,
+       "amount": 10,
+       "requirementToBeAvailable": 1
+      },
+      {
+       "objectID": 1510,
+       "amount": 10,
+       "requirementToBeAvailable": 2
+      },
+      {
+       "objectID": 1520,
+       "amount": 5,
+       "requirementToBeAvailable": 2
+      }
+     ]
+    }
+   },
+   {
+    "class": "CanClaimBedAuthoring",
+    "values": {}
+   },
+   {
+    "class": "CreateCharacterGuidAuthoring",
+    "values": {}
+   },
+   {
+    "class": "CoinAmountAuthoring",
+    "values": {
+     "Value": 0
+    }
+   },
+   {
+    "class": "ImmuneToPushBackAuthoring",
+    "values": {}
+   },
+   {
+    "class": "CanBeDiscoveredAuthoring",
+    "values": {
+     "distanceToDiscover": 5.0
+    }
+   },
+   {
+    "class": "SpawnStateAuthoring",
+    "values": {
+     "duration": 3.4000000953674316,
+     "animId": "wakeUp",
+     "facingDirection": {
+      "x": 0.0,
+      "y": 0.0
+     },
+     "removeTilesOnSpawn": 0,
+     "radiusToRemoveTilesWithin": 0.0,
+     "removeTilesOnSpawnOffset": {
+      "x": 0.0,
+      "y": 0.0
+     }
+    }
+   },
+   {
+    "class": "BehaviourTagsAuthoring",
+    "values": {
+     "wantsToAttackTags": [],
+     "cantAttackTags": [],
+     "eatsTags": [],
+     "dataBlockRef": {
+      "m_address": {
+       "m_low": -638319326277819699,
+       "m_high": -3074621198175539239
+      }
+     }
+    }
+   },
+   {
+    "class": "ChaseStateAuthoring",
+    "values": {
+     "disabled": 0,
+     "skipVisibilityCheck": 0,
+     "moveSpeedMultiplier": 1.0,
+     "chaseAtDistance": 5.0,
+     "ignoreLowColliders": 0,
+     "preChaseDuration": 0.0,
+     "endChaseDuration": 0.0,
+     "idleDuration": 0.0,
+     "idleCooldown": 0.0,
+     "distanceToStartSideStepping": 0.0,
+     "distanceToKeepNoiseDisabled": 0,
+     "minDistanceToKeep": 0.699999988079071,
+     "maxDistanceToKeep": 0.699999988079071,
+     "obstacleAvoidDistance": 0.0,
+     "preferPathFind": 1,
+     "neverStopChasing": 1,
+     "needPathToChase": 0,
+     "chaseHeldObjects": [
+      3931
+     ],
+     "belongsToShape": {
+      "ref": "PhysicsShapeAuthoring"
+     }
+    }
+   },
+   {
+    "class": "NearbyEntitiesTrackerAuthoring",
+    "values": {
+     "detectsLayer": {
+      "Category00": 0,
+      "Category01": 1,
+      "Category02": 0,
+      "Category03": 0,
+      "Category04": 0,
+      "Category05": 0,
+      "Category06": 0,
+      "Category07": 0,
+      "Category08": 0,
+      "Category09": 0,
+      "Category10": 0,
+      "Category11": 0,
+      "Category12": 0,
+      "Category13": 0,
+      "Category14": 0,
+      "Category15": 0,
+      "Category16": 0,
+      "Category17": 0,
+      "Category18": 0,
+      "Category19": 0,
+      "Category20": 0,
+      "Category21": 0,
+      "Category22": 0,
+      "Category23": 0,
+      "Category24": 0,
+      "Category25": 0,
+      "Category26": 0,
+      "Category27": 0,
+      "Category28": 0,
+      "Category29": 0,
+      "Category30": 0,
+      "Category31": 0
+     },
+     "radius": 5.0,
+     "ignoreCooldown": 0
+    }
+   },
+   {
+    "class": "AffectedByAutomationAuthoring",
+    "values": {}
+   },
+   {
+    "class": "LinkedEntityGroupAuthoring",
+    "values": {}
+   },
+   {
+    "class": "LocalInteractableAuthoring",
+    "values": {
+     "useSecondInteraction": 0,
+     "interactSubIndex": 0
+    }
+   },
+   {
+    "class": "DropLootAuthoring",
+    "values": {
+     "hasLootTable": 1,
+     "lootTableID": 60,
+     "hasCustomLoot": 0,
+     "customLoot": {
+      "chance": 1.0,
+      "Values": []
+     },
+     "hasSeasonalLoot": 0,
+     "seasonalLootDrops": {
+      "lootDrops": []
+     },
+     "hasLootDropsOnUse": 0,
+     "onUseLootDrops": {
+      "lootTableID": 0,
+      "spawnEffects": 0,
+      "lootDrops": []
+     },
+     "hasLootDropsOnTakingDamage": 0,
+     "lootDropsWhenDamaged": {
+      "healthPercentageDamageToDeal": 0.0,
+      "minHealthPercentageToDropLoot": 0.0,
+      "damageToDealToDropLoot": 0,
+      "minHealthToDropLoot": 0,
+      "dropsLoot": 0,
+      "instantiateEntity": 0,
+      "minSpawnOffset": {
+       "x": 0.0,
+       "y": 0.0
+      },
+      "maxSpawnOffset": {
+       "x": 0.0,
+       "y": 0.0
+      },
+      "maxLimitToDropInNearbyArea": 0
+     }
+    }
+   }
+  ],
+  "FishingMerchantEntity": [
+   {
+    "class": "#Transform"
+   },
+   {
+    "class": "EntityMonoBehaviourData",
+    "values": {
+     "objectInfo": {
+      "objectID": 3903,
+      "initialAmount": 1,
+      "variation": 0,
+      "variationIsDynamic": 0,
+      "variationToToggleTo": 0,
+      "objectType": 900,
+      "tags": [
+       39
+      ],
+      "rarity": 0,
+      "salvageMultiplier": 1.0,
+      "level": 0,
+      "sellValue": -1,
+      "buyValueMultiplier": 1.0,
+      "icon": {
+       "ref": null
+      },
+      "iconOffset": {
+       "x": 0.0,
+       "y": 0.0
+      },
+      "iconSkinAssetRef": {
+       "m_address": {
+        "m_low": 0,
+        "m_high": 0
+       }
+      },
+      "smallIcon": {
+       "ref": null
+      },
+      "isStackable": 0,
+      "prefabTileSize": {
+       "x": 1,
+       "y": 1
+      },
+      "prefabCornerOffset": {
+       "x": 0,
+       "y": 0
+      },
+      "centerIsAtEntityPosition": 0,
+      "additionalSprites": [],
+      "tileset": 0,
+      "tileType": 0,
+      "prefabInfo": {
+       "graphicalRef": {
+        "m_address": {
+         "m_low": 6247631733419287833,
+         "m_high": -8347063996320806536
+        }
+       },
+       "authoringRef": {
+        "m_address": {
+         "m_low": 9013055283492294164,
+         "m_high": -3501496045852751653
+        }
+       },
+       "prefab": {
+        "ref": null
+       },
+       "authoring": {
+        "ref": null
+       }
+      },
+      "craftingSettings": {
+       "canOnlyUseAnyMaterialsWithTag": 0,
+       "iconType": 0
+      },
+      "requiredObjectsToCraft": [],
+      "craftingTime": 0.0,
+      "appearInMapUI": 0,
+      "mapColor": {
+       "r": 0.0,
+       "g": 0.0,
+       "b": 0.0,
+       "a": 0.0
+      },
+      "isCustomScenePrefab": 0,
+      "languageGenders": []
+     },
+     "optionalPreviewPrefab": {
+      "ref": null
+     }
+    }
+   },
+   {
+    "class": "AnimationAuthoring",
+    "values": {
+     "orientationSupport": 1,
+     "largeAnimationHistorySupport": 0
+    }
+   },
+   {
+    "class": "MovementSpeedAuthoring",
+    "values": {
+     "speed": 10.0
+    }
+   },
+   {
+    "class": "HealthAuthoring",
+    "values": {
+     "dontCalculateHealthFromLevel": 0,
+     "overrideStartHealth": 0,
+     "normalizedOverrideStartHealth": 1.0,
+     "startHealth": 100000,
+     "maxHealth": 100000,
+     "maxHealthMultiplier": 1.0,
+     "hasHealthRegeneration": 1,
+     "healInCombatAsWell": 0,
+     "healthIncreasePercentPerFiveSeconds": 100,
+     "healDelayAfterLeavingCombat": 5.0,
+     "level": {
+      "ref": null
+     }
+    }
+   },
+   {
+    "class": "StateAuthoring",
+    "values": {}
+   },
+   {
+    "class": "IdleStateAuthoring",
+    "values": {
+     "playIdleAnimation": 1
+    }
+   },
+   {
+    "class": "DeathStateAuthoring",
+    "values": {
+     "overrideTimeBeforeDestroy": 0,
+     "timeBeforeDestroy": 0.0,
+     "timeBeforeLootDrop": 0.0,
+     "skipDeathAnimation": 0
+    }
+   },
+   {
+    "class": "TookDamageStateAuthoring",
+    "values": {
+     "duration": 0.30000001192092896,
+     "refreshStateOnNewDamageTaken": 0
+    }
+   },
+   {
+    "class": "PhysicsShapeAuthoring",
+    "values": {
+     "m_ShapeType": 2,
+     "m_PrimitiveCenter": {
+      "x": 0.0,
+      "y": 0.4000000059604645,
+      "z": 0.0
+     },
+     "m_PrimitiveSize": {
+      "x": 0.75,
+      "y": 0.75,
+      "z": 0.75
+     },
+     "m_PrimitiveOrientation": {
+      "Value": {
+       "x": 0.0,
+       "y": 0.0,
+       "z": 0.0
+      },
+      "RotationOrder": 4
+     },
+     "m_Capsule": {
+      "Height": 0.75,
+      "Radius": 0.375,
+      "Axis": 2
+     },
+     "m_Cylinder": {
+      "Height": 0.75,
+      "Radius": 0.375,
+      "Axis": 2
+     },
+     "m_CylinderSideCount": 20,
+     "m_SphereRadius": 0.375,
+     "m_MinimumSkinnedVertexWeight": 0.10000000149011612,
+     "m_ConvexHullGenerationParameters": {
+      "m_SimplificationTolerance": 0.014999999664723873,
+      "m_BevelRadius": 0.05000000074505806,
+      "m_MinimumAngle": 2.500000238418579
+     },
+     "m_CustomMesh": {
+      "ref": null
+     },
+     "m_ForceUnique": 0,
+     "m_Material": {
+      "m_SupportsTemplate": 1,
+      "m_Template": {
+       "ref": null
+      },
+      "m_CollisionResponse": {
+       "m_Override": 0,
+       "m_Value": 1
+      },
+      "m_Friction": {
+       "m_Override": 0,
+       "m_Value": {
+        "Value": 0.0,
+        "CombineMode": 0
+       }
+      },
+      "m_Restitution": {
+       "m_Override": 0,
+       "m_Value": {
+        "Value": 0.0,
+        "CombineMode": 1
+       }
+      },
+      "m_BelongsToCategories": {
+       "m_Override": 0,
+       "m_Value": {
+        "Category00": 0,
+        "Category01": 0,
+        "Category02": 0,
+        "Category03": 0,
+        "Category04": 1,
+        "Category05": 0,
+        "Category06": 0,
+        "Category07": 0,
+        "Category08": 0,
+        "Category09": 0,
+        "Category10": 0,
+        "Category11": 0,
+        "Category12": 0,
+        "Category13": 0,
+        "Category14": 0,
+        "Category15": 0,
+        "Category16": 0,
+        "Category17": 0,
+        "Category18": 0,
+        "Category19": 0,
+        "Category20": 0,
+        "Category21": 0,
+        "Category22": 0,
+        "Category23": 0,
+        "Category24": 0,
+        "Category25": 0,
+        "Category26": 0,
+        "Category27": 0,
+        "Category28": 0,
+        "Category29": 0,
+        "Category30": 0,
+        "Category31": 0
+       }
+      },
+      "m_CollidesWithCategories": {
+       "m_Override": 1,
+       "m_Value": {
+        "Category00": 1,
+        "Category01": 0,
+        "Category02": 0,
+        "Category03": 0,
+        "Category04": 1,
+        "Category05": 0,
+        "Category06": 0,
+        "Category07": 0,
+        "Category08": 1,
+        "Category09": 0,
+        "Category10": 0,
+        "Category11": 0,
+        "Category12": 0,
+        "Category13": 0,
+        "Category14": 0,
+        "Category15": 0,
+        "Category16": 0,
+        "Category17": 1,
+        "Category18": 0,
+        "Category19": 0,
+        "Category20": 0,
+        "Category21": 0,
+        "Category22": 0,
+        "Category23": 0,
+        "Category24": 0,
+        "Category25": 0,
+        "Category26": 0,
+        "Category27": 0,
+        "Category28": 0,
+        "Category29": 0,
+        "Category30": 0,
+        "Category31": 0
+       }
+      },
+      "m_CustomMaterialTags": {
+       "m_Override": 0,
+       "m_Value": {
+        "Tag00": 0,
+        "Tag01": 0,
+        "Tag02": 0,
+        "Tag03": 0,
+        "Tag04": 0,
+        "Tag05": 0,
+        "Tag06": 0,
+        "Tag07": 0
+       }
+      },
+      "m_SerializedVersion": 1
+     },
+     "m_SerializedVersion": 1
+    }
+   },
+   {
+    "class": "PhysicsShapeAuthoring",
+    "values": {
+     "m_ShapeType": 2,
+     "m_PrimitiveCenter": {
+      "x": 0.0,
+      "y": 0.4000000059604645,
+      "z": 0.0
+     },
+     "m_PrimitiveSize": {
+      "x": 0.75,
+      "y": 0.75,
+      "z": 0.75
+     },
+     "m_PrimitiveOrientation": {
+      "Value": {
+       "x": 0.0,
+       "y": 0.0,
+       "z": 0.0
+      },
+      "RotationOrder": 4
+     },
+     "m_Capsule": {
+      "Height": 0.75,
+      "Radius": 0.375,
+      "Axis": 2
+     },
+     "m_Cylinder": {
+      "Height": 0.75,
+      "Radius": 0.375,
+      "Axis": 2
+     },
+     "m_CylinderSideCount": 20,
+     "m_SphereRadius": 0.375,
+     "m_MinimumSkinnedVertexWeight": 0.10000000149011612,
+     "m_ConvexHullGenerationParameters": {
+      "m_SimplificationTolerance": 0.014999999664723873,
+      "m_BevelRadius": 0.05000000074505806,
+      "m_MinimumAngle": 2.500000238418579
+     },
+     "m_CustomMesh": {
+      "ref": null
+     },
+     "m_ForceUnique": 0,
+     "m_Material": {
+      "m_SupportsTemplate": 1,
+      "m_Template": {
+       "ref": null
+      },
+      "m_CollisionResponse": {
+       "m_Override": 0,
+       "m_Value": 3
+      },
+      "m_Friction": {
+       "m_Override": 0,
+       "m_Value": {
+        "Value": 0.0,
+        "CombineMode": 0
+       }
+      },
+      "m_Restitution": {
+       "m_Override": 0,
+       "m_Value": {
+        "Value": 0.0,
+        "CombineMode": 2
+       }
+      },
+      "m_BelongsToCategories": {
+       "m_Override": 0,
+       "m_Value": {
+        "Category00": 0,
+        "Category01": 0,
+        "Category02": 0,
+        "Category03": 1,
+        "Category04": 0,
+        "Category05": 0,
+        "Category06": 0,
+        "Category07": 0,
+        "Category08": 0,
+        "Category09": 0,
+        "Category10": 0,
+        "Category11": 0,
+        "Category12": 0,
+        "Category13": 0,
+        "Category14": 0,
+        "Category15": 0,
+        "Category16": 0,
+        "Category17": 0,
+        "Category18": 0,
+        "Category19": 0,
+        "Category20": 0,
+        "Category21": 0,
+        "Category22": 0,
+        "Category23": 0,
+        "Category24": 0,
+        "Category25": 0,
+        "Category26": 0,
+        "Category27": 0,
+        "Category28": 0,
+        "Category29": 0,
+        "Category30": 0,
+        "Category31": 0
+       }
+      },
+      "m_CollidesWithCategories": {
+       "m_Override": 0,
+       "m_Value": {
+        "Category00": 0,
+        "Category01": 0,
+        "Category02": 0,
+        "Category03": 1,
+        "Category04": 0,
+        "Category05": 0,
+        "Category06": 0,
+        "Category07": 0,
+        "Category08": 0,
+        "Category09": 0,
+        "Category10": 0,
+        "Category11": 0,
+        "Category12": 0,
+        "Category13": 0,
+        "Category14": 0,
+        "Category15": 0,
+        "Category16": 0,
+        "Category17": 0,
+        "Category18": 0,
+        "Category19": 0,
+        "Category20": 0,
+        "Category21": 0,
+        "Category22": 0,
+        "Category23": 0,
+        "Category24": 0,
+        "Category25": 0,
+        "Category26": 0,
+        "Category27": 0,
+        "Category28": 0,
+        "Category29": 0,
+        "Category30": 0,
+        "Category31": 0
+       }
+      },
+      "m_CustomMaterialTags": {
+       "m_Override": 0,
+       "m_Value": {
+        "Tag00": 0,
+        "Tag01": 0,
+        "Tag02": 0,
+        "Tag03": 0,
+        "Tag04": 0,
+        "Tag05": 0,
+        "Tag06": 0,
+        "Tag07": 0
+       }
+      },
+      "m_SerializedVersion": 1
+     },
+     "m_SerializedVersion": 1
+    }
+   },
+   {
+    "class": "PhysicsBodyAuthoring",
+    "values": {
+     "m_MotionType": 0,
+     "m_Smoothing": 0,
+     "m_Mass": 15.0,
+     "m_LinearDamping": 10.0,
+     "m_AngularDamping": Infinity,
+     "m_InitialLinearVelocity": {
+      "x": 0.0,
+      "y": 0.0,
+      "z": 0.0
+     },
+     "m_InitialAngularVelocity": {
+      "x": 0.0,
+      "y": 0.0,
+      "z": 0.0
+     },
+     "m_GravityFactor": 1.0,
+     "m_OverrideDefaultMassDistribution": 1,
+     "m_CenterOfMass": {
+      "x": 0.0,
+      "y": 0.0,
+      "z": 0.0
+     },
+     "m_Orientation": {
+      "Value": {
+       "x": 0.0,
+       "y": 0.0,
+       "z": 0.0
+      },
+      "RotationOrder": 4
+     },
+     "m_InertiaTensor": {
+      "x": Infinity,
+      "y": Infinity,
+      "z": Infinity
+     },
+     "m_WorldIndex": 0,
+     "m_CustomTags": {
+      "Tag00": 0,
+      "Tag01": 0,
+      "Tag02": 0,
+      "Tag03": 0,
+      "Tag04": 0,
+      "Tag05": 0,
+      "Tag06": 0,
+      "Tag07": 0
+     }
+    }
+   },
+   {
+    "class": "GhostAuthoringComponent",
+    "values": {
+     "DefaultGhostMode": 0,
+     "SupportedGhostModes": 3,
+     "OptimizationMode": 0,
+     "Importance": 3,
+     "prefabId": "605029dcd20637e4bb7e17b91c9b89e9",
+     "HasOwner": 0,
+     "SupportAutoCommandTarget": 0,
+     "TrackInterpolationDelay": 0,
+     "GhostGroup": 0,
+     "UsePreSerialization": 0,
+     "DontUsePredictionBackup": 0
+    }
+   },
+   {
+    "class": "RandomWalkStateAuthoring",
+    "values": {
+     "minWalkDistance": 2.0,
+     "maxWalkDistance": 4.0,
+     "maxWalkDuration": 5.0,
+     "minIdleDuration": 2.5,
+     "maxIdleDuration": 3.0,
+     "movementSpeedMultiplier": 1.0,
+     "overrideUseAuthoringBehaviourValuesForAllPatternBaseMovementProperties": 0,
+     "walkPatternBehaviourDefinition": {
+      "ref": null
+     }
+    }
+   },
+   {
+    "class": "SupportsConditionsAuthoring",
+    "values": {
+     "cantBeAffectedByAuras": 0,
+     "cantBeAffectedByEnvironment": 0,
+     "cantBeAffectedByHealing": 0,
+     "dontShowStatsTextOnItem": 0,
+     "initialConditions": [],
+     "initialConditionsWithRandomChance": []
+    }
+   },
+   {
+    "class": "FactionAuthoring",
+    "values": {
+     "faction": 11
+    }
+   },
+   {
+    "class": "IdleWhenNearbyPlayerStateAuthoring",
+    "values": {
+     "distanceToStartIdle": 1.5
+    }
+   },
+   {
+    "class": "InventoryAuthoring",
+    "values": {
+     "sizeX": 3,
+     "sizeY": 3,
+     "maxExtraSize": 0,
+     "canOnlyContainOneItemPerSlot": 0,
+     "objectsGetLockedInPlace": 0,
+     "cantAddObjectsToInventory": 0,
+     "autoTransferEnabled": 0,
+     "slotRequirements": [],
+     "itemsInInventory": [],
+     "addLootFromTable": 0
+    }
+   },
+   {
+    "class": "MerchantAuthoring",
+    "values": {
+     "items": [
+      {
+       "objectID": 9700,
+       "amount": 20,
+       "requirementToBeAvailable": 0
+      },
+      {
+       "objectID": 9704,
+       "amount": 20,
+       "requirementToBeAvailable": 0
+      },
+      {
+       "objectID": 9715,
+       "amount": 20,
+       "requirementToBeAvailable": 0
+      },
+      {
+       "objectID": 8386,
+       "amount": 30,
+       "requirementToBeAvailable": 0
+      },
+      {
+       "objectID": 8387,
+       "amount": 30,
+       "requirementToBeAvailable": 0
+      },
+      {
+       "objectID": 8385,
+       "amount": 30,
+       "requirementToBeAvailable": 0
+      },
+      {
+       "objectID": 8864,
+       "amount": 1,
+       "requirementToBeAvailable": 0
+      },
+      {
+       "objectID": 8819,
+       "amount": 1,
+       "requirementToBeAvailable": 0
+      }
+     ]
+    }
+   },
+   {
+    "class": "CanClaimBedAuthoring",
+    "values": {}
+   },
+   {
+    "class": "CreateCharacterGuidAuthoring",
+    "values": {}
+   },
+   {
+    "class": "CoinAmountAuthoring",
+    "values": {
+     "Value": 0
+    }
+   },
+   {
+    "class": "ImmuneToPushBackAuthoring",
+    "values": {}
+   },
+   {
+    "class": "CanBeDiscoveredAuthoring",
+    "values": {
+     "distanceToDiscover": 5.0
+    }
+   },
+   {
+    "class": "BehaviourTagsAuthoring",
+    "values": {
+     "wantsToAttackTags": [],
+     "cantAttackTags": [],
+     "eatsTags": [],
+     "dataBlockRef": {
+      "m_address": {
+       "m_low": -638319326277819699,
+       "m_high": -3074621198175539239
+      }
+     }
+    }
+   },
+   {
+    "class": "ChaseStateAuthoring",
+    "values": {
+     "disabled": 0,
+     "skipVisibilityCheck": 0,
+     "moveSpeedMultiplier": 1.0,
+     "chaseAtDistance": 5.0,
+     "ignoreLowColliders": 0,
+     "preChaseDuration": 0.0,
+     "endChaseDuration": 0.0,
+     "idleDuration": 0.0,
+     "idleCooldown": 0.0,
+     "distanceToStartSideStepping": 0.0,
+     "distanceToKeepNoiseDisabled": 0,
+     "minDistanceToKeep": 0.699999988079071,
+     "maxDistanceToKeep": 0.699999988079071,
+     "obstacleAvoidDistance": 0.5,
+     "preferPathFind": 1,
+     "neverStopChasing": 1,
+     "needPathToChase": 0,
+     "chaseHeldObjects": [
+      3932
+     ],
+     "belongsToShape": {
+      "ref": "PhysicsShapeAuthoring"
+     }
+    }
+   },
+   {
+    "class": "NearbyEntitiesTrackerAuthoring",
+    "values": {
+     "detectsLayer": {
+      "Category00": 0,
+      "Category01": 1,
+      "Category02": 0,
+      "Category03": 0,
+      "Category04": 0,
+      "Category05": 0,
+      "Category06": 0,
+      "Category07": 0,
+      "Category08": 0,
+      "Category09": 0,
+      "Category10": 0,
+      "Category11": 0,
+      "Category12": 0,
+      "Category13": 0,
+      "Category14": 0,
+      "Category15": 0,
+      "Category16": 0,
+      "Category17": 0,
+      "Category18": 0,
+      "Category19": 0,
+      "Category20": 0,
+      "Category21": 0,
+      "Category22": 0,
+      "Category23": 0,
+      "Category24": 0,
+      "Category25": 0,
+      "Category26": 0,
+      "Category27": 0,
+      "Category28": 0,
+      "Category29": 0,
+      "Category30": 0,
+      "Category31": 0
+     },
+     "radius": 5.0,
+     "ignoreCooldown": 0
+    }
+   },
+   {
+    "class": "AffectedByAutomationAuthoring",
+    "values": {}
+   },
+   {
+    "class": "SpawnStateAuthoring",
+    "values": {
+     "duration": 0.25,
+     "animId": "spawn",
+     "facingDirection": {
+      "x": 0.0,
+      "y": 0.0
+     },
+     "removeTilesOnSpawn": 0,
+     "radiusToRemoveTilesWithin": 0.0,
+     "removeTilesOnSpawnOffset": {
+      "x": 0.0,
+      "y": 0.0
+     }
+    }
+   },
+   {
+    "class": "LinkedEntityGroupAuthoring",
+    "values": {}
+   },
+   {
+    "class": "LocalInteractableAuthoring",
+    "values": {
+     "useSecondInteraction": 0,
+     "interactSubIndex": 0
+    }
+   },
+   {
+    "class": "DropLootAuthoring",
+    "values": {
+     "hasLootTable": 1,
+     "lootTableID": 60,
+     "hasCustomLoot": 0,
+     "customLoot": {
+      "chance": 1.0,
+      "Values": []
+     },
+     "hasSeasonalLoot": 0,
+     "seasonalLootDrops": {
+      "lootDrops": []
+     },
+     "hasLootDropsOnUse": 0,
+     "onUseLootDrops": {
+      "lootTableID": 0,
+      "spawnEffects": 0,
+      "lootDrops": []
+     },
+     "hasLootDropsOnTakingDamage": 0,
+     "lootDropsWhenDamaged": {
+      "healthPercentageDamageToDeal": 0.0,
+      "minHealthPercentageToDropLoot": 0.0,
+      "damageToDealToDropLoot": 0,
+      "minHealthToDropLoot": 0,
+      "dropsLoot": 0,
+      "instantiateEntity": 0,
+      "minSpawnOffset": {
+       "x": 0.0,
+       "y": 0.0
+      },
+      "maxSpawnOffset": {
+       "x": 0.0,
+       "y": 0.0
+      },
+      "maxLimitToDropInNearbyArea": 0
+     }
+    }
+   }
+  ],
+  "VoidMerchantEntity": [
+   {
+    "class": "#Transform"
+   },
+   {
+    "class": "EntityMonoBehaviourData",
+    "values": {
+     "objectInfo": {
+      "objectID": 3936,
+      "initialAmount": 1,
+      "variation": 0,
+      "variationIsDynamic": 0,
+      "variationToToggleTo": 0,
+      "objectType": 900,
+      "tags": [
+       39
+      ],
+      "rarity": 0,
+      "salvageMultiplier": 1.0,
+      "level": 0,
+      "sellValue": -1,
+      "buyValueMultiplier": 1.0,
+      "icon": {
+       "ref": null
+      },
+      "iconOffset": {
+       "x": 0.0,
+       "y": 0.0
+      },
+      "iconSkinAssetRef": {
+       "m_address": {
+        "m_low": 0,
+        "m_high": 0
+       }
+      },
+      "smallIcon": {
+       "ref": null
+      },
+      "isStackable": 0,
+      "prefabTileSize": {
+       "x": 1,
+       "y": 1
+      },
+      "prefabCornerOffset": {
+       "x": 0,
+       "y": 0
+      },
+      "centerIsAtEntityPosition": 0,
+      "additionalSprites": [],
+      "tileset": 0,
+      "tileType": 0,
+      "prefabInfo": {
+       "graphicalRef": {
+        "m_address": {
+         "m_low": 5495781401912290763,
+         "m_high": -4763538517480923608
+        }
+       },
+       "authoringRef": {
+        "m_address": {
+         "m_low": -3817835950558310012,
+         "m_high": -7356734741603486837
+        }
+       },
+       "prefab": {
+        "ref": null
+       },
+       "authoring": {
+        "ref": null
+       }
+      },
+      "craftingSettings": {
+       "canOnlyUseAnyMaterialsWithTag": 0,
+       "iconType": 0
+      },
+      "requiredObjectsToCraft": [],
+      "craftingTime": 0.0,
+      "appearInMapUI": 0,
+      "mapColor": {
+       "r": 0.0,
+       "g": 0.0,
+       "b": 0.0,
+       "a": 0.0
+      },
+      "isCustomScenePrefab": 0,
+      "languageGenders": []
+     },
+     "optionalPreviewPrefab": {
+      "ref": null
+     }
+    }
+   },
+   {
+    "class": "AnimationAuthoring",
+    "values": {
+     "orientationSupport": 1,
+     "largeAnimationHistorySupport": 0
+    }
+   },
+   {
+    "class": "MovementSpeedAuthoring",
+    "values": {
+     "speed": 10.0
+    }
+   },
+   {
+    "class": "HealthAuthoring",
+    "values": {
+     "dontCalculateHealthFromLevel": 0,
+     "overrideStartHealth": 0,
+     "normalizedOverrideStartHealth": 1.0,
+     "startHealth": 100000,
+     "maxHealth": 100000,
+     "maxHealthMultiplier": 1.0,
+     "hasHealthRegeneration": 1,
+     "healInCombatAsWell": 0,
+     "healthIncreasePercentPerFiveSeconds": 100,
+     "healDelayAfterLeavingCombat": 5.0,
+     "level": {
+      "ref": null
+     }
+    }
+   },
+   {
+    "class": "StateAuthoring",
+    "values": {}
+   },
+   {
+    "class": "IdleStateAuthoring",
+    "values": {
+     "playIdleAnimation": 1
+    }
+   },
+   {
+    "class": "DeathStateAuthoring",
+    "values": {
+     "overrideTimeBeforeDestroy": 0,
+     "timeBeforeDestroy": 0.0,
+     "timeBeforeLootDrop": 0.0,
+     "skipDeathAnimation": 0
+    }
+   },
+   {
+    "class": "TookDamageStateAuthoring",
+    "values": {
+     "duration": 0.30000001192092896,
+     "refreshStateOnNewDamageTaken": 0
+    }
+   },
+   {
+    "class": "PhysicsShapeAuthoring",
+    "values": {
+     "m_ShapeType": 2,
+     "m_PrimitiveCenter": {
+      "x": 0.0,
+      "y": 0.4000000059604645,
+      "z": 0.0
+     },
+     "m_PrimitiveSize": {
+      "x": 0.75,
+      "y": 0.75,
+      "z": 0.75
+     },
+     "m_PrimitiveOrientation": {
+      "Value": {
+       "x": 0.0,
+       "y": 0.0,
+       "z": 0.0
+      },
+      "RotationOrder": 4
+     },
+     "m_Capsule": {
+      "Height": 0.75,
+      "Radius": 0.375,
+      "Axis": 2
+     },
+     "m_Cylinder": {
+      "Height": 0.75,
+      "Radius": 0.375,
+      "Axis": 2
+     },
+     "m_CylinderSideCount": 20,
+     "m_SphereRadius": 0.375,
+     "m_MinimumSkinnedVertexWeight": 0.10000000149011612,
+     "m_ConvexHullGenerationParameters": {
+      "m_SimplificationTolerance": 0.014999999664723873,
+      "m_BevelRadius": 0.05000000074505806,
+      "m_MinimumAngle": 2.500000238418579
+     },
+     "m_CustomMesh": {
+      "ref": null
+     },
+     "m_ForceUnique": 0,
+     "m_Material": {
+      "m_SupportsTemplate": 1,
+      "m_Template": {
+       "ref": null
+      },
+      "m_CollisionResponse": {
+       "m_Override": 0,
+       "m_Value": 1
+      },
+      "m_Friction": {
+       "m_Override": 0,
+       "m_Value": {
+        "Value": 0.0,
+        "CombineMode": 0
+       }
+      },
+      "m_Restitution": {
+       "m_Override": 0,
+       "m_Value": {
+        "Value": 0.0,
+        "CombineMode": 1
+       }
+      },
+      "m_BelongsToCategories": {
+       "m_Override": 0,
+       "m_Value": {
+        "Category00": 0,
+        "Category01": 0,
+        "Category02": 0,
+        "Category03": 0,
+        "Category04": 1,
+        "Category05": 0,
+        "Category06": 0,
+        "Category07": 0,
+        "Category08": 0,
+        "Category09": 0,
+        "Category10": 0,
+        "Category11": 0,
+        "Category12": 0,
+        "Category13": 0,
+        "Category14": 0,
+        "Category15": 0,
+        "Category16": 0,
+        "Category17": 0,
+        "Category18": 0,
+        "Category19": 0,
+        "Category20": 0,
+        "Category21": 0,
+        "Category22": 0,
+        "Category23": 0,
+        "Category24": 0,
+        "Category25": 0,
+        "Category26": 0,
+        "Category27": 0,
+        "Category28": 0,
+        "Category29": 0,
+        "Category30": 0,
+        "Category31": 0
+       }
+      },
+      "m_CollidesWithCategories": {
+       "m_Override": 1,
+       "m_Value": {
+        "Category00": 1,
+        "Category01": 0,
+        "Category02": 0,
+        "Category03": 0,
+        "Category04": 1,
+        "Category05": 0,
+        "Category06": 0,
+        "Category07": 0,
+        "Category08": 1,
+        "Category09": 0,
+        "Category10": 0,
+        "Category11": 0,
+        "Category12": 0,
+        "Category13": 0,
+        "Category14": 0,
+        "Category15": 0,
+        "Category16": 0,
+        "Category17": 1,
+        "Category18": 0,
+        "Category19": 0,
+        "Category20": 0,
+        "Category21": 0,
+        "Category22": 0,
+        "Category23": 0,
+        "Category24": 0,
+        "Category25": 0,
+        "Category26": 0,
+        "Category27": 0,
+        "Category28": 0,
+        "Category29": 0,
+        "Category30": 0,
+        "Category31": 0
+       }
+      },
+      "m_CustomMaterialTags": {
+       "m_Override": 0,
+       "m_Value": {
+        "Tag00": 0,
+        "Tag01": 0,
+        "Tag02": 0,
+        "Tag03": 0,
+        "Tag04": 0,
+        "Tag05": 0,
+        "Tag06": 0,
+        "Tag07": 0
+       }
+      },
+      "m_SerializedVersion": 1
+     },
+     "m_SerializedVersion": 1
+    }
+   },
+   {
+    "class": "PhysicsShapeAuthoring",
+    "values": {
+     "m_ShapeType": 2,
+     "m_PrimitiveCenter": {
+      "x": 0.0,
+      "y": 0.4000000059604645,
+      "z": 0.0
+     },
+     "m_PrimitiveSize": {
+      "x": 0.75,
+      "y": 0.75,
+      "z": 0.75
+     },
+     "m_PrimitiveOrientation": {
+      "Value": {
+       "x": 0.0,
+       "y": 0.0,
+       "z": 0.0
+      },
+      "RotationOrder": 4
+     },
+     "m_Capsule": {
+      "Height": 0.75,
+      "Radius": 0.375,
+      "Axis": 2
+     },
+     "m_Cylinder": {
+      "Height": 0.75,
+      "Radius": 0.375,
+      "Axis": 2
+     },
+     "m_CylinderSideCount": 20,
+     "m_SphereRadius": 0.375,
+     "m_MinimumSkinnedVertexWeight": 0.10000000149011612,
+     "m_ConvexHullGenerationParameters": {
+      "m_SimplificationTolerance": 0.014999999664723873,
+      "m_BevelRadius": 0.05000000074505806,
+      "m_MinimumAngle": 2.500000238418579
+     },
+     "m_CustomMesh": {
+      "ref": null
+     },
+     "m_ForceUnique": 0,
+     "m_Material": {
+      "m_SupportsTemplate": 1,
+      "m_Template": {
+       "ref": null
+      },
+      "m_CollisionResponse": {
+       "m_Override": 0,
+       "m_Value": 3
+      },
+      "m_Friction": {
+       "m_Override": 0,
+       "m_Value": {
+        "Value": 0.0,
+        "CombineMode": 0
+       }
+      },
+      "m_Restitution": {
+       "m_Override": 0,
+       "m_Value": {
+        "Value": 0.0,
+        "CombineMode": 2
+       }
+      },
+      "m_BelongsToCategories": {
+       "m_Override": 0,
+       "m_Value": {
+        "Category00": 0,
+        "Category01": 0,
+        "Category02": 0,
+        "Category03": 1,
+        "Category04": 0,
+        "Category05": 0,
+        "Category06": 0,
+        "Category07": 0,
+        "Category08": 0,
+        "Category09": 0,
+        "Category10": 0,
+        "Category11": 0,
+        "Category12": 0,
+        "Category13": 0,
+        "Category14": 0,
+        "Category15": 0,
+        "Category16": 0,
+        "Category17": 0,
+        "Category18": 0,
+        "Category19": 0,
+        "Category20": 0,
+        "Category21": 0,
+        "Category22": 0,
+        "Category23": 0,
+        "Category24": 0,
+        "Category25": 0,
+        "Category26": 0,
+        "Category27": 0,
+        "Category28": 0,
+        "Category29": 0,
+        "Category30": 0,
+        "Category31": 0
+       }
+      },
+      "m_CollidesWithCategories": {
+       "m_Override": 0,
+       "m_Value": {
+        "Category00": 0,
+        "Category01": 0,
+        "Category02": 0,
+        "Category03": 1,
+        "Category04": 0,
+        "Category05": 0,
+        "Category06": 0,
+        "Category07": 0,
+        "Category08": 0,
+        "Category09": 0,
+        "Category10": 0,
+        "Category11": 0,
+        "Category12": 0,
+        "Category13": 0,
+        "Category14": 0,
+        "Category15": 0,
+        "Category16": 0,
+        "Category17": 0,
+        "Category18": 0,
+        "Category19": 0,
+        "Category20": 0,
+        "Category21": 0,
+        "Category22": 0,
+        "Category23": 0,
+        "Category24": 0,
+        "Category25": 0,
+        "Category26": 0,
+        "Category27": 0,
+        "Category28": 0,
+        "Category29": 0,
+        "Category30": 0,
+        "Category31": 0
+       }
+      },
+      "m_CustomMaterialTags": {
+       "m_Override": 0,
+       "m_Value": {
+        "Tag00": 0,
+        "Tag01": 0,
+        "Tag02": 0,
+        "Tag03": 0,
+        "Tag04": 0,
+        "Tag05": 0,
+        "Tag06": 0,
+        "Tag07": 0
+       }
+      },
+      "m_SerializedVersion": 1
+     },
+     "m_SerializedVersion": 1
+    }
+   },
+   {
+    "class": "PhysicsBodyAuthoring",
+    "values": {
+     "m_MotionType": 0,
+     "m_Smoothing": 0,
+     "m_Mass": 15.0,
+     "m_LinearDamping": 10.0,
+     "m_AngularDamping": Infinity,
+     "m_InitialLinearVelocity": {
+      "x": 0.0,
+      "y": 0.0,
+      "z": 0.0
+     },
+     "m_InitialAngularVelocity": {
+      "x": 0.0,
+      "y": 0.0,
+      "z": 0.0
+     },
+     "m_GravityFactor": 1.0,
+     "m_OverrideDefaultMassDistribution": 1,
+     "m_CenterOfMass": {
+      "x": 0.0,
+      "y": 0.0,
+      "z": 0.0
+     },
+     "m_Orientation": {
+      "Value": {
+       "x": 0.0,
+       "y": 0.0,
+       "z": 0.0
+      },
+      "RotationOrder": 4
+     },
+     "m_InertiaTensor": {
+      "x": Infinity,
+      "y": Infinity,
+      "z": Infinity
+     },
+     "m_WorldIndex": 0,
+     "m_CustomTags": {
+      "Tag00": 0,
+      "Tag01": 0,
+      "Tag02": 0,
+      "Tag03": 0,
+      "Tag04": 0,
+      "Tag05": 0,
+      "Tag06": 0,
+      "Tag07": 0
+     }
+    }
+   },
+   {
+    "class": "GhostAuthoringComponent",
+    "values": {
+     "DefaultGhostMode": 0,
+     "SupportedGhostModes": 3,
+     "OptimizationMode": 0,
+     "Importance": 3,
+     "prefabId": "eba12fb30e5f94e44b53b9857b1800c1",
+     "HasOwner": 0,
+     "SupportAutoCommandTarget": 0,
+     "TrackInterpolationDelay": 0,
+     "GhostGroup": 0,
+     "UsePreSerialization": 0,
+     "DontUsePredictionBackup": 0
+    }
+   },
+   {
+    "class": "RandomWalkStateAuthoring",
+    "values": {
+     "minWalkDistance": 2.0,
+     "maxWalkDistance": 4.0,
+     "maxWalkDuration": 5.0,
+     "minIdleDuration": 1.5,
+     "maxIdleDuration": 3.0,
+     "movementSpeedMultiplier": 1.0,
+     "overrideUseAuthoringBehaviourValuesForAllPatternBaseMovementProperties": 0,
+     "walkPatternBehaviourDefinition": {
+      "ref": null
+     }
+    }
+   },
+   {
+    "class": "SupportsConditionsAuthoring",
+    "values": {
+     "cantBeAffectedByAuras": 0,
+     "cantBeAffectedByEnvironment": 0,
+     "cantBeAffectedByHealing": 0,
+     "dontShowStatsTextOnItem": 0,
+     "initialConditions": [],
+     "initialConditionsWithRandomChance": []
+    }
+   },
+   {
+    "class": "FactionAuthoring",
+    "values": {
+     "faction": 11
+    }
+   },
+   {
+    "class": "IdleWhenNearbyPlayerStateAuthoring",
+    "values": {
+     "distanceToStartIdle": 1.5
+    }
+   },
+   {
+    "class": "InventoryAuthoring",
+    "values": {
+     "sizeX": 3,
+     "sizeY": 3,
+     "maxExtraSize": 0,
+     "canOnlyContainOneItemPerSlot": 0,
+     "objectsGetLockedInPlace": 0,
+     "cantAddObjectsToInventory": 0,
+     "autoTransferEnabled": 0,
+     "slotRequirements": [],
+     "itemsInInventory": [],
+     "addLootFromTable": 0
+    }
+   },
+   {
+    "class": "MerchantAuthoring",
+    "values": {
+     "items": [
+      {
+       "objectID": 4056,
+       "amount": 1,
+       "requirementToBeAvailable": 0
+      },
+      {
+       "objectID": 4060,
+       "amount": 1,
+       "requirementToBeAvailable": 0
+      },
+      {
+       "objectID": 8259,
+       "amount": 1,
+       "requirementToBeAvailable": 0
+      },
+      {
+       "objectID": 9415,
+       "amount": 10,
+       "requirementToBeAvailable": 0
+      },
+      {
+       "objectID": 8257,
+       "amount": 1,
+       "requirementToBeAvailable": 0
+      }
+     ]
+    }
+   },
+   {
+    "class": "CanClaimBedAuthoring",
+    "values": {}
+   },
+   {
+    "class": "CreateCharacterGuidAuthoring",
+    "values": {}
+   },
+   {
+    "class": "CoinAmountAuthoring",
+    "values": {
+     "Value": 0
+    }
+   },
+   {
+    "class": "ImmuneToPushBackAuthoring",
+    "values": {}
+   },
+   {
+    "class": "CanBeDiscoveredAuthoring",
+    "values": {
+     "distanceToDiscover": 5.0
+    }
+   },
+   {
+    "class": "BehaviourTagsAuthoring",
+    "values": {
+     "wantsToAttackTags": [],
+     "cantAttackTags": [],
+     "eatsTags": [],
+     "dataBlockRef": {
+      "m_address": {
+       "m_low": -638319326277819699,
+       "m_high": -3074621198175539239
+      }
+     }
+    }
+   },
+   {
+    "class": "ChaseStateAuthoring",
+    "values": {
+     "disabled": 0,
+     "skipVisibilityCheck": 0,
+     "moveSpeedMultiplier": 1.0,
+     "chaseAtDistance": 5.0,
+     "ignoreLowColliders": 0,
+     "preChaseDuration": 0.0,
+     "endChaseDuration": 0.0,
+     "idleDuration": 0.0,
+     "idleCooldown": 0.0,
+     "distanceToStartSideStepping": 0.0,
+     "distanceToKeepNoiseDisabled": 0,
+     "minDistanceToKeep": 0.699999988079071,
+     "maxDistanceToKeep": 0.699999988079071,
+     "obstacleAvoidDistance": 0.5,
+     "preferPathFind": 1,
+     "neverStopChasing": 1,
+     "needPathToChase": 0,
+     "chaseHeldObjects": [
+      3930
+     ],
+     "belongsToShape": {
+      "ref": "PhysicsShapeAuthoring"
+     }
+    }
+   },
+   {
+    "class": "NearbyEntitiesTrackerAuthoring",
+    "values": {
+     "detectsLayer": {
+      "Category00": 0,
+      "Category01": 1,
+      "Category02": 0,
+      "Category03": 0,
+      "Category04": 0,
+      "Category05": 0,
+      "Category06": 0,
+      "Category07": 0,
+      "Category08": 0,
+      "Category09": 0,
+      "Category10": 0,
+      "Category11": 0,
+      "Category12": 0,
+      "Category13": 0,
+      "Category14": 0,
+      "Category15": 0,
+      "Category16": 0,
+      "Category17": 0,
+      "Category18": 0,
+      "Category19": 0,
+      "Category20": 0,
+      "Category21": 0,
+      "Category22": 0,
+      "Category23": 0,
+      "Category24": 0,
+      "Category25": 0,
+      "Category26": 0,
+      "Category27": 0,
+      "Category28": 0,
+      "Category29": 0,
+      "Category30": 0,
+      "Category31": 0
+     },
+     "radius": 5.0,
+     "ignoreCooldown": 0
+    }
+   },
+   {
+    "class": "AffectedByAutomationAuthoring",
+    "values": {}
+   },
+   {
+    "class": "SpawnStateAuthoring",
+    "values": {
+     "duration": 0.25,
+     "animId": "spawn",
+     "facingDirection": {
+      "x": 0.0,
+      "y": 0.0
+     },
+     "removeTilesOnSpawn": 0,
+     "radiusToRemoveTilesWithin": 0.0,
+     "removeTilesOnSpawnOffset": {
+      "x": 0.0,
+      "y": 0.0
+     }
+    }
+   },
+   {
+    "class": "LinkedEntityGroupAuthoring",
+    "values": {}
+   },
+   {
+    "class": "LocalInteractableAuthoring",
+    "values": {
+     "useSecondInteraction": 0,
+     "interactSubIndex": 0
+    }
+   },
+   {
+    "class": "DropLootAuthoring",
+    "values": {
+     "hasLootTable": 0,
+     "lootTableID": 60,
+     "hasCustomLoot": 0,
+     "customLoot": {
+      "chance": 1.0,
+      "Values": []
+     },
+     "hasSeasonalLoot": 0,
+     "seasonalLootDrops": {
+      "lootDrops": []
+     },
+     "hasLootDropsOnUse": 0,
+     "onUseLootDrops": {
+      "lootTableID": 0,
+      "spawnEffects": 0,
+      "lootDrops": []
+     },
+     "hasLootDropsOnTakingDamage": 0,
+     "lootDropsWhenDamaged": {
+      "healthPercentageDamageToDeal": 0.0,
+      "minHealthPercentageToDropLoot": 0.0,
+      "damageToDealToDropLoot": 0,
+      "minHealthToDropLoot": 0,
+      "dropsLoot": 0,
+      "instantiateEntity": 0,
+      "minSpawnOffset": {
+       "x": 0.0,
+       "y": 0.0
+      },
+      "maxSpawnOffset": {
+       "x": 0.0,
+       "y": 0.0
+      },
+      "maxLimitToDropInNearbyArea": 0
+     }
+    }
+   },
+   {
+    "class": "IdleEmoteStateAuthoring",
+    "values": {
+     "emoteAnimations": [
+      {
+       "animation": "emote",
+       "preIdleMinDuration": 2.0,
+       "preIdleMaxDuration": 3.0,
+       "duration": 2.5,
+       "mustBeOnWalkableGround": 0
+      }
+     ],
+     "minCooldown": 8.0,
+     "maxCooldown": 12.0
+    }
+   }
+  ],
+  "MysteriousIdolEntity": [
+   {
+    "class": "#Transform"
+   },
+   {
+    "class": "EntityMonoBehaviourData",
+    "values": {
+     "objectInfo": {
+      "objectID": 3930,
+      "initialAmount": 1,
+      "variation": 0,
+      "variationIsDynamic": 0,
+      "variationToToggleTo": 0,
+      "objectType": 800,
+      "tags": [],
+      "rarity": 1,
+      "salvageMultiplier": 1.0,
+      "level": 0,
+      "sellValue": 50,
+      "buyValueMultiplier": 1.0,
+      "icon": {
+       "ref": null
+      },
+      "iconOffset": {
+       "x": 0.0,
+       "y": 0.0
+      },
+      "iconSkinAssetRef": {
+       "m_address": {
+        "m_low": 0,
+        "m_high": 0
+       }
+      },
+      "smallIcon": {
+       "ref": null
+      },
+      "isStackable": 1,
+      "prefabTileSize": {
+       "x": 1,
+       "y": 1
+      },
+      "prefabCornerOffset": {
+       "x": 0,
+       "y": 0
+      },
+      "centerIsAtEntityPosition": 0,
+      "additionalSprites": [],
+      "tileset": 0,
+      "tileType": 0,
+      "prefabInfo": {
+       "graphicalRef": {
+        "m_address": {
+         "m_low": 4986733319877391425,
+         "m_high": -9197918928279587272
+        }
+       },
+       "authoringRef": {
+        "m_address": {
+         "m_low": -6186693273442950029,
+         "m_high": -6360570152006760438
+        }
+       },
+       "prefab": {
+        "ref": null
+       },
+       "authoring": {
+        "ref": null
+       }
+      },
+      "craftingSettings": {
+       "canOnlyUseAnyMaterialsWithTag": 0,
+       "iconType": 0
+      },
+      "requiredObjectsToCraft": [],
+      "craftingTime": 0.0,
+      "appearInMapUI": 0,
+      "mapColor": {
+       "r": 0.0,
+       "g": 0.0,
+       "b": 0.0,
+       "a": 0.0
+      },
+      "isCustomScenePrefab": 0,
+      "languageGenders": []
+     },
+     "optionalPreviewPrefab": {
+      "ref": null
+     }
+    }
+   },
+   {
+    "class": "PhysicsShapeAuthoring",
+    "values": {
+     "m_ShapeType": 0,
+     "m_PrimitiveCenter": {
+      "x": 0.0,
+      "y": 0.30000001192092896,
+      "z": -0.25
+     },
+     "m_PrimitiveSize": {
+      "x": 0.800000011920929,
+      "y": 0.6000000238418579,
+      "z": 0.5
+     },
+     "m_PrimitiveOrientation": {
+      "Value": {
+       "x": 0.0,
+       "y": 0.0,
+       "z": 0.0
+      },
+      "RotationOrder": 4
+     },
+     "m_Capsule": {
+      "Height": 0.800000011920929,
+      "Radius": 0.30000001192092896,
+      "Axis": 0
+     },
+     "m_Cylinder": {
+      "Height": 0.800000011920929,
+      "Radius": 0.30000001192092896,
+      "Axis": 0
+     },
+     "m_CylinderSideCount": 20,
+     "m_SphereRadius": 0.4000000059604645,
+     "m_MinimumSkinnedVertexWeight": 0.10000000149011612,
+     "m_ConvexHullGenerationParameters": {
+      "m_SimplificationTolerance": 0.014999999664723873,
+      "m_BevelRadius": 0.0,
+      "m_MinimumAngle": 2.500000238418579
+     },
+     "m_CustomMesh": {
+      "ref": null
+     },
+     "m_ForceUnique": 0,
+     "m_Material": {
+      "m_SupportsTemplate": 1,
+      "m_Template": {
+       "ref": null
+      },
+      "m_CollisionResponse": {
+       "m_Override": 0,
+       "m_Value": 0
+      },
+      "m_Friction": {
+       "m_Override": 0,
+       "m_Value": {
+        "Value": 0.0,
+        "CombineMode": 0
+       }
+      },
+      "m_Restitution": {
+       "m_Override": 0,
+       "m_Value": {
+        "Value": 0.0,
+        "CombineMode": 2
+       }
+      },
+      "m_BelongsToCategories": {
+       "m_Override": 0,
+       "m_Value": {
+        "Category00": 1,
+        "Category01": 0,
+        "Category02": 0,
+        "Category03": 0,
+        "Category04": 0,
+        "Category05": 0,
+        "Category06": 0,
+        "Category07": 0,
+        "Category08": 0,
+        "Category09": 0,
+        "Category10": 0,
+        "Category11": 0,
+        "Category12": 0,
+        "Category13": 0,
+        "Category14": 0,
+        "Category15": 0,
+        "Category16": 0,
+        "Category17": 0,
+        "Category18": 0,
+        "Category19": 0,
+        "Category20": 0,
+        "Category21": 0,
+        "Category22": 0,
+        "Category23": 0,
+        "Category24": 0,
+        "Category25": 0,
+        "Category26": 0,
+        "Category27": 0,
+        "Category28": 0,
+        "Category29": 0,
+        "Category30": 0,
+        "Category31": 0
+       }
+      },
+      "m_CollidesWithCategories": {
+       "m_Override": 0,
+       "m_Value": {
+        "Category00": 1,
+        "Category01": 0,
+        "Category02": 1,
+        "Category03": 0,
+        "Category04": 1,
+        "Category05": 0,
+        "Category06": 0,
+        "Category07": 0,
+        "Category08": 0,
+        "Category09": 0,
+        "Category10": 0,
+        "Category11": 0,
+        "Category12": 0,
+        "Category13": 0,
+        "Category14": 0,
+        "Category15": 0,
+        "Category16": 0,
+        "Category17": 0,
+        "Category18": 0,
+        "Category19": 0,
+        "Category20": 0,
+        "Category21": 0,
+        "Category22": 0,
+        "Category23": 0,
+        "Category24": 0,
+        "Category25": 0,
+        "Category26": 0,
+        "Category27": 0,
+        "Category28": 0,
+        "Category29": 0,
+        "Category30": 0,
+        "Category31": 0
+       }
+      },
+      "m_CustomMaterialTags": {
+       "m_Override": 0,
+       "m_Value": {
+        "Tag00": 0,
+        "Tag01": 0,
+        "Tag02": 0,
+        "Tag03": 0,
+        "Tag04": 0,
+        "Tag05": 0,
+        "Tag06": 0,
+        "Tag07": 0
+       }
+      },
+      "m_SerializedVersion": 1
+     },
+     "m_SerializedVersion": 1
+    }
+   },
+   {
+    "class": "MineableAuthoring",
+    "values": {
+     "playFailedEffectOnZeroDamage": 0
+    }
+   },
+   {
+    "class": "HealthAuthoring",
+    "values": {
+     "dontCalculateHealthFromLevel": 0,
+     "overrideStartHealth": 0,
+     "normalizedOverrideStartHealth": 1.0,
+     "startHealth": 2,
+     "maxHealth": 2,
+     "maxHealthMultiplier": 1.0,
+     "hasHealthRegeneration": 1,
+     "healInCombatAsWell": 0,
+     "healthIncreasePercentPerFiveSeconds": 100,
+     "healDelayAfterLeavingCombat": 5.0,
+     "level": {
+      "ref": null
+     }
+    }
+   },
+   {
+    "class": "AnimationAuthoring",
+    "values": {
+     "orientationSupport": 0,
+     "largeAnimationHistorySupport": 0
+    }
+   },
+   {
+    "class": "StateAuthoring",
+    "values": {}
+   },
+   {
+    "class": "IdleStateAuthoring",
+    "values": {
+     "playIdleAnimation": 1
+    }
+   },
+   {
+    "class": "TookDamageStateAuthoring",
+    "values": {
+     "duration": 0.0,
+     "refreshStateOnNewDamageTaken": 0
+    }
+   },
+   {
+    "class": "DeathStateAuthoring",
+    "values": {
+     "overrideTimeBeforeDestroy": 0,
+     "timeBeforeDestroy": 0.0,
+     "timeBeforeLootDrop": 0.0,
+     "skipDeathAnimation": 0
+    }
+   },
+   {
+    "class": "DamageReductionAuthoring",
+    "values": {
+     "calculateReductionFromLevel": 0,
+     "reductionMultiplier": 1.0,
+     "reduction": 0,
+     "maxDamagePerHit": 1,
+     "minDamagePerHit": 0,
+     "ignoreReductionWhenDamagedByDrill": 0,
+     "level": {
+      "ref": null
+     }
+    }
+   },
+   {
+    "class": "PlaceableObjectAuthoring",
+    "values": {
+     "prefabTileSize": {
+      "x": 1,
+      "y": 1
+     },
+     "prefabCornerOffset": {
+      "x": 0,
+      "y": 0
+     },
+     "centerIsAtEntityPosition": 0,
+     "objectCanBeToggledToNewNonRotationOption": 0,
+     "toggledToNewNonRotationOptions": 0,
+     "variationToPlace": 0,
+     "canBePlacedOnPlayer": 0,
+     "canBePlacedOnAnyWalkableTile": 1,
+     "canBePlacedOnWater": 0,
+     "canBePlacedOnLava": 0,
+     "canBePlacedOnPit": 0,
+     "canBePlacedOnBlockingObjects": 0,
+     "canBePlacedOnLowColliders": 0,
+     "dontDestroyObjectIfInvalidPlacement": 0,
+     "canBePlacedOnImmuneTiles": 0,
+     "dontBlockRoots": 0,
+     "canBePlacedOnObjects": [],
+     "canNotBePlacedOnObjects": [],
+     "hasVariationsThatCanBePlacedOnWalls": 0,
+     "canPlaceOnSideOfWall": 0,
+     "wallSideVariationStartsOnIndex1": 0,
+     "blocksHangingWallObjects": 0,
+     "appearInMapUI": 0,
+     "mapColor": {
+      "r": 0.0,
+      "g": 0.0,
+      "b": 0.0,
+      "a": 0.0
+     },
+     "alignWithPlayerDirection": 0,
+     "displayPlaceableType": 0
+    }
+   },
+   {
+    "class": "GhostAuthoringComponent",
+    "values": {
+     "DefaultGhostMode": 0,
+     "SupportedGhostModes": 3,
+     "OptimizationMode": 1,
+     "Importance": 1,
+     "prefabId": "c7ec4e59d228904479b2748d1774c37a",
+     "HasOwner": 0,
+     "SupportAutoCommandTarget": 0,
+     "TrackInterpolationDelay": 0,
+     "GhostGroup": 0,
+     "UsePreSerialization": 0,
+     "DontUsePredictionBackup": 0
+    }
+   },
+   {
+    "class": "LinkedEntityGroupAuthoring",
+    "values": {}
+   },
+   {
+    "class": "IsHabitableIdolAuthoring",
+    "values": {}
+   }
+  ],
+  "SlimeOilEntity": [
+   {
+    "class": "#Transform"
+   },
+   {
+    "class": "EntityMonoBehaviourData",
+    "values": {
+     "objectInfo": {
+      "objectID": 3931,
+      "initialAmount": 1,
+      "variation": 0,
+      "variationIsDynamic": 0,
+      "variationToToggleTo": 0,
+      "objectType": 800,
+      "tags": [],
+      "rarity": 1,
+      "salvageMultiplier": 1.0,
+      "level": 0,
+      "sellValue": 50,
+      "buyValueMultiplier": 1.0,
+      "icon": {
+       "ref": null
+      },
+      "iconOffset": {
+       "x": 0.0,
+       "y": 0.0
+      },
+      "iconSkinAssetRef": {
+       "m_address": {
+        "m_low": 0,
+        "m_high": 0
+       }
+      },
+      "smallIcon": {
+       "ref": null
+      },
+      "isStackable": 1,
+      "prefabTileSize": {
+       "x": 1,
+       "y": 1
+      },
+      "prefabCornerOffset": {
+       "x": 0,
+       "y": 0
+      },
+      "centerIsAtEntityPosition": 0,
+      "additionalSprites": [],
+      "tileset": 0,
+      "tileType": 0,
+      "prefabInfo": {
+       "graphicalRef": {
+        "m_address": {
+         "m_low": 2563907075724220486,
+         "m_high": 7106601235200495578
+        }
+       },
+       "authoringRef": {
+        "m_address": {
+         "m_low": 1226338551989712880,
+         "m_high": -2078822715514065381
+        }
+       },
+       "prefab": {
+        "ref": null
+       },
+       "authoring": {
+        "ref": null
+       }
+      },
+      "craftingSettings": {
+       "canOnlyUseAnyMaterialsWithTag": 0,
+       "iconType": 0
+      },
+      "requiredObjectsToCraft": [],
+      "craftingTime": 0.0,
+      "appearInMapUI": 0,
+      "mapColor": {
+       "r": 0.0,
+       "g": 0.0,
+       "b": 0.0,
+       "a": 0.0
+      },
+      "isCustomScenePrefab": 0,
+      "languageGenders": []
+     },
+     "optionalPreviewPrefab": {
+      "ref": null
+     }
+    }
+   },
+   {
+    "class": "PhysicsShapeAuthoring",
+    "values": {
+     "m_ShapeType": 0,
+     "m_PrimitiveCenter": {
+      "x": 0.0,
+      "y": 0.30000001192092896,
+      "z": -0.25
+     },
+     "m_PrimitiveSize": {
+      "x": 0.800000011920929,
+      "y": 0.6000000238418579,
+      "z": 0.5
+     },
+     "m_PrimitiveOrientation": {
+      "Value": {
+       "x": 0.0,
+       "y": 0.0,
+       "z": 0.0
+      },
+      "RotationOrder": 4
+     },
+     "m_Capsule": {
+      "Height": 0.800000011920929,
+      "Radius": 0.30000001192092896,
+      "Axis": 0
+     },
+     "m_Cylinder": {
+      "Height": 0.800000011920929,
+      "Radius": 0.30000001192092896,
+      "Axis": 0
+     },
+     "m_CylinderSideCount": 20,
+     "m_SphereRadius": 0.4000000059604645,
+     "m_MinimumSkinnedVertexWeight": 0.10000000149011612,
+     "m_ConvexHullGenerationParameters": {
+      "m_SimplificationTolerance": 0.014999999664723873,
+      "m_BevelRadius": 0.0,
+      "m_MinimumAngle": 2.500000238418579
+     },
+     "m_CustomMesh": {
+      "ref": null
+     },
+     "m_ForceUnique": 0,
+     "m_Material": {
+      "m_SupportsTemplate": 1,
+      "m_Template": {
+       "ref": null
+      },
+      "m_CollisionResponse": {
+       "m_Override": 0,
+       "m_Value": 0
+      },
+      "m_Friction": {
+       "m_Override": 0,
+       "m_Value": {
+        "Value": 0.0,
+        "CombineMode": 0
+       }
+      },
+      "m_Restitution": {
+       "m_Override": 0,
+       "m_Value": {
+        "Value": 0.0,
+        "CombineMode": 2
+       }
+      },
+      "m_BelongsToCategories": {
+       "m_Override": 0,
+       "m_Value": {
+        "Category00": 1,
+        "Category01": 0,
+        "Category02": 0,
+        "Category03": 0,
+        "Category04": 0,
+        "Category05": 0,
+        "Category06": 0,
+        "Category07": 0,
+        "Category08": 0,
+        "Category09": 0,
+        "Category10": 0,
+        "Category11": 0,
+        "Category12": 0,
+        "Category13": 0,
+        "Category14": 0,
+        "Category15": 0,
+        "Category16": 0,
+        "Category17": 0,
+        "Category18": 0,
+        "Category19": 0,
+        "Category20": 0,
+        "Category21": 0,
+        "Category22": 0,
+        "Category23": 0,
+        "Category24": 0,
+        "Category25": 0,
+        "Category26": 0,
+        "Category27": 0,
+        "Category28": 0,
+        "Category29": 0,
+        "Category30": 0,
+        "Category31": 0
+       }
+      },
+      "m_CollidesWithCategories": {
+       "m_Override": 0,
+       "m_Value": {
+        "Category00": 1,
+        "Category01": 0,
+        "Category02": 1,
+        "Category03": 0,
+        "Category04": 1,
+        "Category05": 0,
+        "Category06": 0,
+        "Category07": 0,
+        "Category08": 0,
+        "Category09": 0,
+        "Category10": 0,
+        "Category11": 0,
+        "Category12": 0,
+        "Category13": 0,
+        "Category14": 0,
+        "Category15": 0,
+        "Category16": 0,
+        "Category17": 0,
+        "Category18": 0,
+        "Category19": 0,
+        "Category20": 0,
+        "Category21": 0,
+        "Category22": 0,
+        "Category23": 0,
+        "Category24": 0,
+        "Category25": 0,
+        "Category26": 0,
+        "Category27": 0,
+        "Category28": 0,
+        "Category29": 0,
+        "Category30": 0,
+        "Category31": 0
+       }
+      },
+      "m_CustomMaterialTags": {
+       "m_Override": 0,
+       "m_Value": {
+        "Tag00": 0,
+        "Tag01": 0,
+        "Tag02": 0,
+        "Tag03": 0,
+        "Tag04": 0,
+        "Tag05": 0,
+        "Tag06": 0,
+        "Tag07": 0
+       }
+      },
+      "m_SerializedVersion": 1
+     },
+     "m_SerializedVersion": 1
+    }
+   },
+   {
+    "class": "MineableAuthoring",
+    "values": {
+     "playFailedEffectOnZeroDamage": 0
+    }
+   },
+   {
+    "class": "HealthAuthoring",
+    "values": {
+     "dontCalculateHealthFromLevel": 0,
+     "overrideStartHealth": 0,
+     "normalizedOverrideStartHealth": 1.0,
+     "startHealth": 2,
+     "maxHealth": 2,
+     "maxHealthMultiplier": 1.0,
+     "hasHealthRegeneration": 1,
+     "healInCombatAsWell": 0,
+     "healthIncreasePercentPerFiveSeconds": 100,
+     "healDelayAfterLeavingCombat": 5.0,
+     "level": {
+      "ref": null
+     }
+    }
+   },
+   {
+    "class": "AnimationAuthoring",
+    "values": {
+     "orientationSupport": 0,
+     "largeAnimationHistorySupport": 0
+    }
+   },
+   {
+    "class": "StateAuthoring",
+    "values": {}
+   },
+   {
+    "class": "IdleStateAuthoring",
+    "values": {
+     "playIdleAnimation": 1
+    }
+   },
+   {
+    "class": "TookDamageStateAuthoring",
+    "values": {
+     "duration": 0.0,
+     "refreshStateOnNewDamageTaken": 0
+    }
+   },
+   {
+    "class": "DeathStateAuthoring",
+    "values": {
+     "overrideTimeBeforeDestroy": 0,
+     "timeBeforeDestroy": 0.0,
+     "timeBeforeLootDrop": 0.0,
+     "skipDeathAnimation": 0
+    }
+   },
+   {
+    "class": "DamageReductionAuthoring",
+    "values": {
+     "calculateReductionFromLevel": 0,
+     "reductionMultiplier": 1.0,
+     "reduction": 0,
+     "maxDamagePerHit": 1,
+     "minDamagePerHit": 0,
+     "ignoreReductionWhenDamagedByDrill": 0,
+     "level": {
+      "ref": null
+     }
+    }
+   },
+   {
+    "class": "PlaceableObjectAuthoring",
+    "values": {
+     "prefabTileSize": {
+      "x": 1,
+      "y": 1
+     },
+     "prefabCornerOffset": {
+      "x": 0,
+      "y": 0
+     },
+     "centerIsAtEntityPosition": 0,
+     "objectCanBeToggledToNewNonRotationOption": 0,
+     "toggledToNewNonRotationOptions": 0,
+     "variationToPlace": 0,
+     "canBePlacedOnPlayer": 0,
+     "canBePlacedOnAnyWalkableTile": 1,
+     "canBePlacedOnWater": 0,
+     "canBePlacedOnLava": 0,
+     "canBePlacedOnPit": 0,
+     "canBePlacedOnBlockingObjects": 0,
+     "canBePlacedOnLowColliders": 0,
+     "dontDestroyObjectIfInvalidPlacement": 0,
+     "canBePlacedOnImmuneTiles": 0,
+     "dontBlockRoots": 0,
+     "canBePlacedOnObjects": [],
+     "canNotBePlacedOnObjects": [],
+     "hasVariationsThatCanBePlacedOnWalls": 0,
+     "canPlaceOnSideOfWall": 0,
+     "wallSideVariationStartsOnIndex1": 0,
+     "blocksHangingWallObjects": 0,
+     "appearInMapUI": 0,
+     "mapColor": {
+      "r": 0.0,
+      "g": 0.0,
+      "b": 0.0,
+      "a": 0.0
+     },
+     "alignWithPlayerDirection": 0,
+     "displayPlaceableType": 0
+    }
+   },
+   {
+    "class": "GhostAuthoringComponent",
+    "values": {
+     "DefaultGhostMode": 0,
+     "SupportedGhostModes": 3,
+     "OptimizationMode": 1,
+     "Importance": 1,
+     "prefabId": "aa388832f27c5ed41acef826a0cb2771",
+     "HasOwner": 0,
+     "SupportAutoCommandTarget": 0,
+     "TrackInterpolationDelay": 0,
+     "GhostGroup": 0,
+     "UsePreSerialization": 0,
+     "DontUsePredictionBackup": 0
+    }
+   },
+   {
+    "class": "LinkedEntityGroupAuthoring",
+    "values": {}
+   },
+   {
+    "class": "IsHabitableIdolAuthoring",
+    "values": {}
+   }
+  ],
+  "PileOfChumEntity": [
+   {
+    "class": "#Transform"
+   },
+   {
+    "class": "EntityMonoBehaviourData",
+    "values": {
+     "objectInfo": {
+      "objectID": 3932,
+      "initialAmount": 1,
+      "variation": 0,
+      "variationIsDynamic": 0,
+      "variationToToggleTo": 0,
+      "objectType": 800,
+      "tags": [],
+      "rarity": 1,
+      "salvageMultiplier": 1.0,
+      "level": 0,
+      "sellValue": 50,
+      "buyValueMultiplier": 1.0,
+      "icon": {
+       "ref": null
+      },
+      "iconOffset": {
+       "x": 0.0,
+       "y": 0.0
+      },
+      "iconSkinAssetRef": {
+       "m_address": {
+        "m_low": 0,
+        "m_high": 0
+       }
+      },
+      "smallIcon": {
+       "ref": null
+      },
+      "isStackable": 1,
+      "prefabTileSize": {
+       "x": 1,
+       "y": 1
+      },
+      "prefabCornerOffset": {
+       "x": 0,
+       "y": 0
+      },
+      "centerIsAtEntityPosition": 0,
+      "additionalSprites": [],
+      "tileset": 0,
+      "tileType": 0,
+      "prefabInfo": {
+       "graphicalRef": {
+        "m_address": {
+         "m_low": 8395892067085914689,
+         "m_high": 605908713382113385
+        }
+       },
+       "authoringRef": {
+        "m_address": {
+         "m_low": -1151757110410580910,
+         "m_high": 4707172360953405256
+        }
+       },
+       "prefab": {
+        "ref": null
+       },
+       "authoring": {
+        "ref": null
+       }
+      },
+      "craftingSettings": {
+       "canOnlyUseAnyMaterialsWithTag": 0,
+       "iconType": 0
+      },
+      "requiredObjectsToCraft": [],
+      "craftingTime": 0.0,
+      "appearInMapUI": 0,
+      "mapColor": {
+       "r": 0.0,
+       "g": 0.0,
+       "b": 0.0,
+       "a": 0.0
+      },
+      "isCustomScenePrefab": 0,
+      "languageGenders": []
+     },
+     "optionalPreviewPrefab": {
+      "ref": null
+     }
+    }
+   },
+   {
+    "class": "PhysicsShapeAuthoring",
+    "values": {
+     "m_ShapeType": 0,
+     "m_PrimitiveCenter": {
+      "x": 0.0,
+      "y": 0.30000001192092896,
+      "z": -0.25
+     },
+     "m_PrimitiveSize": {
+      "x": 0.800000011920929,
+      "y": 0.6000000238418579,
+      "z": 0.5
+     },
+     "m_PrimitiveOrientation": {
+      "Value": {
+       "x": 0.0,
+       "y": 0.0,
+       "z": 0.0
+      },
+      "RotationOrder": 4
+     },
+     "m_Capsule": {
+      "Height": 0.800000011920929,
+      "Radius": 0.30000001192092896,
+      "Axis": 0
+     },
+     "m_Cylinder": {
+      "Height": 0.800000011920929,
+      "Radius": 0.30000001192092896,
+      "Axis": 0
+     },
+     "m_CylinderSideCount": 20,
+     "m_SphereRadius": 0.4000000059604645,
+     "m_MinimumSkinnedVertexWeight": 0.10000000149011612,
+     "m_ConvexHullGenerationParameters": {
+      "m_SimplificationTolerance": 0.014999999664723873,
+      "m_BevelRadius": 0.0,
+      "m_MinimumAngle": 2.500000238418579
+     },
+     "m_CustomMesh": {
+      "ref": null
+     },
+     "m_ForceUnique": 0,
+     "m_Material": {
+      "m_SupportsTemplate": 1,
+      "m_Template": {
+       "ref": null
+      },
+      "m_CollisionResponse": {
+       "m_Override": 0,
+       "m_Value": 0
+      },
+      "m_Friction": {
+       "m_Override": 0,
+       "m_Value": {
+        "Value": 0.0,
+        "CombineMode": 0
+       }
+      },
+      "m_Restitution": {
+       "m_Override": 0,
+       "m_Value": {
+        "Value": 0.0,
+        "CombineMode": 2
+       }
+      },
+      "m_BelongsToCategories": {
+       "m_Override": 0,
+       "m_Value": {
+        "Category00": 1,
+        "Category01": 0,
+        "Category02": 0,
+        "Category03": 0,
+        "Category04": 0,
+        "Category05": 0,
+        "Category06": 0,
+        "Category07": 0,
+        "Category08": 0,
+        "Category09": 0,
+        "Category10": 0,
+        "Category11": 0,
+        "Category12": 0,
+        "Category13": 0,
+        "Category14": 0,
+        "Category15": 0,
+        "Category16": 0,
+        "Category17": 0,
+        "Category18": 0,
+        "Category19": 0,
+        "Category20": 0,
+        "Category21": 0,
+        "Category22": 0,
+        "Category23": 0,
+        "Category24": 0,
+        "Category25": 0,
+        "Category26": 0,
+        "Category27": 0,
+        "Category28": 0,
+        "Category29": 0,
+        "Category30": 0,
+        "Category31": 0
+       }
+      },
+      "m_CollidesWithCategories": {
+       "m_Override": 0,
+       "m_Value": {
+        "Category00": 1,
+        "Category01": 0,
+        "Category02": 1,
+        "Category03": 0,
+        "Category04": 1,
+        "Category05": 0,
+        "Category06": 0,
+        "Category07": 0,
+        "Category08": 0,
+        "Category09": 0,
+        "Category10": 0,
+        "Category11": 0,
+        "Category12": 0,
+        "Category13": 0,
+        "Category14": 0,
+        "Category15": 0,
+        "Category16": 0,
+        "Category17": 0,
+        "Category18": 0,
+        "Category19": 0,
+        "Category20": 0,
+        "Category21": 0,
+        "Category22": 0,
+        "Category23": 0,
+        "Category24": 0,
+        "Category25": 0,
+        "Category26": 0,
+        "Category27": 0,
+        "Category28": 0,
+        "Category29": 0,
+        "Category30": 0,
+        "Category31": 0
+       }
+      },
+      "m_CustomMaterialTags": {
+       "m_Override": 0,
+       "m_Value": {
+        "Tag00": 0,
+        "Tag01": 0,
+        "Tag02": 0,
+        "Tag03": 0,
+        "Tag04": 0,
+        "Tag05": 0,
+        "Tag06": 0,
+        "Tag07": 0
+       }
+      },
+      "m_SerializedVersion": 1
+     },
+     "m_SerializedVersion": 1
+    }
+   },
+   {
+    "class": "MineableAuthoring",
+    "values": {
+     "playFailedEffectOnZeroDamage": 0
+    }
+   },
+   {
+    "class": "HealthAuthoring",
+    "values": {
+     "dontCalculateHealthFromLevel": 0,
+     "overrideStartHealth": 0,
+     "normalizedOverrideStartHealth": 1.0,
+     "startHealth": 2,
+     "maxHealth": 2,
+     "maxHealthMultiplier": 1.0,
+     "hasHealthRegeneration": 1,
+     "healInCombatAsWell": 0,
+     "healthIncreasePercentPerFiveSeconds": 100,
+     "healDelayAfterLeavingCombat": 5.0,
+     "level": {
+      "ref": null
+     }
+    }
+   },
+   {
+    "class": "AnimationAuthoring",
+    "values": {
+     "orientationSupport": 0,
+     "largeAnimationHistorySupport": 0
+    }
+   },
+   {
+    "class": "StateAuthoring",
+    "values": {}
+   },
+   {
+    "class": "IdleStateAuthoring",
+    "values": {
+     "playIdleAnimation": 1
+    }
+   },
+   {
+    "class": "TookDamageStateAuthoring",
+    "values": {
+     "duration": 0.0,
+     "refreshStateOnNewDamageTaken": 0
+    }
+   },
+   {
+    "class": "DeathStateAuthoring",
+    "values": {
+     "overrideTimeBeforeDestroy": 0,
+     "timeBeforeDestroy": 0.0,
+     "timeBeforeLootDrop": 0.0,
+     "skipDeathAnimation": 0
+    }
+   },
+   {
+    "class": "DamageReductionAuthoring",
+    "values": {
+     "calculateReductionFromLevel": 0,
+     "reductionMultiplier": 1.0,
+     "reduction": 0,
+     "maxDamagePerHit": 1,
+     "minDamagePerHit": 0,
+     "ignoreReductionWhenDamagedByDrill": 0,
+     "level": {
+      "ref": null
+     }
+    }
+   },
+   {
+    "class": "PlaceableObjectAuthoring",
+    "values": {
+     "prefabTileSize": {
+      "x": 1,
+      "y": 1
+     },
+     "prefabCornerOffset": {
+      "x": 0,
+      "y": 0
+     },
+     "centerIsAtEntityPosition": 0,
+     "objectCanBeToggledToNewNonRotationOption": 0,
+     "toggledToNewNonRotationOptions": 0,
+     "variationToPlace": 0,
+     "canBePlacedOnPlayer": 0,
+     "canBePlacedOnAnyWalkableTile": 1,
+     "canBePlacedOnWater": 0,
+     "canBePlacedOnLava": 0,
+     "canBePlacedOnPit": 0,
+     "canBePlacedOnBlockingObjects": 0,
+     "canBePlacedOnLowColliders": 0,
+     "dontDestroyObjectIfInvalidPlacement": 0,
+     "canBePlacedOnImmuneTiles": 0,
+     "dontBlockRoots": 0,
+     "canBePlacedOnObjects": [],
+     "canNotBePlacedOnObjects": [],
+     "hasVariationsThatCanBePlacedOnWalls": 0,
+     "canPlaceOnSideOfWall": 0,
+     "wallSideVariationStartsOnIndex1": 0,
+     "blocksHangingWallObjects": 0,
+     "appearInMapUI": 0,
+     "mapColor": {
+      "r": 0.0,
+      "g": 0.0,
+      "b": 0.0,
+      "a": 0.0
+     },
+     "alignWithPlayerDirection": 0,
+     "displayPlaceableType": 0
+    }
+   },
+   {
+    "class": "GhostAuthoringComponent",
+    "values": {
+     "DefaultGhostMode": 0,
+     "SupportedGhostModes": 3,
+     "OptimizationMode": 1,
+     "Importance": 1,
+     "prefabId": "c52507e7cc60e63439af730fcfcc7a42",
+     "HasOwner": 0,
+     "SupportAutoCommandTarget": 0,
+     "TrackInterpolationDelay": 0,
+     "GhostGroup": 0,
+     "UsePreSerialization": 0,
+     "DontUsePredictionBackup": 0
+    }
+   },
+   {
+    "class": "LinkedEntityGroupAuthoring",
+    "values": {}
+   },
+   {
+    "class": "IsHabitableIdolAuthoring",
+    "values": {}
+   }
+  ],
+  "VoidMerchantIdolEntity": [
+   {
+    "class": "#Transform"
+   },
+   {
+    "class": "EntityMonoBehaviourData",
+    "values": {
+     "objectInfo": {
+      "objectID": 3937,
+      "initialAmount": 1,
+      "variation": 0,
+      "variationIsDynamic": 0,
+      "variationToToggleTo": 0,
+      "objectType": 800,
+      "tags": [],
+      "rarity": 1,
+      "salvageMultiplier": 1.0,
+      "level": 0,
+      "sellValue": 50,
+      "buyValueMultiplier": 1.0,
+      "icon": {
+       "ref": null
+      },
+      "iconOffset": {
+       "x": 0.0,
+       "y": 0.0
+      },
+      "iconSkinAssetRef": {
+       "m_address": {
+        "m_low": 0,
+        "m_high": 0
+       }
+      },
+      "smallIcon": {
+       "ref": null
+      },
+      "isStackable": 1,
+      "prefabTileSize": {
+       "x": 1,
+       "y": 1
+      },
+      "prefabCornerOffset": {
+       "x": 0,
+       "y": 0
+      },
+      "centerIsAtEntityPosition": 0,
+      "additionalSprites": [],
+      "tileset": 0,
+      "tileType": 0,
+      "prefabInfo": {
+       "graphicalRef": {
+        "m_address": {
+         "m_low": 8278844835686216240,
+         "m_high": -4463444454246344197
+        }
+       },
+       "authoringRef": {
+        "m_address": {
+         "m_low": -3493644410462543840,
+         "m_high": -7838470235456294678
+        }
+       },
+       "prefab": {
+        "ref": null
+       },
+       "authoring": {
+        "ref": null
+       }
+      },
+      "craftingSettings": {
+       "canOnlyUseAnyMaterialsWithTag": 0,
+       "iconType": 0
+      },
+      "requiredObjectsToCraft": [],
+      "craftingTime": 0.0,
+      "appearInMapUI": 0,
+      "mapColor": {
+       "r": 0.0,
+       "g": 0.0,
+       "b": 0.0,
+       "a": 0.0
+      },
+      "isCustomScenePrefab": 0,
+      "languageGenders": []
+     },
+     "optionalPreviewPrefab": {
+      "ref": null
+     }
+    }
+   },
+   {
+    "class": "PhysicsShapeAuthoring",
+    "values": {
+     "m_ShapeType": 0,
+     "m_PrimitiveCenter": {
+      "x": 0.0,
+      "y": 0.30000001192092896,
+      "z": -0.25
+     },
+     "m_PrimitiveSize": {
+      "x": 0.800000011920929,
+      "y": 0.6000000238418579,
+      "z": 0.5
+     },
+     "m_PrimitiveOrientation": {
+      "Value": {
+       "x": 0.0,
+       "y": 0.0,
+       "z": 0.0
+      },
+      "RotationOrder": 4
+     },
+     "m_Capsule": {
+      "Height": 0.800000011920929,
+      "Radius": 0.30000001192092896,
+      "Axis": 0
+     },
+     "m_Cylinder": {
+      "Height": 0.800000011920929,
+      "Radius": 0.30000001192092896,
+      "Axis": 0
+     },
+     "m_CylinderSideCount": 20,
+     "m_SphereRadius": 0.4000000059604645,
+     "m_MinimumSkinnedVertexWeight": 0.10000000149011612,
+     "m_ConvexHullGenerationParameters": {
+      "m_SimplificationTolerance": 0.014999999664723873,
+      "m_BevelRadius": 0.0,
+      "m_MinimumAngle": 2.500000238418579
+     },
+     "m_CustomMesh": {
+      "ref": null
+     },
+     "m_ForceUnique": 0,
+     "m_Material": {
+      "m_SupportsTemplate": 1,
+      "m_Template": {
+       "ref": null
+      },
+      "m_CollisionResponse": {
+       "m_Override": 0,
+       "m_Value": 0
+      },
+      "m_Friction": {
+       "m_Override": 0,
+       "m_Value": {
+        "Value": 0.0,
+        "CombineMode": 0
+       }
+      },
+      "m_Restitution": {
+       "m_Override": 0,
+       "m_Value": {
+        "Value": 0.0,
+        "CombineMode": 2
+       }
+      },
+      "m_BelongsToCategories": {
+       "m_Override": 0,
+       "m_Value": {
+        "Category00": 1,
+        "Category01": 0,
+        "Category02": 0,
+        "Category03": 0,
+        "Category04": 0,
+        "Category05": 0,
+        "Category06": 0,
+        "Category07": 0,
+        "Category08": 0,
+        "Category09": 0,
+        "Category10": 0,
+        "Category11": 0,
+        "Category12": 0,
+        "Category13": 0,
+        "Category14": 0,
+        "Category15": 0,
+        "Category16": 0,
+        "Category17": 0,
+        "Category18": 0,
+        "Category19": 0,
+        "Category20": 0,
+        "Category21": 0,
+        "Category22": 0,
+        "Category23": 0,
+        "Category24": 0,
+        "Category25": 0,
+        "Category26": 0,
+        "Category27": 0,
+        "Category28": 0,
+        "Category29": 0,
+        "Category30": 0,
+        "Category31": 0
+       }
+      },
+      "m_CollidesWithCategories": {
+       "m_Override": 0,
+       "m_Value": {
+        "Category00": 1,
+        "Category01": 0,
+        "Category02": 1,
+        "Category03": 0,
+        "Category04": 1,
+        "Category05": 0,
+        "Category06": 0,
+        "Category07": 0,
+        "Category08": 0,
+        "Category09": 0,
+        "Category10": 0,
+        "Category11": 0,
+        "Category12": 0,
+        "Category13": 0,
+        "Category14": 0,
+        "Category15": 0,
+        "Category16": 0,
+        "Category17": 0,
+        "Category18": 0,
+        "Category19": 0,
+        "Category20": 0,
+        "Category21": 0,
+        "Category22": 0,
+        "Category23": 0,
+        "Category24": 0,
+        "Category25": 0,
+        "Category26": 0,
+        "Category27": 0,
+        "Category28": 0,
+        "Category29": 0,
+        "Category30": 0,
+        "Category31": 0
+       }
+      },
+      "m_CustomMaterialTags": {
+       "m_Override": 0,
+       "m_Value": {
+        "Tag00": 0,
+        "Tag01": 0,
+        "Tag02": 0,
+        "Tag03": 0,
+        "Tag04": 0,
+        "Tag05": 0,
+        "Tag06": 0,
+        "Tag07": 0
+       }
+      },
+      "m_SerializedVersion": 1
+     },
+     "m_SerializedVersion": 1
+    }
+   },
+   {
+    "class": "MineableAuthoring",
+    "values": {
+     "playFailedEffectOnZeroDamage": 0
+    }
+   },
+   {
+    "class": "HealthAuthoring",
+    "values": {
+     "dontCalculateHealthFromLevel": 0,
+     "overrideStartHealth": 0,
+     "normalizedOverrideStartHealth": 1.0,
+     "startHealth": 2,
+     "maxHealth": 2,
+     "maxHealthMultiplier": 1.0,
+     "hasHealthRegeneration": 1,
+     "healInCombatAsWell": 0,
+     "healthIncreasePercentPerFiveSeconds": 100,
+     "healDelayAfterLeavingCombat": 5.0,
+     "level": {
+      "ref": null
+     }
+    }
+   },
+   {
+    "class": "AnimationAuthoring",
+    "values": {
+     "orientationSupport": 0,
+     "largeAnimationHistorySupport": 0
+    }
+   },
+   {
+    "class": "StateAuthoring",
+    "values": {}
+   },
+   {
+    "class": "IdleStateAuthoring",
+    "values": {
+     "playIdleAnimation": 1
+    }
+   },
+   {
+    "class": "TookDamageStateAuthoring",
+    "values": {
+     "duration": 0.0,
+     "refreshStateOnNewDamageTaken": 0
+    }
+   },
+   {
+    "class": "DeathStateAuthoring",
+    "values": {
+     "overrideTimeBeforeDestroy": 0,
+     "timeBeforeDestroy": 0.0,
+     "timeBeforeLootDrop": 0.0,
+     "skipDeathAnimation": 0
+    }
+   },
+   {
+    "class": "DamageReductionAuthoring",
+    "values": {
+     "calculateReductionFromLevel": 0,
+     "reductionMultiplier": 1.0,
+     "reduction": 0,
+     "maxDamagePerHit": 1,
+     "minDamagePerHit": 0,
+     "ignoreReductionWhenDamagedByDrill": 0,
+     "level": {
+      "ref": null
+     }
+    }
+   },
+   {
+    "class": "PlaceableObjectAuthoring",
+    "values": {
+     "prefabTileSize": {
+      "x": 1,
+      "y": 1
+     },
+     "prefabCornerOffset": {
+      "x": 0,
+      "y": 0
+     },
+     "centerIsAtEntityPosition": 0,
+     "objectCanBeToggledToNewNonRotationOption": 0,
+     "toggledToNewNonRotationOptions": 0,
+     "variationToPlace": 0,
+     "canBePlacedOnPlayer": 0,
+     "canBePlacedOnAnyWalkableTile": 1,
+     "canBePlacedOnWater": 0,
+     "canBePlacedOnLava": 0,
+     "canBePlacedOnPit": 0,
+     "canBePlacedOnBlockingObjects": 0,
+     "canBePlacedOnLowColliders": 0,
+     "dontDestroyObjectIfInvalidPlacement": 0,
+     "canBePlacedOnImmuneTiles": 0,
+     "dontBlockRoots": 0,
+     "canBePlacedOnObjects": [],
+     "canNotBePlacedOnObjects": [],
+     "hasVariationsThatCanBePlacedOnWalls": 0,
+     "canPlaceOnSideOfWall": 0,
+     "wallSideVariationStartsOnIndex1": 0,
+     "blocksHangingWallObjects": 0,
+     "appearInMapUI": 0,
+     "mapColor": {
+      "r": 0.0,
+      "g": 0.0,
+      "b": 0.0,
+      "a": 0.0
+     },
+     "alignWithPlayerDirection": 0,
+     "displayPlaceableType": 0
+    }
+   },
+   {
+    "class": "GhostAuthoringComponent",
+    "values": {
+     "DefaultGhostMode": 0,
+     "SupportedGhostModes": 3,
+     "OptimizationMode": 1,
+     "Importance": 1,
+     "prefabId": "c4cfc700d50b6024a872689a6ec7552c",
+     "HasOwner": 0,
+     "SupportAutoCommandTarget": 0,
+     "TrackInterpolationDelay": 0,
+     "GhostGroup": 0,
+     "UsePreSerialization": 0,
+     "DontUsePredictionBackup": 0
+    }
+   },
+   {
+    "class": "LinkedEntityGroupAuthoring",
+    "values": {}
+   },
+   {
+    "class": "IsHabitableIdolAuthoring",
+    "values": {}
+   }
+  ]
+ }
+}

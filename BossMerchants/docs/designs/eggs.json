@@ -1,0 +1,101 @@
+{
+ "key": "eggs",
+ "merchantName": "Ankhra the Clutch-Keeper",
+ "merchantBlurb": "A scarab of Ra-Akar's brood who never sets her egg down. Every clutch hatches for the right price.",
+ "idolName": "Brood Egg Idol",
+ "idolDescription": "A sand-scarab clutching a brood egg, carried out of Ra-Akar's hoard. Place it in a room with a free bed and a Clutch-Keeper will come to tend it.",
+ "boss": "ScarabBoss",
+ "rig": "VoidMerchantEntity",
+ "stock": [
+  {
+   "item": "Egg",
+   "price": 25,
+   "stock": 20
+  },
+  {
+   "item": "PetDogEgg",
+   "price": 500,
+   "stock": 3
+  },
+  {
+   "item": "PetCatEgg",
+   "price": 500,
+   "stock": 3
+  },
+  {
+   "item": "PetBirdEgg",
+   "price": 500,
+   "stock": 3
+  },
+  {
+   "item": "PetBunnyEgg",
+   "price": 500,
+   "stock": 3
+  },
+  {
+   "item": "PetSlimeBlobEgg",
+   "price": 750,
+   "stock": 3
+  },
+  {
+   "item": "PetSlipperySlimeBlobEgg",
+   "price": 750,
+   "stock": 3
+  },
+  {
+   "item": "PetPoisonSlimeBlobEgg",
+   "price": 750,
+   "stock": 3
+  },
+  {
+   "item": "PetLavaSlimeBlobEgg",
+   "price": 750,
+   "stock": 3
+  },
+  {
+   "item": "PetMothEgg",
+   "price": 1000,
+   "stock": 3
+  },
+  {
+   "item": "PetTardigradeEgg",
+   "price": 1000,
+   "stock": 3
+  },
+  {
+   "item": "PetFrogEgg",
+   "price": 1000,
+   "stock": 3
+  },
+  {
+   "item": "PetPrinceSlimeBlobEgg",
+   "price": 1500,
+   "stock": 3
+  },
+  {
+   "item": "PetMeleeCatEgg",
+   "price": 1500,
+   "stock": 3
+  },
+  {
+   "item": "PetMagicEgg",
+   "price": 2000,
+   "stock": 3
+  },
+  {
+   "item": "PetElectricEgg",
+   "price": 2000,
+   "stock": 3
+  },
+  {
+   "item": "PetWarlockEgg",
+   "price": 2000,
+   "stock": 3
+  },
+  {
+   "item": "PetBirdBossEgg",
+   "price": 5000,
+   "stock": 1
+  }
+ ]
+}

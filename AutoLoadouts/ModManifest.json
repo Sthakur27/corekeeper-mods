@@ -1,0 +1,34 @@
+{
+    "guid": "a6c3e91f4b2d4e7a9c05d18b7f3e2a40",
+    "name": "AutoLoadouts",
+    "displayName": "Auto Loadout Switch",
+    "skipSafetyChecks": false,
+    "disableScripts": false,
+    "accessesExtraAssemblies": true,
+    "disableHarmonyPatching": false,
+    "requiredOn": 0,
+    "files": [
+        {
+            "path": "Scripts/AutoLoadoutsMod.cs",
+            "guid": "a6c3e91f4b2d4e7a9c05d18b7f3e2a41"
+        },
+        {
+            "path": "Scripts/Bindings.cs",
+            "guid": "a6c3e91f4b2d4e7a9c05d18b7f3e2a42"
+        },
+        {
+            "path": "Scripts/EmoteNote.cs",
+            "guid": "a6c3e91f4b2d4e7a9c05d18b7f3e2a43"
+        },
+        {
+            "path": "Scripts/TooltipPatch.cs",
+            "guid": "a6c3e91f4b2d4e7a9c05d18b7f3e2a44"
+        }
+    ],
+    "dependencies": [
+        {
+            "modName": "CoreLib",
+            "required": true
+        }
+    ]
+}

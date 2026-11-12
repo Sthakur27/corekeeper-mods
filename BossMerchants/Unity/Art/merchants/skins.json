@@ -1,0 +1,2769 @@
+{
+ "note": "ALPHA art. Every output has the exact size, frame layout and alpha mask of the vanilla texture it replaces.",
+ "merchants": {
+  "morpha": {
+   "shop": "Blocks",
+   "boss": "Morpha (SlipperySlimeBoss 3024)",
+   "baseMerchant": "SlimeMerchant",
+   "baseObjectID": 3902,
+   "why": "slime-bodied merchant; the body becomes slippery slime",
+   "kind": "legacy",
+   "textures": [
+    {
+     "output": "morpha/bossMerchant_morpha_Slime_merchant.png",
+     "replacesTexture": "Slime_merchant",
+     "size": [
+      300,
+      120
+     ],
+     "legacySprites": [
+      {
+       "name": "Slime_merchant_0",
+       "rect": [
+        0.0,
+        90.0,
+        30.0,
+        30.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Slime_merchant_1",
+       "rect": [
+        30.0,
+        90.0,
+        30.0,
+        30.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Slime_merchant_2",
+       "rect": [
+        60.0,
+        90.0,
+        30.0,
+        30.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Slime_merchant_3",
+       "rect": [
+        90.0,
+        90.0,
+        30.0,
+        30.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Slime_merchant_4",
+       "rect": [
+        120.0,
+        90.0,
+        30.0,
+        30.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Slime_merchant_5",
+       "rect": [
+        150.0,
+        90.0,
+        30.0,
+        30.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Slime_merchant_6",
+       "rect": [
+        180.0,
+        90.0,
+        30.0,
+        30.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Slime_merchant_7",
+       "rect": [
+        210.0,
+        90.0,
+        30.0,
+        30.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Slime_merchant_8",
+       "rect": [
+        240.0,
+        90.0,
+        30.0,
+        30.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Slime_merchant_9",
+       "rect": [
+        270.0,
+        90.0,
+        30.0,
+        30.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Slime_merchant_10",
+       "rect": [
+        0.0,
+        60.0,
+        30.0,
+        30.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Slime_merchant_11",
+       "rect": [
+        30.0,
+        60.0,
+        30.0,
+        30.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Slime_merchant_12",
+       "rect": [
+        60.0,
+        60.0,
+        30.0,
+        30.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Slime_merchant_13",
+       "rect": [
+        90.0,
+        60.0,
+        30.0,
+        30.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Slime_merchant_14",
+       "rect": [
+        120.0,
+        60.0,
+        30.0,
+        30.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Slime_merchant_15",
+       "rect": [
+        150.0,
+        60.0,
+        30.0,
+        30.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Slime_merchant_16",
+       "rect": [
+        180.0,
+        60.0,
+        30.0,
+        30.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Slime_merchant_17",
+       "rect": [
+        210.0,
+        60.0,
+        30.0,
+        30.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Slime_merchant_18",
+       "rect": [
+        240.0,
+        60.0,
+        30.0,
+        30.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Slime_merchant_19",
+       "rect": [
+        270.0,
+        60.0,
+        30.0,
+        30.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Slime_merchant_20",
+       "rect": [
+        0.0,
+        30.0,
+        30.0,
+        30.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Slime_merchant_21",
+       "rect": [
+        30.0,
+        30.0,
+        30.0,
+        30.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Slime_merchant_22",
+       "rect": [
+        60.0,
+        30.0,
+        30.0,
+        30.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Slime_merchant_23",
+       "rect": [
+        90.0,
+        30.0,
+        30.0,
+        30.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Slime_merchant_24",
+       "rect": [
+        120.0,
+        30.0,
+        30.0,
+        30.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Slime_merchant_25",
+       "rect": [
+        150.0,
+        30.0,
+        30.0,
+        30.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Slime_merchant_26",
+       "rect": [
+        180.0,
+        30.0,
+        30.0,
+        30.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Slime_merchant_27",
+       "rect": [
+        210.0,
+        30.0,
+        30.0,
+        30.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Slime_merchant_28",
+       "rect": [
+        240.0,
+        30.0,
+        30.0,
+        30.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Slime_merchant_29",
+       "rect": [
+        270.0,
+        30.0,
+        30.0,
+        30.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Slime_merchant_30",
+       "rect": [
+        0.0,
+        0.0,
+        30.0,
+        30.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Slime_merchant_31",
+       "rect": [
+        30.0,
+        0.0,
+        30.0,
+        30.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Slime_merchant_32",
+       "rect": [
+        60.0,
+        0.0,
+        30.0,
+        30.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Slime_merchant_33",
+       "rect": [
+        90.0,
+        0.0,
+        30.0,
+        30.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Slime_merchant_34",
+       "rect": [
+        120.0,
+        0.0,
+        30.0,
+        30.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Slime_merchant_35",
+       "rect": [
+        150.0,
+        0.0,
+        30.0,
+        30.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Slime_merchant_36",
+       "rect": [
+        180.0,
+        0.0,
+        30.0,
+        30.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Slime_merchant_37",
+       "rect": [
+        210.0,
+        0.0,
+        30.0,
+        30.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      }
+     ],
+     "renderer": "/SlimeMerchant/XScaler/AnimPositionRotation/AnimScale/SRPivot/SR"
+    }
+   ],
+   "animator": {
+    "controller": "SlimeMerchant",
+    "clips": [
+     {
+      "clip": "SlimeMerchantMoveR",
+      "sheets": [
+       "Slime_merchant"
+      ]
+     },
+     {
+      "clip": "__NUKE__",
+      "sheets": []
+     },
+     {
+      "clip": "SlimeMerchantIdleR",
+      "sheets": [
+       "Slime_merchant"
+      ]
+     },
+     {
+      "clip": "SlimeMerchantStand",
+      "sheets": [
+       "Slime_merchant"
+      ]
+     },
+     {
+      "clip": "SlimeMerchantWaveR",
+      "sheets": [
+       "Slime_merchant"
+      ]
+     },
+     {
+      "clip": "__NUKE__",
+      "sheets": []
+     },
+     {
+      "clip": "empty",
+      "sheets": []
+     },
+     {
+      "clip": "MerchantSpawn",
+      "sheets": []
+     }
+    ]
+   },
+   "skinNote": "legacy SpriteRenderer + Animator merchant: no SpriteAsset exists, so a SpriteAssetSkin cannot target it. Swap at runtime by rebuilding each Sprite from the new sheet with the same rect/pivot/ppu (Sprite.Create) and mapping vanilla sprite name -> new sprite on the SpriteRenderers listed."
+  },
+  "igneous": {
+   "shop": "Explosives",
+   "boss": "Igneous (LavaSlimeBoss 3028)",
+   "baseMerchant": "SlimeMerchant",
+   "baseObjectID": 3902,
+   "why": "same slime merchant as Morpha; molten body + charcoal pack separates it at a glance",
+   "kind": "legacy",
+   "textures": [
+    {
+     "output": "igneous/bossMerchant_igneous_Slime_merchant.png",
+     "replacesTexture": "Slime_merchant",
+     "size": [
+      300,
+      120
+     ],
+     "legacySprites": [
+      {
+       "name": "Slime_merchant_0",
+       "rect": [
+        0.0,
+        90.0,
+        30.0,
+        30.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Slime_merchant_1",
+       "rect": [
+        30.0,
+        90.0,
+        30.0,
+        30.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Slime_merchant_2",
+       "rect": [
+        60.0,
+        90.0,
+        30.0,
+        30.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Slime_merchant_3",
+       "rect": [
+        90.0,
+        90.0,
+        30.0,
+        30.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Slime_merchant_4",
+       "rect": [
+        120.0,
+        90.0,
+        30.0,
+        30.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Slime_merchant_5",
+       "rect": [
+        150.0,
+        90.0,
+        30.0,
+        30.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Slime_merchant_6",
+       "rect": [
+        180.0,
+        90.0,
+        30.0,
+        30.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Slime_merchant_7",
+       "rect": [
+        210.0,
+        90.0,
+        30.0,
+        30.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Slime_merchant_8",
+       "rect": [
+        240.0,
+        90.0,
+        30.0,
+        30.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Slime_merchant_9",
+       "rect": [
+        270.0,
+        90.0,
+        30.0,
+        30.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Slime_merchant_10",
+       "rect": [
+        0.0,
+        60.0,
+        30.0,
+        30.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Slime_merchant_11",
+       "rect": [
+        30.0,
+        60.0,
+        30.0,
+        30.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Slime_merchant_12",
+       "rect": [
+        60.0,
+        60.0,
+        30.0,
+        30.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Slime_merchant_13",
+       "rect": [
+        90.0,
+        60.0,
+        30.0,
+        30.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Slime_merchant_14",
+       "rect": [
+        120.0,
+        60.0,
+        30.0,
+        30.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Slime_merchant_15",
+       "rect": [
+        150.0,
+        60.0,
+        30.0,
+        30.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Slime_merchant_16",
+       "rect": [
+        180.0,
+        60.0,
+        30.0,
+        30.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Slime_merchant_17",
+       "rect": [
+        210.0,
+        60.0,
+        30.0,
+        30.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Slime_merchant_18",
+       "rect": [
+        240.0,
+        60.0,
+        30.0,
+        30.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Slime_merchant_19",
+       "rect": [
+        270.0,
+        60.0,
+        30.0,
+        30.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Slime_merchant_20",
+       "rect": [
+        0.0,
+        30.0,
+        30.0,
+        30.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Slime_merchant_21",
+       "rect": [
+        30.0,
+        30.0,
+        30.0,
+        30.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Slime_merchant_22",
+       "rect": [
+        60.0,
+        30.0,
+        30.0,
+        30.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Slime_merchant_23",
+       "rect": [
+        90.0,
+        30.0,
+        30.0,
+        30.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Slime_merchant_24",
+       "rect": [
+        120.0,
+        30.0,
+        30.0,
+        30.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Slime_merchant_25",
+       "rect": [
+        150.0,
+        30.0,
+        30.0,
+        30.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Slime_merchant_26",
+       "rect": [
+        180.0,
+        30.0,
+        30.0,
+        30.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Slime_merchant_27",
+       "rect": [
+        210.0,
+        30.0,
+        30.0,
+        30.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Slime_merchant_28",
+       "rect": [
+        240.0,
+        30.0,
+        30.0,
+        30.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Slime_merchant_29",
+       "rect": [
+        270.0,
+        30.0,
+        30.0,
+        30.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Slime_merchant_30",
+       "rect": [
+        0.0,
+        0.0,
+        30.0,
+        30.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Slime_merchant_31",
+       "rect": [
+        30.0,
+        0.0,
+        30.0,
+        30.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Slime_merchant_32",
+       "rect": [
+        60.0,
+        0.0,
+        30.0,
+        30.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Slime_merchant_33",
+       "rect": [
+        90.0,
+        0.0,
+        30.0,
+        30.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Slime_merchant_34",
+       "rect": [
+        120.0,
+        0.0,
+        30.0,
+        30.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Slime_merchant_35",
+       "rect": [
+        150.0,
+        0.0,
+        30.0,
+        30.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Slime_merchant_36",
+       "rect": [
+        180.0,
+        0.0,
+        30.0,
+        30.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Slime_merchant_37",
+       "rect": [
+        210.0,
+        0.0,
+        30.0,
+        30.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      }
+     ],
+     "renderer": "/SlimeMerchant/XScaler/AnimPositionRotation/AnimScale/SRPivot/SR"
+    }
+   ],
+   "animator": {
+    "controller": "SlimeMerchant",
+    "clips": [
+     {
+      "clip": "SlimeMerchantMoveR",
+      "sheets": [
+       "Slime_merchant"
+      ]
+     },
+     {
+      "clip": "__NUKE__",
+      "sheets": []
+     },
+     {
+      "clip": "SlimeMerchantIdleR",
+      "sheets": [
+       "Slime_merchant"
+      ]
+     },
+     {
+      "clip": "SlimeMerchantStand",
+      "sheets": [
+       "Slime_merchant"
+      ]
+     },
+     {
+      "clip": "SlimeMerchantWaveR",
+      "sheets": [
+       "Slime_merchant"
+      ]
+     },
+     {
+      "clip": "__NUKE__",
+      "sheets": []
+     },
+     {
+      "clip": "empty",
+      "sheets": []
+     },
+     {
+      "clip": "MerchantSpawn",
+      "sheets": []
+     }
+    ]
+   },
+   "skinNote": "legacy SpriteRenderer + Animator merchant: no SpriteAsset exists, so a SpriteAssetSkin cannot target it. Swap at runtime by rebuilding each Sprite from the new sheet with the same rect/pivot/ppu (Sprite.Create) and mapping vanilla sprite name -> new sprite on the SpriteRenderers listed."
+  },
+  "ivy": {
+   "shop": "Potions",
+   "boss": "Ivy (PoisonSlimeBoss 3023)",
+   "baseMerchant": "CavelingMerchant",
+   "baseObjectID": 3900,
+   "why": "robed caveling with glowing flasks reads as a potion seller and keeps it apart from the two slime merchants",
+   "kind": "legacy",
+   "textures": [
+    {
+     "output": "ivy/bossMerchant_ivy_Merchant.png",
+     "replacesTexture": "Merchant",
+     "size": [
+      640,
+      192
+     ],
+     "legacySprites": [
+      {
+       "name": "Merchant_0",
+       "rect": [
+        0.0,
+        128.0,
+        64.0,
+        64.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Merchant_1",
+       "rect": [
+        64.0,
+        128.0,
+        64.0,
+        64.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Merchant_2",
+       "rect": [
+        128.0,
+        128.0,
+        64.0,
+        64.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Merchant_3",
+       "rect": [
+        192.0,
+        128.0,
+        64.0,
+        64.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Merchant_4",
+       "rect": [
+        256.0,
+        128.0,
+        64.0,
+        64.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Merchant_5",
+       "rect": [
+        320.0,
+        128.0,
+        64.0,
+        64.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Merchant_6",
+       "rect": [
+        384.0,
+        128.0,
+        64.0,
+        64.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Merchant_7",
+       "rect": [
+        448.0,
+        128.0,
+        64.0,
+        64.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Merchant_8",
+       "rect": [
+        512.0,
+        128.0,
+        64.0,
+        64.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Merchant_9",
+       "rect": [
+        576.0,
+        128.0,
+        64.0,
+        64.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Merchant_10",
+       "rect": [
+        0.0,
+        64.0,
+        64.0,
+        64.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Merchant_11",
+       "rect": [
+        64.0,
+        64.0,
+        64.0,
+        64.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Merchant_12",
+       "rect": [
+        128.0,
+        64.0,
+        64.0,
+        64.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Merchant_13",
+       "rect": [
+        192.0,
+        64.0,
+        64.0,
+        64.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Merchant_14",
+       "rect": [
+        256.0,
+        64.0,
+        64.0,
+        64.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Merchant_15",
+       "rect": [
+        320.0,
+        64.0,
+        64.0,
+        64.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Merchant_16",
+       "rect": [
+        384.0,
+        64.0,
+        64.0,
+        64.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Merchant_17",
+       "rect": [
+        448.0,
+        64.0,
+        64.0,
+        64.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Merchant_18",
+       "rect": [
+        0.0,
+        0.0,
+        64.0,
+        64.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Merchant_19",
+       "rect": [
+        64.0,
+        0.0,
+        64.0,
+        64.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Merchant_20",
+       "rect": [
+        128.0,
+        0.0,
+        64.0,
+        64.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Merchant_21",
+       "rect": [
+        192.0,
+        0.0,
+        64.0,
+        64.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Merchant_22",
+       "rect": [
+        256.0,
+        0.0,
+        64.0,
+        64.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Merchant_23",
+       "rect": [
+        320.0,
+        0.0,
+        64.0,
+        64.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      }
+     ],
+     "renderer": "/CavelingMerchant/XScaler/AnimPositionRotation/AnimScale/SRPivot/SR"
+    },
+    {
+     "output": "ivy/bossMerchant_ivy_Merchant_Light.png",
+     "replacesTexture": "Merchant_Light",
+     "size": [
+      640,
+      192
+     ],
+     "legacySprites": [
+      {
+       "name": "Merchant_Light_0",
+       "rect": [
+        0.0,
+        128.0,
+        64.0,
+        64.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Merchant_Light_1",
+       "rect": [
+        64.0,
+        128.0,
+        64.0,
+        64.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Merchant_Light_2",
+       "rect": [
+        128.0,
+        128.0,
+        64.0,
+        64.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Merchant_Light_3",
+       "rect": [
+        192.0,
+        128.0,
+        64.0,
+        64.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Merchant_Light_4",
+       "rect": [
+        256.0,
+        128.0,
+        64.0,
+        64.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Merchant_Light_5",
+       "rect": [
+        320.0,
+        128.0,
+        64.0,
+        64.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Merchant_Light_6",
+       "rect": [
+        384.0,
+        128.0,
+        64.0,
+        64.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Merchant_Light_7",
+       "rect": [
+        448.0,
+        128.0,
+        64.0,
+        64.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Merchant_Light_8",
+       "rect": [
+        512.0,
+        128.0,
+        64.0,
+        64.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Merchant_Light_9",
+       "rect": [
+        576.0,
+        128.0,
+        64.0,
+        64.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Merchant_Light_10",
+       "rect": [
+        0.0,
+        64.0,
+        64.0,
+        64.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Merchant_Light_11",
+       "rect": [
+        64.0,
+        64.0,
+        64.0,
+        64.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Merchant_Light_12",
+       "rect": [
+        128.0,
+        64.0,
+        64.0,
+        64.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Merchant_Light_13",
+       "rect": [
+        192.0,
+        64.0,
+        64.0,
+        64.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Merchant_Light_14",
+       "rect": [
+        256.0,
+        64.0,
+        64.0,
+        64.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Merchant_Light_15",
+       "rect": [
+        320.0,
+        64.0,
+        64.0,
+        64.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Merchant_Light_16",
+       "rect": [
+        384.0,
+        64.0,
+        64.0,
+        64.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Merchant_Light_17",
+       "rect": [
+        448.0,
+        64.0,
+        64.0,
+        64.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Merchant_Light_18",
+       "rect": [
+        0.0,
+        0.0,
+        64.0,
+        64.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Merchant_Light_19",
+       "rect": [
+        64.0,
+        0.0,
+        64.0,
+        64.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Merchant_Light_20",
+       "rect": [
+        128.0,
+        0.0,
+        64.0,
+        64.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Merchant_Light_21",
+       "rect": [
+        192.0,
+        0.0,
+        64.0,
+        64.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Merchant_Light_22",
+       "rect": [
+        256.0,
+        0.0,
+        64.0,
+        64.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Merchant_Light_23",
+       "rect": [
+        320.0,
+        0.0,
+        64.0,
+        64.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      }
+     ],
+     "renderer": "/CavelingMerchant/XScaler/AnimPositionRotation/AnimScale/SRPivot/SRLight"
+    },
+    {
+     "output": "ivy/bossMerchant_ivy_Merchant_Eye.png",
+     "replacesTexture": "Merchant_Eye",
+     "size": [
+      640,
+      128
+     ],
+     "legacySprites": [
+      {
+       "name": "Merchant_Eye_0",
+       "rect": [
+        0.0,
+        64.0,
+        64.0,
+        64.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Merchant_Eye_1",
+       "rect": [
+        64.0,
+        64.0,
+        64.0,
+        64.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Merchant_Eye_2",
+       "rect": [
+        128.0,
+        64.0,
+        64.0,
+        64.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Merchant_Eye_3",
+       "rect": [
+        192.0,
+        64.0,
+        64.0,
+        64.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Merchant_Eye_4",
+       "rect": [
+        256.0,
+        64.0,
+        64.0,
+        64.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Merchant_Eye_5",
+       "rect": [
+        320.0,
+        64.0,
+        64.0,
+        64.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Merchant_Eye_6",
+       "rect": [
+        384.0,
+        64.0,
+        64.0,
+        64.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Merchant_Eye_7",
+       "rect": [
+        448.0,
+        64.0,
+        64.0,
+        64.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Merchant_Eye_8",
+       "rect": [
+        512.0,
+        64.0,
+        64.0,
+        64.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Merchant_Eye_9",
+       "rect": [
+        576.0,
+        64.0,
+        64.0,
+        64.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Merchant_Eye_10",
+       "rect": [
+        0.0,
+        0.0,
+        64.0,
+        64.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Merchant_Eye_11",
+       "rect": [
+        64.0,
+        0.0,
+        64.0,
+        64.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Merchant_Eye_12",
+       "rect": [
+        128.0,
+        0.0,
+        64.0,
+        64.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Merchant_Eye_13",
+       "rect": [
+        192.0,
+        0.0,
+        64.0,
+        64.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Merchant_Eye_14",
+       "rect": [
+        256.0,
+        0.0,
+        64.0,
+        64.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Merchant_Eye_15",
+       "rect": [
+        320.0,
+        0.0,
+        64.0,
+        64.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Merchant_Eye_16",
+       "rect": [
+        384.0,
+        0.0,
+        64.0,
+        64.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Merchant_Eye_17",
+       "rect": [
+        448.0,
+        0.0,
+        64.0,
+        64.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      }
+     ],
+     "renderer": "/CavelingMerchant/XScaler/AnimPositionRotation/AnimScale/SRPivot/SREye"
+    }
+   ],
+   "animator": {
+    "controller": "Merchant",
+    "clips": [
+     {
+      "clip": "MerchantMoveR",
+      "sheets": [
+       "Merchant",
+       "Merchant_Eye",
+       "Merchant_Light"
+      ]
+     },
+     {
+      "clip": "__NUKE__",
+      "sheets": []
+     },
+     {
+      "clip": "MerchantIdleR",
+      "sheets": [
+       "Merchant",
+       "Merchant_Eye",
+       "Merchant_Light"
+      ]
+     },
+     {
+      "clip": "MerchantWaveR",
+      "sheets": [
+       "Merchant",
+       "Merchant_Eye",
+       "Merchant_Light"
+      ]
+     },
+     {
+      "clip": "__NUKE__",
+      "sheets": []
+     },
+     {
+      "clip": "empty",
+      "sheets": []
+     },
+     {
+      "clip": "MerchantSpawn",
+      "sheets": []
+     }
+    ]
+   },
+   "skinNote": "legacy SpriteRenderer + Animator merchant: no SpriteAsset exists, so a SpriteAssetSkin cannot target it. Swap at runtime by rebuilding each Sprite from the new sheet with the same rect/pivot/ppu (Sprite.Create) and mapping vanilla sprite name -> new sprite on the SpriteRenderers listed."
+  },
+  "omoroth": {
+   "shop": "Decor",
+   "boss": "Omoroth (OctopusBoss 3110)",
+   "baseMerchant": "FishingMerchant",
+   "baseObjectID": 3903,
+   "why": "the sea merchant; coat goes Omoroth purple/pink, rod and pants deep sea green",
+   "kind": "legacy",
+   "textures": [
+    {
+     "output": "omoroth/bossMerchant_omoroth_Fisher_merchant.png",
+     "replacesTexture": "Fisher_merchant",
+     "size": [
+      260,
+      120
+     ],
+     "legacySprites": [
+      {
+       "name": "Fisher_merchant_0",
+       "rect": [
+        0.0,
+        80.0,
+        26.0,
+        40.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Fisher_merchant_1",
+       "rect": [
+        26.0,
+        80.0,
+        26.0,
+        40.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Fisher_merchant_2",
+       "rect": [
+        52.0,
+        80.0,
+        26.0,
+        40.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Fisher_merchant_3",
+       "rect": [
+        78.0,
+        80.0,
+        26.0,
+        40.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Fisher_merchant_4",
+       "rect": [
+        104.0,
+        80.0,
+        26.0,
+        40.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Fisher_merchant_5",
+       "rect": [
+        130.0,
+        80.0,
+        26.0,
+        40.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Fisher_merchant_6",
+       "rect": [
+        156.0,
+        80.0,
+        26.0,
+        40.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Fisher_merchant_7",
+       "rect": [
+        182.0,
+        80.0,
+        26.0,
+        40.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Fisher_merchant_8",
+       "rect": [
+        208.0,
+        80.0,
+        26.0,
+        40.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Fisher_merchant_9",
+       "rect": [
+        234.0,
+        80.0,
+        26.0,
+        40.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Fisher_merchant_10",
+       "rect": [
+        0.0,
+        40.0,
+        26.0,
+        40.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Fisher_merchant_11",
+       "rect": [
+        26.0,
+        40.0,
+        26.0,
+        40.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Fisher_merchant_12",
+       "rect": [
+        52.0,
+        40.0,
+        26.0,
+        40.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Fisher_merchant_13",
+       "rect": [
+        78.0,
+        40.0,
+        26.0,
+        40.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Fisher_merchant_14",
+       "rect": [
+        104.0,
+        40.0,
+        26.0,
+        40.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Fisher_merchant_15",
+       "rect": [
+        130.0,
+        40.0,
+        26.0,
+        40.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Fisher_merchant_16",
+       "rect": [
+        156.0,
+        40.0,
+        26.0,
+        40.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Fisher_merchant_17",
+       "rect": [
+        182.0,
+        40.0,
+        26.0,
+        40.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Fisher_merchant_18",
+       "rect": [
+        208.0,
+        40.0,
+        26.0,
+        40.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Fisher_merchant_19",
+       "rect": [
+        234.0,
+        40.0,
+        26.0,
+        40.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Fisher_merchant_20",
+       "rect": [
+        0.0,
+        0.0,
+        26.0,
+        40.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Fisher_merchant_21",
+       "rect": [
+        26.0,
+        0.0,
+        26.0,
+        40.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Fisher_merchant_22",
+       "rect": [
+        52.0,
+        0.0,
+        26.0,
+        40.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Fisher_merchant_23",
+       "rect": [
+        78.0,
+        0.0,
+        26.0,
+        40.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Fisher_merchant_24",
+       "rect": [
+        104.0,
+        0.0,
+        26.0,
+        40.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Fisher_merchant_25",
+       "rect": [
+        130.0,
+        0.0,
+        26.0,
+        40.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Fisher_merchant_26",
+       "rect": [
+        156.0,
+        0.0,
+        26.0,
+        40.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Fisher_merchant_27",
+       "rect": [
+        182.0,
+        0.0,
+        26.0,
+        40.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Fisher_merchant_28",
+       "rect": [
+        208.0,
+        0.0,
+        26.0,
+        40.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      },
+      {
+       "name": "Fisher_merchant_29",
+       "rect": [
+        234.0,
+        0.0,
+        26.0,
+        40.0
+       ],
+       "pivot": [
+        0.5,
+        0.5
+       ],
+       "pixelsPerUnit": 16.0
+      }
+     ],
+     "renderer": "/FishingMerchant/XScaler/AnimPositionRotation/AnimScale/SRPivot/SR"
+    }
+   ],
+   "animator": {
+    "controller": "FishingMerchant",
+    "clips": [
+     {
+      "clip": "FishingMerchantMoveR",
+      "sheets": [
+       "Fisher_merchant"
+      ]
+     },
+     {
+      "clip": "__NUKE__",
+      "sheets": []
+     },
+     {
+      "clip": "FishingMerchantIdleR",
+      "sheets": [
+       "Fisher_merchant"
+      ]
+     },
+     {
+      "clip": "FishingMerchantWaveR",
+      "sheets": [
+       "Fisher_merchant"
+      ]
+     },
+     {
+      "clip": "MerchantSpawn",
+      "sheets": []
+     },
+     {
+      "clip": "empty",
+      "sheets": []
+     }
+    ]
+   },
+   "skinNote": "legacy SpriteRenderer + Animator merchant: no SpriteAsset exists, so a SpriteAssetSkin cannot target it. Swap at runtime by rebuilding each Sprite from the new sheet with the same rect/pivot/ppu (Sprite.Create) and mapping vanilla sprite name -> new sprite on the SpriteRenderers listed."
+  },
+  "raakar": {
+   "shop": "Eggs",
+   "boss": "Ra-Akar (ScarabBoss 3131)",
+   "baseMerchant": "VoidMerchant",
+   "baseObjectID": 3936,
+   "why": "tall robed figure fits a desert priest, and it is the only base merchant drawn with a SpriteAsset, so real SpriteAssetSkins work on it",
+   "kind": "spriteAsset",
+   "textures": [
+    {
+     "output": "raakar/bossMerchant_raakar_voidMerchant_idle.png",
+     "replacesTexture": "voidMerchant_idle",
+     "size": [
+      128,
+      35
+     ],
+     "spriteAsset": "voidMerchant",
+     "spriteAssetAddress": [
+      9202072890546798702,
+      -5828687261374344469
+     ],
+     "animationGuid": "580fae3f-66dc-4b7a-900c-ee7986f742e6",
+     "slot": "m_animations[].m_spriteData.texture",
+     "pivot": [
+      0.5,
+      0.0
+     ],
+     "srcFrameCount": 8,
+     "fps": 10.0,
+     "loop": 1
+    },
+    {
+     "output": "raakar/bossMerchant_raakar_voidMerchant_move.png",
+     "replacesTexture": "voidMerchant_move",
+     "size": [
+      96,
+      34
+     ],
+     "spriteAsset": "voidMerchant",
+     "spriteAssetAddress": [
+      9202072890546798702,
+      -5828687261374344469
+     ],
+     "animationGuid": "7128f66e-0c6d-4aed-949e-93fdcd9f5138",
+     "slot": "m_animations[].m_spriteData.texture",
+     "pivot": [
+      0.5,
+      0.0
+     ],
+     "srcFrameCount": 6,
+     "fps": 11.0,
+     "loop": 1
+    },
+    {
+     "output": "raakar/bossMerchant_raakar_voidMerchant_emote.png",
+     "replacesTexture": "voidMerchant_emote",
+     "size": [
+      621,
+      37
+     ],
+     "spriteAsset": "voidMerchant",
+     "spriteAssetAddress": [
+      9202072890546798702,
+      -5828687261374344469
+     ],
+     "animationGuid": "e1e86c38-70e3-402a-a63f-ecb6d1f3edf0",
+     "slot": "m_animations[].m_spriteData.texture",
+     "pivot": [
+      0.3478260934352875,
+      0.0
+     ],
+     "srcFrameCount": 27,
+     "fps": 14.0,
+     "loop": 0
+    }
+   ]
+  }
+ }
+}

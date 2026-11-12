@@ -1,0 +1,71 @@
+{
+ "key": "explosives",
+ "merchantName": "Fizzwick, the Molten Bombardier",
+ "merchantBlurb": "A blob of Igneous that wandered off with a fuse in its head. Everything it sells goes boom; mind the sparks.",
+ "idolName": "Igneous Fuse Core",
+ "idolDescription": "A sputtering chunk of Igneous the Molten Mass, bound in iron. Place it in a room with a free bed to attract a bomb-loving slime.",
+ "boss": "LavaSlimeBoss",
+ "rig": "SlimeMerchantEntity",
+ "stock": [
+  {
+   "item": "Grenade",
+   "price": 10
+  },
+  {
+   "item": "SmallBomb",
+   "price": 10
+  },
+  {
+   "item": "Bomb",
+   "price": 15
+  },
+  {
+   "item": "FireGrenade",
+   "price": 20
+  },
+  {
+   "item": "PoisonGrenade",
+   "price": 20
+  },
+  {
+   "item": "OilGrenade",
+   "price": 25
+  },
+  {
+   "item": "StunGrenade",
+   "price": 25
+  },
+  {
+   "item": "LargeBomb",
+   "price": 30
+  },
+  {
+   "item": "CharmGrenade",
+   "price": 35
+  },
+  {
+   "item": "SulfurBomb",
+   "price": 40
+  },
+  {
+   "item": "ProximityBomb",
+   "price": 50
+  },
+  {
+   "item": "SeekerBomb",
+   "price": 60
+  },
+  {
+   "item": "BlunderBomb",
+   "price": 70
+  },
+  {
+   "item": "BigGrenade",
+   "price": 80
+  },
+  {
+   "item": "VoidBomb",
+   "price": 100
+  }
+ ]
+}

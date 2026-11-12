@@ -35,6 +35,7 @@ namespace SidsOverhaul
             { "PotionSeller", "Potion Seller" },
             { "FishSeller", "Fish Seller" },
             { "MerchantRestock", "Merchant Restock" },
+            { "ValuableValue", "Valuable Value" },
             { "FasterMushrooms", "Faster Mushrooms" },
             { "BiggerWateringCans", "Bigger Watering Cans" },
             { "FastAutoFishing", "Fast Auto Fishing" },
@@ -61,6 +62,8 @@ namespace SidsOverhaul
             { "WormholePotion", "Potion of Return" },
             { "DrillUnit", "Drill Pod (Alpha)" },
             { "Enchanting", "Enchanting (Alpha)" },
+            { "AutoLoadouts", "Auto Loadout Switch" },
+            { "BossMerchants", "Boss Merchants (Alpha)" },
         };
 
         public const string Hint = "Turn whole sub-mods on or off. Changes take effect after restarting the game. "

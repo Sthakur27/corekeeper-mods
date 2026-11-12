@@ -28,6 +28,8 @@ namespace QuickBuff.Systems
         public int consumed;
         /// <summary>Items skipped because every buff they give is still active for long enough.</summary>
         public int skippedActive;
+        /// <summary>Items skipped because a stronger item of the same buff type was used instead.</summary>
+        public int skippedWeaker;
         /// <summary>Set when the request was rejected because the last one was too recent.</summary>
         public bool onCooldown;
         /// <summary>Non-null when nothing could be done at all (missing components, dead player...).</summary>
@@ -222,6 +224,7 @@ namespace QuickBuff.Systems
                 }
             }
 
+            var pending = new List<Pending>();
             foreach (var slot in slots)
             {
                 int index = slot.Key;
@@ -268,33 +271,17 @@ namespace QuickBuff.Systems
                     else if (!GivesBuff(conditions, conditionsTable)) continue; // hunger-only food, no-effect items, bombs, seeds...
                     result.candidates++;
 
-                    if (!singlePotion && skipActive && AllBuffsActive(conditions, conditionsTable, em.GetBuffer<ConditionsBuffer>(player, true), currentTick, tickRate, skipSeconds))
+                    if (!singlePotion)
                     {
-                        result.skippedActive++;
-                        LogSkip(item.objectID, conditions, conditionsTable, em.GetBuffer<ConditionsBuffer>(player, true), currentTick, tickRate);
+                        // Buff / food: decided below, once every candidate is known (strongest per buff type).
+                        pending.Add(new Pending { index = index, item = item, isPotion = isPotion, conditions = new NativeArray<ConditionData>(conditions, Allocator.Temp) });
                         continue;
                     }
 
-                    // 1. Consume through the vanilla inventory path (same call as EatableSlot.EatItem).
-                    DynamicBuffer<InventoryChangeBuffer> changes = em.GetBuffer<InventoryChangeBuffer>(changeBufferEntity);
-                    changes.Add(new InventoryChangeBuffer
-                    {
-                        playerEntity = player,
-                        inventoryChangeData = Create.ConsumeEntityAt(player, index, 1, destroy: true, godMode, position, item.variation)
-                    });
-
-                    // 2. Apply effects (mirror of EatableSlotConsumeResultEvaluationSystem.Execute).
-                    ApplyEffects(player, item, conditions, conditionsTable, currentTick, tickRate, healthChangeEntity);
-
-                    // 3. Eat / drink feedback.
-                    PlayEffect(player, item.objectID, isPotion, position, currentTick);
-
+                    ConsumeItem(player, index, item, isPotion, conditions, conditionsTable, currentTick, tickRate, healthChangeEntity, changeBufferEntity, godMode, position);
                     result.consumed++;
-                    if (singlePotion)
-                    {
-                        result.healItem = item.objectID;
-                        break;
-                    }
+                    result.healItem = item.objectID;
+                    break;
                 }
                 finally
                 {
@@ -302,7 +289,139 @@ namespace QuickBuff.Systems
                 }
             }
 
+            try
+            {
+                // Strongest candidate per (non-additive) buff type; ties go to the first one in slot order.
+                var best = new Dictionary<ConditionID, int>();
+                for (int p = 0; p < pending.Count; p++)
+                {
+                    NativeArray<ConditionData> cs = pending[p].conditions;
+                    for (int i = 0; i < cs.Length; i++)
+                    {
+                        if (!IsBuff(cs[i], conditionsTable) || IsAdditive(cs[i].conditionID, conditionsTable)) continue;
+                        if (!best.TryGetValue(cs[i].conditionID, out int b) || cs[i].value > BuffValue(pending[b].conditions, cs[i].conditionID))
+                            best[cs[i].conditionID] = p;
+                    }
+                }
+
+                for (int p = 0; p < pending.Count; p++)
+                {
+                    Pending pick = pending[p];
+                    DynamicBuffer<ConditionsBuffer> active = em.GetBuffer<ConditionsBuffer>(player, true);
+                    Usefulness use = Evaluate(p, pick.conditions, best, conditionsTable, active, currentTick, tickRate, skipActive, skipSeconds);
+                    if (use != Usefulness.Useful)
+                    {
+                        if (use == Usefulness.StrongerCarried) result.skippedWeaker++;
+                        else
+                        {
+                            result.skippedActive++;
+                            LogSkip(pick.item.objectID, pick.conditions, conditionsTable, active, currentTick, tickRate);
+                        }
+                        continue;
+                    }
+
+                    ConsumeItem(player, pick.index, pick.item, pick.isPotion, pick.conditions, conditionsTable, currentTick, tickRate,
+                        healthChangeEntity, changeBufferEntity, godMode, position);
+                    result.consumed++;
+                }
+            }
+            finally
+            {
+                foreach (Pending pick in pending) pick.conditions.Dispose();
+            }
+
             return result;
+        }
+
+        private struct Pending
+        {
+            public int index;
+            public ObjectDataCD item;
+            public bool isPotion;
+            public NativeArray<ConditionData> conditions;
+        }
+
+        private enum Usefulness
+        {
+            Useful,
+            /// <summary>Every buff it gives is active, long enough and at least as strong.</summary>
+            Active,
+            /// <summary>Every buff it gives comes from a stronger item used this press instead.</summary>
+            StrongerCarried
+        }
+
+        /// <summary>
+        /// Useful when at least one buff it gives is: the strongest carried of its type (additive types always count), and
+        /// (when skipping) missing, running low, or weaker than this item's value.
+        /// </summary>
+        private static Usefulness Evaluate(int self, NativeArray<ConditionData> conditions, Dictionary<ConditionID, int> best, ConditionsTableCD table,
+            DynamicBuffer<ConditionsBuffer> active, NetworkTick currentTick, uint tickRate, bool skipActive, float skipSeconds)
+        {
+            bool strongestOfAny = false;
+            for (int i = 0; i < conditions.Length; i++)
+            {
+                ConditionData c = conditions[i];
+                if (!IsBuff(c, table)) continue;
+                bool additive = IsAdditive(c.conditionID, table);
+                if (!additive && best.TryGetValue(c.conditionID, out int b) && b != self) continue;
+                strongestOfAny = true;
+                if (!skipActive) return Usefulness.Useful;
+                if (!ActiveTimed(c.conditionID, active, currentTick, tickRate, out int value, out float remaining)) return Usefulness.Useful;
+                if (remaining < skipSeconds) return Usefulness.Useful;
+                if (!additive && c.value > value) return Usefulness.Useful;
+            }
+            return strongestOfAny ? Usefulness.Active : Usefulness.StrongerCarried;
+        }
+
+        private static bool IsAdditive(ConditionID id, ConditionsTableCD table) => table.GetConditionInfo(id).isAdditiveWithSelf;
+
+        private static int BuffValue(NativeArray<ConditionData> conditions, ConditionID id)
+        {
+            for (int i = 0; i < conditions.Length; i++)
+                if (conditions[i].conditionID == id) return conditions[i].value;
+            return int.MinValue;
+        }
+
+        /// <summary>The active timed (food/potion) entry of this type, ignoring standing bonuses.</summary>
+        private static bool ActiveTimed(ConditionID id, DynamicBuffer<ConditionsBuffer> active, NetworkTick currentTick, uint tickRate,
+            out int value, out float remaining)
+        {
+            for (int i = 0; i < active.Length; i++)
+            {
+                Condition condition = active[i].condition;
+                if (condition.conditionData.conditionID != id || condition.toBeRemoved || IsStanding(condition)) continue;
+                value = condition.conditionData.value;
+                remaining = RemainingOf(condition, currentTick, tickRate);
+                return true;
+            }
+            value = 0;
+            remaining = -1f;
+            return false;
+        }
+
+        private static float RemainingOf(in Condition condition, NetworkTick currentTick, uint tickRate)
+        {
+            if (!condition.removeTick.IsValid || !currentTick.IsValid) return float.MaxValue; // no expiry
+            int ticksLeft = condition.removeTick.TicksSince(currentTick);
+            return ticksLeft <= 0 ? 0f : ticksLeft / (float)tickRate;
+        }
+
+        private void ConsumeItem(Entity player, int index, ObjectDataCD item, bool isPotion, NativeArray<ConditionData> conditions, ConditionsTableCD conditionsTable,
+            NetworkTick currentTick, uint tickRate, Entity healthChangeEntity, Entity changeBufferEntity, bool godMode, float3 position)
+        {
+            // 1. Consume through the vanilla inventory path (same call as EatableSlot.EatItem).
+            DynamicBuffer<InventoryChangeBuffer> changes = EntityManager.GetBuffer<InventoryChangeBuffer>(changeBufferEntity);
+            changes.Add(new InventoryChangeBuffer
+            {
+                playerEntity = player,
+                inventoryChangeData = Create.ConsumeEntityAt(player, index, 1, destroy: true, godMode, position, item.variation)
+            });
+
+            // 2. Apply effects (mirror of EatableSlotConsumeResultEvaluationSystem.Execute).
+            ApplyEffects(player, item, conditions, conditionsTable, currentTick, tickRate, healthChangeEntity);
+
+            // 3. Eat / drink feedback.
+            PlayEffect(player, item.objectID, isPotion, position, currentTick);
         }
 
         /// <summary>Instant effects handled by the evaluation system's switch; they are not buffs.</summary>
@@ -358,33 +477,6 @@ namespace QuickBuff.Systems
             return false;
         }
 
-        /// <summary>True when every buff the item gives is already active with at least skipSeconds left.</summary>
-        private static bool AllBuffsActive(NativeArray<ConditionData> conditions, ConditionsTableCD table, DynamicBuffer<ConditionsBuffer> active,
-            NetworkTick currentTick, uint tickRate, float skipSeconds)
-        {
-            for (int i = 0; i < conditions.Length; i++)
-            {
-                if (!IsBuff(conditions[i], table)) continue;
-                float remaining = RemainingSeconds(conditions[i].conditionID, active, currentTick, tickRate);
-                if (remaining < skipSeconds) return false;
-            }
-            return true;
-        }
-
-        private static float RemainingSeconds(ConditionID id, DynamicBuffer<ConditionsBuffer> active, NetworkTick currentTick, uint tickRate)
-        {
-            for (int i = 0; i < active.Length; i++)
-            {
-                Condition condition = active[i].condition;
-                if (condition.conditionData.conditionID != id || condition.toBeRemoved) continue;
-                if (IsStanding(condition)) continue; // a standing bonus (e.g. an equipment enchant), not a food/potion buff
-                if (!condition.removeTick.IsValid || !currentTick.IsValid) return float.MaxValue; // no expiry
-                int ticksLeft = condition.removeTick.TicksSince(currentTick);
-                return ticksLeft <= 0 ? 0f : ticksLeft / (float)tickRate;
-            }
-            return -1f; // not active
-        }
-
         /// <summary>
         /// Entries that are not a timed food/potion buff: infinite durations (stat bonuses other mods keep on the player)
         /// and zero/negative durations (standing entries the game keeps without an expiry).
@@ -432,12 +524,48 @@ namespace QuickBuff.Systems
                 conditionsBuffer.RemoveAt(i);
             }
 
-            int lengthBefore = conditionsBuffer.Length;
-            EntityUtility.AddOrRefreshCondition(data, conditionsBuffer, conditionsTable, currentTick, tickRate, summarizedConditions);
-            bool added = lengthBefore != conditionsBuffer.Length;
+            bool added;
+            int timed = FindTimed(data.conditionID, conditionsBuffer);
+            if (timed >= 0 && !IsAdditive(data.conditionID, conditionsTable) && IsTimedDuration(data.duration))
+            {
+                // Highest wins (vanilla instead keeps whichever has the longer full duration): a stronger buff replaces
+                // a weaker one even if that has more time left; an equal one only refreshes when it lasts longer.
+                Condition current = conditionsBuffer[timed].condition;
+                float left = RemainingOf(current, currentTick, tickRate);
+                if (data.value > current.conditionData.value || (data.value == current.conditionData.value && data.duration > left))
+                {
+                    conditionsBuffer[timed] = new ConditionsBuffer
+                    {
+                        condition = new Condition
+                        {
+                            conditionData = data,
+                            removeTick = NetworkTimeUtilities.SecondsToTick(data.duration, currentTick, tickRate)
+                        }
+                    };
+                }
+                added = false;
+            }
+            else
+            {
+                int lengthBefore = conditionsBuffer.Length;
+                EntityUtility.AddOrRefreshCondition(data, conditionsBuffer, conditionsTable, currentTick, tickRate, summarizedConditions);
+                added = lengthBefore != conditionsBuffer.Length;
+            }
 
             for (int i = standing.Count - 1; i >= 0; i--) conditionsBuffer.Add(standing[i]);
             return added;
+        }
+
+        private static bool IsTimedDuration(float duration) => duration > 0f && !float.IsInfinity(duration);
+
+        private static int FindTimed(ConditionID id, DynamicBuffer<ConditionsBuffer> buffer)
+        {
+            for (int i = 0; i < buffer.Length; i++)
+            {
+                Condition c = buffer[i].condition;
+                if (c.conditionData.conditionID == id && !c.toBeRemoved && !IsStanding(c)) return i;
+            }
+            return -1;
         }
 
         private void ApplyEffects(Entity player, ObjectDataCD item, NativeArray<ConditionData> conditions, ConditionsTableCD conditionsTable,

@@ -4,6 +4,8 @@
 
 Spend less time repeating chores and more time exploring. Sid's Overhaul brings the individual mods in this repository into one package: easier farming and fishing, equipment tools, merchant supplies, and adjustable combat and progression.
 
+**New in 1.16.3:** Quick Buff 1.6.0, highest buff wins: Quick Buff uses only the strongest item for each buff type, and a stronger buff now replaces a weaker active one of the same type (for example Crystal Water over a weaker crit food) instead of being skipped.
+
 **New in 1.16.2:** More NPCs (Alpha) 0.1.1: all eight merchants and their idols have new art in a darker, vanilla-like style. Quick Buff 1.5.1: permanent stat bonuses (for example from enchanted gear) no longer count as an active buff, so those potions and foods can still be used.
 
 **New in 1.16.1:** Boss Bonus Loot: Ghorm drops Amber Larva 10% of the time, and four permanent-buff foods now have a 15% boss drop each: Anniversary Cake (Glurch), Splendid Amalgam (Igneous), Golden Chocolate (Crydra) and Paradise Fruit Basket (Druidra).

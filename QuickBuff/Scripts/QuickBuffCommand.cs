@@ -50,6 +50,7 @@ namespace QuickBuff
 
             string summary = $"Quick Buff: consumed {result.consumed} item(s)";
             if (result.skippedActive > 0) summary += $", {result.skippedActive} skipped (buff active)";
+            if (result.skippedWeaker > 0) summary += $", {result.skippedWeaker} kept (stronger one used)";
             return new CommandOutput(summary + ".", CommandStatus.Info);
         }
 

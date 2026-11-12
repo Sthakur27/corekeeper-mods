@@ -2,20 +2,16 @@
 
 ![Bigger Watering Cans — mod cover from in-game screenshots](../release/wateringcans_logo.png)
 
-Water more of your garden with each pour. The basic Watering Can covers **2×2 tiles** and the Iron Watering Can covers **4×4 tiles**.
+The basic Watering Can waters a **2x2 patch**, and the Iron Watering Can waters **4x4**. Equip one and water as usual; the preview shows which tiles you'll hit.
 
-## How to use it
+Mouse and controller aiming both work. Each pour uses the normal amount of water, with the usual cooldown, refill behavior, and chance to save water. There are no settings to change.
 
-Equip your watering can and water as usual. The placement preview shows the area you will water. Both mouse and controller aiming use the enlarged area.
+## A couple of things to know
 
-There are no settings. Water used per pour, refilling, cooldown and the chance to avoid using water keep their normal behavior.
+Only the basic and iron cans get bigger. You'll still see one splash where you pour, even though it waters the whole patch.
 
-## Requirements
+If your can supports the game's rotate control for changing its size, you can still cycle down to a smaller area. It starts at full size again whenever you load a world.
 
-No library dependencies. Install on the host/server and all clients, then restart Core Keeper.
+## Installing
 
-## Limits
-
-Only the basic and iron watering cans are changed. The splash animation remains a single effect at the pour position, even when several tiles are watered.
-
-Where the game supports resizing the can with the rotate control, it can still cycle through smaller areas. The mod resets saved size choices to the full size once per world load.
+You don't need any library mods. In multiplayer, install Bigger Watering Cans on the host and everyone joining, then restart the game.

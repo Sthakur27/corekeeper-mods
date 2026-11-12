@@ -1,35 +1,34 @@
 # Potion of Return
 
-![Potion of Return — mod cover from in-game screenshots](../release/wormholepotion_logo.png)
+![Potion of Return — cover made from in-game screenshots](../release/wormholepotion_logo.png)
 
-A one-use way home that also gets you back. Craft a **Potion of Return** for **25 Gold Bars** at an **Ancient Hologram Pod**. (Released as Wormhole Potion; only the name changed, and potions and markers you already have keep working.)
+Potion of Return takes you to the Core and leaves a map marker you can use to get back. Craft one at an **Ancient Hologram Pod for 25 Gold Bars**. If you also use Potion Seller, the Caveling Merchant sells it for **2,500 Ancient Coins**.
 
-Use it like a Recall Idol: after a three-second cast you teleport to the Core and the potion is used up. The spot where you drank it is marked on your map with the potion icon (**Return Point**). Stand on any active waypoint, open the map and click that marker to teleport back, exactly like teleporting between waypoints. The marker disappears after that one trip.
+Use the potion like a Recall Idol. After a three-second cast, you teleport to the Core and use up the potion. Moving, switching items or taking enough damage interrupts the cast; an interrupted cast does not consume it.
 
-- Moving, switching items or taking enough damage interrupts the cast, just like a Recall Idol. The potion is only used up when the cast finishes.
-- Drinking within 12 tiles of the Core takes you home but leaves no marker.
-- Drinking another potion in the same session replaces your previous marker. Markers from other players or earlier sessions stay until someone uses them.
-- Any player can use any return marker.
-- With Potion Seller installed, the Caveling Merchant also sells it for 2,500 Ancient Coins.
-- Return markers are saved with the world.
+To return, stand on any active waypoint, open the map and click the potion icon labelled **Return Point**. It works like travelling between waypoints, but the marker disappears after one trip.
 
-Tested in single player: crafting, drinking, the map marker and the trip back (the marker is removed after use). Multiplayer and keeping a marker across a save and reload have not been tested yet.
+## Return points
 
-No settings and no library dependencies. Install on both the host and clients in multiplayer.
+- Drinking within 12 tiles of the Core still takes you home, but leaves no return point.
+- Drinking another potion in the same session replaces your previous return point. Markers from other players or earlier sessions remain until someone uses them.
+- Any player can use any return point, including one left by someone else.
+- Return points are saved with the world, though keeping one across a save and reload has not yet been tested.
 
-## Install
+Previously released as Wormhole Potion. Only the name changed; existing potions and markers still work.
 
-Subscribe to the Workshop item, or extract the manual archive into `CoreKeeper_Data/StreamingAssets/Mods/WormholePotion` so `ModManifest.json` sits directly inside that folder. Restart Core Keeper. Ancient Hologram Pods already in your world gain the recipe automatically. Do not run the standalone version alongside an Overhaul version that already includes Potion of Return.
+## Installation and limits
 
-The recipe uses the pod's empty recipe slot. If another mod has already filled it, this mod leaves that recipe alone and cannot add its own.
+No settings or library dependencies are required. In multiplayer, install the mod on both the host and every client.
 
-Use your return markers and remove potions from inventories and storage before uninstalling the mod.
+Subscribe on the Workshop, or extract the manual archive into `CoreKeeper_Data/StreamingAssets/Mods/WormholePotion` with `ModManifest.json` directly inside that folder. Restart Core Keeper. Existing Ancient Hologram Pods gain the recipe automatically.
 
-## Development
+The recipe uses the pod's empty recipe slot. If another mod has filled that slot, Potion of Return leaves the existing recipe alone and cannot add its own. Use either the standalone mod or an Overhaul version that includes it; do not install both.
 
-- `python -I WormholePotion/Unity/make_art.py`: regenerate the potion icon.
-- `python -I WormholePotion/Unity/dump_vanilla.py`: re-dump the vanilla waypoint map marker and Recall Idol prefabs into `vanilla.json` after a game update.
-- `python WormholePotion/Unity/build_bundle.py`: build the Windows/Linux bundles with Unity 6000.0.59f2 and the official Mod SDK, then run `verify_bundle.py`.
-- `python WormholePotion/Unity/compile_check.py`: compile the runtime scripts against the local game assemblies.
+Crafting, drinking, the map marker and the return trip have been tested in single player, including removal of the marker after use. Multiplayer has not yet been tested.
 
-How it is put together: the potion is a cast item with the Recall Idol's cast values. `PotionCastSystem` runs before vanilla's Burst player-state systems in both predicted worlds and requests vanilla's teleport state. On the server it consumes the potion and spawns the return marker (`WormholePotion_MarkerEntity`), a copy of the vanilla waypoint map marker that, unlike the vanilla one, is saved with the world. The map treats it as a waypoint, so the vanilla map UI sends the teleport. `ReturnMarkerSystem` (server) keeps markers active and removes one when a player's teleport targets it. `MarkerIconPatch` draws it with the potion icon.
+Before uninstalling, use your return points and remove the potions from inventories and storage.
+
+[Development notes](https://github.com/Sthakur27/corekeeper-mods/blob/main/WormholePotion/DEVELOPER.md)
+
+Cover made from in-game screenshots of casting, the return marker, the waypoint teleport line and the recipe, with the potion's inventory sprite enlarged. HDR captures were tone-mapped; the title banner, step numbers and labels were added.

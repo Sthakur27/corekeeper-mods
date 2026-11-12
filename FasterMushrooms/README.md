@@ -2,29 +2,27 @@
 
 ![Faster Mushrooms — mod cover from in-game screenshots](../release/fastermushrooms_logo.png)
 
-Shorten mushroom growth waits and give wild mushrooms more chances to return near your base.
+Makes mushrooms grow and spread faster. It can also give wild mushrooms more chances to come back around you, so you don't have to wait as long between harvests.
 
 ## Settings
 
-Open **Settings > Mod Options > Faster Mushrooms**.
+Open **Settings > Mod Options > Faster Mushrooms**. There are two separate settings:
 
 | Setting | Default | Choices |
 |---|---|---|
 | Mushroom growth speed | **4x** | Preset speeds from 1x to 100x |
 | Wild mushroom respawn | **1 min** | Off, 15 s, 30 s, 1 min, 2 min, 5 min, 10 min, 30 min |
 
-Growth speed shortens applicable mushroom spread and growth-stage timers. Wild respawn is a separate setting: at each interval, the game gets another chance to spawn mushrooms in areas within 48 tiles of players.
+Growth speed shortens the wait for mushrooms to spread and move through their growth stages. Wild respawn gives mushrooms another chance to appear within **48 tiles** of players each time the interval comes around.
 
-Changes apply during play and save automatically. Use **1x growth and Off respawn** for normal behavior going forward; already-shortened countdowns are not rewound.
+That doesn't mean a mushroom will appear every minute. The ground and biome still need to be suitable, there needs to be space, and mushrooms won't spawn within **six tiles** of a player. Areas with lots of mushrooms already get fewer new ones. If a growth stage needs watered ground, you'll still need to water it.
 
-## What to expect
+Changes take effect while you play and save automatically. Set growth to **1x** and respawn to **Off** to go back to normal. Any countdowns that were already shortened will finish as they are.
 
-Respawn intervals are **checks, not guaranteed spawns**. The game still requires suitable ground and biome, available space, and distance from players. It does not spawn mushrooms within six tiles of a player. Areas already containing many mushrooms get fewer new ones.
+## Installing
 
-Other crops, drops and harvesting rules stay the same. Growth stages that require watered ground still require it.
+Requires **CoreLib** and **Mod Options**. The host and everyone joining need them and Faster Mushrooms installed. Restart Core Keeper after installing. In multiplayer, the host's settings decide how fast mushrooms grow and respawn.
 
-## Requirements and limits
+Other crops, drops, and harvesting work as usual. Custom mushrooms from other mods might not be affected.
 
-Requires **CoreLib** and **Mod Options**. Install on the host/server and all clients, then restart Core Keeper. The host/server's settings control growth and respawn.
-
-Mushrooms are identified by their game object names; differently named custom plants may not be affected. While a mushroom respawn request runs, other environment-spawn entries are briefly suppressed. A normal respawn occurring at the same time can skip its non-mushroom objects once.
+One limitation: when the mod checks for new mushrooms, it briefly pauses other things that naturally spawn in the environment. If the game's normal spawn check happens at that same moment, those other things can miss one spawn attempt.

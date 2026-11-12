@@ -2,23 +2,22 @@
 
 ![Five Loadouts — illustrated mod cover](../release/fiveloadouts_logo.png)
 
-Keep five equipment setups ready instead of three. Add dedicated loadouts for mining, fishing, exploration or combat without rebuilding your gear each time.
+Adds two more equipment loadouts, so you have five instead of three. You can keep a mining or fishing set ready without giving up one of your combat setups.
 
-## How to use it
+## Switching loadouts
 
-Open your character window and select the new **IV** or **V** tab. Your existing cycle-loadout control now cycles through all five setups. No settings are needed.
+Open your character window and click the new **IV** or **V** tab. The usual cycle-loadout control goes through all five too.
 
-To jump straight to loadout IV or V, bind **Equip loadout 4** and **Equip loadout 5** under **Controls → Five Loadouts**. They start unbound so they never clash with your existing keys.
+If you'd rather jump straight to one, set keys for **Equip loadout 4** and **Equip loadout 5** under **Controls > Five Loadouts**. Neither has a key assigned by default. There are no other settings.
 
-Each extra loadout has its own armor, jewelry and off-hand slots. **Shared Loadout Gear & Vanity** also gives it a separate bag, lantern and pet slot, and empty slots borrow gear from the nearest earlier loadout. The four pouch slots stay shared.
+The extra loadouts have their own armor, jewelry, and off-hand slots. With the required **Vanity Slots & Shared Equipment** mod, they also get their own bag, lantern, and pet slots. Leave a slot empty to borrow from the nearest earlier loadout. Your four pouch slots are still shared.
 
-## Requirements
+## Installing
 
-Requires **CoreLib** and **Shared Loadout Gear & Vanity** (formerly Loadout Fallback). Install them on the host/server and every client, then restart Core Keeper. Existing characters receive the extra slots automatically.
+You'll need **CoreLib**, **Vanity Slots & Shared Equipment** (formerly Loadout Fallback), and **Mod Options**, which Vanity Slots & Shared Equipment uses. In multiplayer, the host and everyone joining need Five Loadouts and these requirements installed. Restart Core Keeper after installing; existing characters get the extra slots automatically.
 
-## Limits and removal
+## Before removing it
 
-- **Before uninstalling, move all items out of loadouts 4 and 5 and switch to loadout 1, 2 or 3.** Added slots are not available without the mod, and the saved active loadout must be a vanilla one.
-- Mods that add player inventory slots depend on a stable layout. Avoid changing their combination or load order while gear remains in added slots.
+**Empty loadouts 4 and 5, then switch to loadout 1, 2, or 3 before uninstalling.** Without the mod, you won't be able to reach the extra slots, and your character needs to be saved on one of the original three loadouts.
 
-The implementation and earlier integration notes are in this folder's source files. The current Shared Loadout Gear & Vanity already contains the Five Loadouts integration; no manual source patch is needed.
+If you use other mods that add inventory slots, empty those slots before changing which mods are installed or their load order. Moving them around while they're holding gear can cause problems.

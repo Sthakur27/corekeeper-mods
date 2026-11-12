@@ -1,17 +1,51 @@
-Summary (<=250):
-Set a separate XP multiplier for each of the 12 skills, from 0x (frozen) to 100x. Change it in Mod Settings or with /xp in chat. Applies instantly, saved between sessions.
+# Skill XP & Talent Points
 
-Description:
-Choose an XP multiplier PER SKILL: Mining, Running, Melee, Vitality, Crafting, Range, Gardening, Fishing, Cooking, Magic, Summoning and Explosives each get their own value.
+![Skill XP & Talent Points — in-game screenshot cover](../release/skillxp-logo.png)
 
-- Set them in the Mod Settings menu (requires the Mod Settings Menu mod). Each skill cycles through 0x, 0.25x, 0.5x, 0.75x, 1x, 1.5x, 2x, 3x, 4x, 5x, 6x, 8x, 10x, 12x, 15x, 20x, 25x, 30x, 40x, 50x, 75x and 100x. Left/right arrow steps down/up.
-- 0x freezes a skill, 1x is vanilla. Everything starts at 1x.
-- Chat: /xp shows all values, /xp mining 20 sets one skill, /xp all 5 sets every skill.
-- Changes apply instantly and are saved between sessions.
+Make slow skills level faster, or turn them down if you want a longer grind. You can set each skill separately and give yourself more talent points, including enough to fill the whole tree. Pets can get more talent points too.
 
-How it works: every XP gain in the game is a pending grant that the game's own skill system consumes. This mod scales the amount of that grant right before the game applies it, so only the XP you are actually earning is multiplied, fractional multipliers work, and nothing is counted twice or lags behind.
+## XP rates
 
-Requires CoreLib and Mod Settings Menu. Do not run together with other XP multiplier mods; they would stack on top of this one.
+Open **Settings > Mod Options > Skill XP & Talent Points** to change a skill's XP multiplier. Everything starts at **1x**, the normal rate.
 
-Changelog 1.0.0:
-- Initial release
+- **0x** stops that skill earning XP. You keep the levels you've already earned.
+- **0.25x–0.75x** makes it level more slowly.
+- **1.5x–100x** makes it level faster. Pick one of the preset rates in the menu.
+
+This covers all twelve skills: Mining, Running, Melee, Vitality, Crafting, Range, Gardening, Fishing, Cooking, Magic, Summoning, and Explosives. Changes take effect on the next XP you earn and save automatically. They don't directly change your level.
+
+## More talent points
+
+**Talent points at level 100** defaults to **40**, enough to fill every talent in a skill tree. You can also pick 30, 35, or **Vanilla** for the usual 25.
+
+The extra points are spread across your levels. With the setting at 40, for example, a level 50 skill gets 20 points. If you raise the setting after you've already leveled up, you get the extra points straight away.
+
+If you lower it below the number you've spent, that skill's tree resets for free the next time you open it. You can then spend your points again. Choosing Vanilla restores the game's usual point progression.
+
+**Pet talent points at level 10** defaults to **9**, one for every talent slot. You can choose 6, 7, or 8 instead, or **Vanilla** for the normal one point every two levels (5 at level 10). If you lower the setting and your pet has too many points spent, use the reset button in its talent window.
+
+## Playing with friends
+
+The host chooses how settings work under **Multiplayer (when hosting)**:
+
+- **Host decides** is the default. Everyone uses the host's XP rates and talent point settings, including pet points.
+- **Each player picks** lets everyone use their own settings.
+
+In your own world, you're the host. Players who don't have the mod still get the host's XP rates, but keep the normal talent point progression.
+
+## Chat commands
+
+You can check your rates with `/xp`. The host can also change them through chat:
+
+- `/xp mining 20` sets Mining to 20x.
+- `/xp all 1` puts every skill back to the normal rate.
+
+Commands use the nearest supported rate. If someone joining your world tries to change a value, they'll get a note that only the host can do that.
+
+## Installing
+
+Requires **CoreLib** and **Mod Options**. Restart Core Keeper after installing.
+
+If you've enabled CoreLib's command security, allow `xpsync` for players so the settings can sync. That syncing doesn't post messages in chat.
+
+Avoid running other mods that change XP or talent points at the same time; the changes may stack or overwrite each other.

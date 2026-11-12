@@ -1,36 +1,25 @@
 # Master Pet Plus
 
-Fork of the mod.io mod **Master Pet** (v1.0.2) with one change: the talent
-selector offers **every pet talent in the game** (all 37) instead of only the
-handful in the equipped pet's own roll pool.
+Master Pet Plus lets you choose talents for your equipped pet from the full selection of 37, including talents outside that pet's usual pool. You can also change its level and skin in the same window.
 
-## How to use
-1. In the game's mod list, **disable or unsubscribe the mod.io "Master Pet"**
-   (both add a button to the same window, so run only one).
-2. Run `install-masterpetplus.bat` (one folder up) and start the game.
-3. Open the pet talents window, click **Master Pet** (button next to Reset).
-4. **Right-click** a talent slot to change which talent it holds; the selector
-   now fills the whole window with all talents. Left-click still toggles points.
+This is a legacy fork of **Master Pet v1.0.2 by Parcew**. Its mod.io listing was taken down in October 2026 and remains unavailable. The instructions below are for existing local copies.
 
-## Renaming notes
-The UI prefab in the asset bundle binds its MonoBehaviours to an assembly name.
-The bundles were patched with UnityPy (`m_AssemblyName` "MasterPet" ->
-"MasterPetPlus", bundle name -> `MasterPetPlus_*.assetbundle`, re-saved LZ4) so
-the mod can be named `MasterPetPlus`. Asset paths inside the bundle are still
-`Assets/MasterPet/...`, hence `InternalName` stays "MasterPet" in code.
-Originals are kept in `..\MasterPet_original_bundles`.
+## Using the editor
 
-## What was changed vs. the original
-- `ModManifest.json`: new guid, name `MasterPetPlus`, displayName "Master Pet Plus", renamed bundle paths.
-- `Scripts/MasterPetMod.cs`: Name/Version.
-- `Scripts/Handlers/PetActionHandler.cs`: `TryGetAllPetTalents` (enum values
-  filtered to entries that exist in `PetInfosTable`).
-- `Scripts/UI/MasterPetUI.cs`: selector clones the prefab's button to reach 37,
-  lays them out in a 10-column grid across the whole window (left panel hidden
-  while the selector is open), picks from the full list.
-- `Scripts/Systems`, `Scripts/Generated`, bundles: untouched (the generated
-  Entities.ForEach code must stay in sync with the system source).
+Equip a pet, open the pet talents window, and click **Master Pet** next to Reset.
 
-## Offline compile check
-`dotnet csc.dll @mpp.rsp` with `-r:` for every DLL in `CoreKeeper_Data\Managed`
-and all `Scripts/**/*.cs` (including Generated). Last run: 0 errors.
+- **Right-click an unlocked talent slot** to choose its talent. The selector fills the window with all 37 talents; hover over one for details, then click it to use it. **Back** returns without changing that slot.
+- **Left-click a talent slot** to toggle its point.
+- Use the **+ / - buttons** to change the pet's level, from level 1 up to the game's pet level cap.
+- Click a **colour swatch** to choose one of that pet's skins.
+- Click **Apply** or press **Esc** to close the editor. Changes happen as you make them; closing does not cancel them.
+
+Locked talent rows still need enough talent points and a point in the row above. Lowering the pet's level clears its allocated talent points.
+
+## Local installation and multiplayer
+
+For a local source checkout, run [install-masterpetplus.bat](https://github.com/Sthakur27/corekeeper-mods/blob/main/install-masterpetplus.bat), then start or restart the game. Keep only one copy of the pet editor enabled to avoid duplicate buttons.
+
+No additional mod dependencies are declared. In multiplayer, the host and every joining player must have Master Pet Plus installed. An offline compile check was previously recorded with zero errors; that does not establish in-game or multiplayer test coverage, and no such results are recorded here.
+
+[Historical mod.io page](https://mod.io/g/corekeeper/m/master-pet-plus) · [Source](https://github.com/Sthakur27/corekeeper-mods/tree/main/MasterPetPlus) · [Developer notes](https://github.com/Sthakur27/corekeeper-mods/blob/main/MasterPetPlus/DEVELOPER.md)

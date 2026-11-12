@@ -1,36 +1,44 @@
 # Item Spawner
 
-A searchable spawn browser for the host and admins. Press **Z** (rebind under Controls > Item Spawner) to open a grid of every item in the game, including items from other mods (Magic Mirror, Ender Chest, every Runic Storage tier).
+Press **Z** to browse items, search by name, and spawn what you need onto your cursor or into your bag. The browser includes modded items, and a cooking view lets you choose two ingredients and preview the dish they make.
 
-## Controls
+Spawning is available to the host, admins and creative-mode characters. Other players can use the browser to look at items, but cannot spawn them through it.
 
-- **Left-click** an item: one on your cursor. Click again to add one more. **Ctrl-left-click**: a full stack on your cursor.
-- **Right-click**: one straight into your bag. **Ctrl- or Shift-right-click**: a full stack into your bag.
-- **Shift-left-click**: a full stack into your bag. Bag spawns drop at your feet if the bag is full.
-- Category tabs on the left and the search box narrow the list. The grid/list button switches views.
-- **Level bonus** (the two buttons next to grid/list, or the `[` and `]` keys): adds levels on top of each gear piece's or tool's base level. "Lv base" means the normal level; "Lv +3" means three levels above it. Hold Shift to step by 5. It never goes below base, and an item stops at the game's max level instead of overshooting. Hover an item to see its stats at that level.
-- The trash can sits next to your bag as usual, so you can spawn something and bin it without closing the browser.
-- Esc, Z or opening another inventory closes the browser.
+## Using the browser
+
+Rebind **Z** under **Controls > Item Spawner** if it clashes with another key binding. Use the category tabs and search box to narrow the list, or switch between grid and list views.
+
+- **Left-click** puts one item on your cursor. Click the same item again to add another.
+- **Ctrl-left-click** puts a full stack on your cursor.
+- **Right-click** puts one item in your bag.
+- **Shift-left-click**, **Shift-right-click** or **Ctrl-right-click** puts a full stack in your bag.
+
+Items sent to a full bag drop at your feet. Put down anything on your cursor before spawning a different item there. Items that do not stack still spawn one at a time.
+
+The trash can remains beside your bag, so you can discard items without closing the browser. Press **Esc**, press the browser's toggle key again, or open another inventory to close it.
+
+## Gear and tool levels
+
+The level buttons beside the grid/list button, or the **[** and **]** keys, adjust a bonus above an item's base level. Hold **Shift** to change it by five levels at a time.
+
+**Lv base** gives the normal item. **Lv +3** gives gear or tools three levels above their base level, up to the game's maximum. The bonus cannot go below zero. Hover over an item to preview its stats at the chosen level.
 
 ## Cooking
 
-Press the cooking pot button (top right of the panel) to switch to cooking. The top row becomes **[ A ] + [ B ] = [ dish ]** with a **Gourmet** checkbox, and the grid below lists every cooking ingredient (golden versions are separate entries).
+Press the cooking pot button at the top right to switch views. Two ingredient slots and a dish preview appear above a list of cooking ingredients; golden ingredients have their own entries.
 
-- Click an ingredient to fill the highlighted box. Filling the first box moves the highlight to the second. Click a box to choose which one the next ingredient fills; right-click a box to empty it.
-- Once both boxes are filled, the dish appears on the right with its real name, colors and stats. Spawn it with the same clicks as any item: left-click to your cursor, right-click to your bag, Ctrl or Shift for a full stack.
-- **Gourmet** adds the cooking talent's extra roll: one tier up, so a normal dish becomes Rare, and a dish with a golden flower or a legendary ingredient becomes Epic. Without it, a golden flower or legendary ingredient already makes the dish Rare.
-- Every dish is one the cooking pot can actually make. Press the pot button again to go back to items.
+Click an ingredient to fill the highlighted slot. Filling the first slot selects the second automatically. Click either slot to choose where the next ingredient goes, or right-click a slot to empty it.
 
-## Who can spawn
+With both ingredients selected, the preview shows the resulting dish's name, colors and stats. Use the same spawning controls as for other items. The results follow the cooking pot's recipes.
 
-Only the host or an admin (or a creative-mode character). Other players can open the browser to look but cannot spawn.
+The **Gourmet** checkbox adds the cooking talent's extra rarity roll. A normal dish becomes Rare. A golden flower or legendary ingredient already makes a dish Rare; Gourmet raises that result to Epic. Press the pot button again to return to items.
 
-## Requirements
+## Requirements and multiplayer
 
-CoreLib, and Runic Storage (the browser uses its panel layout). Included in Sid's Overhaul. Only the player using it needs the mod; the server needs nothing extra.
+For Core Keeper **1.3.0**. Requires **CoreLib** and **Runic Storage**, whose panel layout the browser uses. Item Spawner is also included in **Sid's Overhaul**; use the bundle or the standalone version.
 
-## Notes
+Item Spawner itself is client-side: only the player using the browser needs it, and spawning uses the game's existing create-item request. Its required dependency Runic Storage has different multiplayer requirements: install Runic Storage and CoreLib on the host and every joining player. Runic Storage's multiplayer behavior has not yet been verified. The host/admin check for spawning runs on the spawning player's client, so it is not a server-enforced permission system.
 
-If another mod also uses Z, rebind one of them under Controls.
+## Cover
 
-Spawning uses the game's own create-item request (the one that hands out starter items). The admin check runs on the spawning player's game.
+Cover and the first gallery image are made from in-game screenshots of the spawn browser and its cooking mode (HDR captures tone-mapped); title banners and highlights added.

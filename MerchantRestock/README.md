@@ -1,24 +1,18 @@
 # Merchant Restock
 
-![Merchant Restock — mod cover from in-game screenshots](../release/merchantrestock_logo.png)
+![Merchant Restock — cover made from in-game screenshots](../release/merchantrestock_logo.png)
 
-Spend less time waiting for shop stock. **Choose how often merchants refill**, with one setting for all shops and optional settings for individual merchants.
+Merchant Restock lets you shorten the wait for merchants to refill their shops. Set one restock time for all six supported merchants, or give each merchant a different time. It does not change prices or add items.
 
-## Choose a restock time
+Open **Settings > Mod Options > Merchant Restock** to choose a time:
 
-Open **Settings > Mod Options > Merchant Restock**.
+- **All merchants**: Vanilla (25-35 min), 15 min, 10 min, 5 min, 2 min, 1 min or 30 sec. The default is **Vanilla (25-35 min)**.
+- **Caveling, Slime, Fishing, Crystal, Void and Seasonal Merchant**: Same as all, or any of the times above. Each defaults to **Same as all**.
 
-| Setting | Choices | Default |
-|---|---|---|
-| All merchants | Normal (25–35 min), 15, 10, 5, 2 or 1 min, or 30 s | Normal |
-| Each merchant | Same as all, or its own time | Same as all |
+The game still varies the time between refills. For example, **5 min** gives roughly **3.5-5 minutes**, rather than exactly five minutes every time. Leaving every setting at its default keeps the normal timers.
 
-Individual choices cover Caveling, Slime, Fishing, Crystal, Void and Seasonal Merchants. The game keeps a random spread: **5 minutes means roughly 3.5–5 minutes**, rather than exactly five.
+A shorter setting reduces an existing countdown if it is above the chosen limit. Choosing a longer time, or switching back to Vanilla, does not lengthen a countdown already in progress.
 
-Shorter settings reduce a current countdown if it is above the chosen limit. Choosing a longer time or returning to normal does not lengthen a countdown already in progress. With all settings left at their defaults, timers are unchanged.
+Requires **CoreLib and Mod Options**. Install Merchant Restock and both dependencies on the host and every client; the host's settings control multiplayer shops.
 
-## Requirements and compatibility
-
-Requires **CoreLib and Mod Options** on the host and every client. The host's settings control multiplayer shops.
-
-Works with **Potion Seller and Fish Seller**: those add stock, while Merchant Restock changes the wait for a refill. It does not change prices or add items.
+Cover is made from in-game screenshots of the Caveling and Fishing Merchants' shops and the Fishing Merchant (HDR captures tone-mapped); title banner and a stopwatch icon added.

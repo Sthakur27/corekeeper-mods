@@ -2,22 +2,22 @@
 
 ![Better Fishing Loot — illustrated mod cover](../release/betterfishingloot_logo.png)
 
-A better chance of finding fishing gear and rare treasures, without changing the fishing minigame.
+Makes gear and rare items more likely when you fish up loot. Fish as usual; the mod changes what you find, with a setting for how generous you want it to be.
 
-## How to use
+## Choosing the rate
 
-Install the mod and fish as usual. Open **Settings > Mod Options > Better Fishing Loot** to choose a rare loot multiplier: **1x, 2x, 3x, 5x, 10x or 25x**. The default is **5x**; 1x restores the usual weights. Changes apply while you play.
+Open **Settings > Mod Options > Better Fishing Loot** and pick **1x, 2x, 3x, 5x, 10x, or 25x**. It starts at **5x**. Choose 1x to go back to the usual odds. You can change this while playing.
 
-## What changes
+The boost applies to armor, accessories, tools, pets, and items marked Rare or better. You still need to fish in the right water and biome to find them, and each loot catch still gives one item.
 
-Armor, accessories, tools, pets and items marked Rare or better get a larger share of each fishing loot roll. The catch still depends on the water and biome, and each loot bite still gives one item.
+A 5x setting doesn't mean exactly five times the chance of a particular item. It gives those items more weight in the loot roll, so you're more likely to get them and less likely to get common loot. It doesn't give you extra copies of a catch.
 
-The multiplier changes the item's **weight**, not its final percentage chance. As rare loot becomes more likely, common loot becomes less likely. It does not multiply the number of items you receive.
+## What stays the same
 
-Fish tables, the chance of a fish bite versus a loot bite, bait, legendary-fish logic and the minigame keep their usual behavior. Chests and enemy drops are unaffected.
+You won't get more loot bites instead of fish bites, and the fish you can catch stay the same. Bait, legendary fish, and the fishing minigame work as usual. This only affects fishing loot, so it won't change chests or enemy drops.
 
-## Requirements
+## Installing
 
-Requires **CoreLib** and **Mod Options**. Install on the host/server and every client. The host's setting decides the catch in multiplayer; matching settings avoids prediction differences.
+Requires **CoreLib** and **Mod Options**. In multiplayer, the host and everyone joining need all three installed. The host's setting decides the catch; use the same setting as the host so your game doesn't expect a different result.
 
-Also included in **Sid's Overhaul**; use the standalone mod or the overhaul, rather than both.
+Already using **Sid's Overhaul**? Better Fishing Loot is included, so you don't need a separate copy.

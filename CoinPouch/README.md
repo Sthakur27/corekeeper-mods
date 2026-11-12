@@ -1,30 +1,29 @@
 # Coin Pouch
 
-![Coin Pouch — mod cover from in-game screenshots](../release/coinpouch_logo.png)
+![Coin Pouch — equipment panel screenshot with an enlarged coin slot](../release/coinpouch_logo.png)
 
-A coin slot in the equipment window, in the empty corner under the vanity pants. Ancient Coins you pick up go straight into it, so they stop taking up an inventory slot. It holds up to **99,999** coins, well past the normal 9,999 stack.
+Coin Pouch gives your Ancient Coins their own slot below the vanity pants in the equipment window. It holds **99,999 coins**, compared with the usual 9,999 per stack, and fills automatically as you collect coins.
 
-- **Automatic:** picked-up coins go into the slot. Coins that end up in your inventory anyway (selling to a merchant, taking them from a chest, dragging them out) are moved back into it right away.
-- **Visible at merchants and chests:** when the equipment window is hidden (a shop, a chest, a crafting station), the coin slot shows next to the hotbar row of your inventory instead, so you can always see how many coins you have.
-- **Shared by every loadout:** switching equipment tabs keeps the same coins.
-- **Merchants:** buying works the same as with coins in your inventory. Prices show as affordable and payment comes out of the slot.
-- **Only coins fit:** anything else shakes the slot like a wrong armor piece.
-- **Kept on death:** coins in the slot are not dropped when you die (the game only drops your main inventory).
-- **Not quick-stacked:** quick stack to nearby chests leaves the slot alone. You can still drag coins into a chest yourself; they come back if they land in your inventory.
+Coins from selling to merchants or taking them out of chests move there too.
 
-No settings and no library dependencies. Install on both the host and clients in multiplayer.
+You can buy from merchants as usual: prices count the coins in the pouch, and payment comes straight out of it. When a shop, chest or crafting station hides the equipment window, the pouch appears beside your inventory's hotbar row so you can still see your balance.
 
-## Install
+The same pouch is shared across all your loadouts. It accepts only Ancient Coins; trying to put anything else in it makes the slot shake. Once it reaches 99,999, any extra coins stay in your inventory.
 
-Subscribe to the Workshop item, or extract the manual archive into `CoreKeeper_Data/StreamingAssets/Mods/CoinPouch` so `ModManifest.json` sits directly inside that folder. Restart Core Keeper. Existing characters get the slot when they join a world, and coins already in the inventory move into it. Do not run the standalone version alongside an Overhaul version that already includes Coin Pouch.
+Coins in the pouch stay with you when you die, because the game only drops your main inventory. Quick stack to nearby chests also leaves them alone. To store coins in a chest, drag them there yourself. If you drop them into your inventory instead, the pouch collects them again.
 
-**Before uninstalling**, drag your coins out of the slot into the inventory or a chest (with more than 9,999 coins, split them across several stacks). Without the mod the slot no longer exists and coins left in it are lost.
+## Install and use
 
-## Limits
+For Core Keeper 1.3.0. There are no settings, extra keys or library dependencies. Install Coin Pouch on both the host and every client for multiplayer.
 
-- If you add or remove other mods that add player inventory slots and then rejoin the world you played last, the coins may not follow the slot to its new position. Joining any other world moves them correctly.
-- The slot is a full Ancient Coin stack once it reaches 99,999; further coins stay in the inventory.
+Subscribe on the Workshop, or extract the manual archive into `CoreKeeper_Data/StreamingAssets/Mods/CoinPouch` with `ModManifest.json` directly inside that folder, then restart the game. Existing characters get the pouch when they join a world, and coins already in their inventory move into it. Use either the standalone mod or a version of Sid's Overhaul that includes it; do not install both.
 
-## Development
+## Changing mods or uninstalling
 
-How it is put together: the player prefab gets one extra slot at the end of its ContainedObjectsBuffer, a 1x1 inventory range over it, and a slot requirement that only accepts Ancient Coins. Because it is a real inventory range, the game's own code prefers it for pickups, counts it for merchant prices and takes payment from it. `CoinPouchSystem` (server, every 6 ticks, read-only until there is work) adds the slot to older characters, keeps it locked so quick stack skips it, and moves coins from the inventory into it past the hard-coded 9,999 stack limit. `CoinSlotUI` clones the armor pants slot into the character window; Harmony patches point it at the coin range and add its coins to the merchant affordability check.
+If you add or remove mods that add player inventory slots, your coins may not follow the pouch to its new position when you rejoin the last world you played. Joining a different world moves them correctly.
+
+**Empty the pouch before uninstalling. Coins left in it are lost when the slot is removed.** Drag them directly into a chest, splitting amounts above 9,999 across several stacks. Coins placed in your inventory are collected again while the mod is active, so check that the pouch is empty before removing it.
+
+[Developer notes](https://github.com/Sthakur27/corekeeper-mods/blob/main/CoinPouch/DEVELOPER.md) describe how the slot works.
+
+Cover made from an in-game screenshot of the equipment panel with 20,405 coins, plus an enlarged view of the coin slot. The HDR capture was tone-mapped, with a title banner and highlight added.

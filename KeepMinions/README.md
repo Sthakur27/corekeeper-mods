@@ -1,17 +1,11 @@
 # Keep Minions On Teleport
 
-![Keep Minions On Teleport — mod cover from in-game screenshots](../release/keepminions_logo.png)
+![Cover is an in-game screenshot of the Core teleporter with a minion and pet beside the player (HDR capture tone-mapped); title banner added.](https://raw.githubusercontent.com/Sthakur27/corekeeper-mods/main/release/keepminions_logo.png)
 
-Take your summoned minions through portals, waypoints and recalls without having to summon them again.
+Your summoned minions come along when you use a portal, waypoint or recall, so you don't have to summon them again after each trip. Summon them and teleport as usual. There are no keys or settings to configure.
 
-## How to use
+Once you arrive, minions more than 32 tiles away move beside you. This catch-up also works outside teleports, so minions that get that far behind can return to you during normal travel. Dying still dismisses them, and their normal lifespan and combat stats stay the same.
 
-Install the mod, summon your minions and teleport as usual. **There are no keys or settings to configure.** Your minions stay alive during the teleport and distant minions move beside you once you arrive.
+No extra library mods are required. In multiplayer, install Keep Minions On Teleport on the host/server and every player's game; the host handles moving the minions. Restart the game after installing.
 
-## Requirements and limits
-
-No library dependencies. Install the mod on the host/server and every client. The host handles minion movement in multiplayer.
-
-Dying still dismisses your minions. The mod does not give them unlimited life or change their combat stats. The catch-up behavior also moves minions that are more than 32 tiles from their living owner after the owner's physics is active again.
-
-Also included in **Sid's Overhaul**; use one version of this feature.
+This is also included in **Sid's Overhaul**. If you use the Overhaul, you don't need a separate copy.

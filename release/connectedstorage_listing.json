@@ -1,12 +1,11 @@
 {
-  "title": "Runic Storage — Craft, Upgrade, Expand",
-  "summary": "Build storage that grows with your adventure. Craft storage units, connect them to a terminal, and spend bars to upgrade their capacity as you discover new materials.",
-  "description": "Keep your items together in one searchable inventory. Start by crafting a Storage Workbench, a terminal, and a Copper storage unit. Place your units next to each other, then press E on any connected unit to access your items.\n\nStart small and grow as you explore. Each Copper unit holds 40 stacks and costs 30 copper bars. Craft upgrade gems using 40 bars of the next material to add another 40 slots, all the way up to 360 slots per Relucite unit. Upgrades follow the material tiers in order and keep the items already inside.\n\nNeed more room? Add another unit or upgrade an existing one. Search, category filters, sorting, and quick transfers help you keep everything organized. Nearby crafting stations can use your stored materials too.",
+  "title": "Runic Storage",
+  "summary": "Connect storage units to a terminal and search all their items from one inventory. Add more units or upgrade the ones you have, from 40 slots each up to 360.",
+  "description": "Connect storage units to a terminal and search their items from one inventory. Filter by category, sort stacks, quick-stack matching items from your bag, or use the stored materials at nearby crafting stations. The terminal has no crafting menu of its own.\n\nAt a workbench's wooden tier, find the Storage Workbench under Base (20 wood). Use it to make a Storage Terminal (10 copper bars + 20 wood) and Copper Storage Units (30 copper bars each). Place them edge-to-edge and press E on the terminal or a connected unit. Gaps and diagonals don't connect. Units need a connected terminal, and access is local.\n\nCopper units hold 40 slots. Craft an upgrade gem, select it in your hotbar, and press E on a unit without emptying it first. Each gem costs 40 bars of its material and adds 40 slots. Follow every tier in order: Copper 40, Tin 80, Iron 120, Scarlet 160, Octarine 200, Galaxite 240, Solarite 280, Pandorium 320, Relucite 360.\n\nMining a unit moves its items into available space in units still connected to the terminal; anything that doesn't fit drops with the unit. Isolated units drop all their contents. Upgraded units keep their tier. Breaking a connection leaves the disconnected units' contents intact; reconnect them to regain access.\n\nInstall Runic Storage and CoreLib on the host and every joining player. Mouse and keyboard interface, with English labels. Currently in testing; multiplayer has not yet been verified. Empty your storage before uninstalling.\n\nUses UI components adapted from moorowl's Item Browser under the MIT license; no separate Item Browser installation needed.",
   "cover": {
-    "title": "CONNECTED STORAGE",
-    "tagline": "CRAFT • UPGRADE • EXPAND",
+    "title": "RUNIC STORAGE",
+    "tagline": "Search your connected storage",
     "supportingText": "9 upgrade tiers • 40–360 slots per unit"
   },
-  "inspiration": "Inspired by the Magic Storage mod for Terraria.",
   "testingNotice": "Currently in testing. Multiplayer has not yet been verified."
 }

@@ -1,32 +1,27 @@
 # Golden Chance
 
-![Golden Chance — illustrated mod cover](../release/goldenchance_logo.png)
+![Golden Chance — farm with golden crops](../release/goldenchance_logo.png)
 
-Increase the odds of **golden plants** and **rarer bonus cooked food**, using the game's native talent conditions and rolls.
+Golden Chance lets you raise the chance of growing golden plants and getting rarer bonus food from cooking. Both bonuses start at **+0%**, so nothing changes until you choose a higher value.
 
-## Settings
+Open **Settings > Mod Options > Golden Chance**. **Golden plant chance bonus** and **Golden food chance bonus** each range from +0% to +100%, in steps of 5. These add percentage points: a 20% chance with a +5% bonus becomes 25%, up to a maximum of 100%. They work even with no points in the relevant talent. At +0%, the game's talent value is left alone.
 
-Open **Settings > Mod Options > Golden Chance**.
+The cooking setting only changes the rarity of **extra food produced by the Cooking skill**. It does not make extra food appear more often or upgrade your regular main dish. Already planted seeds keep the outcome they had when planted. Automated seeders that do not use player talents are unaffected; automatic replanting can also apply its own base-chance override.
 
-| Setting | Choices | Default |
-|---|---|---|
-| Golden plant chance bonus | +0% to +100%, in steps of 5 | +0% |
-| Golden food chance bonus | +0% to +100%, in steps of 5 | +0% |
+## Installation and multiplayer
 
-Bonuses add percentage points, capped at 100%. A 20% chance with a +5% bonus becomes 25%. At +0%, the mod preserves the native talent value. Bonuses also apply with zero talent points.
+For **Core Keeper 1.3.0**. Install **CoreLib** and **Mod Options** on the host and every client, along with Golden Chance. You can also use the copy included in **Sid's Overhaul**; choose either the bundle or the standalone mod. Restart the game after installation so the new patches load.
 
-The food bonus affects the rarity of **extra food produced by the Cooking skill**. It does not increase the chance of producing extra food. Regular main dishes use vanilla behavior. Already planted seeds keep their earlier outcome; automated seeders that ignore player talents are outside this approach. Auto Replant's base-chance override still applies.
+Each client uses its own saved talent points, rather than the host's points.
 
-## Performance fix in 2.2.0
+## Updating from 2.1.0
 
-The regular-main-dish upgrade option from 2.1.0 has been removed. That implementation disabled Burst optimization for the inventory system and its jobs, even when the option was off. Version 2.2.0 removes the inventory hooks and leaves Burst enabled. Any old saved regular-cooking setting is ignored; existing upgraded items are unchanged.
+Version 2.2.0 removed the option to upgrade regular main dishes because it interfered with a game optimization even while switched off. Old saved values for that option are ignored, and food already upgraded stays as it is.
 
-There is no timer, recurring talent scan, or frame-update work. Talent conditions are sent through the native player-command path only on local-player initialization/rejoin, saved talent-point changes, confirmed talent resets, and changes to the bonus settings. A confirmed reset works even when the saved point list is empty. Each client uses its own talent points; the host does not substitute its points for other players.
+## Testing
 
-Regular-main-dish upgrades are deferred until a separate implementation can preserve performance and inventory correctness. The existing collection and crafting request paths are unchanged in this release.
+The Overhaul version has passed the game's loading checks. Standalone use, multiplayer, and talent resets/rejoining still need in-game testing.
 
-## Requirements and validation
+[Implementation and test details](https://github.com/Sthakur27/corekeeper-mods/blob/main/GoldenChance/DEVELOPER.md)
 
-Requires **CoreLib and Mod Options** on the host and every client. Use the standalone mod or Sid's Overhaul, not both. Restart the game after installation; an already running session retains the old patches.
-
-The event callbacks and talent calculations pass 20 isolated checks covering zero-point joins, talent changes, repeated events, confirmed resets, settings changes, clamping, remote players and unavailable worlds. Both standalone and overhaul builds are compile-checked against the installed 1.3.0.6 assemblies. These tests do not simulate Harmony patch registration or NetCode. The overhaul passed the in-game loader and safety check on October 14, 2026; Sid confirmed movement felt good after restarting with 2.2.0. Reset/rejoin, multiplayer, and standalone in-game checks remain unverified. No instrumented FPS benchmark was recorded.
+Cover is an in-game screenshot of a farm with golden crops; close-ups and title banner added.

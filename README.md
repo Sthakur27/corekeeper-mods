@@ -2,11 +2,11 @@
 
 ![Sid's Core Keeper Mods: choose individual mods for growing, preparing, customizing and exploring.](release/collection_logo.png)
 
-Make Core Keeper fit the way you like to play: spend less time on chores, customize your equipment, or adjust the challenge. Each mod page explains what changes, how to use it, and what you need to install.
+These are my Core Keeper mods. Some take care of things like replanting crops or switching gear; others add items, merchants, or settings for how hard you want the game to be. Pick the ones you want below.
 
 ## Choose how to install
 
-- **One package:** [Sid's Overhaul on Steam Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=3813043354). Includes the features below and the Mod Options menu. Subscribe to CoreLib too.
+- **One package:** [Sid's Overhaul on Steam Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=3813043354). Bundles most of these mods, with Mod Options built in. Check its page for the full list. Subscribe to CoreLib too.
 - **Pick individual mods:** [Sid's Core Keeper Mods collection](https://steamcommunity.com/sharedfiles/filedetails/?id=3814775238). Choose the mods you want and subscribe to their required items.
 - **Manual download:** [Latest GitHub release](https://github.com/Sthakur27/corekeeper-mods/releases/latest). Follow the release's install steps and the zip's README.txt. The published release may be older than the source in this repository.
 
@@ -18,8 +18,9 @@ Use the Overhaul or the individual versions of its features. Installing both run
 
 | Mod | What it helps with |
 |---|---|
-| [Shared Loadout Gear & Vanity](LoadoutSharing/README.md) | Empty equipment and vanity slots borrow from earlier loadouts (formerly Loadout Fallback). |
-| [Five Loadouts](FiveLoadouts/README.md) | Add two more equipment loadouts, with optional direct keys. Requires CoreLib and Shared Loadout Gear & Vanity. |
+| [Vanity Slots & Shared Equipment](LoadoutSharing/README.md) | Empty equipment and vanity slots borrow from earlier loadouts (formerly Loadout Fallback). |
+| [Five Loadouts](FiveLoadouts/README.md) | Add two more equipment loadouts, with optional direct keys. Requires CoreLib, Mod Options, and Vanity Slots & Shared Equipment. |
+| [Runic Storage](ConnectedStorage/README.md) | Search connected storage from one inventory and upgrade units from 40 to 360 slots each. |
 | [Ender Stash](EnderStash/README.md) | Access your character's personal 40-slot stash through an Ender Chest. |
 | [Coin Pouch](CoinPouch/README.md) | Picked-up Ancient Coins go into their own slot under the vanity pants, up to 99,999; merchants take payment from it. |
 | [Potion of Return](WormholePotion/README.md) | A one-use recall to the Core that marks your spot on the map; teleport back to it once from any waypoint. 25 Gold Bars at an Ancient Hologram Pod. |
@@ -30,13 +31,13 @@ Use the Overhaul or the individual versions of its features. Installing both run
 | [More NPCs (Alpha)](BossMerchants/README.md) | Eight new merchants, one per boss: place the idol a boss drops in a room with a free bed and its merchant moves in, selling blocks, decor, explosives, potions, pet eggs, hydra goods, farm animals and seeds. |
 | [Armor Dye](ArmorDye/README.md) | Color individual armor pieces, weapons and tools. |
 | [Pet Editor](PetEditor/README.md) | Change a pet's level, talents and color. |
-| [Item Spawner](ItemSpawner/README.md) | Host/admin spawn browser: search every item (modded ones too), take one or a full stack, spawn gear and tools above their base level, and cook any dish from two ingredients. Requires CoreLib and Runic Storage. |
+| [Item Spawner](ItemSpawner/README.md) | Search and spawn items, leveled gear, and cooked dishes. For the host and admins; requires CoreLib and Runic Storage. |
 
 ### Farming, fishing and supplies
 
 | Mod | What it helps with |
 |---|---|
-| [Auto Replant](AutoReplant/README.md) | Replant harvested crops using seeds you carry. |
+| [Auto Replant](AutoReplant/README.md) | Replant harvested crops using matching seeds nearby or in your bag. |
 | [Bigger Watering Cans](BiggerWateringCans/README.md) | Water larger patches of soil at once. |
 | [Faster Mushrooms](FasterMushrooms/README.md) | Adjust spread and mushroom regrowth near players. |
 | [Fast Auto Fishing](FastAutoFishing/README.md) | Automate fishing and shorten the wait between catches. |
@@ -58,19 +59,23 @@ Use the Overhaul or the individual versions of its features. Installing both run
 | [Longer Buffs](BuffDurationFloor/README.md) | Set a minimum duration for short food and potion buffs. |
 | [Durability Multiplier](DurabilityMultiplier/README.md) | Choose how quickly equipment wears out. |
 | [Difficulty Tuning](DifficultyTuning/README.md) | Tune enemies and bosses separately for Normal and Hard worlds. |
-| [Mushroom Slayer](MushroomSlayer/README.md) | Configurable gray mushroom armor: 1 damage below 200, 10% at or above 200; red phase unchanged. Bow fix awaiting live testing. |
+| [Mushroom Slayer](MushroomSlayer/README.md) | Let strong hits get through gray Shrooman Brute armor. The red phase stays the same; see the mod page for testing limits. |
 | [Boss Bonus Loot](BossBonusLoot/README.md) | Add extra rewards to selected bosses and enemies. |
 | [Skill XP & Talent Points](SkillXPMultiplier/README.md) | Adjust experience gains per skill and the talent points each skill gives. |
 | [Magic Mirror](MagicMirror/README.md) | Return to the Core without consuming the item. Craft for 50 Solarite Bars + 10 Recall Idols, or a 20% Omoroth drop. |
 | [Keep Minions On Teleport](KeepMinions/README.md) | Bring summoned minions along when you teleport. |
 | [Vehicle Speed](VehicleSpeed/README.md) | Change boat and go-kart speeds. |
 | [Hit Sound Effects](StimHits/README.md) | Choose sounds for hits, kills and damage taken. |
-| [Golden Chance](GoldenChance/README.md) | Golden crop and bonus-food rarity bonuses using native rolls; regular main dishes are unchanged. |
+| [Golden Chance](GoldenChance/README.md) | Raise your chances of golden crops and rarer bonus food. Regular main dishes stay the same. |
 
 ### Settings and the full package
 
-- [Mod Options](ModOptions/README.md) puts supported mod settings in one in-game menu. It also discovers compatible third-party CoreLib client settings; not every mod or setting is supported. Individual mod pages list their required dependencies.
-- [Sid's Overhaul](Overhaul/README.md) combines the mods above, with Mod Options built in.
+- [Mod Options](ModOptions/README.md) puts supported mod settings in one in-game menu. Some other CoreLib mods show up there too, though it can't show every mod or setting. Individual mod pages list their required dependencies.
+- [Sid's Overhaul](Overhaul/README.md) bundles most of these mods, with Mod Options built in. Its page lists what's included.
+
+## Worlds and characters
+
+[World & Character Manager](SlotOrganizer/README.md) adds buttons to reorder, copy, and edit your saves from the main menu. It is a separate install, even if you use the Overhaul.
 
 ## Source, credits and artwork
 

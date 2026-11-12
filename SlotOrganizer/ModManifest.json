@@ -1,7 +1,7 @@
 {
     "guid": "5e7a0c1f2b9d4c6e8a31f04d7b2c9e15",
     "name": "SlotOrganizer",
-    "displayName": "Slot Manager",
+    "displayName": "World & Character Manager",
     "skipSafetyChecks": true,
     "disableScripts": false,
     "accessesExtraAssemblies": true,

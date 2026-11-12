@@ -2,33 +2,30 @@
 
 ![Difficulty Tuning — illustrated mod cover](../release/difficultytuning_logo.png)
 
-Adjust enemy damage, health and speed to find a challenge that suits your world.
+Difficulty Tuning lets you change how hard enemies hit, how much health they have, and how quickly regular enemies move and attack. Hard and normal worlds have separate settings, so changing one leaves the other alone.
 
-Previously called **Hard Mode Tuning**. There are separate profiles for hard and normal worlds, so you can tune either without changing the other.
+This mod was previously called **Hard Mode Tuning**.
 
-## Start here
+With the defaults, regular enemies in hard worlds deal **1.5x normal damage** instead of the usual 2x. They still have the usual hard-mode 1.5x health, and bosses keep their vanilla hard-mode stats. Normal worlds are unchanged by default.
 
-Open **Settings > Mod Options**, then choose **Difficulty Tuning (Hard)** or **Difficulty Tuning (Normal)**. Change the settings and **reload the world** to apply them.
+Open **Settings > Mod Options** and choose **Difficulty Tuning (Hard)** or **Difficulty Tuning (Normal)**. After changing anything, **reload the world** for it to take effect.
 
-With the defaults, regular enemies in hard worlds deal **1.5x normal damage** instead of the usual 2x. Their health stays at the usual hard-mode 1.5x. Bosses keep their normal hard-mode strength. Normal worlds are unchanged by default.
+## Settings
 
-## What you can adjust
+Regular enemy damage and health are measured against normal mode. Boss damage and health are measured against the world's own difficulty: 1x means vanilla hard-mode bosses in a hard world, or vanilla normal-mode bosses in a normal world.
 
-| Setting | Hard-world default | Normal-world default |
-|---|---|---|
-| Regular enemy damage | 1.5x normal | 1x normal |
-| Regular enemy health | 1.5x normal | 1x normal |
-| Enemy movement, projectile and attack recharge speed | 1x | 1x |
-| Boss damage and health | 1x vanilla hard mode | 1x vanilla normal mode |
+- **Regular enemy damage and health:** each defaults to 1.5x in hard worlds and 1x in normal worlds. Choose from 1x–2x in hard worlds or 0.5x–2x in normal worlds, in 0.25 steps.
+- **Regular enemy movement, projectile speed and attack recharge:** three separate settings, all defaulting to 1x. Each offers 0.9x–1.5x in 0.05 steps, then 1.75x, 2x, 2.5x and 3x.
+- **Boss damage and health:** separate settings, both defaulting to 1x. Each offers 0.9x–1.5x in 0.05 steps.
 
-Regular damage and health range from 1x–2x in hard worlds and 0.5x–2x in normal worlds. Speed choices range from 0.9x–3x. Boss damage and health range from 0.9x–1.5x of the chosen world's usual values.
+Movement boosts taper off for enemies that are already fast. At a 2x setting, slower enemies get the full boost, while the fastest get 1.1x. Settings below 1x slow enemies directly.
 
-**Movement boosts taper for already-fast enemies.** At a 2x setting, slower enemies get the full 2x speed; the fastest get 1.1x. Settings below 1x reduce speed directly. Projectile speed and attack recharge have their own controls. A 1.25x recharge setting means attacks recover faster, with 80% of the usual cooldown.
+Recharge controls how soon an enemy can attack again: 1.25x means attacks recover faster, with 80% of the usual cooldown. Boss speed and attack patterns stay unchanged, as does loot.
 
-Boss speed and attack patterns are not adjusted. Loot is unchanged.
+## Installation and multiplayer
 
-## Requirements
+The host/server and every client need **Difficulty Tuning**, **CoreLib** and **Mod Options**. The host's settings determine enemy stats, and changes apply the next time the world loads.
 
-Requires **CoreLib** and **Mod Options** on the host/server and every client. The host's settings determine enemy stats. Settings take effect the next time a world loads.
+Difficulty Tuning is also included in **Sid's Overhaul**. Use the standalone mod or the bundled version so the feature only runs once.
 
-Also included in **Sid's Overhaul**; use one version of this feature.
+Cover artwork generated with AI; not an in-game screenshot.

@@ -1,33 +1,31 @@
-# Runic Storage — Craft, Upgrade, Expand
+# Runic Storage
 
-Build storage that grows with your adventure. Craft a Storage Workbench, connect storage units to a terminal, and keep your items together in one searchable inventory.
+Connect storage units to a terminal and search all their items from one inventory. You can sort everything, filter by item type, and craft at nearby stations using what's stored inside.
 
-Start with **40 slots** per Copper unit. As you discover new materials, craft upgrade gems to add more space, up to **360 slots** per Relucite unit. Each unit costs **30 copper bars**, and each upgrade costs **40 bars of the next material** and adds 40 slots. Upgrade through every tier in order without emptying the unit first.
-
-Need more room? Add another unit or upgrade one you already have. Search, category filters, sorting, and quick transfers help you keep everything organized. Craft all units and upgrade gems at your Storage Workbench.
+Copper units start at **40 slots** each. When you need more space, add another unit or upgrade one you already have, up to **360 slots** per Relucite unit. You don't have to empty a unit to upgrade it.
 
 ## Getting started
 
-1. At any workbench, select its wooden tier and craft a **Storage Workbench** from **Base** for 20 wood.
-2. Use it to craft a **Storage Terminal** (10 copper bars + 20 wood) and **Copper Storage Units** (30 copper bars each).
-3. Place units edge-to-edge. Diagonals and gaps do not connect.
-4. Press **E** on the terminal or any unit connected to it to open that inventory. A network needs a terminal: units with no terminal connected cannot be opened. Access is local; there is no remote access.
+1. Open a workbench, select the wooden tier, and find the **Storage Workbench** under **Base**. It costs 20 wood.
+2. At your new workbench, make a **Storage Terminal** (10 copper bars + 20 wood) and a **Copper Storage Unit** (30 copper bars).
+3. Place them next to each other. They need to touch along an edge; diagonals and gaps won't connect.
+4. Press **E** on the terminal or a connected unit to open your storage.
 
-## Storage controls
+Keep a terminal connected or you won't be able to open the units. You still need to walk over to your storage to use it; there's no remote access.
 
-- Pick up and place items with the cursor, or Shift-left-click to transfer a stack.
-- Right-click takes one item; right-click the same stack again while holding it to take one more. Native modifiers take ten items or half a stack, rounded up.
-- Category tabs run down the left edge of the storage panel: All, Materials, Weapons, Tools, Armor, Accessories, Food, Blocks, Furniture, Pets, Valuables and Other. Each tab shows a familiar item; the active tab is lit and the others are dimmed. One click shows only that category; click it again (or All) to see everything. Blocks are anything that places a tile (walls, floors, ground, bridges, fences, rugs, rails); Furniture is every other placeable, such as stations, chests, lights and decorations. Seeds count as Materials and pet eggs as Pets.
-- Search narrows the visible items further. Scroll through larger networks or switch between grid and list views.
-- Sort consolidates compatible stacks, then arranges them in tab order (materials first, other items last) and by name within each category. The direction control switches ascending/descending order.
-- Slots remain stable while moving items. Reopening preserves your arrangement. Adding a node to a previously viewed network triggers one sort on the next view.
-- The native quick-stack action transfers matching bag contents into the network. Bulk actions skip the hotbar and locked items.
+## Finding and moving items
 
-Nearby crafting stations can use storage materials through the game's nearby-chest crafting rules. The terminal itself does not provide a crafting screen.
+Use the search box to find something by name, or the tabs on the left to show just materials, weapons, food, and so on. Click the same tab again, or All, to see everything. Seeds are under Materials; pet eggs are under Pets. Placeable tiles go under Blocks; things like chests, stations, and lights go under Furniture.
 
-## Upgrade tiers
+Click to pick up and place items, or Shift-left-click to move a stack. Right-click takes one item, and you can keep right-clicking to take more. The game's usual modifier keys work for taking ten or half a stack too (half stacks round up). Quick-stack puts matching items from your bag into storage. Bulk transfers leave your hotbar and locked items alone.
 
-Craft the next gem, select it in your hotbar, and press E on a unit. Upgrades keep its contents and require every tier in order. Only Copper units are crafted directly; each gem costs **40 bars of its material**.
+**Sort** combines matching stacks and groups items in tab order (Materials first, Other last), then by name within each category. You can reverse the sort order. Your arrangement stays put when you close and reopen storage, though adding a new unit triggers a sort the next time you open it. For bigger collections, you can scroll or switch between grid and list views.
+
+Nearby crafting stations can use your stored materials, just like they can with nearby chests. You still craft at the station; the terminal doesn't have its own crafting menu.
+
+## Upgrading units
+
+Make an upgrade gem at the Storage Workbench, hold it in your hotbar, and press **E** on a unit. Each gem costs **40 bars of its material** and adds 40 slots. You have to go through the tiers in order.
 
 | Tier | Slots per unit |
 |---|---:|
@@ -41,21 +39,22 @@ Craft the next gem, select it in your hotbar, and press E on a unit. Upgrades ke
 | Pandorium | 320 |
 | Relucite | 360 |
 
-These capacities also apply when using Double Chest Inventory. If an older version left a unit over capacity, you can still take those extra items out.
+These sizes stay the same with chest-capacity mods installed. If an older version left a unit holding more than it should, you can still take the extra items out.
 
-## Moving your network
+## Moving things around
 
-Mining a unit moves what fits into units still connected to the terminal. The game drops the remaining items and the unit itself. Isolated units drop their contents. Breaking a connection leaves the other units and their contents intact; reconnect them to restore access from the same terminal. Upgraded units retain their tier when mined and placed again.
+When you mine a unit, its items move into any space left in the storage still connected to the terminal. Anything that doesn't fit drops on the ground with the unit. If the unit isn't connected, all its contents drop. Upgraded units keep their tier when you pick them up.
 
-## Requirements
+Breaking a connection doesn't empty the units on the other side. Reconnect them to get access to their items again.
 
-Requires **CoreLib** for every player.
+## Installing
 
-Supports mouse and keyboard, with English labels. Access your storage locally at its terminal or connected units. Empty your storage before uninstalling the mod.
+Install **Runic Storage** and **CoreLib** on the host and every joining player. The interface uses mouse and keyboard, with English labels.
+
+Currently in testing. Multiplayer has not yet been verified.
+
+**Empty your storage before uninstalling the mod.**
 
 ## Credits
 
-Inspired by the **Magic Storage mod for Terraria**.
-
-Uses UI components adapted from **moorowl's Item Browser**, under the [MIT license](ThirdParty/ItemBrowser/LICENSE). You do not need to install Item Browser to use Runic Storage.
-
+Uses UI components adapted from **moorowl's Item Browser**, under the [MIT license](https://github.com/Sthakur27/corekeeper-mods/blob/main/ConnectedStorage/ThirdParty/ItemBrowser/LICENSE). You don't need to install Item Browser separately.

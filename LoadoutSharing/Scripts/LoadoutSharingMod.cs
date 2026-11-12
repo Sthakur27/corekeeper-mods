@@ -30,7 +30,7 @@ namespace LoadoutSharing
             API.Authoring.OnObjectTypeAdded += VanityLayout.OnObjectTypeAdded;
 
             if (InOverhaul(this)) return; // the overhaul builds one page per feature
-            var section = SettingsPages.Create(this, "Shared Loadout Gear & Vanity").Hint(SettingsHint);
+            var section = SettingsPages.Create(this, "Vanity Slots & Shared Equipment").Hint(SettingsHint);
             RegisterSettings(section);
             section.Build();
         }

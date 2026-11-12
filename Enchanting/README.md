@@ -1,87 +1,45 @@
 # Enchanting (Alpha)
 
-Random enchantments for your gear. Build an **Enchanting Table**, put a weapon, tool, armor piece, ring,
-necklace or offhand in it,
-pay **Gold Bars and Ancient Coins**, and the item gains a random enchantment — up to three per item.
+Put a piece of gear in an **Enchanting Table** and spend Gold Bars and Ancient Coins to give it a random enchantment. You can have up to three on an item, from extra damage on a sword to faster mining on a pickaxe.
 
-**Alpha:** it works in single player and is still being tuned. Expect balance changes, and report anything odd.
+**This is still an alpha.** It's been tested in single player only, some effects haven't been tried in a fight yet, and the balance will change.
 
-- **The table:** crafted at the **Galaxite Workbench** (stations tab) for **20 Octarine Bars + 15 Gold Bars**.
-  Interact with it, place an item in the slot and press the **up arrow** to roll an enchantment.
-- **Cost per roll:** 5 Gold Bars + 250 Ancient Coins, then 10 + 500, then 15 + 750 for the third enchantment.
-- **Rolls:** a new enchantment usually lands at level I (60%), sometimes II (30%) or III (10%). Rolling one the
-  item already has raises it a level. An item with three enchantments swaps a random one for a new one.
-- **Removing:** the **red down arrow** removes the item's top enchantment (free, no refund).
-- **Where they apply:** weapons, tools and staffs while **held**; armor, rings, necklaces and offhands while
-  **worn**; summoning tomes while they are **in your inventory** (the last tome you held).
-- **Accessories don't stack with themselves:** if the same enchantment is on several rings/necklace/offhand,
-  only your highest copy counts (two rings with Precision III give +3%, not +6%).
-- **What you see:** enchanted items get a **violet slot border**, and their tooltips list each enchantment and
-  its effect. Enchantments stay on the item through upgrades and dyes.
+## Using the table
 
-## Enchantments
+Craft the table at a **Galaxite Workbench**, under stations, for **20 Octarine Bars + 15 Gold Bars**. Open it, put your gear in the slot, and press the **up arrow** to roll. It looks like an Upgrade Forge with a violet glow and uses the same window.
 
-Damage and speed enchantments multiply what you already have, so they matter at every stage of the game
-(x1.04 / x1.08 / x1.12 at levels I / II / III).
+The first enchantment costs **5 Gold Bars + 250 Ancient Coins**, the second costs **10 + 500**, and the third costs **15 + 750**.
 
-| Item | Enchantments |
-|---|---|
-| Melee weapons | Sharpness (x1.04-1.12 melee damage), Swiftblade (x1.03-1.10 attack speed), Fire Aspect, Venom, Stunning, Knockback, Lifesteal, Keen (crit chance), Bossbane, Thunderstrike* (lightning beam on crit, needs the Soul of Azeos) |
-| Bows, throwing weapons | Power (x1.04-1.12 ranged damage), Quick Draw (x1.03-1.10 attack speed), Frost (slow), Stunshot, Piercing* (shots pass through 1-3 enemies), Flame* (burn), Keen, Bossbane |
-| Staffs and magic weapons | Arcane Power (x1.04-1.12 magic damage), Quick Draw, Frugality (less mana cost), Spellsurge (magic damage after a crit), Clarity (mana back on crit), Frostbite (chill), Piercing*, Flame*, Keen, Bossbane |
-| Summoning tomes | Pack Leader (x1.04-1.12 minion damage), Frenzy (minion attack speed), Keen Fangs (minion crit), Slayer (minion boss damage), Static Familiars* (your minions' hits can stun), Soul Siphon* (heals you when your minions hit) |
-| Pickaxes, shovels, hoes, sledges, drills | Efficiency (+10-30% mining), Unbreaking, Fortune, Mending |
-| Helm, chest, pants | Resilience (less damage taken), Vitality (+3-10% max health), Regeneration, Evasion, Bosswarden, Thorns, Unbreaking, Blast Protection; Swiftness on pants |
-| Rings, necklaces, offhands (one shared pool) | Might (x1.01-1.03 all damage), Haste (x1.01-1.03 attack speed), Precision (+1-3% crit chance), Ferocity (+2-6% crit damage), Fleetfoot (+1-3% movement speed), Hardiness (+1-3% max health), Green Thumb (+5-15% extra harvest), Angler (+10-30 fishing), Gourmet (+5-15% extra cooked dish), Radiance (+1-3 light range) |
-| Offhands only (extra) | Vitality (+2-6% max health), Resilience (2-5% less damage taken), Swiftness (+2-6% movement speed) |
+New enchantments usually start at level I: the chances are 60% for I, 30% for II, and 10% for III. If you roll an enchantment the item already has, it goes up a level. Once an item has three, rolling a new one replaces a random enchantment, so you might lose one you wanted to keep.
 
-Fire Aspect, Flame, Lifesteal and Thorns grow with the item's level.
+The **red down arrow** removes the top enchantment for free. You don't get the bars or coins back.
 
-\* Experimental (0.3.0): not tested in game yet. Piercing isn't rolled on beam weapons. Flame on bows and staffs
-only works if the game passes burning on to arrows and bolts (beams always burn).
+Enchanted items have a violet border in your inventory. Hover over one to see what its enchantments do. They stay on the item when you upgrade or dye it.
 
-**Caps:** enchantments from all your gear together add at most −12% damage taken, +15% max health, +8 dodge,
-+12% move speed, +60% regeneration and −9% boss damage, so stacking the same defence on every piece stops paying off. Accessory enchantments are small on purpose and
-only your highest copy of each one counts. Your total from enchantments is capped at 25% less damage taken.
+## What you can enchant
 
-## What's tested (alpha)
+Weapons and tools need to be held for their enchantments to work. Armor, rings, necklaces, and offhands need to be worn. For summoning tomes, the last tome you held keeps working as long as it's still in your inventory.
 
-- **Tested in game:** the table (crafting, rolling, costs, the remove button), tooltips and violet borders, and
-  that every melee, bow and armor enchantment reaches your stats (the mod's own self-test passed). Sharpness was
-  measured on a training dummy (+10% per hit on a late-game build, before this version's x1.12 rework).
-- **Work in progress:** the new magic and summoning enchantments, the multiplier rework, and the level scaling
-  are new in this version and have only passed the self-test (or not yet run in game). Knockback, Frost,
-  Frostbite, Bossbane and Thorns haven't been confirmed in a fight yet. Blast Protection only reduces damage from
-  your own and your allies' explosives. Numbers will change.
+Fishing rods, bags, lanterns, pouches, pets, bait, grenades, and other stackable items can't be enchanted.
 
-## Requirements
+What you can roll depends on the item. A sword might get Sharpness for more damage, a pickaxe might get Efficiency for faster mining, or a ring might get Precision for extra crit chance. Check the [full enchantment list](https://github.com/Sthakur27/corekeeper-mods/blob/main/Enchanting/ENCHANTMENTS.md) for every option and its numbers.
 
-- CoreLib
+Thunderstrike, Piercing, Flame, Static Familiars, and Soul Siphon are **experimental and haven't been tested in game yet**. Thunderstrike needs the Soul of Azeos. Piercing won't roll on beam weapons. Flame on bows and staffs depends on the game passing the burn to arrows and bolts; beams always burn.
 
-## Limits
+## Stacking enchantments
 
-- Alpha: tested in single player only. Multiplayer is untested.
-- Fishing rods, bags, lanterns, pouches, pets, bait, grenades and other stackable items can't be enchanted.
-- The ring, necklace and offhand enchantments are new and only stat-checked by the self-test so far.
-- Switching Enchanting off or removing it can leave the last active bonuses on the character.
-- Summoning tome enchantments work while that tome is the last one you held and stays in your inventory.
-- In the world the table uses the Upgrade Forge's shape with a violet glow, and its window is the Upgrade
-  Forge's window.
-- Uninstalling: enchantments stop working and their tooltips disappear; the items themselves are kept.
+Putting the same accessory enchantment on several pieces won't add them together. Only the strongest copy counts. Two rings with Precision III give you +3% crit chance, for example, not +6%.
 
-## Commands (host/admin)
+There are also limits across all your gear: 12% less damage taken, 15% extra max health, 8 extra dodge, 12% extra movement speed, 60% extra regeneration, and 9% less boss damage. The total reduction in damage taken from enchantments is capped at 25%. Once you hit a limit, adding more of that bonus won't help.
 
-- `/enchant` — show the held item's enchantments; add `helm`, `chest`, `pants`, `ring1`, `ring2`, `necklace`
-  or `offhand` for worn gear.
-- `/enchant set <name> <level>`, `/enchant remove <name>`, `/enchant clear`, `/enchant roll [n]` — testing.
-- `/enchant selftest` — checks every enchantment of what you hold and wear against the game's stat totals.
-- `/enchant combattest [seconds]` — stand next to a training dummy: attacks it with each enchantment in turn
-  and reports damage, crit rate and status effects. `/enchant debug on` + `/enchant report` measure by hand.
+## Before you install
 
-## Development
+Requires **CoreLib**. Multiplayer hasn't been tested.
 
-- Enchantments are stored on the item in vanilla per-item data (the pet-talent list, unused on gear), and
-  applied as permanent player conditions that the game sums into your stats (`EnchantEffectSystem`).
-- `Unity/dump_vanilla.py`, `Unity/extract_forge_skin.py`, `Unity/make_art.py` and `Unity/build_bundle.py` build
-  the table (a copy of the Upgrade Forge with a violet skin); `Unity/verify_bundle.py` checks the bundle.
-- Design notes: `SPEC.md`, `docs/balance-model.md`, `docs/other-weapon-enchants.md`, `docs/test-plan.md`.
+The table, its costs and buttons, tooltips, and violet borders have been tested in game. Melee, bow, and armor enchantments have been checked against the game's stats, but that doesn't mean every effect has been confirmed in combat. Knockback, Frost, Frostbite, Bossbane, and Thorns still need that check. Blast Protection only helps against your own and your allies' explosives.
+
+The magic, summoning, and accessory enchantments, along with the newer damage multipliers and level scaling, still need more testing. Some have only passed automated stat checks; the experimental ones haven't been run in game yet.
+
+**Turning the mod off or removing it can leave the last active bonuses on your character.** The enchantment tooltips disappear and you keep your items, but uninstalling may not clear the bonuses you already had.
+
+For admin commands, testing tools, and build notes, see the [developer notes](https://github.com/Sthakur27/corekeeper-mods/blob/main/Enchanting/DEVELOPER.md).

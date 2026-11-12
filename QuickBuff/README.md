@@ -2,42 +2,46 @@
 
 ![Quick Buff — illustrated mod cover](../release/quickbuff_logo.png)
 
-Get ready for a fight with one key, then heal, restore mana or refresh your food buffs just as quickly.
+Press **B** to use your buff food and potions before a fight. If you've got several items that give the same buff, it picks the strongest one. There are separate keys for healing, mana, and food too.
 
-## Keys at a glance
+## How to use it
 
-- **B — Quick Buff:** consume one of each distinct buff food and buff potion you carry.
-- **H — Quick Heal:** drink the first instant-healing potion found, starting with the hotbar. Does nothing at full health.
-- **J — Quick Mana:** drink the first mana potion found, starting with the hotbar. Does nothing at full mana.
-- **F — Quick Food:** consume buff foods only. By default, this uses cooked food and leaves raw food alone. It works regardless of hunger.
+Keep your supplies in your main inventory or equipped pouches (extra pouch slots count too), then press:
 
-Rebind these in **Controls > Quick Buff**. The actions search your main inventory and equipped pouches, including extra pouch slots. Keys are ignored while menus, inventories or text entry are open. A chat message reports the result.
+- **B** to use buff food and potions.
+- **H** to drink the first instant-healing potion it finds. It checks your hotbar first and does nothing if you're already at full health.
+- **J** to drink the first mana potion it finds. Same idea: hotbar first, and nothing used at full mana.
+- **F** to use food buffs without drinking potions. By default it only eats cooked food, even if you're not hungry.
 
-## Avoid using supplies too early
+You can change the keys under **Controls > Quick Buff**. They won't fire while you have a menu, inventory, or text box open. Check chat to see what was used.
 
-By default, an item is skipped when **all** of its buffs have more than **30 seconds** left. If even one buff is missing or running low, the item can be used again. Permanent stat bonuses from gear don't count as an active buff, so potions like Crystal Water still apply their timed bonus on top.
+## What it uses
 
-Buffs of the same type don't add up in Core Keeper; only one is active at a time. Quick Buff uses the strongest:
+By default, Quick Buff leaves an item alone if all its buffs have more than **30 seconds** left. Once a buff is missing or running low, it can use that item again.
 
-- If you carry several items with the same buff type (for example, a crit-chance food and Crystal Water), it uses only the strongest one and keeps the rest.
-- A stronger item is used even while a weaker buff of that type is active, and it replaces that buff, ending the weaker one's remaining time early. An equal or weaker item is skipped until the active buff runs low.
-- Eating or drinking by hand still follows the game's own rule. Quick Buff leaves hunger-only, heal-only, mana-only and permanent-upgrade items alone; use Quick Heal for healing potions and Quick Mana for mana potions.
+Buffs of the same type don't add together, so it also checks whether you're carrying something stronger. For example, if Crystal Water gives more crit chance than your food, it'll use the Crystal Water for that buff. A stronger buff replaces a weaker one straight away; an equal or weaker one waits until the current buff is running low. The remaining time on a replaced buff is lost.
 
-Open **Settings > Mod Options > Quick Buff** to change:
+Bonuses from your gear don't count as active buffs, so they won't stop you from using a potion. Eating and drinking by hand still works as usual.
+
+B won't use items that only fill hunger, heal, restore mana, or give permanent upgrades. Use H and J for healing and mana potions.
+
+## Settings
+
+Under **Settings > Mod Options > Quick Buff**, you can change:
 
 - **Skip buffs that are still active:** on by default.
-- **Still active means more than:** 30 seconds, adjustable from 0–300.
+- **Still active means more than (seconds):** 30 seconds by default, from 0 to 300.
 - **Quick Food: only cooked food:** on by default.
 - **Quick Food: skip fish dishes:** off by default.
 
-The last two settings affect F only. B still considers all qualifying buff foods.
+The food settings only affect F. B still checks all food that gives buffs.
 
-## Chat commands
+## Installing
 
-Use `/quickbuff` (`/qb`), `/quickheal` (`/qh`), `/quickmana` (`/qm`) or `/quickfood` (`/qf`) as alternatives to the keys.
+You'll need **CoreLib** and **Mod Options**. In multiplayer, the host/server and everyone joining need them and Quick Buff installed. Each player can use an action once every **0.4 seconds**. The server handles using the items, so you may notice a little extra delay online. Dedicated headless servers haven't been tested.
 
-## Requirements and limits
+Quick Buff is also in **Sid's Overhaul**, so you don't need both versions.
 
-Requires **CoreLib** and **Mod Options** on the host/server and every client. Supplies are consumed on the server; multiplayer results may appear after a short network delay. Each action is limited to one request per 0.4 seconds per player. Dedicated headless server behavior has not been verified.
+If you'd rather use chat commands, there's `/quickbuff` (`/qb`), `/quickheal` (`/qh`), `/quickmana` (`/qm`), and `/quickfood` (`/qf`).
 
-Also included in **Sid's Overhaul**; use one version of this feature.
+Cover artwork generated with AI; not an in-game screenshot.

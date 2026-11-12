@@ -2,31 +2,29 @@
 
 ![Longer Buffs — mod cover from in-game screenshots](../release/buffduration_logo.png)
 
-Keep short food and potion buffs active longer. Choose a minimum duration; effects already lasting longer keep their normal duration.
+Makes short food and potion buffs last at least **three minutes** by default. Anything that already lasts longer keeps its usual duration. You can change the minimum if you'd rather have more or less time between eating and drinking.
 
-Formerly named **Buff Duration Floor**. Saved settings carry over.
+This used to be called **Buff Duration Floor**. Your saved settings carry over.
 
 ## Settings
 
-Open **Settings > Mod Options > Longer Buffs**.
+Open **Settings > Mod Options > Longer Buffs**. There are two options:
 
-| Setting | Default | What it changes |
-|---|---|---|
-| Minimum buff duration | **3:00** | Positive timed food and potion effects, such as movement speed or damage |
-| Minimum healing duration | **Off** | Consumable healing-over-time and mana regeneration |
+- **Minimum buff duration:** three minutes by default. Covers timed buffs from food and potions, like extra movement speed or damage.
+- **Minimum healing duration:** off by default. Covers healing over time and mana regeneration from consumables. Making these last longer can give you a lot more healing, so they're separate.
 
-Both settings offer Off, 30 s, 45 s, 1:00, 1:30, 2:00, 3:00, 5:00 and 10:00. **Off** restores the normal duration for that group. Healing is separate because extending regeneration can substantially increase total healing.
+For either setting, choose Off, 30 seconds, 45 seconds, 1 minute, 1:30, 2 minutes, 3 minutes, 5 minutes, or 10 minutes. **Off** puts that group back to its normal durations.
 
-Changes affect the next food or potion you consume. Buffs already active keep their existing timers. Settings save automatically, and item tooltips reflect the adjusted consumable durations.
+Changes save automatically and apply to the next food or potion you use. Anything already active keeps its current timer. Item tooltips show the new durations.
 
-Version 1.3.2 renames the mod to Longer Buffs; gameplay is unchanged. Version 1.3.1 limits duration updates to item templates. Dropped items loading or unloading no longer trigger repeated full scans or accumulate cached copies of their durations.
+## What it doesn't extend
 
-## Requirements and multiplayer
+Debuffs, instant healing, permanent bonuses, equipment effects, and most talent effects stay as they are. The mod only changes buffs that come from the food or potion itself.
 
-Requires **CoreLib** and **Mod Options**. Install on the host/server and every client, then restart Core Keeper. The host/server determines actual durations; matching settings avoids temporary client differences.
+For example, the fishing talent that gives **+15% damage against bosses for one minute** still lasts one minute. Talent bonuses that add melee attack speed after eating cooked food or healing over time after drinking a potion also keep their usual timers.
 
-## What stays unchanged
+## Installing
 
-Debuffs, instant healing, permanent bonuses, equipment effects and most talent effects are not extended. This mod changes effects stored on the consumable itself.
+You'll need **CoreLib** and **Mod Options**. In multiplayer, the host and everyone joining need all three mods installed. Restart Core Keeper after installing.
 
-In particular, the fishing talent's **+15% damage against bosses for 1 minute** stays at one minute. Talent-added melee attack speed from cooked food and potion healing-over-time also keep their hard-coded durations.
+The host's settings decide how long buffs actually last. Use the same settings as the host so your game doesn't briefly show a different duration.

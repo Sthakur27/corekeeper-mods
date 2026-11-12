@@ -2,49 +2,50 @@
 
 ![Skill XP & Talent Points — in-game screenshot cover](../release/skillxp-logo.png)
 
-Choose how quickly each skill levels up and how many talent points each skill gives you. Speed up the skills you find slow, slow down others, pause XP gains entirely, or raise the talent point total so you can fill more of each tree.
+Make slow skills level faster, or turn them down if you want a longer grind. You can set each skill separately and give yourself more talent points, including enough to fill the whole tree. Pets can get more talent points too.
 
-## Set your pace
+## XP rates
 
-Open **Settings > Mod Options > Skill XP & Talent Points** and choose a multiplier for each skill. All skills start at **1x**, the normal game rate.
+Open **Settings > Mod Options > Skill XP & Talent Points** to change a skill's XP multiplier. Everything starts at **1x**, the normal rate.
 
-- **0x** pauses new XP for that skill; it does not remove earned levels.
-- **0.25x–0.75x** slow progress down.
-- **1.5x–100x** speed it up, using the menu's preset choices.
+- **0x** stops that skill earning XP. You keep the levels you've already earned.
+- **0.25x–0.75x** makes it level more slowly.
+- **1.5x–100x** makes it level faster. Pick one of the preset rates in the menu.
 
-Supports Mining, Running, Melee, Vitality, Crafting, Range, Gardening, Fishing, Cooking, Magic, Summoning and Explosives. Changes apply to newly earned XP immediately and save automatically.
+This covers all twelve skills: Mining, Running, Melee, Vitality, Crafting, Range, Gardening, Fishing, Cooking, Magic, Summoning, and Explosives. Changes take effect on the next XP you earn and save automatically. They don't directly change your level.
 
-## Talent points
+## More talent points
 
-**Talent points at level 100** sets how many talent points every skill has in total once it reaches level 100. The points are spread evenly over the levels: with 40, a level 50 skill has 20 points. The default is **40**, enough to fill every talent in a tree. **Vanilla** keeps the normal game curve of 25 points.
+**Talent points at level 100** defaults to **40**, enough to fill every talent in a skill tree. You can also pick 30, 35, or **Vanilla** for the usual 25.
 
-- Raising the number gives you the extra points right away for levels you have already earned.
-- Lowering it (or going back to Vanilla) below what you have already spent resets that skill's talent tree for free the next time you open it, so you can place the points again.
-- Choices are **Vanilla**, 30, 35 and 40: a tree has 8 talents of 5 points each, so 40 fills it completely.
+The extra points are spread across your levels. With the setting at 40, for example, a level 50 skill gets 20 points. If you raise the setting after you've already leveled up, you get the extra points straight away.
 
-**Pet talent points at level 10** does the same for pets. The default is **9**, one for every talent slot, so a fully leveled pet can fill all of them. **Vanilla** keeps the normal 1 point every 2 levels (5 at level 10); the other choices are 6, 7 and 8. If a lower setting leaves a pet with more points placed than it has, use the reset button in its talent window.
+If you lower it below the number you've spent, that skill's tree resets for free the next time you open it. You can then spend your points again. Choosing Vanilla restores the game's usual point progression.
 
-## Chat shortcuts
+**Pet talent points at level 10** defaults to **9**, one for every talent slot. You can choose 6, 7, or 8 instead, or **Vanilla** for the normal one point every two levels (5 at level 10). If you lower the setting and your pet has too many points spent, use the reset button in its talent window.
 
-- `/xp` — show every multiplier.
-- `/xp mining 20` — set Mining to 20x.
-- `/xp all 1` — restore every skill to the normal rate.
+## Playing with friends
 
-Only the host can change values with `/xp`.
+The host chooses how settings work under **Multiplayer (when hosting)**:
 
-Commands choose the nearest supported multiplier. This changes XP earned from playing; it does not directly set skill levels.
+- **Host decides** is the default. Everyone uses the host's XP rates and talent point settings, including pet points.
+- **Each player picks** lets everyone use their own settings.
 
-## Multiplayer
+In your own world, you're the host. Players who don't have the mod still get the host's XP rates, but keep the normal talent point progression.
 
-The host picks **Multiplayer (when hosting)**:
+## Chat commands
 
-- **Host decides** (default): the host's XP multipliers, talent points and pet talent points apply to every player. Other players' own settings are ignored while they are on that world.
-- **Each player picks**: every player uses the multipliers and talent points from their own menu.
+You can check your rates with `/xp`. The host can also change them through chat:
 
-Only the host can use `/xp` to change values; other players get a short note instead. On your own world you are the host, so your settings always apply. Players without the mod use the host's XP multipliers and the normal talent curve.
+- `/xp mining 20` sets Mining to 20x.
+- `/xp all 1` puts every skill back to the normal rate.
 
-## Requirements and compatibility
+Commands use the nearest supported rate. If someone joining your world tries to change a value, they'll get a note that only the host can do that.
 
-Requires **CoreLib** and **Mod Options**. Install, then restart Core Keeper. Settings sync over CoreLib's chat-command channel without showing in chat. If CoreLib command security is turned on, allow `xpsync` for players.
+## Installing
 
-Don't run it alongside other mods that change skill XP or talent points: their effects can stack with this one or override it.
+Requires **CoreLib** and **Mod Options**. Restart Core Keeper after installing.
+
+If you've enabled CoreLib's command security, allow `xpsync` for players so the settings can sync. That syncing doesn't post messages in chat.
+
+Avoid running other mods that change XP or talent points at the same time; the changes may stack or overwrite each other.

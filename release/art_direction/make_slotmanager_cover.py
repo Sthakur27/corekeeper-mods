@@ -1,4 +1,4 @@
-"""Slot Manager (folder SlotOrganizer) cover from Sid's in-game screenshots, 2026-11-05.
+"""World & Character Manager (folder SlotOrganizer) cover from Sid's in-game screenshots, 2026-11-05.
 
     python release/art_direction/make_slotmanager_cover.py [out.png]
 
@@ -86,7 +86,7 @@ def text(s, size, y, fill, font):
     return layer
 
 
-title = text('SLOT MANAGER', 21, 7, '#ffd36a', 'impact.ttf')
+title = text('WORLD & CHARACTER MANAGER', 17, 9, '#ffd36a', 'impact.ttf')
 band = Image.new('L', (bw, bh))
 band.paste(255, (0, 0, bw, 17))
 ban.paste('#fff0b8', (0, 0), ImageChops.multiply(title, band))

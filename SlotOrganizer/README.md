@@ -1,59 +1,35 @@
-# Slot Manager
+# World & Character Manager
 
-Reorder, copy and edit your worlds and characters on the main menu. Move a world from slot 4 up to
-slot 3, swap two characters, close a gap, duplicate a world before a risky build, or rename a
-character, without touching the save folder.
+Move your worlds and characters into the order you want, make a copy before trying something, or change a character's name and appearance from the main menu.
 
-## How to use
+## Using the menu buttons
 
-On **Load World** and on the **character list**, every filled slot gets buttons to the right of the
-trash can:
+Open **Load World** or the **character list**. Filled slots have extra buttons beside the trash can:
 
-- **▲** moves that world/character up one slot
-- **▼** moves it down one slot
-- **Copy** (two sheets) copies it into the first empty slot, named "<name> copy"
-- **Edit** (**...**, characters only) opens the character creation screen for that character, with its
-  name and looks filled in. Change the name or appearance and press **Done** to save, or **Back** to
-  leave it unchanged; no game starts. Worlds are renamed in the game's own world settings (their own
-  **...** button).
+- **▲ / ▼** move the save one slot up or down. If that slot is occupied, the two saves swap places; if it is empty, your save moves into the gap.
+- **Copy** (two sheets) puts a copy in the first empty slot of the same list and adds " copy" to its name. Long names are shortened to fit.
+- **Edit** (**...**, characters only) opens the character creation screen with your character's name and appearance filled in. **Done** saves the changes and returns to the list without starting a game. **Back** leaves the character unchanged. This edits name and appearance, not the character's starting role.
 
-If the neighbouring slot has a world or character, the two swap places; if it is empty, the slot just
-moves there. The top slot has no ▲ and the bottom slot has no ▼. Normal and creative characters are
-each reordered within their own list.
+To move a save with the keyboard, select or hover over its slot and press **Ctrl+Up** or **Page Up**, or **Ctrl+Down** or **Page Down**. The first slot has no up button and the last has no down button. Normal and creative characters stay in their own lists.
 
-Keyboard: select (or hover) a slot and press **Ctrl+Up / Page Up** or **Ctrl+Down / Page Down**.
+To rename a world, use the game's existing **...** world settings button.
 
-## Requirements and multiplayer
+## Requirements
 
-- No other mods needed. No settings.
-- Only you need it: it reorders the saves on your own PC and does nothing in game, so players joining you
-  don't need it (1.0.1 fixes 1.0.0, which made the game ask joining players for it).
-- Not part of Sid's Overhaul; subscribe to it on its own (works fine next to the Overhaul).
-- Uses **elevated script access** ("Script (Elevated Access)" on the Workshop): the game's mod sandbox
-  blocks the save-file functions this mod needs, so it runs without the sandbox.
+For **Core Keeper 1.3.0**. No libraries or other mods are required, and there are no settings to configure. The buttons are available when the mod is enabled.
 
-## Limits
+World & Character Manager works only in the main-menu save lists. It manages saves on your own PC; players joining your world do not need it. It is a separate download and is **not included in Sid's Overhaul**.
 
-- A copied world or character gets its own new ID, so it is a separate save from then on: playing the
-  copy doesn't change the original. A copied world starts with a fresh map reveal for every character;
-  a copied character keeps its maps and inventory, and appears in each world as a new player (it
-  starts at the world's spawn point).
-- Copying needs an empty slot in the same list (30 worlds, 30 normal and 30 creative characters).
+It requires **Script (Elevated Access)** because it needs access to the game's save-file functions, which the normal mod sandbox blocks.
 
-- Characters find their worlds by an ID inside the save, not by slot number, so moving either one keeps
-  every character's progress and map in each world.
-- A move rewrites the files of the two slots involved. The game keeps its own backups
-  (`.pugbackup` files and the `backups` folder), but if you are nervous, copy your save folder first.
-- Uninstalling changes nothing: your saves stay in the order you left them.
+## Copies, saves and backups
 
-## How it works
+Moving a world or character keeps its identity, progress and maps. Copying needs an empty slot: there are 30 world slots, 30 normal character slots and 30 creative character slots.
 
-A slot number is only the save file name, so the mod swaps the slot's files through the game's own
-file system and reloads the save list: for a world `worlds`, `worldinfos`, `worldgenparams` and
-`servermaps`; for a character `saves` and `maps/<slot>/`. Copies duplicate the same files and then
-give the copy a new GUID (worlds: the world GUID inside the Brotli-compressed world save and its
-`worldinfo`; characters: `characterGuid`). Renaming a character sets the name in the character save
-through the game's `SaveManager`. The arrows are copies of the slot's trash-can
-button with an arrow icon; a Harmony prefix on its `OnActivated` moves the slot instead of opening the
-delete prompt. The manifest sets `skipSafetyChecks: true` because the sandbox bans the game's
-file-system namespace (`Pug.Platform`).
+A copied character keeps its inventory and maps but gets a new identity. Worlds treat it as a new player, starting at the world's spawn point. A copied world normally gets a new identity too, with fresh map reveal for each character. If the mod cannot update a world's identity in its save file, it keeps the original identity and writes a warning to the game log; in that case, do not assume the copy has separate map tracking.
+
+Moving, copying and editing write to your save files. **Back up your save folder before using these tools on saves you want to keep.** The game also keeps its own `.pugbackup` files and `backups` folder. A copy in another slot is useful for trying things, but is not a replacement for a separate backup.
+
+World & Character Manager does not provide cloud recovery or resolve cloud-sync conflicts. Keep a separate backup if you use cloud saves. Uninstalling leaves your saves in their current order and keeps any copies or edits you made.
+
+[Developer notes](https://github.com/Sthakur27/corekeeper-mods/blob/main/SlotOrganizer/DEVELOPER.md)

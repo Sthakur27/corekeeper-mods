@@ -1,33 +1,32 @@
 # Fish Seller
 
-![Fish Seller — mod cover from in-game screenshots](../release/fishseller_logo.png)
+![Fish Seller — Fishing Merchant and shop screenshots](../release/fishseller_logo.png)
 
-Buy cooking ingredients without a fishing trip: the **Fishing Merchant stocks all 44 supported fish**, including Starlight Nautilus. The **Caveling Merchant also sells Shiny Larva Meat**.
+The Fishing Merchant sells all 44 supported fish, including Starlight Nautilus, so you can buy ingredients when you want to cook without going fishing. The Caveling Merchant also sells Shiny Larva Meat.
 
-## Visit the shop
+Talk to the merchants as usual. The ingredients appear alongside their existing stock and need no extra unlocks. Merchants already in your world get a one-time restock when the new items are added.
 
-Talk to the usual merchants. The added ingredients need no extra unlocks and appear alongside their existing stock.
+## Browsing the shop
 
-**Hover over a shop and use the mouse wheel to scroll.** Shops show eight columns and three rows, with a scrollbar for the rest. This works for other merchants with large inventories too, and the wheel will not change your hotbar while you hover over the shop.
+Hover over the shop and scroll with the mouse wheel to see the rest of the stock. The window has eight columns and three visible rows, with a scrollbar for the remaining items. Scrolling works in other large merchant shops too, and won't change your hotbar while the pointer is over the shop.
 
-## Prices and settings
+**Controller scrolling isn't supported yet.** With a controller you can reach the first three rows; use the mouse wheel for later rows.
 
-Open **Settings > Mod Options > Fish Seller**.
+## Prices and stock
 
-| Setting | Choices | Default |
-|---|---|---|
-| Price multiplier (buying only) | 0.25x, 0.5x, 0.75x, 1x, 1.5x, 2x, 3x, 4x | 1x |
-| Stock per restock | 1–99 of each added item | 10 |
+Open **Settings > Mod Options > Fish Seller** to change these settings:
 
-At the default multiplier, ordinary fish use the game's usual buy-price formula (five times their sell value). **Starlight Nautilus costs 500 coins at 1x**. Sell prices stay unchanged. If your bag is full when buying the Nautilus, it drops at your feet.
+- **Price multiplier:** 0.25x, 0.5x, 0.75x, 1x, 1.5x, 2x, 3x or 4x. The default is **1x**, and it only changes buying prices.
+- **Stock per restock:** 1–99 of each added item. The default is **10**.
 
-## Requirements and limits
+At 1x, ordinary fish use the game's usual buy-price formula: five times their sell value. Starlight Nautilus costs **500 coins** at 1x. Sell prices stay unchanged. If you buy a Nautilus with a full bag, it drops at your feet.
 
-Requires **CoreLib and Mod Options** on the host and every client. The host's settings control multiplayer prices and stock.
+## Requirements and multiplayer
 
-- Works alongside **More NPCs** and **Potion Seller** (1.4.0 or newer). Potion Seller's Titan summons and Ender Stash's chest stay in the Fishing Merchant's stock.
-- Pair with **Merchant Restock** to shorten the wait for refills.
-- Existing merchants receive a one-time restock when the new wares are first added.
-- **Controller scrolling is not supported yet.** A controller can access the first three rows; use the mouse wheel to reach later rows.
+For Core Keeper **1.3.0**. Install **Fish Seller, CoreLib and Mod Options** on the host and every client. The host's settings determine prices and stock in multiplayer.
 
-The mod also places locked wares at the end of merchant lists to prevent an unintended repeated-restock issue.
+Fish Seller works alongside More NPCs and Potion Seller (1.4.0 or newer). Potion Seller's Titan summons and Ender Stash's chest remain in the Fishing Merchant's shop. Merchant Restock can shorten the wait for refills.
+
+Locked wares appear at the end of merchant lists. This prevents an issue where the shop would repeatedly restock.
+
+Cover is made from in-game screenshots of the Fishing Merchant and its shop (HDR captures tone-mapped); title banner and label added.

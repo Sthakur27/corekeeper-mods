@@ -2,33 +2,30 @@
 
 ![Potion Seller — mod cover from in-game screenshots](../release/potionseller_logo.png)
 
-Spend Ancient Coins to restock potions, explosives and unlocked Titan summoning items from familiar merchants.
+Potion Seller lets you spend Ancient Coins on potions, explosives and Titan summoning items at the merchants you already visit. Their normal wares stay available too.
 
-## Where to shop
+## Where to buy things
 
-| Merchant | Added stock | Default price and quantity |
-|---|---|---|
-| Caveling Merchant | 13 potions and the Recall Idol, plus the Potion of Return when that mod is installed | Potions: 50–500 coins; Recall Idol: 500; Potion of Return: 2,500. 20 of each per restock. |
-| Slime Merchant | 15 grenades and bombs | 10–100 coins. 20 of each per restock. |
-| Fishing Merchant | Azeos, Omoroth and Ra-Akar summoning items | 2,000 coins each. 3 of each per restock. |
+- **Caveling Merchant:** 13 potions for 50–500 coins each, plus the Recall Idol for 500 coins. If you have Potion of Return installed, it costs 2,500 coins here. By default, the merchant stocks 20 of each.
+- **Slime Merchant:** 15 grenades and bombs for 10–100 coins each, with 20 of each per restock.
+- **Fishing Merchant:** Azeos, Omoroth and Ra-Akar summoning items for 2,000 coins each, with 3 of each per restock.
 
-Potions and explosives are available without an extra boss unlock, alongside the merchant's normal wares. Each Titan summon unlocks once that Titan has been defeated in the world **or** a connected player holds its soul.
+Those are the prices at the default **1x** setting. Potions and explosives don't need an extra boss unlock. Each Titan summon becomes available once that Titan has been defeated in your world, or a connected player has its soul.
 
-## Settings
+The buy window expands to fit the extra items. Fish Seller can expand it further and add scrolling for longer lists. Mods that change the same merchants or item prices may overlap.
+
+## Changing prices and stock
 
 Open **Settings > Mod Options > Potion Seller**.
 
-- **Potion price multiplier:** default **1x**, with choices from 0.25x to 4x. Despite the label, this scales the buy price of all items added by this mod. Prices update while you play.
-- **Potions per restock:** default **20**, adjustable from 1–99. This also applies to explosives and the Recall Idol. Changes appear on the next restock; Titan summons stay at 3 each.
+**Potion price multiplier** changes the buy price of everything this mod adds, including explosives and Titan summons. It defaults to **1x**, with choices from **0.25x to 4x**, and prices change while you play.
 
-## Before you buy or sell
+**Potions per restock** defaults to **20** and can be set from **1 to 99**. It also covers explosives and the Recall Idol. Your new amount takes effect at the next restock; Titan summons always restock to 3 each.
 
-Added items have fixed sell prices equal to one fifth of their base 1x buy price. Changing the price multiplier changes buying prices only. These fixed sell prices replace the game's usual values for these items.
+Selling works differently: every added item sells for one fifth of its base 1x buy price, regardless of your price multiplier. These sell prices replace the game's usual values for those items.
 
-The buy window grows to make room for the added stock. Fish Seller can extend it further and provide scrolling for longer merchant lists. Other mods that change the same merchants or prices may overlap.
+## Requirements and multiplayer
 
-## Requirements
+Install **CoreLib**, **Mod Options** and Potion Seller on the host/server and every client. Match your price settings in multiplayer: the server decides what you pay, but a client with a different setting can show the wrong price.
 
-Requires **CoreLib** and **Mod Options** on the host/server and every client. Keep multiplayer price settings matched: the server charges its configured price, while a different client setting can display a different label.
-
-Also included in **Sid's Overhaul**; use one version of this feature.
+Potion Seller is a separate mod. Sid's Overhaul uses More NPCs instead.

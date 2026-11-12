@@ -1,22 +1,13 @@
 # Vehicle Speed
 
-![Vehicle Speed — mod cover from in-game screenshots](../release/vehiclespeed_logo.png)
+![Vehicle Speed cover: a boat crossing open water](../release/vehiclespeed_logo.png)
 
-Spend less time travelling: choose separate speed boosts for **boats and go-karts**. Both start at 1.5x; pick 1x for normal speed or go faster.
+Vehicle Speed makes boats and go-karts faster, with a separate setting for each. Both start at **1.5x** normal speed. You can turn either one back to **1x** or raise it as high as **10x**.
 
-## Choose your speed
+Open **Settings > Mod Options > Vehicle Speed** to change **Boat speed** or **Go-kart speed**. Both offer the same choices: **1x, 1.25x, 1.5x, 1.75x, 2x, 3x, 5x and 10x**.
 
-Open **Settings > Mod Options > Vehicle Speed**.
+Changes apply while you play, including to boats and karts you already have. Primitive, Renegade and Speeder go-karts are all included. Steering stays at normal speed, so faster karts take wider turns.
 
-| Setting | Choices | Default |
-|---|---|---|
-| Boat speed | 1x, 1.25x, 1.5x, 1.75x, 2x, 3x, 5x, 10x | 1.5x |
-| Go-kart speed | 1x, 1.25x, 1.5x, 1.75x, 2x, 3x, 5x, 10x | 1.5x |
+Install **Vehicle Speed, CoreLib and Mod Options** on the host and every client. In multiplayer, everyone should use the same speed settings as the host. Avoid combining vehicle-speed changes from multiple mods, as their settings can conflict.
 
-Changes apply while you play to existing boats and karts. This includes Primitive, Renegade and Speeder go-karts.
-
-## Requirements and limits
-
-Requires **CoreLib and Mod Options** on the host and every client. In multiplayer, everyone should choose the same values as the host.
-
-Steering stays at normal speed, so fast karts take wider turns. Disable Boat Turbo or other mods that also change vehicle speeds to avoid conflicting settings.
+Cover is an in-game screenshot of a boat crossing open water (HDR capture tone-mapped); title banner and a stopwatch icon added.

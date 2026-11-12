@@ -1,34 +1,37 @@
-# Shared Loadout Gear & Vanity
+# Vanity Slots & Shared Equipment
 
-![Shared Loadout Gear & Vanity — mod cover](../release/loadout_logo.png)
+![Vanity Slots & Shared Equipment — mod cover](../release/loadout_logo.png)
 
-*Formerly called **Loadout Fallback**. Same mod, same settings, just a clearer name.*
+Adds vanity slots for each loadout, so you can give each one its own outfit. Empty equipment slots can also borrow gear from earlier loadouts, so you don't need extra copies of the same items.
 
-Share your best gear and your vanity outfit across loadouts without moving them back and forth. Empty equipment and vanity slots borrow the nearest earlier loadout's item automatically.
+Previously called **Shared Loadout Gear & Vanity**, and before that **Loadout Fallback**. It's the same mod.
 
-## How to use it
+## Vanity outfits
 
-Put your everyday gear in loadout 1, then add only the items you want to change in loadouts 2 and 3. For example, an empty helmet slot in loadout 3 uses loadout 2's helmet, or loadout 1's if both are empty.
+You also get three vanity slots beside your armor for a cosmetic helmet, chest, and pants. Each loadout can have its own outfit. Using vanity furniture changes the outfit for your current loadout too.
 
-- Borrowed items appear **dimmed** and show their real durability.
-- Drag an item onto a dimmed slot to give that loadout its own item. Remove it to borrow again.
-- To change or remove a borrowed item, go to the loadout that owns it.
-- Armor, jewelry, off-hand, bag, lantern and pet follow this rule. Bag capacity and appearance update with your active gear.
+With **Vanity fallback** turned on (the default), empty vanity slots borrow from earlier loadouts just like gear does. Click a dimmed vanity piece to hide it in this loadout; click again to bring it back. Your other loadouts keep their outfits.
 
-With **Five Loadouts**, the same rule continues through loadouts 4 and 5.
+You can turn Vanity fallback off in **Mod Options**. Empty vanity slots then show your actual armor, and clicking one hides or shows that piece.
 
-## A different outfit for each loadout
+Other players can see your outfits, but the fallback setting is personal: how they see empty vanity slots depends on their own setting.
 
-Three vanity slots beside your armor let you choose a cosmetic helmet, chest and pants for each loadout. Vanity furniture also edits your current outfit, which other players can see.
+## Sharing gear
 
-**Vanity fallback** (Mod Options, on by default) applies the same borrowing rule to vanity: an empty vanity slot shows the nearest earlier loadout's vanity piece, dimmed. Click a borrowed piece to hide it in this loadout instead; click again to borrow it back. Hiding a piece only affects that loadout. With the option off, empty vanity slots show the real armor and clicking one toggles hiding that piece. The option changes what you see, so other players see your outfits according to their own setting.
+Put your usual gear in loadout 1, then only add the pieces you want to swap in your other loadouts. Empty slots borrow from an earlier loadout, so you don't need another copy of the same helmet, bag, or pet.
 
-The in-window slot idea was inspired by **Vanity Slots**; this is a separate implementation. If that mod adds its slots first, this mod reuses them.
+An empty slot checks the loadout before it, then keeps going back until it finds an item. So an empty helmet slot in loadout 3 uses loadout 2's helmet, or loadout 1's if both are empty. If you use **Five Loadouts**, this carries on through loadouts 4 and 5.
 
-## Requirements and limits
+Borrowed items look dimmed, with their real durability. Drag an item into a dimmed slot to use something different in that loadout. Take it out and the slot goes back to borrowing. To move or remove the original item, go to the loadout that holds it.
 
-Requires **CoreLib** and **Mod Options**. Install on the host/server and all clients, then restart the game. Keep **Loadout Plus** disabled because this mod replaces its equipment behavior.
+This works for armor, jewelry, off-hand, bag, lantern, and pet. Your bag space and appearance follow whichever gear you're using.
 
-**Use drag-and-drop or inventory shift-click for borrowed slots.** Right-clicking gear on the hotbar can replace the earlier loadout's original item instead of creating an override in your current loadout.
+**Use drag-and-drop or shift-click from your inventory when changing borrowed gear.** Right-clicking gear on the hotbar can replace the original item in an earlier loadout instead.
 
-This mod adds equipment slots. Move items out of added slots before removing it or changing other mods that alter the player inventory layout.
+## Installing
+
+You'll need **CoreLib** and **Mod Options**. In multiplayer, the host and everyone joining need the mod and its requirements installed. Restart the game after installing.
+
+Avoid running another mod that changes how equipment loadouts work at the same time.
+
+**Empty the added equipment slots before uninstalling**, or before changing other mods that rearrange your inventory slots.

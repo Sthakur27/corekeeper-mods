@@ -2,32 +2,30 @@
 
 ![Fast Auto Fishing — mod cover from in-game screenshots](../release/fastfish_logo.png)
 
-Spend less time waiting for bites. Automatically respond to fish nibbles and shorten the delays in the fishing loop.
+Cast your line and let it keep catching fish for you. Fast Auto Fishing skips the fishing minigame and cuts down the wait between catches. Right-click or start walking when you're done.
 
-## How to use it
+## Using it
 
-Open your inventory and use the auto-fishing toggle, then equip a fishing rod and cast. Automatic nibble responses start enabled on a fresh configuration. The helper turns off the fishing minigame while enabled and pauses its automatic input while menus or inventory are open.
+Open your inventory and turn on auto-fishing, then equip a rod and cast. It's on by default with a fresh config. Once you've cast, it'll catch and recast until you stop it. Automatic input pauses while you have your inventory or a menu open.
 
-With auto-fishing on, it keeps catching and recasting by itself. To stop, right-click once or start walking. The mod reels in the current line (landing the fish if one is biting) and doesn't cast again.
+To stop, right-click once or start walking. It'll reel in the current line, keeping the fish if one's biting, and won't cast again.
 
-The inventory toggle controls automatic nibble responses. The faster timing stays active while the mod is installed; there is no speed setting.
+The inventory toggle turns the automatic fishing on and off. **The shorter waits and animations stay active while the mod is installed**, even with the toggle off. There's no speed setting.
 
-## What changes
+## How much faster?
 
-- Bite waits are capped at **0.05 seconds**.
-- The nibble window is capped at **0.6 seconds**.
-- Cast, throw and reel-in animations are capped at **0.25 seconds**.
+Bite waits are capped at **0.05 seconds**, the nibble window at **0.6 seconds**, and casting and reeling animations at **0.25 seconds**.
 
-Loot tables, bait use, XP per catch and shoal rules keep their normal behavior. Shorter waits let you make more catches over time.
+Each catch still uses the usual loot, bait, XP, and shoal rules. You just get through more catches in the same time.
 
-## Requirements and limits
+Octopus boss bites are different: you'll need to respond to those yourself, and their bite wait stays the same. Casting and reeling are still faster.
 
-No library dependencies. Install on the host/server and all clients, then restart Core Keeper. Disable the original **Autofish / mikufish** when using this fork; both use the same mod identity.
+## Installing
 
-Octopus boss bites are not answered automatically and their bite timer is not shortened. The shorter cast, throw and reel-in timers still apply.
+You don't need any library mods. In multiplayer, the host and everyone joining need Fast Auto Fishing. Restart Core Keeper after installing it. Don't run the original version alongside this fork; the game treats them as the same mod.
 
-## Credit and license
+## Credits
 
-Fork of **mikufish** by **Jiamu Sun**, with faster fishing timers added by **Sid**. Licensed **GPL-3.0-or-later**; source ships with the mod.
+This is a fork of **mikufish** by **Jiamu Sun**, with faster fishing timers added by **Sid**. It's licensed under **GPL-3.0-or-later**, and the source is included.
 
-The internal manifest name remains `mikufish` because its existing toggle-button asset references that assembly name.
+See the [developer note](https://github.com/Sthakur27/corekeeper-mods/blob/main/FastAutoFishing/DEVELOPER.md) if you're working with the mod's assets.

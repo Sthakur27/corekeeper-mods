@@ -1,0 +1,7 @@
+# Golden Chance development notes
+
+Version 2.2.0 uses the game's native talent conditions and rolls. There is no timer, recurring talent scan, or frame-update work. Talent conditions travel through the native player-command path on local-player initialization/rejoin, saved talent-point changes, confirmed talent resets, and bonus-setting changes. A confirmed reset also works when the saved point list is empty. Each client uses its own talent points; the host does not substitute its points for other players.
+
+The regular-main-dish option from 2.1.0 disabled Burst optimization for the inventory system and its jobs, even with that option off. Version 2.2.0 removes those inventory hooks and leaves Burst enabled. Its saved setting is ignored; existing upgraded items are unchanged. Regular-main-dish upgrades were deferred until an implementation can preserve performance and inventory correctness. The collection and crafting request paths were unchanged by this release.
+
+Twenty isolated checks cover zero-point joins, talent changes, repeated events, confirmed resets, settings changes, clamping, remote players and unavailable worlds. These checks do not simulate Harmony registration or NetCode. Standalone and Overhaul builds were compile-checked against the installed 1.3.0.6 assemblies. The Overhaul passed the in-game loader and safety check on October 14, 2026; Sid confirmed movement felt good after restarting with 2.2.0. Reset/rejoin, multiplayer and standalone in-game checks remain unverified. No instrumented FPS benchmark was recorded.

@@ -1,17 +1,15 @@
 # Infinite Ore Boulders
 
-![Infinite Ore Boulders — mod cover from in-game screenshots](../release/infiniteore_logo.png)
+![Infinite Ore Boulders — drills around an ore boulder](../release/infiniteore_logo.png)
 
-Keep your mining operation running: **ore boulders keep producing ore without being used up**. You can leave drills in place instead of finding a new boulder when one runs out.
+Ore boulders keep producing ore without running out, so you can leave your drills where they are instead of moving them to a new deposit.
 
-## How to use
+Enable the mod, then mine or drill an existing boulder as usual. There are no settings or extra controls. It works with the game's ore boulder types, including pandorium and relucite, and keeps the normal ore drops and progress toward the next drop.
 
-Enable the mod and mine or drill an existing ore boulder as usual. There are no settings. It covers the game's ore boulder types, including pandorium and relucite.
+Only ore boulders are protected. Ordinary rocks and ore walls stay unchanged, and the mod won't create new boulders or restore ones that have already disappeared. Extremely large bursts of damage are capped to keep the boulder alive.
 
-The mod preserves the game's ore-drop process and protects boulders from breaking. It does not create new boulders or bring back ones that have already disappeared.
+## Installation and multiplayer
 
-## Requirements and limits
+For Core Keeper 1.3.0. No library dependencies are needed. In multiplayer, install it on the host and every client; the host handles boulder protection.
 
-No library dependencies. Install on the host and every client in multiplayer; the host runs the boulder protection.
-
-Only ore boulders are protected. Ordinary rocks and ore walls are unchanged. Extremely large bursts of damage are capped to keep the boulder alive.
+Cover is an in-game screenshot of drills around an ore boulder (HDR capture tone-mapped); title banner and infinity sign added.

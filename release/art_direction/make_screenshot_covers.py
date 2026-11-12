@@ -40,7 +40,7 @@ COVERS = {
         bg=('19.57.12.56', (300, 40, 1280, 600), 6),
         panels=[('19.57.12.56', (655, 58, 1002, 354), (40, TOP + 4, W - 40, H - 14), [(664, 148, 708, 340)])]),
     'LoadoutSharing': dict(
-        title='SHARED LOADOUT GEAR & VANITY', caption='EMPTY SLOTS BORROW FROM EARLIER LOADOUTS',
+        title='VANITY SLOTS & SHARED EQUIPMENT', caption='SEPARATE OUTFITS, SHARED GEAR BETWEEN LOADOUTS',
         bg=('19.57.23.85', (300, 40, 1280, 600), 6),
         panels=[('19.57.23.85', (655, 58, 1002, 354), (40, TOP + 4, W - 40, H - 14), [(710, 105, 970, 342)])]),
     'PetEditor': dict(

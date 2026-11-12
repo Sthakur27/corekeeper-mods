@@ -1,19 +1,37 @@
-**Loadout 1 is your base set. Loadouts 2 and 3 only need the pieces that differ.**
+# Vanity Slots & Shared Equipment
 
-In loadouts 2 and 3, every equipment slot uses its own item if it has one, otherwise it falls through to whatever loadout 1 is wearing. That covers helmet, chest, pants, necklace, both rings, off-hand, bag, lantern and pet.
+![Vanity Slots & Shared Equipment — mod cover](../release/loadout_logo.png)
 
-**How it looks in game**
-- An inherited item is drawn dimmed in the equipment window, with its real durability and tooltip.
-- Drag or shift-click an item onto a dimmed slot to give that loadout its own. Take it out again and the slot falls back to loadout 1's.
-- Clicking a dimmed slot does nothing. The item lives in loadout 1, so change it there.
-- Stats, your character sprite, bag capacity and pet all follow the same rule.
+Adds vanity slots for each loadout, so you can give each one its own outfit. Empty equipment slots can also borrow gear from earlier loadouts, so you don't need extra copies of the same items.
 
-**Why**
-Vanilla loadouts are fully separate, so a second loadout that only swaps a weapon still needs a full second set of armor. With this mod, you set your armor once in loadout 1 and only put the weapon, off-hand or ring that changes into loadouts 2 and 3.
+Previously called **Shared Loadout Gear & Vanity**, and before that **Loadout Fallback**. It's the same mod.
 
-**Notes**
-- No settings. Works for all three loadouts out of the box.
-- Vanilla shares the bag, lantern and pet between all loadouts. This mod gives each loadout its own bag, lantern and pet slot (with fallback), using the same slot layout as Loadout Plus, so a save that used Loadout Plus carries over. Do not run both mods at once.
-- Known limit: right-clicking gear on the hotbar equips it through the game's own server path and will replace loadout 1's item if that slot is currently inherited. Use drag-and-drop or shift-click from the inventory instead.
-- Multiplayer: install on the host and every client.
-- Source ships in the mod (plain C#). Feel free to learn from it or fork it.
+## Vanity outfits
+
+You also get three vanity slots beside your armor for a cosmetic helmet, chest, and pants. Each loadout can have its own outfit. Using vanity furniture changes the outfit for your current loadout too.
+
+With **Vanity fallback** turned on (the default), empty vanity slots borrow from earlier loadouts just like gear does. Click a dimmed vanity piece to hide it in this loadout; click again to bring it back. Your other loadouts keep their outfits.
+
+You can turn Vanity fallback off in **Mod Options**. Empty vanity slots then show your actual armor, and clicking one hides or shows that piece.
+
+Other players can see your outfits, but the fallback setting is personal: how they see empty vanity slots depends on their own setting.
+
+## Sharing gear
+
+Put your usual gear in loadout 1, then only add the pieces you want to swap in your other loadouts. Empty slots borrow from an earlier loadout, so you don't need another copy of the same helmet, bag, or pet.
+
+An empty slot checks the loadout before it, then keeps going back until it finds an item. So an empty helmet slot in loadout 3 uses loadout 2's helmet, or loadout 1's if both are empty. If you use **Five Loadouts**, this carries on through loadouts 4 and 5.
+
+Borrowed items look dimmed, with their real durability. Drag an item into a dimmed slot to use something different in that loadout. Take it out and the slot goes back to borrowing. To move or remove the original item, go to the loadout that holds it.
+
+This works for armor, jewelry, off-hand, bag, lantern, and pet. Your bag space and appearance follow whichever gear you're using.
+
+**Use drag-and-drop or shift-click from your inventory when changing borrowed gear.** Right-clicking gear on the hotbar can replace the original item in an earlier loadout instead.
+
+## Installing
+
+You'll need **CoreLib** and **Mod Options**. In multiplayer, the host and everyone joining need the mod and its requirements installed. Restart the game after installing.
+
+Avoid running another mod that changes how equipment loadouts work at the same time.
+
+**Empty the added equipment slots before uninstalling**, or before changing other mods that rearrange your inventory slots.

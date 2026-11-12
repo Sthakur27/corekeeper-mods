@@ -28,7 +28,7 @@ STALE_DEPS = ["3791299348"]
 # key (= mod folder), title, logo in release/, category tag
 MODS = [
     ("ModOptions", "Mod Options", "modoptions_logo.png", "Library"),  # first: other mods require it
-    ("LoadoutSharing", "Shared Loadout Gear & Vanity", "loadout_logo.png", "Quality of Life"),
+    ("LoadoutSharing", "Vanity Slots & Shared Equipment", "loadout_logo.png", "Quality of Life"),
     ("FiveLoadouts", "Five Loadouts", "fiveloadouts_logo.png", "Quality of Life"),
     ("SkillXPMultiplier", "Skill XP & Talent Points", "skillxp-logo.png", "Quality of Life"),
     ("FastAutoFishing", "Fast Auto Fishing", "fastfish_logo.png", "Quality of Life"),
@@ -56,7 +56,7 @@ MODS = [
     ("MagicMirror", "Magic Mirror", "magicmirror_logo.png", "Item"),
     ("MushroomSlayer", "Mushroom Slayer", "mushroomslayer_logo.gif", "Quality of Life"),
     ("ConnectedStorage", "Runic Storage", "runicstorage_workshop.png", "Item"),
-    ("SlotOrganizer", "Slot Manager", "slotorganizer_logo.png", "Quality of Life"),
+    ("SlotOrganizer", "World & Character Manager", "slotorganizer_logo.png", "Quality of Life"),
     ("FasterMachines", "Faster Machines", "fastermachines_logo.gif", "Quality of Life"),
     ("BuildTools", "Build Tools", "buildtools_logo.png", "Quality of Life"),
     ("ItemSpawner", "Item Spawner", "itemspawner_logo.png", "Quality of Life"),
@@ -194,25 +194,30 @@ def description(key, folder, readme_path):
     md = open(readme_path, encoding="utf-8-sig").read() if os.path.exists(readme_path) else ""
     md = re.sub(r"^#\s+.*\n", "", md, count=1)  # Steam shows the title already
     if key == OVERHAUL[0]:
-        note = ("[b]The features listed below in one package.[/b] Want to pick and choose instead? Use the "
-                "[url=https://steamcommunity.com/workshop/filedetails/?id={collection}]Sid's Core Keeper Mods[/url] "
-                "collection, which has every feature as its own mod. Do not subscribe to both the Overhaul and the "
-                "individual mods (each feature would run twice). Requires CoreLib. Settings: Settings > Mod Options (built in).")
+        note = ("Want to choose mods individually? Browse the "
+                "[url=https://steamcommunity.com/workshop/filedetails/?id={collection}]collection[/url]. "
+                "Turn off separate versions of anything you use from the Overhaul so it doesn't run twice.")
     elif key == "ModOptions":
-        note = ("[b]Library.[/b] Subscribe to it when a mod lists it as a required item. "
-                "Works alongside Mod Settings Menu.")
+        note = "Already using Sid's Overhaul? Mod Options is included, so you don't need another copy."
+    elif key == "PotionSeller":
+        note = ("Potion Seller is a separate mod. "
+                "[url=https://steamcommunity.com/workshop/filedetails/?id={overhaul}]Sid's Overhaul[/url] "
+                "uses More NPCs instead. Find my other mods in the "
+                "[url=https://steamcommunity.com/workshop/filedetails/?id={collection}]collection[/url].")
     elif key in NOT_IN_OVERHAUL:
-        note = ("Part of the [url=https://steamcommunity.com/workshop/filedetails/?id={collection}]Sid's Core Keeper Mods[/url] "
-                "collection. Not included in [url=https://steamcommunity.com/workshop/filedetails/?id={overhaul}]Sid's Overhaul[/url]; "
-                "subscribe to it separately (it works alongside the Overhaul).")
+        note = ("This one's a separate install, even if you use "
+                "[url=https://steamcommunity.com/workshop/filedetails/?id={overhaul}]Sid's Overhaul[/url]. "
+                "Find my other mods in the [url=https://steamcommunity.com/workshop/filedetails/?id={collection}]collection[/url].")
     else:
-        note = ("Part of the [url=https://steamcommunity.com/workshop/filedetails/?id={collection}]Sid's Core Keeper Mods[/url] "
-                "collection. Also bundled in the all-in-one [url=https://steamcommunity.com/workshop/filedetails/?id={overhaul}]Sid's Overhaul[/url]; "
-                "use the Overhaul or the individual mods, not both.")
+        note = ("Already using [url=https://steamcommunity.com/workshop/filedetails/?id={overhaul}]Sid's Overhaul[/url]? "
+                "This mod is included, so you don't need a separate copy. "
+                "My other mods are in the [url=https://steamcommunity.com/workshop/filedetails/?id={collection}]collection[/url].")
     cover_note = COVER_NOTES.get(key, "Cover artwork generated with AI; not an in-game screenshot.")
-    footer = f"\n\n{cover_note}\n\nSource and full docs: [url={GITHUB}{folder}]{GITHUB}{folder}[/url]"
+    # Some READMEs already include their cover disclosure for mod.io and GitHub.
+    disclosure = "" if re.search(r"(?im)^(?:The )?cover (?:is|artwork|made|combines|and|uses)\b", md) else cover_note + "\n\n"
+    footer = f"\n\n{disclosure}Source and full docs: [url={GITHUB}{folder}]{GITHUB}{folder}[/url]"
     body = to_bbcode(md)
-    text = note + "\n\n" + body
+    text = body + "\n\n" + note
     if len(text) + len(footer) > 7900:
         text = text[: 7900 - len(footer) - 20].rsplit("\n", 1)[0] + "\n[i](continued on GitHub)[/i]"
     return text + footer
@@ -220,11 +225,11 @@ def description(key, folder, readme_path):
 
 def collection_description():
     names = "".join(f"[*]{title}" for key, title, _, _ in MODS)
-    return ("Every one of Sid's Core Keeper mods as its own Workshop item. Click [b]Subscribe to all[/b], then "
+    return ("My Core Keeper mods, available separately. Pick the ones you want, or click [b]Subscribe to all[/b] and "
             "unsubscribe from anything you don't want; each mod updates on its own. CoreLib and Mod Options are "
             "required by many of these mods; subscribe to the required items shown on each mod page.\n\n"
             "Prefer a single mod? [url=https://steamcommunity.com/workshop/filedetails/?id={overhaul}]Sid's Overhaul[/url] "
-            "bundles all of them. Use the Overhaul [b]or[/b] these mods, not both (each feature would run twice).\n\n"
+            "bundles most of these mods. Check its page for what's included, and turn off the separate versions of those features so they don't run twice.\n\n"
             f"[list]{names}[/list]\n\n"
             "Cover artwork generated with AI; not an in-game screenshot.\n\n"
             f"Source: [url={GITHUB}]{GITHUB}[/url]")

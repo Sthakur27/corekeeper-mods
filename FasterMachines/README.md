@@ -2,30 +2,22 @@
 
 ![Faster Machines cover: in-game screenshot with an animated speed dial](../release/fastermachines_logo.gif)
 
-Speed up every timed machine on its own dial: **furnace, smelter kiln, glass smelter, fury forge, cooking pot, table saw, egg incubator (hatching) and drills**, plus one setting for any other timed machine. Everything starts at 5x so you can see it working right away; set any machine back to 1x for normal speed.
+Faster Machines lets you choose how fast each type of machine works. You can speed up smelting, cooking, sawing planks, hatching eggs and drilling separately. Every setting starts at **5x**; choose **1x** for any machine you want to keep at normal speed.
 
 ## Choose your speeds
 
-Open **Settings > Mod Options > Faster Machines**.
+Open **Settings > Mod Options > Faster Machines**. There are separate settings for the furnace, smelter kiln, glass smelter, fury forge, cooking pot, table saw, egg incubator (hatching) and drills. **Other timed machines** covers machines with crafting timers that aren't in those groups.
 
-| Setting | Choices | Default |
-|---|---|---|
-| Furnace | 1x, 1.5x, 2x, 3x, 5x, 10x, 20x, 50x, 100x, Instant | 5x |
-| Smelter Kiln | same | 5x |
-| Glass Smelter | same | 5x |
-| Fury Forge | same | 5x |
-| Cooking Pot | same | 5x |
-| Table Saw (wood into planks) | same | 5x |
-| Egg Incubator (hatching) | same | 5x |
-| Drills | 1x to 100x | 5x |
-| Other timed machines | same as Furnace | 5x |
+Each setting offers **1x, 1.5x, 2x, 3x, 5x, 10x, 20x, 50x and 100x**. Timed machines also have an **Instant** option, which finishes one item per game tick. Drills have no Instant option.
 
-Changes apply while you play. An item that is already in progress finishes at the old speed; the next one uses the new speed. Progress bars follow the new speed.
+You can change speeds while playing. An item already in progress finishes at its previous speed; the next item uses the new setting. Progress bars adjust to the selected speed.
 
-**Instant** finishes one item every game tick. Drills get faster by hitting more often, and past the fastest hit rate by hitting harder.
+Drills hit more often at higher speeds. Once they reach the fastest hit rate, they deal more damage per hit instead. The mod also adjusts ore boulders' resistance to rapid drilling, so faster drills can produce ore at the chosen rate instead of losing output to that resistance. At 1x, boulders use their normal behavior.
 
-Ore boulders normally weaken every drill hit when they take a lot of drill damage per second, so in vanilla, extra drilling past a point gives less ore, and very fast drills stop doing damage at all. The Drills setting raises that limit by the same multiplier, so 5x drills really get 5x the ore from a boulder. At 1x boulders behave exactly as in vanilla.
+## Requirements and multiplayer
 
-## Requirements and limits
+For Core Keeper **1.3.0**. Install Faster Machines, **CoreLib** and **Mod Options** on the host and every client.
 
-Requires **CoreLib and Mod Options** on the host and every client. The host's settings decide the speed; clients with different values only see a different progress bar.
+The host's settings control the actual machine speeds. Clients use their own settings for progress bars, so use matching values if you want the bars to agree with the host's timing.
+
+Cover is an in-game screenshot of the machines (HDR capture tone-mapped); title banner, highlights and an animated speed dial added.

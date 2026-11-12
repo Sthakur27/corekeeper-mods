@@ -1,49 +1,45 @@
 # Mushroom Slayer
 
-![Mushroom Slayer — mod cover from in-game screenshots](../release/mushroomslayer_logo.gif)
+![Mushroom Slayer — Shrooman Brute fight with added title and damage animation](../release/mushroomslayer_logo.gif)
 
-Let powerful attacks punch through a Shrooman Brute's gray armor. Early-game hits still do one damage, while stronger builds can wear it down without waiting for a wall collision.
+Mushroom Slayer lets strong attacks damage a Shrooman Brute through its gray armor, so a stronger character can kill it without waiting for it to hit a wall. Weak attacks still deal one damage, and the vulnerable red phase works as usual.
 
-## How damage works
+With the defaults, hits below **200 damage** deal **1 damage** through gray armor. Hits of **200 or more** deal **10%** of their normal damage, rounded down:
 
-With the default settings, while the brute is gray:
-
-- A positive hit below **200** normal damage deals **1** damage.
-- A hit of **200 or more** deals **10%**, rounded down.
-- The vulnerable **red phase keeps its normal damage**.
-
-| Normal hit | Gray-armored damage |
+| Normal hit | Damage through gray armor |
 |---|---|
 | 199 | 1 |
 | 200 | 20 |
 | 1,200 | 120 |
 | 2,000 | 200 |
 
-“Normal hit” means damage after bonuses, critical hits and ordinary flat damage reduction, before the gray armor's one-damage cap. Critical hits use the same rule. Zero-damage hits remain zero.
+Normal damage here includes bonuses, critical hits and ordinary flat damage reduction, before the gray armor would cap the hit at one damage. Zero-damage hits stay at zero.
 
-For a vanilla Hard-mode brute with 810 HP, five 2,000-damage hits would kill it, provided it does not heal. Health changes from other mods can change that count. An 8,100-damage crit can still kill it in one hit after the 90% reduction.
+A vanilla Hard-mode brute has 810 HP, so five hits that would normally deal 2,000 damage will kill it, as long as it does not heal. An 8,100-damage critical hit can still kill it in one hit after the armor reduction. Changes to the brute's health will change those counts.
 
-## Use and requirements
+## Settings
 
-Open **Settings > Mod Options > Mushroom Slayer**. Settings save automatically and apply immediately:
+Open **Settings > Mod Options > Mushroom Slayer**. Settings save automatically and take effect immediately.
 
 | Setting | Default | Range |
 |---|---|---|
 | Damage threshold | 200 | 1–10,000 |
 | Damage through armor (%) | 10% | 1–100% |
 
-Hits below the threshold deal 1 damage. At or above it, damage uses the configured percentage, rounded down with a minimum of 1 for positive hits. Red-phase damage is unchanged. Reset to defaults restores 200 and 10%.
+Below your threshold, positive hits deal one damage. At or above it, they use your chosen percentage, rounded down, with a minimum of one damage. These settings do not change red-phase damage. Reset to defaults restores 200 and 10%.
 
-**Requires CoreLib and Mod Options** for the standalone mod. Sid's Overhaul includes Mod Options and requires CoreLib. Restart Core Keeper after installing or updating.
+## Installation and multiplayer
 
-For a local install, run `install.ps1` from this folder. In multiplayer, install matching versions and use matching settings on the host and every client.
+For **Core Keeper 1.3.0**. The standalone mod requires **CoreLib** and **Mod Options**. Restart the game after installing or updating. For a local install, run `install.ps1` from this folder.
 
-Sid's Overhaul includes Mushroom Slayer as a switchable feature under **Settings > Mod Options > Turn Sub-Mods On/Off**. Use the bundled version or the standalone mod, not both.
+In multiplayer, the host and every client need matching mod versions and matching settings.
 
-## Limits
+Mushroom Slayer is also included in **Sid's Overhaul**, which includes Mod Options and requires CoreLib. Use either the standalone mod or the bundle. In the bundle, turn this feature on or off under **Settings > Mod Options > Turn Sub-Mods On/Off**.
 
-- Only Shrooman Brutes are targeted. Their health and phase timing are unchanged.
-- Vanilla stuns can also make a brute vulnerable; that behavior remains intact.
-- Explicit armor-bypass attacks and creative instant kills keep their existing behavior.
-- Non-projectile pet/creature attacks and third-party attacks that already discard their original damage before the mod can read it retain their vanilla cap.
-- Avoid combining this with another mod that changes the same brute armor or damage handling.
+## What stays the same
+
+Only Shrooman Brutes are affected. Their health, phase timing and vulnerability to vanilla stuns stay the same. Attacks that explicitly bypass armor and creative instant kills also keep their existing behavior.
+
+Non-projectile pet and creature attacks still have the vanilla cap. Custom attacks that have already lost their original damage value before this mod can read it also keep that cap. Avoid combining changes to the same brute armor or damage rules.
+
+Cover is an in-game screenshot of a fight with a Shrooman Brute (HDR capture tone-mapped); title banner and an animated damage number added.

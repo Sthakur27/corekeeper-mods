@@ -1,28 +1,26 @@
 # Auto Replant
 
-![Auto Replant — mod cover from in-game screenshots](../release/autoreplant_logo.png)
+![Auto Replant — cover made from in-game screenshots](../release/autoreplant_logo.png)
 
-Harvest your crops and let the next planting take care of itself.
+Auto Replant plants the same crop back after you harvest it, using one matching seed from near the harvested tile or from your inventory. Harvest as usual, including with an area harvest tool. If there's no seed available, the tile stays empty.
 
-## How to use
-
-Harvest a ripe crop on ground where its seed can be planted. Auto Replant uses one matching seed near the harvested tile, or a seed in your inventory, to plant the same crop again. **No seed means no replant.**
-
-It works with player harvests, including area harvests. Growth, watering and Gardening XP follow the normal game rules. Automated harvesters and destroyed seedlings do not trigger it.
+Replanting is on by default. Keep some spare seeds with you and plant on suitable ground; the mod won't take seeds from chests. Growth, watering and Gardening XP still follow the normal game rules.
 
 ## Settings
 
-Open **Settings > Mod Options > Auto Replant**. Changes apply while you play.
+Open **Settings > Mod Options > Auto Replant** to change these while you play:
 
-- **Auto replant: on.** Turn it off to plant everything yourself.
-- **Use seeds from inventory: on.** If no dropped seed is available, use seeds you already carry. Turn it off to rely on dropped or newly collected seeds.
-- **Override golden chance: off.** The normal 3% base chance plus your Gardening bonus is used by default.
-- **Golden plant chance: 5%.** Only used when the override is on; choose 0–100%. Your Gardening bonus still adds on top.
+- **Auto replant** starts on. Turn it off when you'd rather leave the harvested tiles empty.
+- **Use seeds from inventory** starts on. Turn it off if you only want to reuse dropped seeds or seeds you've just picked up from the harvest, without dipping into your existing supply.
+- **Override golden chance** starts off, so you keep the usual 3% base chance plus your Gardening bonus.
+- **Golden plant chance (%)** starts at 5% and can be set from 0–100%. It only takes effect when the override is on, replacing the 3% base chance. Your Gardening bonus still adds on top.
 
-## Requirements and limits
+## Before you use it
 
-Requires **CoreLib** and **Mod Options** on the host/server and every client. Replanting runs on the server and uses the harvesting player's seeds.
+You'll need **CoreLib** and **Mod Options**. In multiplayer, the host/server and everyone joining need all three mods. The server handles replanting, using the seeds of the player who harvested the crop.
 
-Keep spare seeds with the harvesting player. Seeds in chests are not used. Wild crops on unsuitable ground are not replanted. Root-type plants trigger a replant only when destroyed. The mod waits briefly for the old plant to clear and a seed to become available.
+Only ripe crops harvested by a player count. Automated harvesters and destroyed seedlings don't trigger replanting, and wild crops won't replant on ground where you couldn't plant their seeds yourself. Root-type plants only trigger a replant when destroyed. There can be a short delay while the old plant clears and a seed becomes available.
 
-Also included in **Sid's Overhaul**; use one version of this feature.
+Auto Replant is also included in **Sid's Overhaul**. Use the standalone mod or the Overhaul version, rather than installing both.
+
+Cover made from in-game screenshots of the same field before and after harvesting. HDR captures were tone-mapped, sprinklers were edited out, and a title banner was added.

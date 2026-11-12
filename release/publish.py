@@ -61,29 +61,77 @@ def build_zip(folder, version):
     return out
 
 def readme_parts(folder):
-    md = open(os.path.join(folder, "README.md"), encoding="utf-8").read()
-    lines = md.splitlines()
+    md = open(os.path.join(folder, "README.md"), encoding="utf-8-sig").read().replace("\r\n", "\n")
+    lines = md.split("\n")
     title = re.sub(r"\s*\(.*?\)\s*$", "", lines[0].lstrip("# ").strip())
     body = "\n".join(lines[1:]).strip()
-    # Hero images are skipped: mod.io shows the logo instead.
-    paras = [p.strip() for p in re.split(r"\n\s*\n", body) if p.strip() and not p.strip().startswith("![")]
-    first = re.sub(r"\s+", " ", re.sub(r"[*`_#]", "", paras[0]))
+    paras = [p.strip() for p in re.split(r"\n\s*\n", body)
+             if p.strip() and not p.strip().startswith(("![", "#", "|"))]
+    first = re.sub(r"\[([^\]]+)\]\([^)]+\)", r"\1", re.sub(r"[*`_]", "", paras[0]))
+    first = re.sub(r"\s+", " ", first)
     summary = first if len(first) <= 250 else first[:247].rsplit(" ", 1)[0] + "..."
-    out = []
-    for p in paras:
-        if p.startswith("#"):
-            out.append(f"<h3>{html.escape(p.lstrip('# ').strip())}</h3>"); continue
-        # "- " / "* " bullets only: a paragraph opening with **bold** is not a list.
-        if all(l.lstrip().startswith(("- ", "* ")) for l in p.splitlines()):
-            items = "".join(f"<li>{inline(l.lstrip()[1:].strip())}</li>" for l in p.splitlines())
-            out.append(f"<ul>{items}</ul>"); continue
-        out.append("<p>" + inline(p).replace("\n", "<br>") + "</p>")
-    return title, summary, "\n".join(out)
+    return title, summary, to_html(body)
+
+LIST_RE = re.compile(r"^\s*([-*]|\d+\.)\s+")
+
+def to_html(md):
+    """README Markdown -> the HTML mod.io renders: headings, paragraphs (hard-wrapped lines joined), tables,
+    bullet/numbered lists, code blocks, bold/italic/code/links. Hero images are dropped (mod.io shows the
+    logo). Mirrors workshop_publish.to_bbcode; after changing either, look at a live page with a table."""
+    lines, out, para, i = md.split("\n"), [], [], 0
+
+    def flush():
+        if para:
+            out.append("<p>" + inline(" ".join(l.strip() for l in para)) + "</p>")
+            para.clear()
+
+    while i < len(lines):
+        line = lines[i]
+        if not line.strip() or re.match(r"^!\[[^\]]*\]\([^)]*\)$", line.strip()):
+            flush(); i += 1; continue
+        if line.startswith("```"):
+            flush(); block = []; i += 1
+            while i < len(lines) and not lines[i].startswith("```"):
+                block.append(html.escape(lines[i])); i += 1
+            out.append("<pre><code>" + "\n".join(block) + "</code></pre>"); i += 1; continue
+        m = re.match(r"^(#{1,6})\s+(.*)", line)
+        if m:
+            flush(); n = min(len(m.group(1)) + 1, 4)
+            out.append(f"<h{n}>{inline(m.group(2).strip())}</h{n}>"); i += 1; continue
+        if line.lstrip().startswith("|"):
+            flush(); rows = []
+            while i < len(lines) and lines[i].lstrip().startswith("|"):
+                cells = [c.strip() for c in lines[i].strip().strip("|").split("|")]
+                if not all(re.fullmatch(r":?-{2,}:?", c) for c in cells):
+                    rows.append(cells)
+                i += 1
+            t = "".join("<tr>" + "".join(f"<{'th' if r == 0 else 'td'}>{inline(c)}</{'th' if r == 0 else 'td'}>"
+                                         for c in cells) + "</tr>" for r, cells in enumerate(rows))
+            out.append(f"<table>{t}</table>"); continue
+        if LIST_RE.match(line):
+            flush(); ordered = bool(re.match(r"^\s*\d+\.", line)); items = []
+            while i < len(lines) and (LIST_RE.match(lines[i])
+                                      or (items and lines[i][:1] in (" ", "\t") and lines[i].strip())):
+                if LIST_RE.match(lines[i]):
+                    items.append(LIST_RE.sub("", lines[i]))
+                else:
+                    items[-1] += " " + lines[i].strip()
+                i += 1
+            tag = "ol" if ordered else "ul"
+            out.append(f"<{tag}>" + "".join(f"<li>{inline(x)}</li>" for x in items) + f"</{tag}>"); continue
+        para.append(line); i += 1
+    flush()
+    # mod.io's Cloudflare WAF rejects a PUT containing "python -I <path>" (HTTP 403 HTML page); the
+    # developer commands still read fine without the flag (Solarite Drill, Potion of Return, 2026-11-12).
+    return "\n".join(out).replace("python -I ", "python ")
 
 def inline(s):
-    s = html.escape(s)
+    s = html.escape(s, quote=False).replace("\\*", "&#42;")
+    s = re.sub(r"`([^`]+)`", r"<code>\1</code>", s)
     s = re.sub(r"\*\*(.+?)\*\*", r"<strong>\1</strong>", s)
-    s = re.sub(r"`(.+?)`", r"<code>\1</code>", s)
+    s = re.sub(r"(?<![\w*])\*(?!\s)(.+?)(?<!\s)\*(?![\w*])", r"<em>\1</em>", s)
+    s = re.sub(r"\[([^\]]+)\]\((https?://[^)\s]+)\)", r'<a href="\2">\1</a>', s)
+    s = re.sub(r"\[([^\]]+)\]\(([^)]+)\)", r"\1", s)  # relative links: keep the text
     return s
 
 def setup(mid, folder, version, deps, changelog="Initial release."):

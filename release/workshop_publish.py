@@ -175,8 +175,18 @@ def to_bbcode(md):
             tag = "olist" if ordered else "list"
             out.append(f"[{tag}]" + "".join(f"[*]{inline(x)}" for x in items) + f"[/{tag}]")
             continue
-        out.append(inline(line))
-        i += 1
+        if not line.strip():
+            out.append("")
+            i += 1
+            continue
+        # A paragraph: join hard-wrapped lines first, so **bold** across a line break converts and
+        # Steam doesn't show a line break mid-sentence.
+        para = []
+        while (i < len(lines) and lines[i].strip() and not lines[i].startswith(("```", "|"))
+               and not re.match(r"^(#{1,3})\s+", lines[i]) and not re.match(r"^\s*([-*]|\d+\.)\s+", lines[i])):
+            para.append(lines[i].strip())
+            i += 1
+        out.append(inline(" ".join(para)))
     return "\n".join(out).strip()
 
 

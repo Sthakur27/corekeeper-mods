@@ -22,8 +22,22 @@ namespace BossBonusLoot.Systems
         internal static readonly Dictionary<ObjectID, (ObjectID item, int amount, float chance)[]> Bonus =
             new Dictionary<ObjectID, (ObjectID, int, float)[]>
             {
-                // Ghorm the Devourer
-                [ObjectID.BossLarva] = new[] { (ObjectID.LarvaMeat, 80, 1f), (ObjectID.GoldenLarvaMeat, 80, 1f) },
+                // Ghorm the Devourer. Amber Larva: flat 10%; its entry in Ghorm's own loot table is
+                // zeroed by HydraGemSystem so this roll is the whole chance.
+                [ObjectID.BossLarva] = new[]
+                {
+                    (ObjectID.LarvaMeat, 80, 1f), (ObjectID.GoldenLarvaMeat, 80, 1f),
+                    (ObjectID.AmberLarva, 1, 0.1f),
+                },
+                // Permanent-buff foods, one themed boss each:
+                // Glurch, the game's first boss -> Anniversary Cake
+                [ObjectID.SlimeBoss] = new[] { (ObjectID.AnniversaryCake, 1, 0.15f) },
+                // Igneous the Molten Mass (Molten Quarry, home of the Amalgam Basins) -> Splendid Amalgam
+                [ObjectID.LavaSlimeBoss] = new[] { (ObjectID.LiquidMetal, 1, 0.15f) },
+                // Crydra the Ice Titan: the cold-season treat -> Golden Chocolate
+                [ObjectID.HydraBossSea] = new[] { (ObjectID.GoldenChocolate, 1, 0.15f) },
+                // Druidra the Wild Titan -> Paradise Fruit Basket
+                [ObjectID.HydraBossNature] = new[] { (ObjectID.FruitBasket, 1, 0.15f) },
                 // Azeos the Sky Titan (Wilderness): Chipped Blade, Clear Gemstone, Jungle Emerald, pouches
                 [ObjectID.BirdBoss] = new[]
                 {
@@ -68,9 +82,8 @@ namespace BossBonusLoot.Systems
         {
             // Dying enemies, not just BossCD ones: the table also lists regular enemies (Mimite, Orbital
             // Turret, Void Larva). EnemyCD keeps plants, chests, stations and other destructibles out of
-            // the query. Every entity in Bonus has EnemyAuthoring on its prefab (BossLarvaEntity,
-            // BirdBossEntity, OctopusBossEntity, ScarabBossEntity, MimiteEntity, OrbitalTurretEntity,
-            // VoidLarvaEntity). A new non-enemy entry in Bonus would need its own query.
+            // the query. Every entity in Bonus is an enemy (Ghorm, Glurch, Igneous, the Hydras, the
+            // Titans, Mimite, Orbital Turret, Void Larva). A new non-enemy entry in Bonus would need its own query.
             _deadBosses = GetEntityQuery(
                 ComponentType.ReadOnly<EnemyCD>(),
                 ComponentType.ReadOnly<ObjectDataCD>(),

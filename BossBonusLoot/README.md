@@ -10,11 +10,15 @@ Boss bonuses drop at the defeated boss in addition to its normal loot chest. Eac
 
 | Enemy | Extra rewards |
 |---|---|
-| Ghorm | 80 Larva Meat and 80 Golden Larva Meat, guaranteed |
+| Ghorm | 80 Larva Meat and 80 Golden Larva Meat, guaranteed. Amber Larva: 10% (replaces its usual roll in Ghorm's loot). |
+| Glurch | Anniversary Cake: 15% |
+| Igneous | Splendid Amalgam: 15% |
+| Crydra the Ice Titan | Golden Chocolate: 15% |
+| Druidra the Wild Titan | Paradise Fruit Basket: 15% |
 | Azeos | 1 Jungle Emerald, guaranteed. Chipped Blade and Clear Gemstone: 25% each. Large Seed and Crop Pouch and Large Critter Pouch: 40% each. |
 | Omoroth | 1 Ocean Sapphire, guaranteed. Large Fish Pouch and Large Potion Pouch: 40% each. |
 | Ra-Akar | 1 Desert Ruby, guaranteed. Large Valuable Pouch and Large Ore and Block Pouch: 40% each. |
-| The three biome Hydras | Double the amounts of Jungle Emeralds, Ocean Sapphires and Desert Rubies in their loot tables |
+| The three biome Hydras | Also double the amounts of Jungle Emeralds, Ocean Sapphires and Desert Rubies in their loot tables |
 
 ## Regular enemy changes
 

@@ -21,22 +21,23 @@ namespace StatsHud
     public sealed class StatsHudMod : IMod
     {
         public const string Name = "StatsHud";
-        public const string Version = "0.1.0";
+        public const string Version = "0.2.0";
         public const float RefreshPerSecond = 4f;
 
-        public const string SettingsHint = "A small readout next to the health bar (show/hide key F3, rebind under Controls; hidden in menus). FPS; DPS = damage you dealt over the last 5 seconds "
+        public const string SettingsHint = "A small readout next to the health bar (show/hide key F3, rebind under Controls; hidden in menus). F4 shows/hides the buff icons and minion counter under the health bar (only their visibility). FPS; DPS = damage you dealt over the last 5 seconds "
             + "(your hits, arrows, bombs and other projectiles; burn/poison ticks not counted), and the last fight's average once you stop hitting; "
             + "speed in tiles per second; distance to the Core in tiles. Only on your screen.";
 
         public static readonly string[] Positions = { "Beside health bar", "Under health bar", "Bottom left corner" };
 
-        internal static Setting<bool> Show, ShowFps, ShowDps, ShowSpeed, ShowCore;
+        internal static Setting<bool> Show, ShowFps, ShowDps, ShowSpeed, ShowCore, ShowBuffIcons;
         internal static Setting<int> LineGap;
         public const int DefaultLineGap = 3;
         /// <summary>Gap between lines in game pixels.</summary>
         internal static int LineGapPixels => LineGap != null ? LineGap.Value : DefaultLineGap;
 
         public const string ToggleKeyBind = "StatsHud_Toggle";
+        public const string BuffsKeyBind = "StatsHud_ToggleBuffs";
         private const string Category = "Stats HUD";
         private static Player _rewired;
         internal static Setting<string> Position, Style;
@@ -54,10 +55,12 @@ namespace StatsHud
                 CoreLibMod.LoadSubmodule(typeof(ControlMappingModule), typeof(LocalizationModule));
                 int category = ControlMappingModule.AddNewCategory(Category);
                 ControlMappingModule.AddKeyboardBind(ToggleKeyBind, KeyboardKeyCode.F3, categoryId: category);
+                ControlMappingModule.AddKeyboardBind(BuffsKeyBind, KeyboardKeyCode.F4, categoryId: category);
                 ControlMappingModule.rewiredStart += () => _rewired = ReInput.players.GetPlayer(0);
                 LocalizationModule.AddTerm($"ControlMapper/{Category}Category", Category);
-                LocalizationModule.AddTerm($"ControlMapper/{Category}Description", "Show or hide the FPS / DPS / speed / Core readout.");
+                LocalizationModule.AddTerm($"ControlMapper/{Category}Description", "Show or hide the FPS / DPS / speed / Core readout and the buff icons.");
                 LocalizationModule.AddTerm($"ControlMapper/{ToggleKeyBind}", "Show / hide stats HUD");
+                LocalizationModule.AddTerm($"ControlMapper/{BuffsKeyBind}", "Show / hide buff icons");
             }
             catch (Exception e)
             {
@@ -78,7 +81,8 @@ namespace StatsHud
                 .Toggle(out ShowDps, "DPS", true)
                 .Toggle(out ShowSpeed, "Movement speed", true)
                 .Toggle(out ShowCore, "Distance to the Core", true)
-                .Stepper(out LineGap, "Space between lines (pixels)", 0, 32, DefaultLineGap);
+                .Stepper(out LineGap, "Space between lines (pixels)", 0, 32, DefaultLineGap)
+                .Toggle(out ShowBuffIcons, "Show buff icons under the health bar", true);
             Position.OnChanged += _ => HudView.Relayout();
             LineGap.OnChanged += _ => HudView.Relayout();
         }
@@ -87,15 +91,43 @@ namespace StatsHud
         {
             PollToggleKey();
             HudView.Update();
+            BuffIcons.Update();
         }
 
-        /// <summary>The toggle key flips "Show stats HUD", so the choice is saved and the menu shows it.</summary>
+        /// <summary>The keys flip "Show stats HUD" / "Show buff icons", so the choice is saved and the menu shows it.</summary>
         private static void PollToggleKey()
         {
             if (_rewired == null || Show == null) return;
             if (Manager.input != null && Manager.input.textInputIsActive) return; // typing in chat
             if (Manager.menu != null && Manager.menu.IsAnyMenuActive()) return;
-            if (_rewired.GetButtonDown(ToggleKeyBind)) Show.Value = !Show.Value;
+            if (Pressed(ToggleKeyBind, KeyCode.F3, ref _toggleBound)) Show.Value = !Show.Value;
+            if (ShowBuffIcons != null && Pressed(BuffsKeyBind, KeyCode.F4, ref _buffsBound))
+            {
+                ShowBuffIcons.Value = !ShowBuffIcons.Value;
+                Debug.Log($"[{Name}] buff icons key: now {(ShowBuffIcons.Value ? "shown" : "hidden")}");
+            }
+        }
+
+        // -1 unknown, 0 no keyboard key mapped, 1 mapped; re-checked every few seconds (the player can rebind).
+        private static int _toggleBound = -1, _buffsBound = -1;
+        private static float _nextBindCheck;
+
+        /// <summary>
+        /// The bind's key went down. A bind added after the player's key layout was saved has no key in that saved
+        /// layout (Rewired loads the saved map for the category instead of the defaults), so then the default key is
+        /// read directly until the player assigns one under Controls.
+        /// </summary>
+        private static bool Pressed(string bind, KeyCode fallback, ref int bound)
+        {
+            if (_rewired.GetButtonDown(bind)) return true;
+            if (bound < 0 || Time.unscaledTime >= _nextBindCheck)
+            {
+                if (Time.unscaledTime >= _nextBindCheck) _nextBindCheck = Time.unscaledTime + 3f;
+                int now = _rewired.controllers.maps.GetFirstElementMapWithAction(ControllerType.Keyboard, bind, true) != null ? 1 : 0;
+                if (now != bound) Debug.Log($"[{Name}] {bind}: {(now == 1 ? "key mapped" : "no key mapped, reading " + fallback + " directly")}");
+                bound = now;
+            }
+            return bound == 0 && Input.GetKeyDown(fallback);
         }
 
         public void Shutdown() { }

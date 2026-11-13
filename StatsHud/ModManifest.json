@@ -21,6 +21,10 @@
             "guid": ""
         },
         {
+            "path": "Scripts/BuffIcons.cs",
+            "guid": ""
+        },
+        {
             "path": "Scripts/DamageMeter.cs",
             "guid": ""
         }

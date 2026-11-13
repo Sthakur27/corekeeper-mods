@@ -1,5 +1,7 @@
 # Sid's Overhaul release history
 
+**New in 1.16.9:** Stats HUD 0.2.0: F4 shows or hides the buff icons and the minion counter under the health bar. It only changes what you see: buffs keep running, and the icons come back as they were. Rebind it under Controls; the new setting "Show buff icons under the health bar" does the same.
+
 **New in 1.16.8:** New Stats HUD feature: FPS, DPS, movement speed and distance to the Core beside the health bar, under the buff icons or in the bottom left corner (F3 to toggle). Enchanting 0.4.0: buffs of the same kind merge into one icon whose tooltip lists every source; fixes enchantment bonuses being copied again on every world load; the remove button takes off the newest enchantment; accessory enchantments stack; figurines near the table improve the odds; weapon tooltips include enchantment multipliers. More NPCs 0.1.3: Wren sells all 25 critters and has a new face, Ottoline sells 423 decor items, NPC nameplates, merchant map markers and a host-only /morenpcs killall command. Item Spawner 1.1.2: spawned pets are set up properly instead of showing as empty slots.
 
 **New in 1.16.7:** Build Tools 0.6.7: the block brush now sits in front of you, on the side your mouse points to, instead of around your character. It starts at the tile next to you and shifts one tile (or up to half the brush) toward your mouse.

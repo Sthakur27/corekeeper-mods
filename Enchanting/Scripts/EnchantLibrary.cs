@@ -104,6 +104,7 @@ namespace Enchanting
             if (!EnchantTableUI.IsTableOpen(out var building)) return;
             int n = System.Math.Min(EnchantLibrary.ClientCount(building), EnchantRoll.MaxFigurines);
             if (__result == null) __result = new List<TextAndFormatFields>();
+            if (EnchantTableResult.Last != null) __result.Add(Line("Last roll: " + EnchantTableResult.Last, Info));
             __result.Add(Line($"Figurines nearby: {n}/{EnchantRoll.MaxFigurines}", Info));
             __result.Add(Line($"New enchant odds: {EnchantRoll.OddsText(n)}", Info));
             if (n < EnchantRoll.MaxFigurines)

@@ -93,6 +93,16 @@ namespace Enchanting
 
         public static bool HasAnyClient(ContainedObjectsBuffer item) => CountClient(item) > 0;
 
+        /// <summary>Client UI, non-allocating: a hash of the item's enchants (ids, levels, order); 0 when none.</summary>
+        public static int SignatureClient(ContainedObjectsBuffer item)
+        {
+            if (!TryGetClientBuffer(item, out var buffer)) return 0;
+            int h = 17;
+            for (int i = 0; i < buffer.Length; i++)
+                h = h * 31 + (int)buffer[i].petTalentID * 7 + buffer[i].points;
+            return buffer.Length == 0 ? 0 : h;
+        }
+
         private static void Decode(DynamicBuffer<PetTalentBuffer> buffer, List<EnchantEntry> list)
         {
             for (int i = 0; i < buffer.Length; i++)

@@ -85,6 +85,10 @@
             "guid": ""
         },
         {
+            "path": "Scripts/EnchantTableResult.cs",
+            "guid": ""
+        },
+        {
             "path": "Bundles/Enchanting_Windows.assetbundle",
             "guid": ""
         },

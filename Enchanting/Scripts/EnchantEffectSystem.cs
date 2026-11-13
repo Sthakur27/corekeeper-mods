@@ -290,8 +290,12 @@ namespace Enchanting
             if (item.amount <= 0 && PugDatabase.HasComponent<DurabilityCD>(item.objectData)) return;
 
             EnchantStorage.ReadInto(EntityManager, aux, item, _entries);
-            foreach (var e in _entries)
+            // Only the newest MaxFor(kind) enchants work (armor/accessories: 1 since 2026-11-13; older items may
+            // still carry extras, shown as inactive in the tooltip).
+            int first = EnchantRoll.FirstActive(_entries.Count, Enchants.SlotOf(item.objectID));
+            for (int n = first; n < _entries.Count; n++)
             {
+                var e = _entries[n];
                 var def = e.Def;
                 if (def == null) continue;
                 if (def.OnMinions)

@@ -75,6 +75,12 @@ namespace Enchanting
                 if (args.Count < 3 || !int.TryParse(args[1], out int x) || !int.TryParse(args[2], out int z)) return Hint();
                 return Info(EnchantTableServer.Roll(em, player, x, z));
             }
+            // Sent by the table's reroll button (EnchantRemoveButton.Reroll): /enchant tablereroll <x> <z>
+            if (sub == "tablereroll")
+            {
+                if (args.Count < 3 || !int.TryParse(args[1], out int x) || !int.TryParse(args[2], out int z)) return Hint();
+                return Info(EnchantTableServer.Reroll(em, player, x, z));
+            }
             // Sent by the table's remove button (EnchantRemoveButton): /enchant tableclear <x> <z>
             if (sub == "tableclear")
             {

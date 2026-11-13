@@ -34,10 +34,14 @@ namespace Enchanting
             }
         }
 
-        public static List<PugDatabase.MaterialInfo> Materials(ContainedObjectsBuffer item)
+        /// <summary>
+        /// Cost of the next roll. <paramref name="enchantsBefore"/> overrides how many enchants the roll is priced on
+        /// (the reroll button prices on the count left after it takes the top one off); -1 = the item's count.
+        /// </summary>
+        public static List<PugDatabase.MaterialInfo> Materials(ContainedObjectsBuffer item, int enchantsBefore = -1)
         {
             if (item.objectID == ObjectID.None || Enchants.SlotOf(item.objectID) == EnchantSlot.None) return null;
-            EnchantRoll.Cost(EnchantStorage.CountClient(item), out int gold, out int coins);
+            EnchantRoll.Cost(enchantsBefore >= 0 ? enchantsBefore : EnchantStorage.CountClient(item), out int gold, out int coins);
             return new List<PugDatabase.MaterialInfo>
             {
                 new PugDatabase.MaterialInfo(ObjectID.GoldBar, gold, CountOnPlayer(ObjectID.GoldBar), Entity.Null, null),
@@ -101,7 +105,14 @@ namespace Enchanting
         {
             if (!EnchantTableUI.IsTableOpen(out _)) return true;
             // Removing is free: no materials list.
-            __result = EnchantRemoveButton.IsRemove(__instance) ? null : EnchantTableUI.Materials(EnchantTableItemPatch.Item);
+            var item = EnchantTableItemPatch.Item;
+            if (EnchantRemoveButton.IsRemove(__instance)) __result = null;
+            else if (EnchantRemoveButton.IsReroll(__instance))
+            {
+                int left = EnchantRemoveButton.CountAfterRerollRemoval(item);
+                __result = left < 0 ? null : EnchantTableUI.Materials(item, left);
+            }
+            else __result = EnchantTableUI.Materials(item);
             return false;
         }
     }
@@ -112,9 +123,17 @@ namespace Enchanting
         public static bool Prefix(UpgradeForgeButton __instance, ref bool __result)
         {
             if (!EnchantTableUI.IsTableOpen(out _)) return true;
+            var item = EnchantTableItemPatch.Item;
+            if (EnchantRemoveButton.IsReroll(__instance))
+            {
+                int left = EnchantRemoveButton.CountAfterRerollRemoval(item);
+                __result = left >= 0 && EnchantTableUI.CanPay(EnchantTableUI.Materials(item, left));
+                return false;
+            }
             __result = EnchantRemoveButton.IsRemove(__instance)
                 ? EnchantRemoveButton.CanClick()
-                : EnchantTableUI.CanPay(EnchantTableUI.Materials(EnchantTableItemPatch.Item));
+                : EnchantTableUI.CanPay(EnchantTableUI.Materials(item))
+                  && EnchantStorage.CountClient(item) < EnchantRoll.MaxFor(Enchants.SlotOf(item.objectID)); // full: reroll/remove instead
             return false;
         }
     }
@@ -126,7 +145,9 @@ namespace Enchanting
         {
             if (!EnchantTableUI.IsTableOpen(out _)) return;
             // Hover titles are always localized, so these use terms registered in EnchantingMod.EarlyInit.
-            if (EnchantRemoveButton.IsRemove(__instance))
+            if (EnchantRemoveButton.IsReroll(__instance))
+                __result = EnchantRemoveButton.CanClick() ? new TextAndFormatFields { text = EnchantRemoveButton.RerollTerm } : null;
+            else if (EnchantRemoveButton.IsRemove(__instance))
                 __result = EnchantRemoveButton.CanClick() ? new TextAndFormatFields { text = EnchantRemoveButton.TitleTerm } : null;
             else if (__result != null)
                 __result = new TextAndFormatFields { text = EnchantingMod.ButtonTerm };
@@ -149,8 +170,9 @@ namespace Enchanting
     {
         public static void Postfix(UpgradeForgeUI __instance)
         {
-            if (__instance.isShowing && __instance.previewSlot != null && EnchantTableUI.IsTableOpen(out _))
-                __instance.previewSlot.Show(false);
+            if (!__instance.isShowing || !EnchantTableUI.IsTableOpen(out _)) return;
+            if (__instance.previewSlot != null) __instance.previewSlot.Show(false);
+            EnchantTableResult.Tick();
         }
     }
 
@@ -171,6 +193,8 @@ namespace Enchanting
             int figurines = EnchantLibrary.CountFigurines(em, table);
 
             var current = EnchantStorage.Read(em, aux, item);
+            string full = EnchantRoll.FullReason(current, kind); // refused before anything is charged
+            if (full != null) return full;
             EnchantRoll.Cost(current.Count, out int gold, out int coins);
             bool free = em.HasComponent<PlayerGhost>(player) && IsCreative(em, player);
             if (!free && (Count(em, player, ObjectID.GoldBar) < gold || Count(em, player, ObjectID.AncientCoin) < coins))
@@ -187,6 +211,43 @@ namespace Enchanting
             }
             return result + " Now: " + EnchantStorage.Describe(current) + "."
                 + $" Figurines nearby: {System.Math.Min(figurines, EnchantRoll.MaxFigurines)}/{EnchantRoll.MaxFigurines} (new enchant odds {EnchantRoll.OddsText(figurines)}).";
+        }
+
+        /// <summary>
+        /// The table's reroll button: takes off the top enchant (and, on armor/accessories still carrying extras
+        /// from before the 1-enchant limit, the inactive ones under it) and rolls a new one, for one roll's cost.
+        /// Nothing is removed or charged when the player can't pay.
+        /// </summary>
+        public static string Reroll(EntityManager em, Entity player, int x, int z)
+        {
+            string error = FindTableItem(em, player, x, z, out int upgradeSlot, out var item, out var aux, out var table);
+            if (error != null) return error;
+            var kind = Enchants.SlotOf(item.objectID);
+            if (kind == EnchantSlot.None) return $"{item.objectID} can't be enchanted.";
+            var current = EnchantStorage.Read(em, aux, item);
+            if (current.Count == 0) return "nothing to reroll: roll an enchant first.";
+            var removed = new List<EnchantEntry>();
+            do
+            {
+                removed.Add(current[current.Count - 1]);
+                current.RemoveAt(current.Count - 1);
+            } while (current.Count >= EnchantRoll.MaxFor(kind));
+
+            EnchantRoll.Cost(current.Count, out int gold, out int coins);
+            bool free = em.HasComponent<PlayerGhost>(player) && IsCreative(em, player);
+            if (!free && (Count(em, player, ObjectID.GoldBar) < gold || Count(em, player, ObjectID.AncientCoin) < coins))
+                return $"you need {gold} Gold Bars and {coins} Ancient Coins.";
+            int figurines = EnchantLibrary.CountFigurines(em, table);
+            string result = EnchantRoll.Roll(current, kind, item.objectID, figurines);
+            if (result == null) return "nothing can be rolled for this item.";
+            string err = EnchantStorage.Write(em, player, upgradeSlot, current);
+            if (err != null) return err;
+            if (!free)
+            {
+                Take(em, player, ObjectID.GoldBar, gold);
+                Take(em, player, ObjectID.AncientCoin, coins);
+            }
+            return $"Rerolled {EnchantStorage.Describe(removed)}: {result} Now: {EnchantStorage.Describe(current)}.";
         }
 
         /// <summary>

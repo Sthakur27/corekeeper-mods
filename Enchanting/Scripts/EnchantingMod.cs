@@ -15,7 +15,7 @@ namespace Enchanting
     public sealed class EnchantingMod : IMod
     {
         public const string Name = "Enchanting";
-        public const string Version = "0.4.0";
+        public const string Version = "0.5.0";
         public const string TableObjectName = "Enchanting_Table"; // objectName in the bundle (EnchantingBuilder)
         public const string ButtonTerm = "Enchanting/EnchantButton";
         public const string PlainTerm = "Enchanting/Plain"; // "{0}": shows its format field as-is
@@ -27,6 +27,7 @@ namespace Enchanting
             LocalizationModule.AddTerm(ButtonTerm, "Enchant (random)");
             LocalizationModule.AddTerm(PlainTerm, "{0}");
             LocalizationModule.AddTerm(EnchantRemoveButton.TitleTerm, "Remove top enchantment");
+            LocalizationModule.AddTerm(EnchantRemoveButton.RerollTerm, "Reroll top enchantment");
             if (!InOverhaul(this)) // the overhaul registers every command in its assembly once
             {
                 var info = API.ModLoader.LoadedMods.FirstOrDefault(m => m.Handlers.Contains(this));

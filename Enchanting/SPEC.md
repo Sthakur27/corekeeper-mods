@@ -51,15 +51,18 @@ Materials are taken from the player's inventory and nearby chests, like vanilla 
 
 ## Roll rules *tune*
 
-- Max **3 enchants** per item, each level **I–III**.
-- A roll picks a random enchant from the item's pool (equal weights):
-  - not on the item yet → added at level I (60%), II (30%), III (10%); with the **figurine library**
-    (`EnchantLibrary`, 2026-11-13): each placed figurine (vanilla `*Trophy` ObjectIDs, not dropped ones) within 5
-    tiles of the table slides the weights linearly toward I 0% / II 40% / III 60% at 9 figurines (cap). Counted
-    on the server per roll button press only;
-  - already on the item → +1 level (capped at III; a capped roll re-picks).
-- Item already full (3 enchants): the roll **replaces one random enchant** with a new one
-  (gamble to fish for a better set). *Alternative to decide: full items cannot be rolled.*
+- Enchant slots (Sid, 2026-11-13): weapons, tools and summoning tomes **3**; armor, rings, necklaces and
+  offhands **1** (`EnchantRoll.MaxFor`). Older gear with extras keeps them, but only the newest `MaxFor` count
+  (`EnchantRoll.FirstActive`); the tooltip shows the rest as inactive.
+- A roll adds a random enchant from the item's pool that the item doesn't have yet (equal weights), at level
+  I (60%), II (30%), III (10%); with the **figurine library** (`EnchantLibrary`, 2026-11-13): each placed
+  figurine (vanilla `*Trophy` ObjectIDs, not dropped ones) within 5 tiles of the table slides the weights
+  linearly toward I 0% / II 40% / III 60% at 9 figurines (cap). Counted on the server per roll only.
+- **No levelling up** (Sid, 2026-11-13): a roll never raises an existing enchant. A full item can't be rolled
+  (button greyed, server refuses before charging); use **Reroll** (takes the top enchant, plus any inactive
+  extras, off and rolls a new one for one roll's cost, priced on the count left) or **Remove** (free).
+- The table window shows what changed under the buttons (`EnchantTableResult`, client side, from the slot
+  item's enchants) and in the roll buttons' hover as "Last roll".
 - The roll happens on the server only.
 
 ## Enchant pools (alpha, 2026-11-04 balance rework)

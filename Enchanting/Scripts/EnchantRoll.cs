@@ -5,7 +5,9 @@ namespace Enchanting
     /// <summary>Roll rules and costs (SPEC.md "Roll rules" / "Cost per roll"). Tunables are static for now.</summary>
     public static class EnchantRoll
     {
-        public static int MaxEnchants = 3;
+        /// <summary>Enchant slots on weapons, tools and summoning tomes (2026-11-13: armor and accessories hold 1).</summary>
+        public const int MaxEnchants = 3;
+        public const int GearEnchants = 1;
         public static int GoldPerStep = 5;
         public static int CoinsPerStep = 250;
         // Chance (percent) that a NEW enchant lands at level I / II / III, with no figurines near the table...
@@ -45,73 +47,48 @@ namespace Enchanting
         }
 
         /// <summary>
-        /// Rolls one enchant onto <paramref name="current"/> (modified in place). Returns a player-facing line, or
-        /// null when nothing can be rolled for this item type.
+        /// How many enchants an item of this kind holds (Sid, 2026-11-13): weapons, tools and tomes 3; armor,
+        /// rings, necklaces and offhands 1, since stacked defence was too strong.
+        /// </summary>
+        public static int MaxFor(EnchantSlot slot) =>
+            Enchants.IsHeldSlot(slot) || slot == EnchantSlot.Summon ? MaxEnchants : GearEnchants;
+
+        /// <summary>
+        /// Index of the first enchant that works: only the newest <see cref="MaxFor"/> count. Older armor and
+        /// accessories may still carry extras from before the limit; those show as inactive until removed.
+        /// </summary>
+        public static int FirstActive(int count, EnchantSlot slot) => System.Math.Max(0, count - MaxFor(slot));
+
+        /// <summary>Why the table won't roll on this item (full), or null when there is room.</summary>
+        public static string FullReason(List<EnchantEntry> current, EnchantSlot slot)
+        {
+            int max = MaxFor(slot);
+            if (current.Count < max) return null;
+            string what = max == 1 ? "Armor and accessories hold 1 enchant" : $"This item holds {max} enchants";
+            return $"{what}. Remove one at the table to roll again.";
+        }
+
+        /// <summary>
+        /// Rolls one NEW enchant onto <paramref name="current"/> (modified in place): a random enchant from the
+        /// item's pool that it doesn't have yet, at level I/II/III by the figurine odds. There is no levelling up
+        /// (Sid, 2026-11-13): to get a better roll, remove the enchant and roll again. Returns a player-facing line,
+        /// or null when nothing can be rolled for this item type.
         /// </summary>
         public static string Roll(List<EnchantEntry> current, EnchantSlot slot, ObjectID item = ObjectID.None, int figurines = 0)
         {
-            var weights = WeightsFor(figurines);
             var pool = Enchants.PoolFor(slot, item);
             if (pool.Count == 0) return null;
+            string full = FullReason(current, slot);
+            if (full != null) return full;
 
-            // Upgrade targets: anything in the pool not already at max level.
-            var candidates = new List<EnchantDef>();
+            var fresh = new List<EnchantDef>();
             foreach (var d in pool)
-            {
-                int idx = IndexOf(current, d.Id);
-                if (idx < 0 || current[idx].Level < d.MaxLevel) candidates.Add(d);
-            }
-
-            if (current.Count >= MaxEnchants)
-            {
-                // Full: replace one random enchant with a different, fresh one.
-                int victim = Rng.Next(current.Count);
-                var fresh = new List<EnchantDef>();
-                foreach (var d in pool)
-                    if (IndexOf(current, d.Id) < 0) fresh.Add(d);
-                if (fresh.Count == 0) return LevelUpExisting(current, candidates);
-                var pick = fresh[Rng.Next(fresh.Count)];
-                var old = current[victim];
-                current.RemoveAt(victim);
-                var fresh1 = new EnchantEntry { Id = pick.Id, Level = RollNewLevel(pick, weights) };
-                current.Add(fresh1); // newest goes on top of the stack
-                return $"{old.Def?.Name} {Enchants.Roman(old.Level)} was replaced by {pick.Name} {Enchants.Roman(fresh1.Level)}.";
-            }
-
-            if (candidates.Count == 0) return "Every enchant on this item is already maxed.";
-            var chosen = candidates[Rng.Next(candidates.Count)];
-            int at = IndexOf(current, chosen.Id);
-            if (at >= 0)
-            {
-                var e = current[at];
-                e.Level++;
-                MoveToTop(current, at, e);
-                return $"{chosen.Name} rose to {Enchants.Roman(e.Level)}.";
-            }
-            var added = new EnchantEntry { Id = chosen.Id, Level = RollNewLevel(chosen, weights) };
-            current.Add(added);
-            return $"Gained {chosen.Name} {Enchants.Roman(added.Level)}.";
-        }
-
-        private static string LevelUpExisting(List<EnchantEntry> current, List<EnchantDef> candidates)
-        {
-            var upgradable = new List<int>();
-            for (int i = 0; i < current.Count; i++)
-                if (candidates.Exists(d => d.Id == current[i].Id)) upgradable.Add(i);
-            if (upgradable.Count == 0) return "Every enchant on this item is already maxed.";
-            int at = upgradable[Rng.Next(upgradable.Count)];
-            var e = current[at];
-            e.Level++;
-            MoveToTop(current, at, e);
-            return $"{e.Def?.Name} rose to {Enchants.Roman(e.Level)}.";
-        }
-
-        // Stack order: the list is oldest → newest; whatever a roll touched becomes the top (last) entry, which the
-        // table's remove button pops and the tooltip shows first.
-        private static void MoveToTop(List<EnchantEntry> current, int at, EnchantEntry e)
-        {
-            current.RemoveAt(at);
-            current.Add(e);
+                if (IndexOf(current, d.Id) < 0) fresh.Add(d);
+            if (fresh.Count == 0) return "No other enchant can go on this item.";
+            var pick = fresh[Rng.Next(fresh.Count)];
+            var added = new EnchantEntry { Id = pick.Id, Level = RollNewLevel(pick, WeightsFor(figurines)) };
+            current.Add(added); // newest goes on top of the stack (remove pops it, tooltip lists it first)
+            return $"Gained {pick.Name} {Enchants.Roman(added.Level)}.";
         }
 
         private static int RollNewLevel(EnchantDef def, int[] weights)

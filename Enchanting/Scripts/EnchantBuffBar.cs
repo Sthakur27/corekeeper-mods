@@ -412,8 +412,10 @@ namespace Enchanting
             {
                 if (slot < 0 || slot >= items.Length || items[slot].objectID == ObjectID.None) continue;
                 var item = items[slot];
-                foreach (var e in EnchantStorage.ReadClient(item))
+                var list = EnchantStorage.ReadClient(item);
+                for (int n = EnchantRoll.FirstActive(list.Count, Enchants.SlotOf(item.objectID)); n < list.Count; n++)
                 {
+                    var e = list[n];
                     var def = e.Def;
                     if (def == null || def.OnMinions || def.FollowsLight) continue;
                     var cond = def.Mode == EnchantMode.Relative

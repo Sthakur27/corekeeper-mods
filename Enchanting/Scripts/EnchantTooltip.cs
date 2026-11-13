@@ -14,6 +14,7 @@ namespace Enchanting
     {
         private static readonly Color NameColor = new Color(0.78f, 0.55f, 1f);
         private static readonly Color EffectColor = new Color(0.66f, 0.5f, 0.9f);
+        private static readonly Color InactiveColor = new Color(0.5f, 0.5f, 0.5f);
 
         public static void Postfix(ContainedObjectsBuffer containedObject, bool previewReinforced, bool previewUpgraded,
             ref List<TextAndFormatFields> __result)
@@ -32,11 +33,24 @@ namespace Enchanting
             if (!previewReinforced && !previewUpgraded) ApplyToWeaponLines(containedObject, enchants, __result);
 
             // Newest first: the top line is the enchant the table's remove button takes off (stored last).
+            int first = EnchantRoll.FirstActive(enchants.Count, Enchants.SlotOf(containedObject.objectID));
             for (int n = enchants.Count - 1; n >= 0; n--)
             {
                 var e = enchants[n];
                 var def = e.Def;
                 if (def == null) continue;
+                if (n < first)
+                {
+                    // Extra enchant from before the 1-per-item limit on armor/accessories: kept, but does nothing.
+                    __result.Add(new TextAndFormatFields
+                    {
+                        text = EnchantingMod.PlainTerm,
+                        formatFields = new[] { $"{def.Name} {Enchants.Roman(e.Level)} (inactive)" },
+                        dontLocalizeFormatFields = true,
+                        color = InactiveColor,
+                    });
+                    continue;
+                }
                 // Hover lines are always looked up as localization terms (dontLocalize is ignored here), so the
                 // name goes through a pass-through term "{0}" registered in EnchantingMod.EarlyInit.
                 __result.Add(new TextAndFormatFields
@@ -88,6 +102,14 @@ namespace Enchanting
                         });
                 }
             }
+            if (first > 0)
+                __result.Add(new TextAndFormatFields
+                {
+                    text = EnchantingMod.PlainTerm,
+                    formatFields = new[] { "Armor and accessories use only their top enchant. Remove the others at the table." },
+                    dontLocalizeFormatFields = true,
+                    color = InactiveColor,
+                });
             if (Enchants.SlotOf(containedObject.objectID) == EnchantSlot.Summon)
                 __result.Add(new TextAndFormatFields
                 {

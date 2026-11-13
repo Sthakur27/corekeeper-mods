@@ -21,7 +21,7 @@ namespace Enchanting
     /// the hysteresis (EnchantMath.CloseEnough) and at most every <see cref="DriftInterval"/> updates. Writes touch
     /// only the entries that changed, since any ConditionsBuffer write makes the game re-summarize that player.
     ///
-    /// Stack modes (EnchantDef.Stack): Sum enchants add per copy. Max enchants (the accessory pool) keep only the
+    /// Stack modes (EnchantDef.Stack): Sum enchants add per copy. Max enchants (none since 2026-11-13; accessories stack now) keep only the
     /// highest copy per enchant id across all items (<see cref="_maxFlat"/>, <see cref="_maxRel"/>), then fold into
     /// the per-condition totals like one more item. Our totals are then clamped by EnchantMath.Cap.
     /// Accessory multipliers (Might, Haste) use the bucket of the weapon the player holds.

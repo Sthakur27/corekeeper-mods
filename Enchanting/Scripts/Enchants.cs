@@ -184,32 +184,28 @@ namespace Enchanting
             siphon.OnMinions = true;
             siphon.Note = "Heals you when your minions hit";
 
-            // Accessories (rings, necklace, offhand): ids 140-169, one shared pool, Stack = Max ("doesn't stack":
-            // only the highest copy among all worn accessories counts). Micro stats plus a few utility perks.
+            // Accessories (rings, necklace, offhand): ids 140-169, one shared pool of micro stats plus a few utility
+            // perks. They stack like armor (Sid, 2026-11-13): the values are small so 4 slots can add up; the
+            // combined caps (EnchantMath.Cap) still bound move speed, max HP and damage taken.
             const EnchantSlot Acc = EnchantSlot.Accessory;
-            Uniq(Rel(140, "might", "Might", Acc, ConditionID.AllDamageIncrease, RelBucket.AllDamage, 1, 2, 3));
-            Uniq(Add(141, "precision", "Precision", Acc, ConditionID.CritChance, 1, 2, 3));
-            Uniq(Add(142, "ferocity", "Ferocity", Acc, ConditionID.CriticalDamagePercentageIncrease, 2, 4, 6));
-            Uniq(Rel(143, "haste", "Haste", Acc, ConditionID.AttackSpeed, RelBucket.AllAttackSpeed, 1, 2, 3));
-            Uniq(Add(144, "fleetfoot", "Fleetfoot", Acc, ConditionID.MovementSpeedIncrease, 1, 2, 3));
-            Uniq(Add(145, "hardiness", "Hardiness", Acc, ConditionID.IncreasedMaxHealthPercentage, 1, 2, 3));
-            Uniq(Add(146, "greenthumb", "Green Thumb", Acc, ConditionID.ExtraHarvestChance, 5, 10, 15));
-            Uniq(Add(147, "angler", "Angler", Acc, ConditionID.IncreasedFishing, 10, 20, 30));
-            Uniq(Add(148, "gourmet", "Gourmet", Acc, ConditionID.ChanceToGainExtraCookedFood, 5, 10, 15));
+            Rel(140, "might", "Might", Acc, ConditionID.AllDamageIncrease, RelBucket.AllDamage, 1, 2, 3);
+            Add(141, "precision", "Precision", Acc, ConditionID.CritChance, 1, 2, 3);
+            Add(142, "ferocity", "Ferocity", Acc, ConditionID.CriticalDamagePercentageIncrease, 2, 4, 6);
+            Rel(143, "haste", "Haste", Acc, ConditionID.AttackSpeed, RelBucket.AllAttackSpeed, 1, 2, 3);
+            Add(144, "fleetfoot", "Fleetfoot", Acc, ConditionID.MovementSpeedIncrease, 1, 2, 3);
+            Add(145, "hardiness", "Hardiness", Acc, ConditionID.IncreasedMaxHealthPercentage, 1, 2, 3);
+            Add(146, "greenthumb", "Green Thumb", Acc, ConditionID.ExtraHarvestChance, 5, 10, 15);
+            Add(147, "angler", "Angler", Acc, ConditionID.IncreasedFishing, 10, 20, 30);
+            Add(148, "gourmet", "Gourmet", Acc, ConditionID.ChanceToGainExtraCookedFood, 5, 10, 15);
             // Light range in tiles, added to the glow colour the player already has (a lantern's); OrangeGlow if none.
-            Uniq(Add(149, "radiance", "Radiance", Acc, ConditionID.OrangeGlow, 1, 2, 3)).FollowsLight = true;
+            Add(149, "radiance", "Radiance", Acc, ConditionID.OrangeGlow, 1, 2, 3).FollowsLight = true;
             // Offhand-only defensive set: own ids (armor's 60/62/67 stay Sum and armor-only). They add to the armor
             // versions (same conditions as Vitality/Resilience/Swiftness); damage taken stays under the -25% clamp.
-            Uniq(Add(150, "offvitality", "Vitality", EnchantSlot.Offhand, ConditionID.IncreasedMaxHealthPercentage, 2, 4, 6));
-            Uniq(Add(151, "offresilience", "Resilience", EnchantSlot.Offhand, ConditionID.ReducedDamageTakenPercentage, -2, -3, -5));
-            Uniq(Add(152, "offswiftness", "Swiftness", EnchantSlot.Offhand, ConditionID.MovementSpeedIncrease, 2, 4, 6));
+            Add(150, "offvitality", "Vitality", EnchantSlot.Offhand, ConditionID.IncreasedMaxHealthPercentage, 2, 4, 6);
+            Add(151, "offresilience", "Resilience", EnchantSlot.Offhand, ConditionID.ReducedDamageTakenPercentage, -2, -3, -5);
+            Add(152, "offswiftness", "Swiftness", EnchantSlot.Offhand, ConditionID.MovementSpeedIncrease, 2, 4, 6);
         }
 
-        private static EnchantDef Uniq(EnchantDef def)
-        {
-            def.Stack = EnchantStack.Max;
-            return def;
-        }
 
         private static EnchantDef Add(int id, string key, string name, EnchantSlot slots, ConditionID condition, params int[] values)
         {

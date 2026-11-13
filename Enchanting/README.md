@@ -28,7 +28,7 @@ Thunderstrike, Piercing, Flame, Static Familiars, and Soul Siphon are **experime
 
 ## Stacking enchantments
 
-Putting the same accessory enchantment on several pieces won't add them together. Only the strongest copy counts. Two rings with Precision III give you +3% crit chance, for example, not +6%.
+Accessory enchantments are small, and they add up: two rings with Precision III give you +6% crit chance.
 
 There are also limits across all your gear: 12% less damage taken, 15% extra max health, 8 extra dodge, 12% extra movement speed, 60% extra regeneration, and 9% less boss damage. The total reduction in damage taken from enchantments is capped at 25%. Once you hit a limit, adding more of that bonus won't help.
 

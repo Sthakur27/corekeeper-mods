@@ -20,7 +20,6 @@ namespace Enchanting
             if (__result == null) return;
             var enchants = EnchantStorage.ReadClient(containedObject);
             if (enchants.Count == 0) return;
-            bool unique = false;
 
             // Newest first: the top line is the enchant the table's remove button takes off (stored last).
             for (int n = enchants.Count - 1; n >= 0; n--)
@@ -28,7 +27,6 @@ namespace Enchanting
                 var e = enchants[n];
                 var def = e.Def;
                 if (def == null) continue;
-                if (def.Stack == EnchantStack.Max) unique = true;
                 // Hover lines are always looked up as localization terms (dontLocalize is ignored here), so the
                 // name goes through a pass-through term "{0}" registered in EnchantingMod.EarlyInit.
                 __result.Add(new TextAndFormatFields
@@ -80,14 +78,6 @@ namespace Enchanting
                         });
                 }
             }
-            if (unique)
-                __result.Add(new TextAndFormatFields
-                {
-                    text = EnchantingMod.PlainTerm,
-                    formatFields = new[] { "Doesn't stack: only your highest copy counts" },
-                    dontLocalizeFormatFields = true,
-                    color = EffectColor,
-                });
             if (Enchants.SlotOf(containedObject.objectID) == EnchantSlot.Summon)
                 __result.Add(new TextAndFormatFields
                 {

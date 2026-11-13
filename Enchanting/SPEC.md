@@ -157,9 +157,10 @@ No Legion (max minions): extra minions are dismissed whenever the bonus drops.
 Removed 2026-11-04 (Sid): Lure, Luck of the Sea, Reach (so fishing rods take no enchants), Magnetism, Prospector.
 
 ### Accessories (`Ring` both slots, `Necklace`, non-stackable `Offhand`): one shared pool, ids 140-169
-Worn rule (like armor). **Stack = Max** for every enchant here: per enchant id only the highest copy among all
-items counts (`EnchantDef.Stack`, folded in `EnchantEffectSystem.FoldMax`); two rings with Precision III give +3%.
-Different enchants writing the same condition still add (Hardiness + Vitality, Fleetfoot + Swiftness), and our
+Worn rule (like armor). **Stacks like armor** (Sid, 2026-11-13; was Stack = Max until then): every copy adds, so two
+rings with Precision III give +6%. The values are micro on purpose so 4 slots can add up. The `Stack = Max` code path
+(`EnchantEffectSystem.FoldMax`) stays for future enchants but nothing uses it.
+Different enchants writing the same condition also add (Hardiness + Vitality, Fleetfoot + Swiftness), and our
 totals pass `EnchantMath.Cap` (Sid approved 2026-11-05, `docs/balance-combos.md`): our own total is capped at damage taken −12%, max HP +15% (Vitality + Hardiness), dodge +8, move speed +12% (Swiftness + Fleetfoot), regen +60%, boss damage −9%.
 Multipliers here use the bucket of the weapon the player **holds** (`EnchantMath.BucketWeapon`).
 | Id | Enchant | Condition | I / II / III | Units / kind |

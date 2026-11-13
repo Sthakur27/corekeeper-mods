@@ -18,9 +18,9 @@ namespace Enchanting
     ///   Relative (Model B): EnchantEffectSystem.RelativeRaw from the player's current bucket. PASS needs our entry
     ///   to match it (within the effect system's hysteresis), and both the condition total and the effect bucket
     ///   to rise by exactly our entry (the latter proves the ConditionID lands in the bucket we multiply).
-    /// Each slot's baseline step clears the enchants of every tested item, so "doesn't stack" (Stack = Max)
-    /// enchants on another accessory can't hide a copy under test. With two rings worn, Max-rule steps follow: the
-    /// same enchant on both rings must add only the higher copy (Precision III + I, III + III, Might III + III).
+    /// Each slot's baseline step clears the enchants of every tested item, so a copy on another accessory can't skew
+    /// the enchant under test. With two rings worn, stack-rule steps follow (Max rule for any Stack = Max def): the
+    /// same enchant on both rings must add both copies (Precision III + I, III + III, Might III + III).
     /// Each item's own enchants are restored at the end. Results go to Player.log ("[Enchanting] selftest ...") and
     /// "/enchant selftest status". Server side; single player / host.
     /// Carried rule: hold a tome once, switch to another item (the tome stays in the inventory), run the selftest:
@@ -40,12 +40,15 @@ namespace Enchanting
             public ObjectID Item;
             public EnchantDef Def;   // null = baseline for this slot (clears every tested item first)
             public int Level;
-            // Max-rule check: the same enchant also goes on Slot2 at Level2; only the higher level may count.
+            // Two-ring check: the same enchant also goes on Slot2 at Level2. Stack = Sum adds both copies,
+            // Stack = Max keeps only the higher one.
             public int Slot2 = -1;
             public ObjectID Item2;
             public int Level2;
 
-            public int ExpectLevel => Slot2 >= 0 ? Mathf.Max(Level, Level2) : Level;
+            public int ExpectLevel => Slot2 >= 0 && Def != null && Def.Stack == EnchantStack.Max ? Mathf.Max(Level, Level2) : Level;
+            /// <summary>Two copies that add (Stack = Sum).</summary>
+            public bool Adds => Slot2 >= 0 && Def != null && Def.Stack == EnchantStack.Sum;
         }
 
         private static Entity _player = Entity.Null;
@@ -125,7 +128,7 @@ namespace Enchanting
             return $"selftest started: {Steps.Count} steps (~{Steps.Count * SettleTicks / 60 + 1} s). Don't switch items. /enchant selftest status";
         }
 
-        // Two rings worn: the same enchant on both must count once, at the higher level (Stack = Max).
+        // Two rings worn: the same enchant on both rings must add up (Stack = Sum), or count once if Stack = Max.
         private static void AddMaxRuleSteps(DynamicBuffer<ContainedObjectsBuffer> items, int ring1, int ring2)
         {
             if (!Originals.ContainsKey(ring1) || !Originals.ContainsKey(ring2)) return;
@@ -203,15 +206,16 @@ namespace Enchanting
                 else cond = def.Condition;
                 int baseline = At(BaseConds[step.Slot], (int)cond);
                 int now = (int)cond < sum.Length ? sum[(int)cond].value : 0;
-                string prefix = step.Slot2 >= 0
-                    ? $"Max rule (two rings {def.Name} {Enchants.Roman(step.Level)} + {Enchants.Roman(step.Level2)}, only {Enchants.Roman(level)} may count): "
-                    : "";
+                string prefix = step.Slot2 < 0 ? ""
+                    : step.Adds ? $"Stack rule (two rings {def.Name} {Enchants.Roman(step.Level)} + {Enchants.Roman(step.Level2)}, both must count): "
+                    : $"Max rule (two rings {def.Name} {Enchants.Roman(step.Level)} + {Enchants.Roman(step.Level2)}, only {Enchants.Roman(level)} may count): ";
+                int permille = EnchantMath.Permille(def, level) + (step.Adds ? EnchantMath.Permille(def, step.Level2) : 0);
                 bool ok;
                 string line;
                 if (def.Mode == EnchantMode.Relative)
                 {
                     int ours = OurEntry(em, _player, cond);
-                    int expected = EnchantEffectSystem.RelativeRaw(em, _player, def, weapon, cond, EnchantMath.Permille(def, level), ours);
+                    int expected = EnchantEffectSystem.RelativeRaw(em, _player, def, weapon, cond, permille, ours);
                     var effect = EnchantMath.EffectOf(cond);
                     int fxBase = At(BaseEffects[step.Slot], (int)effect);
                     int fxNow = (int)effect < fx.Length ? fx[(int)effect].value : 0;
@@ -220,7 +224,8 @@ namespace Enchanting
                 }
                 else
                 {
-                    int expected = EnchantMath.Raw(def, level, item.objectData);
+                    int expected = EnchantMath.Raw(def, level, item.objectData)
+                        + (step.Adds ? EnchantMath.Raw(def, step.Level2, items[step.Slot2].objectData) : 0);
                     ok = now - baseline == expected;
                     string lvl = def.Mode == EnchantMode.ItemLevel ? $" at item level {EnchantMath.ItemLevel(item.objectData)}" : "";
                     line = $"{(ok ? "PASS" : "FAIL")} {prefix}{step.Item} {def.Name} {Enchants.Roman(level)}: {cond} +{now - baseline} (expected +{expected}{lvl}, total {baseline}->{now})";

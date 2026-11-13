@@ -28,15 +28,15 @@ Wear two rings, a necklace and a (non-bait) offhand, hold a melee weapon, `/ench
 - Every accessory runs the shared pool (10 enchants × I/III); the offhand also runs offhand Vitality/Resilience/
   Swiftness. Might/Haste are multipliers on the held weapon's bucket: PASS as for Sharpness (`AllDamage` / `AttackSpeed`
   effect rises by exactly our entry). Radiance: the glow colour our entry went to rises by 1/3.
-- **Max rule** (only with both rings worn): Precision III on ring1 + I on ring2 → CritChance +3 (not +4);
-  III + III → +3 (not +6); Might III + III → our `AllDamageIncrease` entry = the x1.03 value (not x1.06). Lines start
-  with "Max rule" and always go to `/enchant selftest status`.
+- **Stack rule** (only with both rings worn; accessories stack since 2026-11-13): Precision III on ring1 + I on ring2
+  → CritChance +4; III + III → +6; Might III + III → our `AllDamageIncrease` entry = the x1.06 value. Lines start
+  with "Stack rule" and always go to `/enchant selftest status`.
 - Then hold a bow and run Might/Haste again (`/enchant set might 3 ring1`): Haste must show "attack speed" and the
   stats window ranged attack speed must rise (bucket follows the held weapon).
 - Player.log `[Enchanting] units:` must list no mismatches for AllDamageIncrease, AttackSpeed, CritChance,
   CriticalDamagePercentageIncrease, IncreasedMaxHealthPercentage, ExtraHarvestChance, IncreasedFishing,
   ChanceToGainExtraCookedFood or the glow conditions.
-- Manual: tooltips on accessories end with "Doesn't stack: only your highest copy counts"; Radiance gives a small
+- Manual: accessory tooltips no longer show a "doesn't stack" line; Radiance gives a small
   light without a lantern and a larger one with a lantern (same colour); Gourmet/Green Thumb/Angler by use.
 
 ## Layer 2 — combat check (`/enchant combattest [seconds]`, ~10 min per weapon at 20 s, hands off)

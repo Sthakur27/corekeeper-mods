@@ -18,6 +18,13 @@ namespace Enchanting
         public static void Postfix(ContainedObjectsBuffer containedObject, ref List<TextAndFormatFields> __result)
         {
             if (__result == null) return;
+            if (EnchantRecipe.TableId != ObjectID.None && containedObject.objectID == EnchantRecipe.TableId)
+            {
+                // The table item: tell players about the figurine library before they place it.
+                __result.Add(EnchantTableFigurineHover.Line(
+                    $"Place up to {EnchantRoll.MaxFigurines} figurines within {(int)EnchantLibrary.Radius} tiles for better enchantments", EffectColor));
+                return;
+            }
             var enchants = EnchantStorage.ReadClient(containedObject);
             if (enchants.Count == 0) return;
 

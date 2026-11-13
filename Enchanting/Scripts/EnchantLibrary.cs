@@ -3,6 +3,7 @@ using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
+using UnityEngine;
 
 namespace Enchanting
 {
@@ -41,7 +42,12 @@ namespace Enchanting
         public static int CountFigurines(EntityManager em, Entity table)
         {
             if (table == Entity.Null || !em.Exists(table) || !em.HasComponent<LocalTransform>(table)) return 0;
-            float2 at = em.GetComponentData<LocalTransform>(table).Position.xz;
+            return CountFigurines(em, em.GetComponentData<LocalTransform>(table).Position.xz);
+        }
+
+        /// <summary>Placed figurines within Radius of a world position (x, z), in any world.</summary>
+        public static int CountFigurines(EntityManager em, float2 at)
+        {
             int count = 0;
             using (var query = em.CreateEntityQuery(new EntityQueryDesc
             {
@@ -58,5 +64,57 @@ namespace Enchanting
             }
             return count;
         }
+
+        // Client readout for the table window: recounted at most once a second while the window asks for it.
+        private static float _clientAt = -10f;
+        private static int _clientCount;
+        private static Vector3 _clientPos;
+        public const float ClientRefresh = 1f;
+
+        /// <summary>Client: figurines the open table sees (cached ~1 s; same rule as the server count).</summary>
+        public static int ClientCount(CraftingBuilding building)
+        {
+            if (building == null || !building.entityExist) return 0;
+            var pos = building.WorldPosition;
+            if (Time.unscaledTime - _clientAt < ClientRefresh && pos == _clientPos) return _clientCount;
+            _clientAt = Time.unscaledTime;
+            _clientPos = pos;
+            var em = building.world.EntityManager;
+            _clientCount = em.HasComponent<LocalTransform>(building.entity)
+                ? CountFigurines(em, em.GetComponentData<LocalTransform>(building.entity).Position.xz)
+                : CountFigurines(em, new float2(pos.x, pos.z));
+            return _clientCount;
+        }
+    }
+
+    /// <summary>
+    /// Hover text of the table's roll button: how many figurines the table sees and the odds for a new enchant,
+    /// plus a hint to place more. ButtonUIElement owns the description; only UpgradeForgeButtons on our table change.
+    /// </summary>
+    [HarmonyLib.HarmonyPatch(typeof(ButtonUIElement), nameof(ButtonUIElement.GetHoverDescription))]
+    public static class EnchantTableFigurineHover
+    {
+        private static readonly Color Info = new Color(0.78f, 0.55f, 1f);
+        private static readonly Color Hint = new Color(0.66f, 0.62f, 0.75f);
+
+        public static void Postfix(ButtonUIElement __instance, ref List<TextAndFormatFields> __result)
+        {
+            if (!(__instance is UpgradeForgeButton) || EnchantRemoveButton.IsRemove((UpgradeForgeButton)__instance)) return;
+            if (!EnchantTableUI.IsTableOpen(out var building)) return;
+            int n = System.Math.Min(EnchantLibrary.ClientCount(building), EnchantRoll.MaxFigurines);
+            if (__result == null) __result = new List<TextAndFormatFields>();
+            __result.Add(Line($"Figurines nearby: {n}/{EnchantRoll.MaxFigurines}", Info));
+            __result.Add(Line($"New enchant odds: {EnchantRoll.OddsText(n)}", Info));
+            if (n < EnchantRoll.MaxFigurines)
+                __result.Add(Line($"Place figurines within {(int)EnchantLibrary.Radius} tiles to raise the odds", Hint));
+        }
+
+        internal static TextAndFormatFields Line(string text, Color color) => new TextAndFormatFields
+        {
+            text = EnchantingMod.PlainTerm,
+            formatFields = new[] { text },
+            dontLocalizeFormatFields = true,
+            color = color,
+        };
     }
 }

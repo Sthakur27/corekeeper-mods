@@ -1,6 +1,8 @@
 using HarmonyLib;
 using PlayerEquipment;
+using PugMod;
 using Unity.Entities;
+using Unity.Mathematics;
 using UnityEngine;
 
 namespace BuildTools.Patches
@@ -26,7 +28,12 @@ namespace BuildTools.Patches
             if (!Applies(__instance, equipmentSlotCD, placementPrefab)) return;
             var extent = Brush.Extent(BuildToolsMod.ClientBrush.Shape, BuildToolsMod.ClientBrush.Edge);
             var anchor = placementCD.bestPositionToPlaceAt;
-            var corner = Brush.Corner(anchor, extent);
+            var player = Manager.main != null ? Manager.main.player : null;
+            var world = API.Client.World;
+            if (player == null || world == null || !world.EntityManager.HasComponent<ClientInput>(player.entity)) return;
+            var mouse = world.EntityManager.GetComponentData<ClientInput>(player.entity).mouseOrJoystickWorldPoint;
+            var pos = player.WorldPosition;
+            var corner = Brush.Corner(anchor, extent, Brush.CellOf(pos.x, pos.z), new float2(mouse.x - pos.x, mouse.y - pos.z));
             Shift = EntityMonoBehaviour.ToRenderFromWorld(new Vector3Int(corner.x, corner.y, corner.z))
                     - EntityMonoBehaviour.ToRenderFromWorld(new Vector3Int(anchor.x, anchor.y, anchor.z));
             ShiftIcon = __instance.placeableIcon;

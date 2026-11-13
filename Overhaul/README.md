@@ -49,7 +49,7 @@ Mod Options can also show settings from some other CoreLib mods. If a page hasn'
 
 ## Latest update
 
-**1.16.6:** Tridra (More NPCs) now sells boss summoning items, including the Titans and the Halloween Hive Mother, King Slime and Easter Azeos, once you've beaten each boss. Runic Storage has a new workbench, redrawn upgrade gems, and gem-tinted lids and clamps on every tier; the Octarine unit keeps its shape with colors that match Octarine ore. New: Weapon Tweaks makes the Burnzooka's rocket explode on the first enemy it hits.
+**1.16.7:** Build Tools 0.6.7: the block brush now sits in front of you, on the side your mouse points to, instead of around your character. It starts at the tile next to you and shifts one tile (or up to half the brush) toward your mouse.
 
 Older updates are in the [release history](https://github.com/Sthakur27/corekeeper-mods/blob/main/Overhaul/CHANGELOG.md).
 

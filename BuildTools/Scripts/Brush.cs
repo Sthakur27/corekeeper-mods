@@ -81,22 +81,53 @@ namespace BuildTools
             }
         }
 
-        /// <summary>Min corner of the brush, centred on the aimed cell.</summary>
-        public static int3 Corner(int3 anchor, int2 extent)
+        /// <summary>
+        /// Min corner of the brush. The game keeps the aimed cell next to the player, so a brush centred on
+        /// it covered the player once it was 3x3 or bigger. Instead the brush sits in front of the player in
+        /// one of four directions, whichever way the mouse is furthest (<paramref name="aim"/> = mouse minus
+        /// player): its near edge is the row or column next to the player. Sideways it follows the mouse, but
+        /// only up to half the brush (at least one tile) off the player's row or column, so a diagonal aim
+        /// moves it one step aside instead of the two the old centred-on-the-aimed-cell brush jumped. With
+        /// no aim it is centred on the aimed cell.
+        /// </summary>
+        public static int3 Corner(int3 anchor, int2 extent, int2 playerCell, float2 aim)
         {
-            return anchor - new int3((extent.x - 1) / 2, 0, (extent.y - 1) / 2);
+            int2 half = (extent - 1) / 2;
+            if (aim.x == 0f && aim.y == 0f)
+                return anchor - new int3(half.x, 0, half.y);
+            if (math.abs(aim.x) >= math.abs(aim.y))
+            {
+                int x = aim.x > 0f ? playerCell.x + 1 : playerCell.x - extent.x;
+                return new int3(x, anchor.y, Sideways(playerCell.y, aim.y, extent.y) - half.y);
+            }
+            int z = aim.y > 0f ? playerCell.y + 1 : playerCell.y - extent.y;
+            return new int3(Sideways(playerCell.x, aim.x, extent.x) - half.x, anchor.y, z);
         }
 
-        /// <summary>Cells of the brush, nearest to the aimed cell first (so a short stack fills the middle).</summary>
-        public static List<int3> Cells(int3 anchor, BrushShape shape, int edge)
+        /// <summary>Centre of the brush across the aim: the mouse's row or column, at most max(1, half the brush) off the player's.</summary>
+        private static int Sideways(int player, float aim, int extent)
+        {
+            int reach = math.max(1, (extent - 1) / 2);
+            return math.clamp((int)math.round(aim), -reach, reach) + player;
+        }
+
+        /// <summary>The tile cell a world position is on (tiles are centred on whole coordinates).</summary>
+        public static int2 CellOf(float x, float z)
+        {
+            return new int2((int)math.round(x), (int)math.round(z));
+        }
+
+        /// <summary>Cells of the brush, nearest to the player first (so a short stack fills the near edge first).</summary>
+        public static List<int3> Cells(int3 anchor, BrushShape shape, int edge, int2 playerCell, float2 aim)
         {
             var extent = Extent(shape, edge);
-            var corner = Corner(anchor, extent);
+            var corner = Corner(anchor, extent, playerCell, aim);
+            var near = new int3(playerCell.x, anchor.y, playerCell.y);
             var cells = new List<int3>(extent.x * extent.y);
             for (int x = 0; x < extent.x; x++)
                 for (int z = 0; z < extent.y; z++)
                     cells.Add(corner + new int3(x, 0, z));
-            cells.Sort((a, b) => DistanceSq(a, anchor).CompareTo(DistanceSq(b, anchor)));
+            cells.Sort((a, b) => DistanceSq(a, near).CompareTo(DistanceSq(b, near)));
             return cells;
         }
 

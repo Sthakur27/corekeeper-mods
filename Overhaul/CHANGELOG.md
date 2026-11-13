@@ -1,5 +1,7 @@
 # Sid's Overhaul release history
 
+**New in 1.16.4:** Boss Bonus Loot 1.8.0: Glurch drops the Adventurer's Hat 30% of the time; this replaces its usual roll in Glurch's loot.
+
 **New in 1.16.3:** Quick Buff 1.6.0, highest buff wins: Quick Buff uses only the strongest item for each buff type, and a stronger buff now replaces a weaker active one of the same type (for example Crystal Water over a weaker crit food) instead of being skipped.
 
 **New in 1.16.2:** More NPCs (Alpha) 0.1.1: all eight merchants and their idols have new art in a darker, vanilla-like style. Quick Buff 1.5.1: permanent stat bonuses (for example from enchanted gear) no longer count as an active buff, so those potions and foods can still be used.

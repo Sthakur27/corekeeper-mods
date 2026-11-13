@@ -31,7 +31,9 @@ namespace BossBonusLoot.Systems
                 },
                 // Permanent-buff foods, one themed boss each:
                 // Glurch, the game's first boss -> Anniversary Cake
-                [ObjectID.SlimeBoss] = new[] { (ObjectID.AnniversaryCake, 1, 0.15f) },
+                // Glurch also: Adventurer's Hat (ExplorerHelm) flat 30%; any entry for it in Glurch's own
+                // loot table is zeroed by HydraGemSystem so this roll is the whole chance.
+                [ObjectID.SlimeBoss] = new[] { (ObjectID.AnniversaryCake, 1, 0.15f), (ObjectID.ExplorerHelm, 1, 0.3f) },
                 // Igneous the Molten Mass (Molten Quarry, home of the Amalgam Basins) -> Splendid Amalgam
                 [ObjectID.LavaSlimeBoss] = new[] { (ObjectID.LiquidMetal, 1, 0.15f) },
                 // Crydra the Ice Titan: the cold-season treat -> Golden Chocolate

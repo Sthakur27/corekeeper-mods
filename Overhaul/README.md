@@ -49,7 +49,7 @@ Mod Options can also show settings from some other CoreLib mods. If a page hasn'
 
 ## Latest update
 
-**1.16.3:** Quick Buff now picks the strongest item for each buff. If you've already got a weaker version active, it'll replace it with the stronger one instead of skipping it.
+**1.16.4:** Glurch now drops the Adventurer's Hat 30% of the time (Boss Bonus Loot 1.8.0).
 
 Older updates are in the [release history](https://github.com/Sthakur27/corekeeper-mods/blob/main/Overhaul/CHANGELOG.md).
 

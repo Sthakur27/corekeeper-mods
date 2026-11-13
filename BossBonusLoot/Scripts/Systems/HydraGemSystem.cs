@@ -36,6 +36,7 @@ namespace BossBonusLoot.Systems
             [LootTableID.OrbitalTurret] = Gems,
             [LootTableID.VoidLarva] = new HashSet<ObjectID> { ObjectID.HydraBossVoidCraftingItem }, // Oblivion Fragment
             [LootTableID.Bosslarva] = new HashSet<ObjectID> { ObjectID.AmberLarva }, // Ghorm: flat 10% roll instead
+            [LootTableID.SlimeBoss] = new HashSet<ObjectID> { ObjectID.ExplorerHelm }, // Glurch: flat 30% Adventurer's Hat
         };
 
         // (table, guaranteed list?, slot) -> vanilla (min, max)

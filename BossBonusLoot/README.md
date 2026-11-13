@@ -11,7 +11,7 @@ The extra items drop where the boss dies, alongside its normal loot chest. Each 
 | Enemy | Extra rewards |
 |---|---|
 | Ghorm | 80 Larva Meat and 80 Golden Larva Meat, guaranteed. Amber Larva: 10% (replaces its usual roll in Ghorm's loot). |
-| Glurch | Anniversary Cake: 15% |
+| Glurch | Adventurer's Hat: 30% (replaces its usual roll in Glurch's loot). Anniversary Cake: 15%. |
 | Igneous | Splendid Amalgam: 15% |
 | Crydra the Ice Titan | Golden Chocolate: 15% |
 | Druidra the Wild Titan | Paradise Fruit Basket: 15% |

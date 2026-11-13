@@ -1,5 +1,7 @@
 # Sid's Overhaul release history
 
+**New in 1.16.5:** Boss Bonus Loot 1.9.0: Omoroth drops the Rusted Necklace 20% of the time and Bubble Crabs drop the Topaz Ring 3% of the time; each replaces that item's usual roll.
+
 **New in 1.16.4:** Boss Bonus Loot 1.8.0: Glurch drops the Adventurer's Hat 30% of the time; this replaces its usual roll in Glurch's loot.
 
 **New in 1.16.3:** Quick Buff 1.6.0, highest buff wins: Quick Buff uses only the strongest item for each buff type, and a stronger buff now replaces a weaker active one of the same type (for example Crystal Water over a weaker crit food) instead of being skipped.

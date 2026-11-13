@@ -47,12 +47,16 @@ namespace BossBonusLoot.Systems
                     (ObjectID.NatureGemstone, 1, 1f),
                     (ObjectID.LargeSeedAndCropsPouch, 1, 0.4f), (ObjectID.LargeCritterPouch, 1, 0.4f),
                 },
-                // Omoroth the Sea Titan (Sunken Sea): Ocean Sapphire, pouches
+                // Omoroth the Sea Titan (Sunken Sea): Ocean Sapphire, pouches, Rusted Necklace flat 20%
+                // (any entry for it in Omoroth's own loot table is zeroed by HydraGemSystem)
                 [ObjectID.OctopusBoss] = new[]
                 {
                     (ObjectID.SeaGemstone, 1, 1f),
                     (ObjectID.LargeFishPouch, 1, 0.4f), (ObjectID.LargePotionPouch, 1, 0.4f),
+                    (ObjectID.RustedNecklace, 1, 0.2f),
                 },
+                // Bubble Crab (not a boss): Topaz Ring flat 3%; its own loot table entry is zeroed the same way.
+                [ObjectID.CrabEnemy] = new[] { (ObjectID.TopazRing, 1, 0.03f) },
                 // Ra-Akar the Sand Titan (Desert of Beginnings): Desert Ruby, pouches
                 [ObjectID.ScarabBoss] = new[]
                 {

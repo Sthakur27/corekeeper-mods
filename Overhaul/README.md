@@ -49,7 +49,7 @@ Mod Options can also show settings from some other CoreLib mods. If a page hasn'
 
 ## Latest update
 
-**1.16.4:** Glurch now drops the Adventurer's Hat 30% of the time (Boss Bonus Loot 1.8.0).
+**1.16.5:** Omoroth drops the Rusted Necklace 20% of the time and Bubble Crabs drop the Topaz Ring 3% of the time (Boss Bonus Loot 1.9.0).
 
 Older updates are in the [release history](https://github.com/Sthakur27/corekeeper-mods/blob/main/Overhaul/CHANGELOG.md).
 

@@ -16,13 +16,13 @@ The extra items drop where the boss dies, alongside its normal loot chest. Each 
 | Crydra the Ice Titan | Golden Chocolate: 15% |
 | Druidra the Wild Titan | Paradise Fruit Basket: 15% |
 | Azeos | 1 Jungle Emerald, guaranteed. Chipped Blade and Clear Gemstone: 25% each. Large Seed and Crop Pouch: 40%. Large Critter Pouch: 40%. |
-| Omoroth | 1 Ocean Sapphire, guaranteed. Large Fish Pouch and Large Potion Pouch: 40% each. |
+| Omoroth | 1 Ocean Sapphire, guaranteed. Large Fish Pouch and Large Potion Pouch: 40% each. Rusted Necklace: 20% (replaces its usual roll in Omoroth's loot). |
 | Ra-Akar | 1 Desert Ruby, guaranteed. Large Valuable Pouch and Large Ore and Block Pouch: 40% each. |
 | The three biome Hydras | Double the amounts of Jungle Emeralds, Ocean Sapphires and Desert Rubies in their normal loot |
 
 ## Regular enemy changes
 
-Mimites and Orbital Turrets each roll a **10% chance per gemstone** for a Jungle Emerald, Ocean Sapphire and Desert Ruby. Void Larvae have a **20% chance** to drop an Oblivion Fragment. These chances replace the usual random rolls for those items; they are not extra rolls on top of them.
+Mimites and Orbital Turrets each roll a **10% chance per gemstone** for a Jungle Emerald, Ocean Sapphire and Desert Ruby. Void Larvae have a **20% chance** to drop an Oblivion Fragment. Bubble Crabs have a **3% chance** to drop a Topaz Ring. These chances replace the usual random rolls for those items; they are not extra rolls on top of them.
 
 ## Larva Meat
 

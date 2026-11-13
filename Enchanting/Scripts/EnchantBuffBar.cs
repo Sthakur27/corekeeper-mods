@@ -9,8 +9,8 @@ namespace Enchanting
     /// <summary>
     /// Client HUD (2026-11-13): the buff bar above the health bar draws one icon per ConditionsBuffer entry, capped at
     /// 18. With many enchant/food/potion entries it fills up with look-alike icons and hides the rest. This replaces
-    /// ConditionsContainerUI.UpdateConditions with the same drawing, but entries that share a condition ID become one
-    /// icon: additive conditions show the sum, non-additive ones the strongest; a timed buff keeps the longest time
+    /// ConditionsContainerUI.UpdateConditions with the same drawing, but entries that share a condition ID, or a
+    /// description (ConditionInfo.useSameDescAsId: different IDs the game words identically), become one icon: additive conditions show the sum, non-additive ones the strongest; a timed buff keeps the longest time
     /// left (a permanent entry wins). Stack-type conditions (GetStacks &gt; 0) stay one icon per entry, as in vanilla.
     ///
     /// Cost: one pass over the player's buffer per frame, same as vanilla, plus a small dictionary.
@@ -32,9 +32,16 @@ namespace Enchanting
         private static readonly List<Group> _groups = new List<Group>();
         private static readonly Dictionary<ConditionID, int> _index = new Dictionary<ConditionID, int>();
         private static bool _broken;
+        private static int _dumps;            // diagnostic Player.log dumps written (capped)
+        private static int _lastSignature;
+        private const int MaxDumps = 30;
 
         /// <summary>How many buffer entries the icon for this condition merges (hover text); 0/1 = not merged.</summary>
         public static readonly Dictionary<ConditionID, int> Sources = new Dictionary<ConditionID, int>();
+
+        /// <summary>Every condition ID merged into the icon showing this ID (hover total sums all of them).</summary>
+        public static readonly Dictionary<ConditionID, List<ConditionID>> Members = new Dictionary<ConditionID, List<ConditionID>>();
+        private static readonly List<List<ConditionID>> _memberLists = new List<List<ConditionID>>();
 
         public static bool Prefix(List<ConditionUI> ___conditions, ref int ___activeAmountOfConditions)
         {
@@ -74,13 +81,17 @@ namespace Enchanting
                 float remaining = c.conditionData.duration > 0f && !float.IsPositiveInfinity(c.conditionData.duration)
                     ? NetworkTimeUtilities.TimeToFutureTickInSeconds(tick, fraction, c.removeTick, rate)
                     : float.PositiveInfinity;
-                if (stack || !_index.TryGetValue(id, out int at))
+                var key = info.useSameDescAsId != ConditionID.None ? info.useSameDescAsId : id;
+                if (stack || !_index.TryGetValue(key, out int at))
                 {
-                    if (!stack) _index[id] = _groups.Count;
+                    if (!stack) _index[key] = _groups.Count;
+                    var members = MemberList(_groups.Count);
+                    members.Add(id);
                     _groups.Add(new Group { Shown = c, Sources = 1, Stack = stack, Remaining = remaining });
                     continue;
                 }
                 var g = _groups[at];
+                if (!_memberLists[at].Contains(id)) _memberLists[at].Add(id);
                 int merged = info.isAdditiveWithSelf
                     ? g.Shown.conditionData.value + c.conditionData.value
                     : (Mathf.Abs(c.conditionData.value) > Mathf.Abs(g.Shown.conditionData.value) ? c.conditionData.value : g.Shown.conditionData.value);
@@ -96,13 +107,23 @@ namespace Enchanting
             stacks = Mathf.Min(stacks, MaxIcons);
             int others = Mathf.Min(_groups.Count - stacks, MaxIcons - stacks);
 
+            Dump(buffer, table);
+
             Sources.Clear();
+            Members.Clear();
             int slot = 0, usedStacks = 0, usedOthers = 0;
-            foreach (var g in _groups)
+            for (int gi = 0; gi < _groups.Count; gi++)
             {
+                var g = _groups[gi];
                 if (slot >= MaxIcons || slot >= icons.Count) break;
                 if (g.Stack) { if (usedStacks >= stacks) continue; usedStacks++; }
-                else { if (usedOthers >= others) continue; usedOthers++; Sources[g.Shown.conditionData.conditionID] = g.Sources; }
+                else
+                {
+                    if (usedOthers >= others) continue;
+                    usedOthers++;
+                    Sources[g.Shown.conditionData.conditionID] = g.Sources;
+                    Members[g.Shown.conditionData.conditionID] = _memberLists[gi];
+                }
                 Show(icons, slot++, g.Shown, tick, fraction, rate);
             }
 
@@ -115,6 +136,36 @@ namespace Enchanting
             active = slot;
             for (int k = slot; k < icons.Count; k++)
                 if (icons[k].gameObject.activeSelf) icons[k].gameObject.SetActive(false);
+        }
+
+        private static List<ConditionID> MemberList(int i)
+        {
+            while (_memberLists.Count <= i) _memberLists.Add(new List<ConditionID>());
+            _memberLists[i].Clear();
+            return _memberLists[i];
+        }
+
+        // Diagnostic (2026-11-13, Sid saw look-alike icons stay separate): whenever the buff list changes shape, write
+        // what it holds and how it merged to Player.log, at most MaxDumps times a session.
+        private static void Dump(DynamicBuffer<ConditionsBuffer> buffer, ConditionsTable table)
+        {
+            if (_dumps >= MaxDumps) return;
+            int sig = buffer.Length * 7919 + _groups.Count;
+            for (int i = 0; i < buffer.Length; i++) sig = sig * 31 + (int)buffer[i].condition.conditionData.conditionID;
+            if (_dumps > 0 && sig == _lastSignature) return;
+            _lastSignature = sig;
+            _dumps++;
+            var parts = new List<string>();
+            for (int i = 0; i < buffer.Length; i++)
+            {
+                var d = buffer[i].condition.conditionData;
+                var info = table.GetConditionInfo(d.conditionID);
+                parts.Add($"{d.conditionID}={d.value} dur={d.duration} mult={d.valueMultiplier}"
+                    + (info.icon == null ? " noicon" : "")
+                    + (info.useSameDescAsId != ConditionID.None ? $" desc={info.useSameDescAsId}" : "")
+                    + (info.isAdditiveWithSelf ? "" : " nonadd"));
+            }
+            Debug.Log($"[{EnchantingMod.Name}] buff bar ({_dumps}/{MaxDumps}): {buffer.Length} entries -> {_groups.Count} icons: {string.Join("; ", parts)}");
         }
 
         private static void Show(List<ConditionUI> icons, int slot, Condition c, NetworkTick tick, float fraction, uint rate)
@@ -149,8 +200,12 @@ namespace Enchanting
                 var em = player.world.EntityManager;
                 if (!em.HasBuffer<SummarizedConditionsBuffer>(player.entity)) return;
                 var sum = em.GetBuffer<SummarizedConditionsBuffer>(player.entity, true);
-                if ((int)id >= sum.Length) return;
-                int total = sum[(int)id].value;
+                int total = 0;
+                if (EnchantBuffBar.Members.TryGetValue(id, out var members) && members.Count > 0)
+                {
+                    foreach (var m in members) if ((int)m < sum.Length) total += sum[(int)m].value;
+                }
+                else if ((int)id < sum.Length) total = sum[(int)id].value;
                 if (total == ___activeCondition.conditionData.value || total == 0) return;
                 var line = ConditionUI.GetConditionTextAndFormatFields(default, new ConditionData { conditionID = id, value = total },
                     previewReinforced: false, isReinforced: false, previewUpgraded: false);

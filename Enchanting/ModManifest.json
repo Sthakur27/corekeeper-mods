@@ -77,6 +77,10 @@
             "guid": ""
         },
         {
+            "path": "Scripts/EnchantLibrary.cs",
+            "guid": ""
+        },
+        {
             "path": "Bundles/Enchanting_Windows.assetbundle",
             "guid": ""
         },

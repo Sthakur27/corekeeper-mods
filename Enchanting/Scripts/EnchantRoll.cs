@@ -8,8 +8,32 @@ namespace Enchanting
         public static int MaxEnchants = 3;
         public static int GoldPerStep = 5;
         public static int CoinsPerStep = 250;
-        // Chance (percent) that a NEW enchant lands at level I / II / III.
+        // Chance (percent) that a NEW enchant lands at level I / II / III, with no figurines near the table...
         public static int[] NewLevelWeights = { 60, 30, 10 };
+        // ...and with the full set of figurines (MaxFigurines or more). In between it slides linearly.
+        public static int[] FullLibraryWeights = { 0, 40, 60 };
+        public const int MaxFigurines = 9;
+
+        /// <summary>Level I / II / III weights for <paramref name="figurines"/> placed near the table.</summary>
+        public static int[] WeightsFor(int figurines)
+        {
+            int n = System.Math.Max(0, System.Math.Min(figurines, MaxFigurines));
+            var w = new int[NewLevelWeights.Length];
+            for (int i = 0; i < w.Length; i++)
+                w[i] = NewLevelWeights[i] + (FullLibraryWeights[i] - NewLevelWeights[i]) * n / MaxFigurines;
+            return w;
+        }
+
+        /// <summary>"I 33% / II 37% / III 30%" for chat.</summary>
+        public static string OddsText(int figurines)
+        {
+            var w = WeightsFor(figurines);
+            int total = 0;
+            foreach (int x in w) total += x;
+            var parts = new List<string>();
+            for (int i = 0; i < w.Length; i++) parts.Add($"{Enchants.Roman(i + 1)} {(total > 0 ? w[i] * 100 / total : 0)}%");
+            return string.Join(" / ", parts);
+        }
 
         private static readonly System.Random Rng = new System.Random();
 
@@ -24,8 +48,9 @@ namespace Enchanting
         /// Rolls one enchant onto <paramref name="current"/> (modified in place). Returns a player-facing line, or
         /// null when nothing can be rolled for this item type.
         /// </summary>
-        public static string Roll(List<EnchantEntry> current, EnchantSlot slot, ObjectID item = ObjectID.None)
+        public static string Roll(List<EnchantEntry> current, EnchantSlot slot, ObjectID item = ObjectID.None, int figurines = 0)
         {
+            var weights = WeightsFor(figurines);
             var pool = Enchants.PoolFor(slot, item);
             if (pool.Count == 0) return null;
 
@@ -48,7 +73,7 @@ namespace Enchanting
                 var pick = fresh[Rng.Next(fresh.Count)];
                 var old = current[victim];
                 current.RemoveAt(victim);
-                var fresh1 = new EnchantEntry { Id = pick.Id, Level = RollNewLevel(pick) };
+                var fresh1 = new EnchantEntry { Id = pick.Id, Level = RollNewLevel(pick, weights) };
                 current.Add(fresh1); // newest goes on top of the stack
                 return $"{old.Def?.Name} {Enchants.Roman(old.Level)} was replaced by {pick.Name} {Enchants.Roman(fresh1.Level)}.";
             }
@@ -63,7 +88,7 @@ namespace Enchanting
                 MoveToTop(current, at, e);
                 return $"{chosen.Name} rose to {Enchants.Roman(e.Level)}.";
             }
-            var added = new EnchantEntry { Id = chosen.Id, Level = RollNewLevel(chosen) };
+            var added = new EnchantEntry { Id = chosen.Id, Level = RollNewLevel(chosen, weights) };
             current.Add(added);
             return $"Gained {chosen.Name} {Enchants.Roman(added.Level)}.";
         }
@@ -89,16 +114,17 @@ namespace Enchanting
             current.Add(e);
         }
 
-        private static int RollNewLevel(EnchantDef def)
+        private static int RollNewLevel(EnchantDef def, int[] weights)
         {
             int total = 0;
-            int max = System.Math.Min(def.MaxLevel, NewLevelWeights.Length);
-            for (int i = 0; i < max; i++) total += NewLevelWeights[i];
+            int max = System.Math.Min(def.MaxLevel, weights.Length);
+            for (int i = 0; i < max; i++) total += weights[i];
+            if (total <= 0) return max; // e.g. full library on a 2-level enchant with weight only on III
             int r = Rng.Next(total);
             for (int i = 0; i < max; i++)
             {
-                if (r < NewLevelWeights[i]) return i + 1;
-                r -= NewLevelWeights[i];
+                if (r < weights[i]) return i + 1;
+                r -= weights[i];
             }
             return 1;
         }

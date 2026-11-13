@@ -164,10 +164,11 @@ namespace Enchanting
 
         public static string Roll(EntityManager em, Entity player, int x, int z)
         {
-            string error = FindTableItem(em, player, x, z, out int upgradeSlot, out var item, out var aux);
+            string error = FindTableItem(em, player, x, z, out int upgradeSlot, out var item, out var aux, out var table);
             if (error != null) return error;
             var kind = Enchants.SlotOf(item.objectID);
             if (kind == EnchantSlot.None) return $"{item.objectID} can't be enchanted.";
+            int figurines = EnchantLibrary.CountFigurines(em, table);
 
             var current = EnchantStorage.Read(em, aux, item);
             EnchantRoll.Cost(current.Count, out int gold, out int coins);
@@ -175,7 +176,7 @@ namespace Enchanting
             if (!free && (Count(em, player, ObjectID.GoldBar) < gold || Count(em, player, ObjectID.AncientCoin) < coins))
                 return $"you need {gold} Gold Bars and {coins} Ancient Coins.";
 
-            string result = EnchantRoll.Roll(current, kind, item.objectID);
+            string result = EnchantRoll.Roll(current, kind, item.objectID, figurines);
             if (result == null) return "nothing can be rolled for this item.";
             string err = EnchantStorage.Write(em, player, upgradeSlot, current);
             if (err != null) return err;
@@ -184,7 +185,8 @@ namespace Enchanting
                 Take(em, player, ObjectID.GoldBar, gold);
                 Take(em, player, ObjectID.AncientCoin, coins);
             }
-            return result + " Now: " + EnchantStorage.Describe(current) + ".";
+            return result + " Now: " + EnchantStorage.Describe(current) + "."
+                + $" Figurines nearby: {System.Math.Min(figurines, EnchantRoll.MaxFigurines)}/{EnchantRoll.MaxFigurines} (new enchant odds {EnchantRoll.OddsText(figurines)}).";
         }
 
         /// <summary>
@@ -193,7 +195,7 @@ namespace Enchanting
         /// </summary>
         public static string Clear(EntityManager em, Entity player, int x, int z)
         {
-            string error = FindTableItem(em, player, x, z, out int upgradeSlot, out var item, out var aux);
+            string error = FindTableItem(em, player, x, z, out int upgradeSlot, out var item, out var aux, out _);
             if (error != null) return error;
             var current = EnchantStorage.Read(em, aux, item);
             if (current.Count == 0) return $"{item.objectID} has no enchantments.";
@@ -210,8 +212,9 @@ namespace Enchanting
         /// (UpgradeSlotCD.slotIndex, see UpgradeSlotHandler). Returns an error text, or null.
         /// </summary>
         private static string FindTableItem(EntityManager em, Entity player, int x, int z, out int upgradeSlot,
-            out ContainedObjectsBuffer item, out InventoryAuxDataSystemDataCD aux)
+            out ContainedObjectsBuffer item, out InventoryAuxDataSystemDataCD aux, out Entity tableEntity)
         {
+            tableEntity = Entity.Null;
             upgradeSlot = -1;
             item = default;
             aux = default;
@@ -239,6 +242,7 @@ namespace Enchanting
                 }
             }
             if (table == Entity.Null) table = nearPlayer;
+            tableEntity = table;
             if (table == Entity.Null)
             {
                 Debug.Log($"[{EnchantingMod.Name}] table lookup failed: sent ({x},{z}), player {playerPos}, {seen} table entities loaded");

@@ -10,7 +10,7 @@ Craft the table at a **Galaxite Workbench**, under stations, for **20 Octarine B
 
 The first enchantment costs **5 Gold Bars + 250 Ancient Coins**, the second costs **10 + 500**, and the third costs **15 + 750**.
 
-New enchantments usually start at level I: the chances are 60% for I, 30% for II, and 10% for III. If you roll an enchantment the item already has, it goes up a level. Once an item has three, rolling a new one replaces a random enchantment, so you might lose one you wanted to keep.
+New enchantments usually start at level I: the chances are 60% for I, 30% for II, and 10% for III. **Figurines** placed within 5 tiles of the table improve those odds. Any enemy or boss figurine counts, up to 9. With 9 the chances are 0% for I, 40% for II, and 60% for III, and the roll message tells you how many the table sees. If you roll an enchantment the item already has, it goes up a level. Once an item has three, rolling a new one replaces a random enchantment, so you might lose one you wanted to keep.
 
 The **red down arrow** removes the top enchantment (the one you rolled or upgraded most recently) for free. You don't get the bars or coins back.
 

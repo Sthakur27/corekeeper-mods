@@ -53,7 +53,10 @@ Materials are taken from the player's inventory and nearby chests, like vanilla 
 
 - Max **3 enchants** per item, each level **I–III**.
 - A roll picks a random enchant from the item's pool (equal weights):
-  - not on the item yet → added at level I (60%), II (30%), III (10%);
+  - not on the item yet → added at level I (60%), II (30%), III (10%); with the **figurine library**
+    (`EnchantLibrary`, 2026-11-13): each placed figurine (vanilla `*Trophy` ObjectIDs, not dropped ones) within 5
+    tiles of the table slides the weights linearly toward I 0% / II 40% / III 60% at 9 figurines (cap). Counted
+    on the server per roll button press only;
   - already on the item → +1 level (capped at III; a capped roll re-picks).
 - Item already full (3 enchants): the roll **replaces one random enchant** with a new one
   (gamble to fish for a better set). *Alternative to decide: full items cannot be rolled.*

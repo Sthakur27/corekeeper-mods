@@ -176,17 +176,30 @@ namespace Enchanting
     }
 
     /// <summary>
-    /// Hover text of a buff icon: where the value comes from, one line per source, then the stat's real total.
-    /// Sources: each enchant on the held item, worn gear and accessories (name, level, item); timed buff entries
-    /// (food, potions); other buff-list entries; the gear's own stats (GivesConditionsWhenEquipped); and whatever is
-    /// left over (skills, set bonuses, reinforcement) as one line. Enchant multipliers are stored as plain amounts,
-    /// so the total is the effective value the game uses.
+    /// Hover text of a buff icon: the header shows the stat's real total (what the game applies), then one line per
+    /// source, "source: effect". Sources follow SummarizeConditionsSystem: buff-list entries (our enchants split back
+    /// into item + enchant; other entries named by what they are, with time left), worn and held gear (own stats,
+    /// +reinforcement, broken items skipped), skills, skill talents, affixes, souls, and one remainder line (set
+    /// bonuses, pet). Built when the hover asks and cached per icon for <see cref="CacheSeconds"/>, never per frame
+    /// on its own.
     /// </summary>
     [HarmonyPatch(typeof(ConditionUI), nameof(ConditionUI.GetHoverStats))]
     public static class EnchantBuffBarHover
     {
         private static readonly Color Info = new Color(0.78f, 0.55f, 1f);
         private static readonly Color Source = new Color(0.66f, 0.62f, 0.75f);
+        private const float CacheSeconds = 0.5f;
+
+        private class Cached
+        {
+            public float At;
+            public int Shown;
+            public int Total;
+            public bool HasTotal;
+            public readonly List<TextAndFormatFields> Lines = new List<TextAndFormatFields>();
+        }
+
+        private static readonly Dictionary<ConditionID, Cached> _cache = new Dictionary<ConditionID, Cached>();
         private static readonly List<ConditionID> _single = new List<ConditionID>(1);
 
         public static void Postfix(Condition ___activeCondition, ref List<TextAndFormatFields> __result)
@@ -195,7 +208,26 @@ namespace Enchanting
             if (id == ConditionID.None || __result == null) return;
             try
             {
-                Add(id, ___activeCondition.conditionData.value, __result);
+                if (!_cache.TryGetValue(id, out var c)) _cache[id] = c = new Cached { At = -10f };
+                int shown = ___activeCondition.conditionData.value;
+                if (Time.unscaledTime - c.At > CacheSeconds || c.Shown != shown)
+                {
+                    c.At = Time.unscaledTime;
+                    c.Shown = shown;
+                    c.Lines.Clear();
+                    Build(id, c);
+                }
+                if (c.HasTotal && c.Total != shown && __result.Count > 0)
+                {
+                    // Header = what the game applies (gear, skills etc. included), not just the buff-list sum.
+                    var d = ___activeCondition.conditionData;
+                    d.value = c.Total;
+                    var header = ConditionUI.GetConditionTextAndFormatFields(default, d, previewReinforced: false, isReinforced: false, previewUpgraded: false);
+                    header.additionalText = "(total)";
+                    header.additionalTextColor = Info;
+                    __result[0] = header;
+                }
+                if (c.Lines.Count > 1 || (c.HasTotal && c.Total != shown)) __result.AddRange(c.Lines);
             }
             catch (System.Exception e)
             {
@@ -203,84 +235,146 @@ namespace Enchanting
             }
         }
 
-        private static void Add(ConditionID id, int shown, List<TextAndFormatFields> result)
+        private static void Build(ConditionID id, Cached cache)
         {
+            var lines = cache.Lines;
             var player = Manager.main.player;
             if (player == null || !player.entityExist) return;
             var em = player.world.EntityManager;
+            var entity = player.entity;
             if (!EnchantBuffBar.Members.TryGetValue(id, out var members) || members.Count == 0)
             {
                 _single.Clear();
                 _single.Add(id);
                 members = _single;
             }
-
-            var lines = new List<TextAndFormatFields>();
             int listed = 0;
 
-            // 1. The buff list itself (what the icon sums).
-            var buffer = EntityUtility.GetConditions(player.entity, player.world);
-            NetworkTick tick = EntityUtility.GetCurrentTickOnClient(player.entity, player.world, out var fraction);
+            // 1. The buff list.
+            var buffer = EntityUtility.GetConditions(entity, player.world);
+            NetworkTick tick = EntityUtility.GetCurrentTickOnClient(entity, player.world, out var fraction);
             uint rate = (uint)PlatformConfiguration.Instance.SessionConfiguration.SimulationTickRate;
             int ours = 0;
             bool hasOurs = false;
             for (int i = 0; i < buffer.Length; i++)
             {
                 var c = buffer[i].condition;
-                if (!members.Contains(c.conditionData.conditionID)) continue;
-                if (EnchantEffectSystem.IsOurs(c)) { ours += c.conditionData.value; hasOurs = true; continue; }
                 var d = c.conditionData;
+                if (!members.Contains(d.conditionID)) continue;
+                listed += d.value;
+                if (EnchantEffectSystem.IsOurs(c)) { ours += d.value; hasOurs = true; continue; }
                 bool timed = d.duration > 0f && !float.IsPositiveInfinity(d.duration);
-                string label = timed ? "food or potion" : float.IsPositiveInfinity(d.duration) ? "permanent buff" : "effect";
-                if (timed) d.duration = Mathf.Max(1f, NetworkTimeUtilities.TimeToFutureTickInSeconds(tick, fraction, c.removeTick, rate));
-                lines.Add(SourceLine(d, label));
-                listed += c.conditionData.value;
+                float left = timed ? NetworkTimeUtilities.TimeToFutureTickInSeconds(tick, fraction, c.removeTick, rate) : 0f;
+                lines.Add(SourceLine(BuffLabel(d.conditionID, d.duration, left), d.conditionID, d.value));
             }
-
-            // 2. Enchants (one marked buff entry per stat, split back into the items that grant it).
             if (hasOurs)
             {
                 int before = lines.Count;
-                AddEnchantSources(em, player.entity, members, lines);
-                if (lines.Count == before) lines.Add(SourceLine(new ConditionData { conditionID = id, value = ours }, "enchantments"));
-                listed += ours;
+                AddEnchantSources(em, entity, members, lines);
+                if (lines.Count == before) lines.Add(SourceLine("Enchantments", id, ours));
             }
 
-            // 3. The gear's own stats (not on the buff list; part of the game's total).
-            int gear = AddGearSources(em, player.entity, members, lines);
+            // 2. Gear (not on the buff list).
+            listed += AddGearSources(em, entity, members, lines);
 
-            // 4. Total from the game's stat summary, and whatever no line above explains.
-            int total = 0;
-            bool hasTotal = em.HasBuffer<SummarizedConditionsBuffer>(player.entity);
-            if (hasTotal)
+            // 3. Skills, talents, affixes, souls.
+            if (em.HasBuffer<SkillConditionsBuffer>(entity))
             {
-                var sum = em.GetBuffer<SummarizedConditionsBuffer>(player.entity, true);
+                var b = em.GetBuffer<SkillConditionsBuffer>(entity, true);
+                int v = 0;
+                for (int i = 0; i < b.Length; i++) if (members.Contains(b[i].conditionData.conditionID)) v += b[i].conditionData.value;
+                listed += AddIf(lines, "Skills", id, v);
+            }
+            if (em.HasBuffer<SkillTalentConditionsBuffer>(entity))
+            {
+                var b = em.GetBuffer<SkillTalentConditionsBuffer>(entity, true);
+                int v = 0;
+                for (int i = 0; i < b.Length; i++) if (members.Contains(b[i].conditionData.conditionID)) v += b[i].conditionData.value;
+                listed += AddIf(lines, "Skill talents", id, v);
+            }
+            if (em.HasBuffer<ActiveAffixConditionsBuffer>(entity))
+            {
+                var b = em.GetBuffer<ActiveAffixConditionsBuffer>(entity, true);
+                int v = 0;
+                for (int i = 0; i < b.Length; i++) if (members.Contains(b[i].conditionData.conditionID)) v += b[i].conditionData.value;
+                listed += AddIf(lines, "Item affixes", id, v);
+            }
+            if (em.HasBuffer<SoulsConditionsBuffer>(entity) && em.HasComponent<CollectedAndEnabledSoulsMask>(entity))
+            {
+                var b = em.GetBuffer<SoulsConditionsBuffer>(entity, true);
+                var mask = em.GetComponentData<CollectedAndEnabledSoulsMask>(entity);
+                int v = 0;
+                for (int i = 0; i < b.Length; i++)
+                    if (mask.HasSoulEnabled(b[i].soulID) && members.Contains(b[i].conditionData.conditionID)) v += b[i].conditionData.value;
+                listed += AddIf(lines, "Souls", id, v);
+            }
+
+            // 4. The game's total; what's left is computed inside the summary only (armor set bonuses, pet talents).
+            if (em.HasBuffer<SummarizedConditionsBuffer>(entity))
+            {
+                var sum = em.GetBuffer<SummarizedConditionsBuffer>(entity, true);
+                int total = 0;
                 foreach (var m in members) if ((int)m < sum.Length) total += sum[(int)m].value;
-                int other = total - listed - gear;
-                if (other != 0) lines.Add(SourceLine(new ConditionData { conditionID = id, value = other }, "skills, set bonuses, reinforcement"));
-            }
-
-            if (lines.Count < 2 && (!hasTotal || total == shown)) return; // a single source: the icon line says it all
-            result.Add(EnchantTableFigurineHover.Line("From:", Source));
-            result.AddRange(lines);
-            if (hasTotal && total != 0)
-            {
-                var t = ConditionUI.GetConditionTextAndFormatFields(default, new ConditionData { conditionID = id, value = total },
-                    previewReinforced: false, isReinforced: false, previewUpgraded: false);
-                t.color = Info;
-                t.additionalText = "(total)";
-                t.additionalTextColor = Info;
-                result.Add(t);
+                cache.Total = total;
+                cache.HasTotal = true;
+                AddIf(lines, "Armor set bonus, pet or other", id, total - listed);
             }
         }
 
-        private static TextAndFormatFields SourceLine(ConditionData d, string label)
+        private static int AddIf(List<TextAndFormatFields> lines, string label, ConditionID id, int value)
         {
-            var line = ConditionUI.GetConditionTextAndFormatFields(default, d, previewReinforced: false, isReinforced: false, previewUpgraded: false);
-            line.color = Source;
-            line.additionalText = "(" + label + ")";
-            line.additionalTextColor = Source;
-            return line;
+            if (value == 0) return 0;
+            lines.Add(SourceLine(label, id, value));
+            return value;
+        }
+
+        /// <summary>One plain line "label: +3% reduced damage taken from bosses" (label first, effect text intact).</summary>
+        private static TextAndFormatFields SourceLine(string label, ConditionID id, int value)
+        {
+            var tf = ConditionUI.GetConditionTextAndFormatFields(default, new ConditionData { conditionID = id, value = value },
+                previewReinforced: false, isReinforced: false, previewUpgraded: false);
+            string effect = tf.dontLocalize ? tf.text : PugText.ProcessText(tf.text, tf.formatFields, shouldLocalize: true, shouldLocalizeFormatFields: false);
+            return EnchantTableFigurineHover.Line(label + ": " + effect, Source);
+        }
+
+        private static TextAndFormatFields PlainSource(string label, string effect) =>
+            EnchantTableFigurineHover.Line(label + ": " + effect, Source);
+
+        /// <summary>Name for a buff-list entry that isn't ours: known situational buffs by name, else by duration.</summary>
+        private static string BuffLabel(ConditionID id, float duration, float left)
+        {
+            string name;
+            switch (id)
+            {
+                case ConditionID.DamageIncreaseAtMaxHealth: name = "At full health"; break;
+                case ConditionID.DamageIncreaseFromRunning: name = "While running"; break;
+                default:
+                    string raw = id.ToString();
+                    if (raw.StartsWith("WellFed")) name = "Well fed";
+                    else if (raw.StartsWith("Aura")) name = "Aura from a nearby ally or item";
+                    else if (float.IsPositiveInfinity(duration)) name = "Permanent buff (" + Humanize(raw) + ")";
+                    else if (duration >= 60f) name = "Food or potion";
+                    else name = Humanize(raw);
+                    break;
+            }
+            if (left > 0f)
+            {
+                int s = Mathf.CeilToInt(left);
+                name += s >= 60 ? $" ({s / 60}:{s % 60:00} left)" : $" ({s} s left)";
+            }
+            return name;
+        }
+
+        private static string Humanize(string raw)
+        {
+            var sb = new System.Text.StringBuilder(raw.Length + 8);
+            for (int i = 0; i < raw.Length; i++)
+            {
+                char ch = raw[i];
+                if (i > 0 && char.IsUpper(ch) && !char.IsUpper(raw[i - 1])) sb.Append(' ');
+                sb.Append(i == 0 ? ch : char.ToLowerInvariant(ch));
+            }
+            return sb.ToString();
         }
 
         private static List<int> Slots(EntityManager em, Entity player, out int held)
@@ -326,23 +420,11 @@ namespace Enchanting
                         ? EnchantMath.WriteCondition(def, EnchantMath.BucketWeapon(def, item.objectID, heldId))
                         : def.Condition;
                     if (!members.Contains(cond)) continue;
-                    string label = def.Name + " " + Enchants.Roman(e.Level) + ", " + ItemName(item);
+                    string label = def.Name + " " + Enchants.Roman(e.Level) + " (" + ItemName(item) + ")";
                     if (def.Mode == EnchantMode.Relative)
-                    {
-                        lines.Add(new TextAndFormatFields
-                        {
-                            text = EnchantingMod.PlainTerm,
-                            formatFields = new[] { EnchantMath.MultiplierText(def, e.Level, item.objectID) },
-                            dontLocalizeFormatFields = true,
-                            color = Source,
-                            additionalText = "(" + label + ")",
-                            additionalTextColor = Source,
-                        });
-                    }
+                        lines.Add(PlainSource(label, EnchantMath.MultiplierText(def, e.Level, item.objectID)));
                     else
-                    {
-                        lines.Add(SourceLine(new ConditionData { conditionID = cond, value = EnchantMath.Raw(def, e.Level, item.objectData) }, label));
-                    }
+                        lines.Add(SourceLine(label, cond, EnchantMath.Raw(def, e.Level, item.objectData)));
                 }
             }
         }
@@ -351,28 +433,47 @@ namespace Enchanting
         {
             if (!em.HasBuffer<ContainedObjectsBuffer>(player)) return 0;
             var items = em.GetBuffer<ContainedObjectsBuffer>(player, true);
+            var table = Manager.ui.conditionsIconsTable;
             int total = 0;
             foreach (int slot in Slots(em, player, out _))
             {
                 if (slot < 0 || slot >= items.Length || items[slot].objectID == ObjectID.None) continue;
                 var item = items[slot];
+                bool hasDurability = PugDatabase.TryGetComponent<DurabilityCD>(item.objectID, out var durability);
+                if (hasDurability && item.amount <= 0) continue; // broken gear gives nothing
+                bool reinforced = hasDurability && durability.IsReinforced(item.amount);
                 foreach (var d in ConditionUIExtensions.GetConditionsOnEquip(item.objectData))
                 {
                     if (!members.Contains(d.conditionID) || d.value == 0) continue;
-                    lines.Add(SourceLine(d, ItemName(item)));
-                    total += d.value;
+                    int value = d.value;
+                    var info = table.GetConditionInfo(d.conditionID);
+                    if (reinforced && !info.isUnique && info.effect != ConditionEffect.MaxMinions)
+                        value += ReinforceBonus(d.value, info.isNegative);
+                    lines.Add(SourceLine(ItemName(item) + (reinforced ? ", reinforced" : ""), d.conditionID, value));
+                    total += value;
                 }
             }
             return total;
+        }
+
+        // SummarizeConditionsSystem's reinforcement bonus: +15% of the value, at least 1 point.
+        private static int ReinforceBonus(int value, bool isNegative)
+        {
+            if (value < 0)
+            {
+                int b = Mathf.RoundToInt(Mathf.Min(-1f, value * 0.14999998f));
+                return isNegative ? -b : b;
+            }
+            return Mathf.RoundToInt(Mathf.Max(1f, value * 0.14999998f));
         }
 
         private static string ItemName(ContainedObjectsBuffer item)
         {
             try
             {
+                // localize: true returns the finished, translated name in .text (PlayerController.GetObjectName).
                 var tf = PlayerController.GetObjectName(item, localize: true);
-                if (tf != null && !string.IsNullOrEmpty(tf.text))
-                    return tf.dontLocalize ? tf.text : PugText.ProcessText(tf.text, tf.formatFields, true, false);
+                if (tf != null && !string.IsNullOrEmpty(tf.text)) return tf.text;
             }
             catch (System.Exception) { }
             return item.objectID.ToString();

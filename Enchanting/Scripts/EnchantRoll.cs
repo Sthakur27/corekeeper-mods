@@ -47,8 +47,10 @@ namespace Enchanting
                 if (fresh.Count == 0) return LevelUpExisting(current, candidates);
                 var pick = fresh[Rng.Next(fresh.Count)];
                 var old = current[victim];
-                current[victim] = new EnchantEntry { Id = pick.Id, Level = RollNewLevel(pick) };
-                return $"{old.Def?.Name} {Enchants.Roman(old.Level)} was replaced by {pick.Name} {Enchants.Roman(current[victim].Level)}.";
+                current.RemoveAt(victim);
+                var fresh1 = new EnchantEntry { Id = pick.Id, Level = RollNewLevel(pick) };
+                current.Add(fresh1); // newest goes on top of the stack
+                return $"{old.Def?.Name} {Enchants.Roman(old.Level)} was replaced by {pick.Name} {Enchants.Roman(fresh1.Level)}.";
             }
 
             if (candidates.Count == 0) return "Every enchant on this item is already maxed.";
@@ -58,7 +60,7 @@ namespace Enchanting
             {
                 var e = current[at];
                 e.Level++;
-                current[at] = e;
+                MoveToTop(current, at, e);
                 return $"{chosen.Name} rose to {Enchants.Roman(e.Level)}.";
             }
             var added = new EnchantEntry { Id = chosen.Id, Level = RollNewLevel(chosen) };
@@ -75,8 +77,16 @@ namespace Enchanting
             int at = upgradable[Rng.Next(upgradable.Count)];
             var e = current[at];
             e.Level++;
-            current[at] = e;
+            MoveToTop(current, at, e);
             return $"{e.Def?.Name} rose to {Enchants.Roman(e.Level)}.";
+        }
+
+        // Stack order: the list is oldest → newest; whatever a roll touched becomes the top (last) entry, which the
+        // table's remove button pops and the tooltip shows first.
+        private static void MoveToTop(List<EnchantEntry> current, int at, EnchantEntry e)
+        {
+            current.RemoveAt(at);
+            current.Add(e);
         }
 
         private static int RollNewLevel(EnchantDef def)

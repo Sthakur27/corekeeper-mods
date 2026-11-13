@@ -8,7 +8,7 @@ namespace Enchanting
     /// <summary>
     /// "Remove top enchantment" button for the Enchanting Table: a runtime copy of the forge's own button, placed next
     /// to it (with a gap) with its arrow flipped to point down and tinted red, shown only while the open building is the table. Clicking it
-    /// sends "/enchant tableclear x z"; the server removes the item's top enchant (first in the tooltip; free, no
+    /// sends "/enchant tableclear x z"; the server removes the item's top enchant (newest; first in the tooltip; free, no
     /// refund). The copy keeps the vanilla UpgradeForgeButton component, so the button patches in EnchantTable.cs
     /// tell the two apart with <see cref="IsRemove"/>.
     /// </summary>

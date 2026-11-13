@@ -12,7 +12,7 @@ The first enchantment costs **5 Gold Bars + 250 Ancient Coins**, the second cost
 
 New enchantments usually start at level I: the chances are 60% for I, 30% for II, and 10% for III. If you roll an enchantment the item already has, it goes up a level. Once an item has three, rolling a new one replaces a random enchantment, so you might lose one you wanted to keep.
 
-The **red down arrow** removes the top enchantment for free. You don't get the bars or coins back.
+The **red down arrow** removes the top enchantment (the one you rolled or upgraded most recently) for free. You don't get the bars or coins back.
 
 Enchanted items have a violet border in your inventory. Hover over one to see what its enchantments do. They stay on the item when you upgrade or dye it.
 

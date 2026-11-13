@@ -187,15 +187,19 @@ namespace Enchanting
             return result + " Now: " + EnchantStorage.Describe(current) + ".";
         }
 
-        /// <summary>The table's remove button: removes the item's top enchant (first in the tooltip; free).</summary>
+        /// <summary>
+        /// The table's remove button: pops the item's top enchant, the most recently rolled one (stored last, shown
+        /// first in the tooltip; free).
+        /// </summary>
         public static string Clear(EntityManager em, Entity player, int x, int z)
         {
             string error = FindTableItem(em, player, x, z, out int upgradeSlot, out var item, out var aux);
             if (error != null) return error;
             var current = EnchantStorage.Read(em, aux, item);
             if (current.Count == 0) return $"{item.objectID} has no enchantments.";
-            string removed = EnchantStorage.Describe(new List<EnchantEntry> { current[0] });
-            current.RemoveAt(0);
+            int top = current.Count - 1;
+            string removed = EnchantStorage.Describe(new List<EnchantEntry> { current[top] });
+            current.RemoveAt(top);
             string err = EnchantStorage.Write(em, player, upgradeSlot, current);
             return err ?? $"removed {removed} from {item.objectID}.";
         }

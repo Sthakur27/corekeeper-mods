@@ -22,8 +22,10 @@ namespace Enchanting
             if (enchants.Count == 0) return;
             bool unique = false;
 
-            foreach (var e in enchants)
+            // Newest first: the top line is the enchant the table's remove button takes off (stored last).
+            for (int n = enchants.Count - 1; n >= 0; n--)
             {
+                var e = enchants[n];
                 var def = e.Def;
                 if (def == null) continue;
                 if (def.Stack == EnchantStack.Max) unique = true;

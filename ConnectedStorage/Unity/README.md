@@ -1,6 +1,8 @@
 # Connected Storage assets
 
-Run `python ConnectedStorage/Unity/build_bundle.py --art` from the repository root. Uses Unity 6000.0.59f2 and the official Mod SDK at `C:\Users\Sid\CoreKeeperModSDK`; `--sdk` overrides the path. Windows and Linux bundles are generated together. `--art` regenerates the original procedural pixel art; no game art is included in the shipped sprites.
+Run `python ConnectedStorage/Unity/build_bundle.py` from the repository root. Uses Unity 6000.0.59f2 and the official Mod SDK at `C:\Users\Sid\CoreKeeperModSDK`; `--sdk` overrides the path. Windows and Linux bundles are generated together. Use the checked-in `Art/` sprites for release builds. The `--art` switch regenerates older experimental art and is unsuitable for this release.
+
+For 0.10.2, `apply_release_art.py` applies approved Workbench B and its directional views, the eight 16×16 upgrade gems, and a palette-only edit to the original Octarine unit, including its glow masks. It does not import the storage unit redesigns.
 
 The assets contain only vanilla MonoBehaviours, allowing the runtime scripts to handle interactions through Harmony. Object/save keys are `ConnectedStorage_Terminal` and `ConnectedStorage_<Tier>Chest` (stable internal keys) plus `ConnectedStorage_<Tier>Gem`. Mod GUID: `6d6f71a04b8e4a49ba1782ac229bbd51`.
 
@@ -27,6 +29,8 @@ After building, run `python ConnectedStorage/Unity/verify_bundle.py` (requires U
 The Storage Workbench costs 20 Wood, uses vanilla CraftingBuilding/CraftingAuthoring, and authors all ten crafting recipes. Runtime code inserts its recipe into the empty Wooden Workbench Base slot and retires older tier-bench recipes.
 
 ## Runtime art pipeline
+
+The shared chest art uses gem-tinted lids and matching corner clamps on every tier. Each view keeps its original native dimensions and silhouette. The shelved fusion study has a separate local asset builder and preview script under `Dev/` and `Editor/Builder/`.
 
 `make_art.py` runs `make_unit_art.py` and `make_device_art.py` and creates review sheets. All pixels are authored by these original generators. Native sprite references were inspected in ignored build output for material shading, proportions and directional structure only. The shipped art preserves the existing16-pixel widths, unit/gem16x16 and terminal16x20 sizes, stable file names and object IDs.
 

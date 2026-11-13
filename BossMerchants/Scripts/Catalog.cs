@@ -25,7 +25,13 @@ namespace BossMerchants
             public int buyPrice;
             /// <summary>Stock per restock; 0 = the Stock setting.</summary>
             public int stock;
-            public Entry(ObjectID id, int buyPrice, int stock = 0) { this.id = id; this.buyPrice = buyPrice; this.stock = stock; }
+            /// <summary>
+            /// Listed only once this boss has been beaten (killed in this world, or a connected player holds its
+            /// Titan soul; see Systems.MerchantStockSystem). None = always listed.
+            /// </summary>
+            public ObjectID unlockedBy;
+            public Entry(ObjectID id, int buyPrice, int stock = 0, ObjectID unlockedBy = ObjectID.None)
+            { this.id = id; this.buyPrice = buyPrice; this.stock = stock; this.unlockedBy = unlockedBy; }
         }
 
         public sealed class Merchant
@@ -40,6 +46,8 @@ namespace BossMerchants
         }
 
         private static Entry E(ObjectID id, int price, int stock = 0) => new Entry(id, price, stock);
+        /// <summary>A boss summon, listed once <paramref name="boss"/> has been beaten.</summary>
+        private static Entry Summon(ObjectID id, int price, ObjectID boss) => new Entry(id, price, 3, boss);
 
         public static readonly Merchant[] Merchants =
         {
@@ -160,6 +168,28 @@ namespace BossMerchants
                     E(ObjectID.HydraBossDesertTrophy, 1500, 1), E(ObjectID.HydraBossVoidTrophy, 1250, 1),
                     E(ObjectID.HydraJewelryNatureRing, 215, 1), E(ObjectID.HydraJewelrySeaRing, 225, 1),
                     E(ObjectID.HydraJewelryDesertNecklace, 1000, 1), E(ObjectID.HydraWorkbench, 2750, 1),
+                    // Boss summoning items, 3 per restock, each listed once its boss has been beaten. Priced by boss
+                    // tier; 200 / 500 / 2,900 equal the vanilla buy price (unchanged resale value).
+                    Summon(ObjectID.SlimeBossSummoningItem, 200, ObjectID.SlimeBoss),          // Glurch, Ivy, Morpha, Igneous
+                    Summon(ObjectID.LarvaBossSummoningItem, 200, ObjectID.BossLarva),          // Ghorm
+                    Summon(ObjectID.HiveBossSummoningItem, 250, ObjectID.LarvaHiveBoss),       // Hive Mother
+                    Summon(ObjectID.ShamanBossSummoningItem, 300, ObjectID.ShamanBoss),        // Malugaz
+                    Summon(ObjectID.NatureCicadaSummoningItem, 200, ObjectID.GiantCicadaBoss), // Hardened Sap (Corrupted Sap ingredient)
+                    Summon(ObjectID.GiantCicadaBossSummoningItem, 400, ObjectID.GiantCicadaBoss), // Nimruza
+                    Summon(ObjectID.WallBossSummoningItem, 500, ObjectID.WallBoss),            // Urschleim
+                    Summon(ObjectID.CoreBossSummoningItem, 500, ObjectID.CoreBoss),            // Core Commander
+                    Summon(ObjectID.RobotBossSummoningItem, 750, ObjectID.RobotBoss),          // S.A.H.A.B.A.R.
+                    Summon(ObjectID.BaitOnAPole, 2900, ObjectID.SnakeBossSegment),             // Bait Pillar: Atlantean Worm
+                    // Titans (Potion Seller's former Fishing Merchant stock, same price and gate).
+                    Summon(ObjectID.LargeShinyGlimmeringObject, 2000, ObjectID.BirdBoss),      // Azeos
+                    Summon(ObjectID.BaitOctopusBoss, 2000, ObjectID.OctopusBoss),              // Omoroth
+                    Summon(ObjectID.Thumper, 2000, ObjectID.ScarabBoss),                       // Ra-Akar
+                    // Seasonal variants. None of their spawn paths checks the season (BossSummoningSystem,
+                    // BirdBossAppearStateRequest), so they work all year; gated on the regular boss because the
+                    // variant itself can't be fought without its item.
+                    Summon(ObjectID.HiveHalloweenBossSummoningItem, 500, ObjectID.LarvaHiveBoss), // Haunted Hive Mother
+                    Summon(ObjectID.KingSlimeSummoningItem, 500, ObjectID.SlimeBoss),          // Crown Summoning Idol: King Slime
+                    Summon(ObjectID.EasterGoldenEgg, 2000, ObjectID.BirdBoss),                 // Large Golden Egg: Easter Azeos
                 },
             },
             // Wren Hayfeather (Skyherd Bell): dropped by BirdBoss.

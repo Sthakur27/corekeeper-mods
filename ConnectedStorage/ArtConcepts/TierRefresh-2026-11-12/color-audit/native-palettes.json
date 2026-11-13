@@ -1,0 +1,502 @@
+{
+  "date": "2026-11-12",
+  "evidence": "Fresh UnityPy extraction from installed game; no web or name-based color inference.",
+  "source_bundle": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Core Keeper\\CoreKeeper_Data\\StreamingAssets\\aa\\StandaloneWindows64\\defaultlocalgroup_assets_all.bundle",
+  "reference_only": true,
+  "palette_rule": "Listed palette hex values occur in the exact native bar sprite. Main/accent classification and proposed motif are human-readable design judgments, not game metadata. Preserve the overall Runic Storage housing.",
+  "uncertainty": "Bar/ore/chest pixels verified. Palette reflects source sprite colors before in-game lighting. Proposed upgrade gems are original mod objects, so use material identity rather than claiming vanilla has the same gem. A single 16x16 design cannot retain every native accent.",
+  "tiers": {
+    "Copper": {
+      "identity": "warm copper/salmon metal",
+      "main_dark_to_light": [
+        "#824223",
+        "#c16436",
+        "#e88b69",
+        "#fca895"
+      ],
+      "accent_colors": [
+        "#915b26",
+        "#f7eec7"
+      ],
+      "suggested_unit_motif": "plain copper brackets and one broad rivet; foundation tier",
+      "source_assets": {
+        "lootsprite_copperBar": {
+          "type": "Sprite",
+          "path_id": 1170295623482563054,
+          "size": [
+            16,
+            16
+          ]
+        },
+        "lootsprite_copperOre": {
+          "type": "Sprite",
+          "path_id": -3798058751789444664,
+          "size": [
+            16,
+            16
+          ]
+        },
+        "chestCopper": {
+          "type": "Texture2D",
+          "path_id": -2264386107222012615,
+          "size": [
+            16,
+            16
+          ]
+        }
+      },
+      "native_bar_color_counts": {
+        "#e88b69": 24,
+        "#915b26": 23,
+        "#824223": 15,
+        "#fca895": 15,
+        "#c16436": 14,
+        "#614822": 11,
+        "#39341f": 11,
+        "#ffffff": 5,
+        "#f7eec7": 2
+      },
+      "missing_reference": []
+    },
+    "Tin": {
+      "identity": "muted taupe/lavender pewter",
+      "main_dark_to_light": [
+        "#645d53",
+        "#8f7b77",
+        "#a69298",
+        "#c0bacf"
+      ],
+      "accent_colors": [
+        "#d7dcfb"
+      ],
+      "suggested_unit_motif": "soft pewter cap bands; avoid icy blue identity",
+      "source_assets": {
+        "lootsprite_tinBar": {
+          "type": "Sprite",
+          "path_id": 4553595325663395822,
+          "size": [
+            16,
+            16
+          ]
+        },
+        "lootsprite_tinOre": {
+          "type": "Sprite",
+          "path_id": 8007967942057707613,
+          "size": [
+            16,
+            16
+          ]
+        }
+      },
+      "native_bar_color_counts": {
+        "#c0bacf": 21,
+        "#645d53": 20,
+        "#a69298": 19,
+        "#8f7b77": 17,
+        "#614822": 14,
+        "#915b26": 12,
+        "#39341f": 11,
+        "#d7dcfb": 6
+      },
+      "missing_reference": [
+        "No exact chestTin Texture2D found in inspected bundle; use bar/ore as material authority."
+      ]
+    },
+    "Iron": {
+      "identity": "cool blue-gray polished steel",
+      "main_dark_to_light": [
+        "#142b5c",
+        "#47677e",
+        "#677fae",
+        "#a1aedd"
+      ],
+      "accent_colors": [
+        "#d7dcfb",
+        "#1885d8"
+      ],
+      "suggested_unit_motif": "square reinforcing clamps and cool steel glints",
+      "source_assets": {
+        "lootsprite_ironBar": {
+          "type": "Sprite",
+          "path_id": 3787946946847304198,
+          "size": [
+            16,
+            16
+          ]
+        },
+        "lootsprite_ironOre": {
+          "type": "Sprite",
+          "path_id": 5578570615304803068,
+          "size": [
+            16,
+            16
+          ]
+        },
+        "chestIron": {
+          "type": "Texture2D",
+          "path_id": -2147509389799571439,
+          "size": [
+            16,
+            16
+          ]
+        }
+      },
+      "native_bar_color_counts": {
+        "#47677e": 24,
+        "#2a4e4a": 19,
+        "#a1aedd": 18,
+        "#d7dcfb": 12,
+        "#677fae": 11,
+        "#142b5c": 10,
+        "#c0bacf": 9,
+        "#1885d8": 9,
+        "#ffffff": 8
+      },
+      "missing_reference": []
+    },
+    "Scarlet": {
+      "identity": "red/coral metal",
+      "main_dark_to_light": [
+        "#5e2a28",
+        "#91210b",
+        "#b43221",
+        "#c76369"
+      ],
+      "accent_colors": [
+        "#de8e9a",
+        "#ecc1bf"
+      ],
+      "suggested_unit_motif": "red angular brace shoulders; restrained pink highlights",
+      "source_assets": {
+        "lootsprite_scarletBar": {
+          "type": "Sprite",
+          "path_id": 9089052423994637753,
+          "size": [
+            16,
+            16
+          ]
+        },
+        "lootsprite_scarletOre": {
+          "type": "Sprite",
+          "path_id": 2901238310233638530,
+          "size": [
+            16,
+            16
+          ]
+        },
+        "chestScarlet": {
+          "type": "Texture2D",
+          "path_id": 7478972062854802073,
+          "size": [
+            16,
+            16
+          ]
+        }
+      },
+      "native_bar_color_counts": {
+        "#91210b": 23,
+        "#b43221": 23,
+        "#5e2a28": 19,
+        "#c76369": 16,
+        "#39341f": 11,
+        "#de8e9a": 8,
+        "#4e3c6d": 7,
+        "#ecc1bf": 5,
+        "#954d94": 5,
+        "#ffffff": 3
+      },
+      "missing_reference": []
+    },
+    "Octarine": {
+      "identity": "purple/rose face with vivid cobalt-blue edge",
+      "main_dark_to_light": [
+        "#4e3c6d",
+        "#723e8a",
+        "#954d94",
+        "#c76369"
+      ],
+      "accent_colors": [
+        "#142b5c",
+        "#143eab",
+        "#165dd9",
+        "#1885d8",
+        "#ecc1bf"
+      ],
+      "suggested_unit_motif": "purple rose socket and cap, blue lower bevel; small cyan glint only",
+      "source_assets": {
+        "lootsprite_octarineBar": {
+          "type": "Sprite",
+          "path_id": 6396409377996036301,
+          "size": [
+            16,
+            16
+          ]
+        },
+        "lootsprite_octarineOre": {
+          "type": "Sprite",
+          "path_id": -365981044967860153,
+          "size": [
+            16,
+            16
+          ]
+        },
+        "chestOctarine": {
+          "type": "Texture2D",
+          "path_id": 5495456253408222795,
+          "size": [
+            16,
+            16
+          ]
+        }
+      },
+      "native_bar_color_counts": {
+        "#954d94": 20,
+        "#142b5c": 18,
+        "#143eab": 17,
+        "#4e3c6d": 15,
+        "#c76369": 13,
+        "#165dd9": 9,
+        "#1885d8": 8,
+        "#e88b69": 7,
+        "#ecc1bf": 7,
+        "#723e8a": 4,
+        "#19bdc6": 2
+      },
+      "missing_reference": []
+    },
+    "Galaxite": {
+      "identity": "near-black iridescent metal with sparse multicolor inclusions",
+      "main_dark_to_light": [
+        "#0b1917",
+        "#232930",
+        "#383447",
+        "#484454"
+      ],
+      "accent_colors": [
+        "#c9ab51",
+        "#239029",
+        "#1885d8",
+        "#a555a4"
+      ],
+      "suggested_unit_motif": "dark cap and tiny separated colored inclusions, never a solid purple body",
+      "source_assets": {
+        "lootsprite_galaxiteBar": {
+          "type": "Sprite",
+          "path_id": -362931519203955711,
+          "size": [
+            16,
+            16
+          ]
+        },
+        "lootsprite_galaxiteOre": {
+          "type": "Sprite",
+          "path_id": 2603195008009201029,
+          "size": [
+            16,
+            16
+          ]
+        },
+        "chestGalaxite": {
+          "type": "Texture2D",
+          "path_id": 6215086920246918257,
+          "size": [
+            16,
+            16
+          ]
+        }
+      },
+      "native_bar_color_counts": {
+        "#0b1917": 36,
+        "#232930": 22,
+        "#383447": 20,
+        "#484454": 8,
+        "#47677e": 5,
+        "#5e2a28": 5,
+        "#143eab": 4,
+        "#915b26": 4,
+        "#0f5630": 3,
+        "#723e8a": 3,
+        "#142b5c": 2,
+        "#677fae": 2,
+        "#239029": 1,
+        "#c9ab51": 1,
+        "#1885d8": 1,
+        "#a1aedd": 1,
+        "#c76369": 1,
+        "#a555a4": 1
+      },
+      "missing_reference": []
+    },
+    "Solarite": {
+      "identity": "golden orange metal with cyan/mint glints",
+      "main_dark_to_light": [
+        "#915b26",
+        "#da7910",
+        "#e2a12c",
+        "#e0c961"
+      ],
+      "accent_colors": [
+        "#f7eec7",
+        "#19bdc6",
+        "#4ad8ae",
+        "#94f7dd"
+      ],
+      "suggested_unit_motif": "golden stepped shoulders with one small cool glint",
+      "source_assets": {
+        "lootsprite_solariteBar": {
+          "type": "Sprite",
+          "path_id": 7140750676907585946,
+          "size": [
+            16,
+            16
+          ]
+        },
+        "lootsprite_solariteOre": {
+          "type": "Sprite",
+          "path_id": 10158647103825898,
+          "size": [
+            16,
+            16
+          ]
+        },
+        "chestSolarite": {
+          "type": "Texture2D",
+          "path_id": 8157118260577534917,
+          "size": [
+            16,
+            16
+          ]
+        }
+      },
+      "native_bar_color_counts": {
+        "#da7910": 24,
+        "#915b26": 17,
+        "#e0c961": 10,
+        "#e2a12c": 10,
+        "#599dbb": 9,
+        "#4ad8ae": 8,
+        "#f7eec7": 7,
+        "#94f7dd": 6,
+        "#a1aedd": 6,
+        "#a5cada": 5,
+        "#19bdc6": 5,
+        "#ffffff": 5,
+        "#e9d9a2": 4,
+        "#824223": 4
+      },
+      "missing_reference": []
+    },
+    "Pandorium": {
+      "identity": "green emerald metal with purple shadow",
+      "main_dark_to_light": [
+        "#073c31",
+        "#0f5630",
+        "#0a6d27",
+        "#239029"
+      ],
+      "accent_colors": [
+        "#4e3c6d",
+        "#723e8a",
+        "#0f9e88",
+        "#4ad8ae",
+        "#94f7dd"
+      ],
+      "suggested_unit_motif": "green inset/bands with purple recess and mint glint; not cobalt blue",
+      "source_assets": {
+        "lootsprite_pandoriumBar": {
+          "type": "Sprite",
+          "path_id": 7029016787960949896,
+          "size": [
+            16,
+            16
+          ]
+        },
+        "lootsprite_pandoriumOre": {
+          "type": "Sprite",
+          "path_id": -4994174795797947167,
+          "size": [
+            16,
+            16
+          ]
+        }
+      },
+      "native_bar_color_counts": {
+        "#0f5630": 22,
+        "#073c31": 22,
+        "#4e3c6d": 19,
+        "#239029": 13,
+        "#0a6d27": 13,
+        "#0f9e88": 12,
+        "#4ad8ae": 9,
+        "#723e8a": 8,
+        "#94f7dd": 2
+      },
+      "missing_reference": [
+        "No exact chestPandorium Texture2D found in inspected bundle; use bar/ore as material authority."
+      ]
+    },
+    "Relucite": {
+      "identity": "violet material paired with orange/gold metal",
+      "main_dark_to_light": [
+        "#2b215f",
+        "#5722c2",
+        "#8539d1",
+        "#a555a4"
+      ],
+      "accent_colors": [
+        "#824223",
+        "#c76b23",
+        "#e2a12c",
+        "#e0c961",
+        "#de8e9a"
+      ],
+      "suggested_unit_motif": "violet cap or crystal, orange-gold prongs; pink is a highlight, not the dominant identity",
+      "source_assets": {
+        "lootsprite_reluciteBar": {
+          "type": "Sprite",
+          "path_id": 101997059759702518,
+          "size": [
+            16,
+            16
+          ]
+        },
+        "lootsprite_reluciteOre": {
+          "type": "Sprite",
+          "path_id": -2298855818164374014,
+          "size": [
+            16,
+            16
+          ]
+        },
+        "chestRelucite": {
+          "type": "Texture2D",
+          "path_id": -5670385617004801942,
+          "size": [
+            16,
+            16
+          ]
+        }
+      },
+      "native_bar_color_counts": {
+        "#5722c2": 15,
+        "#2b215f": 14,
+        "#a555a4": 13,
+        "#c76b23": 12,
+        "#824223": 12,
+        "#562e29": 9,
+        "#915b26": 9,
+        "#232930": 9,
+        "#8539d1": 6,
+        "#614822": 5,
+        "#e2a12c": 4,
+        "#e0c961": 4,
+        "#39341f": 3,
+        "#0e2522": 3,
+        "#23281e": 2,
+        "#de8e9a": 2,
+        "#e9d9a2": 1
+      },
+      "missing_reference": []
+    }
+  }
+}

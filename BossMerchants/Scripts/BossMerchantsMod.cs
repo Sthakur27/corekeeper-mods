@@ -24,7 +24,7 @@ namespace BossMerchants
     public sealed class BossMerchantsMod : IMod
     {
         public const string Name = "BossMerchants";
-        public const string Version = "0.1.1";
+        public const string Version = "0.1.2";
 
         private static bool _appliedViaDatabase;
         private static Setting<string> _price;
@@ -109,7 +109,7 @@ namespace BossMerchants
             Catalog.Resolve(final: false);
             if (merchant.MerchantId == ObjectID.None && em.HasComponent<ObjectDataCD>(entity))
                 merchant.MerchantId = em.GetComponentData<ObjectDataCD>(entity).objectID;
-            if (MerchantStock.Apply(em, entity, merchant, BossMerchantsConfig.Stock, out _))
+            if (MerchantStock.Apply(em, entity, merchant, BossMerchantsConfig.Stock, null, out _))
                 Debug.Log($"[{Name}] {merchant.Key} merchant prefab: {em.GetBuffer<MerchantItemInfoBuffer>(entity, true).Length} items ({em.World.Name}).");
         }
 

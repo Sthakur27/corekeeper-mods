@@ -15,6 +15,11 @@ namespace BossMerchants
     /// length are dropped. Between restocks it compares slot i with entry i and restocks on a mismatch, so all
     /// entries are always-available (requirement None). InventoryBuffer.sizeX/sizeY are not replicated, so
     /// this runs on the prefab in every world (client + server); it is idempotent.
+    ///
+    /// Entries with <see cref="Catalog.Entry.unlockedBy"/> (boss summons) are left out of the list until that boss
+    /// is beaten; the prefab (no beaten set) never lists them. Unlocking adds the entry in catalog order, and the
+    /// changed list makes the next restock refill the shelves. The inventory is sized for the whole catalog so it
+    /// never grows when something unlocks.
     /// </summary>
     public static class MerchantStock
     {
@@ -33,27 +38,32 @@ namespace BossMerchants
             return Catalog.ByMerchantId(em.GetComponentData<ObjectDataCD>(e).objectID);
         }
 
-        /// <summary>Returns true if anything changed; <paramref name="addedItems"/> when an entry was newly added.</summary>
-        public static bool Apply(EntityManager em, Entity e, Catalog.Merchant merchant, int stock, out bool addedItems)
+        /// <summary>
+        /// Returns true if anything changed; <paramref name="addedItems"/> when an entry was newly added.
+        /// <paramref name="isBeaten"/> tells whether a boss is beaten (null = none, used for the prefab).
+        /// </summary>
+        public static bool Apply(EntityManager em, Entity e, Catalog.Merchant merchant, int stock,
+            System.Func<ObjectID, bool> isBeaten, out bool addedItems)
         {
             addedItems = false;
             bool changed = false;
             var list = merchant.Stock;
 
-            if (ListNeedsUpdate(em.GetBuffer<MerchantItemInfoBuffer>(e, true), list, stock))
+            if (ListNeedsUpdate(em.GetBuffer<MerchantItemInfoBuffer>(e, true), list, stock, isBeaten))
             {
                 var items = em.GetBuffer<MerchantItemInfoBuffer>(e);
-                // Rebuild in catalog order; "added" if any of our items was not there before.
+                // Rebuild in catalog order; "added" if any of our listed items was not there before.
                 for (int i = 0; i < list.Length; i++)
-                    if (IndexOf(items, list[i].id) < 0) { addedItems = true; break; }
+                    if (Listed(list[i], isBeaten) && IndexOf(items, list[i].id) < 0) { addedItems = true; break; }
                 items.Clear();
                 foreach (var entry in list)
-                    items.Add(new MerchantItemInfoBuffer
-                    {
-                        objectID = entry.id,
-                        amount = entry.stock > 0 ? entry.stock : stock,
-                        requirementToBeAvailable = MerchantItemRequirement.None
-                    });
+                    if (Listed(entry, isBeaten))
+                        items.Add(new MerchantItemInfoBuffer
+                        {
+                            objectID = entry.id,
+                            amount = entry.stock > 0 ? entry.stock : stock,
+                            requirementToBeAvailable = MerchantItemRequirement.None
+                        });
                 changed = true;
             }
 
@@ -92,16 +102,24 @@ namespace BossMerchants
             return -1;
         }
 
-        private static bool ListNeedsUpdate(DynamicBuffer<MerchantItemInfoBuffer> items, Catalog.Entry[] list, int stock)
+        private static bool Listed(Catalog.Entry entry, System.Func<ObjectID, bool> isBeaten)
+            => entry.unlockedBy == ObjectID.None || (isBeaten != null && isBeaten(entry.unlockedBy));
+
+        /// <summary>True unless the buffer already equals the listed entries in catalog order (no writes).</summary>
+        private static bool ListNeedsUpdate(DynamicBuffer<MerchantItemInfoBuffer> items, Catalog.Entry[] list, int stock,
+            System.Func<ObjectID, bool> isBeaten)
         {
-            if (items.Length != list.Length) return true;
+            int j = 0;
             for (int i = 0; i < list.Length; i++)
             {
+                if (!Listed(list[i], isBeaten)) continue;
+                if (j >= items.Length) return true;
                 int amount = list[i].stock > 0 ? list[i].stock : stock;
-                if (items[i].objectID != list[i].id || items[i].amount != amount
-                    || items[i].requirementToBeAvailable != MerchantItemRequirement.None) return true;
+                if (items[j].objectID != list[i].id || items[j].amount != amount
+                    || items[j].requirementToBeAvailable != MerchantItemRequirement.None) return true;
+                j++;
             }
-            return false;
+            return j != items.Length;
         }
     }
 }

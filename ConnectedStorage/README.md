@@ -4,6 +4,8 @@ Connect storage units to a terminal and search all their items from one inventor
 
 Copper units start at **40 slots** each. When you need more space, add another unit or upgrade one you already have, up to **360 slots** per Relucite unit. You don't have to empty a unit to upgrade it.
 
+**New in 0.10.3.** All nine storage tiers now have gem-tinted lids and matching corner clamps.
+
 ## Getting started
 
 1. Open a workbench, select the wooden tier, and find the **Storage Workbench** under **Base**. It costs 20 wood.

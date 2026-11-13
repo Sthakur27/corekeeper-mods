@@ -12,7 +12,7 @@ namespace ConnectedStorage
 {
     public sealed class ConnectedStorageMod : IMod
     {
-        public const string Version = "0.10.1";
+        public const string Version = "0.10.3";
         private GameObject ui;
         public void EarlyInit()
         {

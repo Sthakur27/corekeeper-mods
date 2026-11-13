@@ -1,0 +1,236 @@
+{
+  "ConnectedStorage\\ArtConcepts\\TierRefresh-2026-11-12\\tiers\\CopperChest-16.png": {
+    "size": [
+      16,
+      16
+    ],
+    "bbox": [
+      0,
+      0,
+      16,
+      16
+    ],
+    "colors": 8
+  },
+  "ConnectedStorage\\ArtConcepts\\TierRefresh-2026-11-12\\tiers\\TinChest-16.png": {
+    "size": [
+      16,
+      16
+    ],
+    "bbox": [
+      0,
+      0,
+      16,
+      16
+    ],
+    "colors": 8
+  },
+  "ConnectedStorage\\ArtConcepts\\TierRefresh-2026-11-12\\tiers\\TinGem-16.png": {
+    "size": [
+      16,
+      16
+    ],
+    "bbox": [
+      3,
+      1,
+      13,
+      15
+    ],
+    "colors": 7
+  },
+  "ConnectedStorage\\ArtConcepts\\TierRefresh-2026-11-12\\tiers\\IronChest-16.png": {
+    "size": [
+      16,
+      16
+    ],
+    "bbox": [
+      0,
+      0,
+      16,
+      16
+    ],
+    "colors": 11
+  },
+  "ConnectedStorage\\ArtConcepts\\TierRefresh-2026-11-12\\tiers\\IronGem-16.png": {
+    "size": [
+      16,
+      16
+    ],
+    "bbox": [
+      3,
+      2,
+      13,
+      15
+    ],
+    "colors": 7
+  },
+  "ConnectedStorage\\ArtConcepts\\TierRefresh-2026-11-12\\tiers\\ScarletChest-16.png": {
+    "size": [
+      16,
+      16
+    ],
+    "bbox": [
+      0,
+      0,
+      16,
+      16
+    ],
+    "colors": 12
+  },
+  "ConnectedStorage\\ArtConcepts\\TierRefresh-2026-11-12\\tiers\\ScarletGem-16.png": {
+    "size": [
+      16,
+      16
+    ],
+    "bbox": [
+      3,
+      1,
+      13,
+      15
+    ],
+    "colors": 7
+  },
+  "ConnectedStorage\\ArtConcepts\\TierRefresh-2026-11-12\\tiers\\OctarineChest-16.png": {
+    "size": [
+      16,
+      16
+    ],
+    "bbox": [
+      0,
+      0,
+      16,
+      16
+    ],
+    "colors": 14
+  },
+  "ConnectedStorage\\ArtConcepts\\TierRefresh-2026-11-12\\tiers\\OctarineGem-16.png": {
+    "size": [
+      16,
+      16
+    ],
+    "bbox": [
+      2,
+      1,
+      13,
+      15
+    ],
+    "colors": 10
+  },
+  "ConnectedStorage\\ArtConcepts\\TierRefresh-2026-11-12\\tiers\\GalaxiteChest-16.png": {
+    "size": [
+      16,
+      16
+    ],
+    "bbox": [
+      0,
+      0,
+      16,
+      16
+    ],
+    "colors": 14
+  },
+  "ConnectedStorage\\ArtConcepts\\TierRefresh-2026-11-12\\tiers\\GalaxiteGem-16.png": {
+    "size": [
+      16,
+      16
+    ],
+    "bbox": [
+      2,
+      1,
+      14,
+      15
+    ],
+    "colors": 12
+  },
+  "ConnectedStorage\\ArtConcepts\\TierRefresh-2026-11-12\\tiers\\SolariteChest-16.png": {
+    "size": [
+      16,
+      16
+    ],
+    "bbox": [
+      0,
+      0,
+      16,
+      16
+    ],
+    "colors": 13
+  },
+  "ConnectedStorage\\ArtConcepts\\TierRefresh-2026-11-12\\tiers\\SolariteGem-16.png": {
+    "size": [
+      16,
+      16
+    ],
+    "bbox": [
+      2,
+      1,
+      13,
+      15
+    ],
+    "colors": 6
+  },
+  "ConnectedStorage\\ArtConcepts\\TierRefresh-2026-11-12\\tiers\\PandoriumChest-16.png": {
+    "size": [
+      16,
+      16
+    ],
+    "bbox": [
+      0,
+      0,
+      16,
+      16
+    ],
+    "colors": 13
+  },
+  "ConnectedStorage\\ArtConcepts\\TierRefresh-2026-11-12\\tiers\\PandoriumGem-16.png": {
+    "size": [
+      16,
+      16
+    ],
+    "bbox": [
+      3,
+      1,
+      13,
+      15
+    ],
+    "colors": 7
+  },
+  "ConnectedStorage\\ArtConcepts\\TierRefresh-2026-11-12\\tiers\\ReluciteChest-16.png": {
+    "size": [
+      16,
+      16
+    ],
+    "bbox": [
+      0,
+      0,
+      16,
+      16
+    ],
+    "colors": 12
+  },
+  "ConnectedStorage\\ArtConcepts\\TierRefresh-2026-11-12\\tiers\\ReluciteGem-16.png": {
+    "size": [
+      16,
+      16
+    ],
+    "bbox": [
+      2,
+      1,
+      14,
+      15
+    ],
+    "colors": 8
+  },
+  "ConnectedStorage\\ArtConcepts\\WorkbenchRefresh-2026-11-12\\Workbench-16.png": {
+    "size": [
+      16,
+      16
+    ],
+    "bbox": [
+      0,
+      0,
+      16,
+      16
+    ],
+    "colors": 16
+  }
+}

@@ -19,7 +19,7 @@ GUID = "5d1a0c3e9b7f4e21a8c6d4b2f0e19a73"  # fixed forever, identifies the mod
 MODS = [
     "ModOptions", "LoadoutSharing", "FiveLoadouts", "SkillXPMultiplier", "FastAutoFishing", "MagicMirror", "SolariteDrill", "ConnectedStorage",
     "DurabilityMultiplier", "BuffDurationFloor", "FasterMushrooms", "BiggerWateringCans",
-    "BetterFishingLoot", "AutoReplant", "QuickBuff", "FishSeller", "MerchantRestock", "DifficultyTuning", "KeepMinions", "PetEditor", "BossBonusLoot", "EnderStash", "VehicleSpeed", "GoldenChance", "InfiniteOreBoulders", "BoulderMover", "StimHits", "ArmorDye", "MushroomSlayer", "BuildTools", "FasterMachines", "ItemSpawner", "CoinDrops", "WormholePotion", "CoinPouch", "DrillUnit", "Enchanting", "AutoLoadouts", "BossMerchants", "ValuableValue",
+    "BetterFishingLoot", "AutoReplant", "QuickBuff", "FishSeller", "MerchantRestock", "DifficultyTuning", "KeepMinions", "PetEditor", "BossBonusLoot", "EnderStash", "VehicleSpeed", "GoldenChance", "InfiniteOreBoulders", "BoulderMover", "StimHits", "ArmorDye", "MushroomSlayer", "BuildTools", "FasterMachines", "ItemSpawner", "CoinDrops", "WormholePotion", "CoinPouch", "DrillUnit", "Enchanting", "AutoLoadouts", "BossMerchants", "ValuableValue", "WeaponTweaks",
 ]
 # Bundles whose MonoScripts bind to the old assembly name.
 # MasterPetPlus is NOT included: it is a fork of Parcew's Master Pet and mod.io took it down;

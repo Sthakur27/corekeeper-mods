@@ -63,6 +63,7 @@ namespace SidsOverhaul
             { "Enchanting", "Enchanting (Alpha)" },
             { "AutoLoadouts", "Auto Loadout Switch" },
             { "BossMerchants", "More NPCs (Alpha)" },
+            { "WeaponTweaks", "Weapon Tweaks" },
         };
 
         public const string Hint = "Turn whole sub-mods on or off. Changes take effect after restarting the game. "

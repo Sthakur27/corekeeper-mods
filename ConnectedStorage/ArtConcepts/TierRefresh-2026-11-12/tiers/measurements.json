@@ -1,0 +1,206 @@
+{
+  "CopperChest": {
+    "size": [
+      16,
+      16
+    ],
+    "alpha": [
+      0,
+      255
+    ],
+    "visible_colors": 8,
+    "opaque_pixels": 246
+  },
+  "TinChest": {
+    "size": [
+      16,
+      16
+    ],
+    "alpha": [
+      0,
+      255
+    ],
+    "visible_colors": 8,
+    "opaque_pixels": 246
+  },
+  "TinGem": {
+    "size": [
+      16,
+      16
+    ],
+    "alpha": [
+      0,
+      255
+    ],
+    "visible_colors": 7,
+    "opaque_pixels": 99
+  },
+  "IronChest": {
+    "size": [
+      16,
+      16
+    ],
+    "alpha": [
+      0,
+      255
+    ],
+    "visible_colors": 11,
+    "opaque_pixels": 246
+  },
+  "IronGem": {
+    "size": [
+      16,
+      16
+    ],
+    "alpha": [
+      0,
+      255
+    ],
+    "visible_colors": 7,
+    "opaque_pixels": 110
+  },
+  "ScarletChest": {
+    "size": [
+      16,
+      16
+    ],
+    "alpha": [
+      0,
+      255
+    ],
+    "visible_colors": 12,
+    "opaque_pixels": 246
+  },
+  "ScarletGem": {
+    "size": [
+      16,
+      16
+    ],
+    "alpha": [
+      0,
+      255
+    ],
+    "visible_colors": 7,
+    "opaque_pixels": 89
+  },
+  "OctarineChest": {
+    "size": [
+      16,
+      16
+    ],
+    "alpha": [
+      0,
+      255
+    ],
+    "visible_colors": 14,
+    "opaque_pixels": 246
+  },
+  "OctarineGem": {
+    "size": [
+      16,
+      16
+    ],
+    "alpha": [
+      0,
+      255
+    ],
+    "visible_colors": 10,
+    "opaque_pixels": 114
+  },
+  "GalaxiteChest": {
+    "size": [
+      16,
+      16
+    ],
+    "alpha": [
+      0,
+      255
+    ],
+    "visible_colors": 14,
+    "opaque_pixels": 246
+  },
+  "GalaxiteGem": {
+    "size": [
+      16,
+      16
+    ],
+    "alpha": [
+      0,
+      255
+    ],
+    "visible_colors": 12,
+    "opaque_pixels": 106
+  },
+  "SolariteChest": {
+    "size": [
+      16,
+      16
+    ],
+    "alpha": [
+      0,
+      255
+    ],
+    "visible_colors": 13,
+    "opaque_pixels": 246
+  },
+  "SolariteGem": {
+    "size": [
+      16,
+      16
+    ],
+    "alpha": [
+      0,
+      255
+    ],
+    "visible_colors": 6,
+    "opaque_pixels": 113
+  },
+  "PandoriumChest": {
+    "size": [
+      16,
+      16
+    ],
+    "alpha": [
+      0,
+      255
+    ],
+    "visible_colors": 13,
+    "opaque_pixels": 246
+  },
+  "PandoriumGem": {
+    "size": [
+      16,
+      16
+    ],
+    "alpha": [
+      0,
+      255
+    ],
+    "visible_colors": 7,
+    "opaque_pixels": 95
+  },
+  "ReluciteChest": {
+    "size": [
+      16,
+      16
+    ],
+    "alpha": [
+      0,
+      255
+    ],
+    "visible_colors": 12,
+    "opaque_pixels": 246
+  },
+  "ReluciteGem": {
+    "size": [
+      16,
+      16
+    ],
+    "alpha": [
+      0,
+      255
+    ],
+    "visible_colors": 8,
+    "opaque_pixels": 101
+  }
+}

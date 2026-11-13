@@ -31,6 +31,23 @@
   {"id": "HydraJewelryNatureRing", "price": 215, "stock": 1, "vanillaBuy": 215},
   {"id": "HydraJewelrySeaRing", "price": 225, "stock": 1, "vanillaBuy": 225},
   {"id": "HydraJewelryDesertNecklace", "price": 1000, "stock": 1, "vanillaBuy": 1005},
-  {"id": "HydraWorkbench", "price": 2750, "stock": 1, "vanillaBuy": 2730}
- ]
+  {"id": "HydraWorkbench", "price": 2750, "stock": 1, "vanillaBuy": 2730},
+  {"id": "SlimeBossSummoningItem", "price": 200, "stock": 3, "unlockedBy": "SlimeBoss", "vanillaBuy": 200},
+  {"id": "LarvaBossSummoningItem", "price": 200, "stock": 3, "unlockedBy": "BossLarva", "vanillaBuy": 200},
+  {"id": "HiveBossSummoningItem", "price": 250, "stock": 3, "unlockedBy": "LarvaHiveBoss", "vanillaBuy": 200},
+  {"id": "ShamanBossSummoningItem", "price": 300, "stock": 3, "unlockedBy": "ShamanBoss", "vanillaBuy": 200},
+  {"id": "NatureCicadaSummoningItem", "price": 200, "stock": 3, "unlockedBy": "GiantCicadaBoss", "vanillaBuy": 200},
+  {"id": "GiantCicadaBossSummoningItem", "price": 400, "stock": 3, "unlockedBy": "GiantCicadaBoss", "vanillaBuy": 200},
+  {"id": "WallBossSummoningItem", "price": 500, "stock": 3, "unlockedBy": "WallBoss", "vanillaBuy": 500},
+  {"id": "CoreBossSummoningItem", "price": 500, "stock": 3, "unlockedBy": "CoreBoss", "vanillaBuy": 500},
+  {"id": "RobotBossSummoningItem", "price": 750, "stock": 3, "unlockedBy": "RobotBoss", "vanillaBuy": 200},
+  {"id": "BaitOnAPole", "price": 2900, "stock": 3, "unlockedBy": "SnakeBossSegment", "vanillaBuy": 2895},
+  {"id": "LargeShinyGlimmeringObject", "price": 2000, "stock": 3, "unlockedBy": "BirdBoss", "vanillaBuy": 915},
+  {"id": "BaitOctopusBoss", "price": 2000, "stock": 3, "unlockedBy": "OctopusBoss", "vanillaBuy": 2015},
+  {"id": "Thumper", "price": 2000, "stock": 3, "unlockedBy": "ScarabBoss", "vanillaBuy": 4180},
+  {"id": "HiveHalloweenBossSummoningItem", "price": 500, "stock": 3, "unlockedBy": "LarvaHiveBoss", "vanillaBuy": 200},
+  {"id": "KingSlimeSummoningItem", "price": 500, "stock": 3, "unlockedBy": "SlimeBoss", "vanillaBuy": 200},
+  {"id": "EasterGoldenEgg", "price": 2000, "stock": 3, "unlockedBy": "BirdBoss", "vanillaBuy": 650}
+ ],
+ "summonNote": "Boss summoning items are listed once their boss has been beaten in the world (KilledEnemiesBuffer) or, for Titans, a connected player holds its soul. Seasonal variants (Haunted Hive Mother, King Slime, Easter Azeos) are gated on the regular boss and summon all year: neither BossSummoningSystem nor BirdBossAppearStateRequest checks the season."
 }

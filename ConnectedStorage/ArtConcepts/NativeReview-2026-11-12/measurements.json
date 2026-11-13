@@ -1,0 +1,44 @@
+{
+  "Workbench": {
+    "size": [
+      16,
+      16
+    ],
+    "bbox": [
+      0,
+      0,
+      16,
+      16
+    ],
+    "opaque_pixels": 216,
+    "visible_colors": 16,
+    "source_crop": [
+      161,
+      160,
+      1092,
+      1135
+    ],
+    "alpha_threshold": 240
+  },
+  "OctarineChest": {
+    "size": [
+      16,
+      16
+    ],
+    "bbox": [
+      0,
+      0,
+      16,
+      16
+    ],
+    "opaque_pixels": 246,
+    "visible_colors": 13,
+    "source_crop": [
+      480,
+      199,
+      1056,
+      831
+    ],
+    "alpha_threshold": 240
+  }
+}

@@ -21,7 +21,7 @@ If you only want a few of these, you can get them separately from [the collectio
 - **Farming and fishing:** Auto Replant uses seeds nearby or in your bag after you harvest. Bigger Watering Cans water 2x2 or 4x4 patches, and Faster Mushrooms changes spread and regrowth. Fast Auto Fishing handles the fishing for you with shorter waits (boss bites keep their usual timing). Better Fishing Loot and Golden Chance let you raise the odds of fishing valuables, golden crops, and rarer bonus food.
 - **Building and machines:** Build Tools gives you bigger tool areas, a block brush, block swapping, and roof controls. Faster Machines speeds up smelting, cooking, sawing, hatching, and drilling, with separate settings for each. Solarite Drill has 3x the Scarlet Drill's mining damage. Infinite Ore Boulders keeps boulders from running out; Movable Ore Boulders lets you carry them to your drills.
 - **Shops and coins:** Fish Seller adds fish and Shiny Larva Meat to buy. Merchant Restock changes how often shops refill. Valuable Value makes valuables sell for 10x by default, adjustable from 1x to 100x. Coin Drops gives you coins for enemy kills, including kills by your pets and minions.
-- **Combat and progression:** Quick Buff adds keys for buffs (B), food (F), healing (H), and mana (J). Longer Buffs extends buff durations; Durability Multiplier changes wear; Difficulty Tuning adjusts enemies and bosses in Hard and Normal worlds; Skill XP & Talent Points changes XP gains and player and pet talent points. Mushroom Slayer lets strong hits get through gray Shrooman Brute armor, and Boss Bonus Loot adds drops to selected bosses and enemies.
+- **Combat and progression:** Quick Buff adds keys for buffs (B), food (F), healing (H), and mana (J). Longer Buffs extends buff durations; Durability Multiplier changes wear; Difficulty Tuning adjusts enemies and bosses in Hard and Normal worlds; Skill XP & Talent Points changes XP gains and player and pet talent points. Mushroom Slayer lets strong hits get through gray Shrooman Brute armor, and Boss Bonus Loot adds drops to selected bosses and enemies. Weapon Tweaks makes the Burnzooka's rocket explode on the first enemy it hits.
 - **Getting around:** Magic Mirror is a reusable return to the Core. Potion of Return takes you home and leaves a one-use return point you can reach from a waypoint. Vehicle Speed changes boat and go-kart speeds, and Keep Minions On Teleport brings your summons along.
 - **Other bits:** Item Spawner (Z) lets the host, admins, and creative-mode characters spawn items, leveled gear, and cooked dishes. Other players can browse; its permission check runs on the player's client and is not enforced by the server. Hit Sound Effects lets you pick combat sounds or use your own audio. The startup logos are skipped too.
 
@@ -29,7 +29,7 @@ There are three **alpha features** in the bundle:
 
 - **Drill Pod:** An end-game hover craft that crosses water, lava, and pits, drills through walls, and lays floor or digs pits. Craft it at the Rift Statue for 300 Pandorium + 100 Solarite Bars. Tested in single player only.
 - **Enchanting:** Pay Gold Bars and Ancient Coins at an Enchanting Table for random enchantments, up to three per item. Craft the table at a Galaxite Workbench. The table and parts of the system have been tested in single player, but several effects are still untested in combat and multiplayer is untested.
-- **More NPCs:** Eight new merchants. Beat each boss, then put its dropped idol in a room with a free bed. They sell things like building supplies, potions, eggs, farm animals, and seeds. This takes the place of Potion Seller in the bundle and clears its added stock from the vanilla shops. It loads in game, but merchant arrival, trading, animations, and multiplayer still need playtesting. Old Hemlock's full shop needs mouse-wheel scrolling; controllers can only reach the first 24 items.
+- **More NPCs:** Eight new merchants. Beat each boss, then put its dropped idol in a room with a free bed. They sell things like building supplies, potions, eggs, farm animals, seeds, and summoning items for bosses you've beaten. This takes the place of Potion Seller in the bundle and clears its added stock from the vanilla shops. It loads in game, but merchant arrival, trading, animations, and multiplayer still need playtesting. Old Hemlock's and Tridra's full shops need mouse-wheel scrolling; controllers can only reach the first 24 items.
 
 Alpha features may change. Back up your saves before trying them.
 
@@ -49,7 +49,7 @@ Mod Options can also show settings from some other CoreLib mods. If a page hasn'
 
 ## Latest update
 
-**1.16.5:** Omoroth drops the Rusted Necklace 20% of the time and Bubble Crabs drop the Topaz Ring 3% of the time (Boss Bonus Loot 1.9.0).
+**1.16.6:** Tridra (More NPCs) now sells boss summoning items, including the Titans and the Halloween Hive Mother, King Slime and Easter Azeos, once you've beaten each boss. Runic Storage has a new workbench, redrawn upgrade gems, and gem-tinted lids and clamps on every tier; the Octarine unit keeps its shape with colors that match Octarine ore. New: Weapon Tweaks makes the Burnzooka's rocket explode on the first enemy it hits.
 
 Older updates are in the [release history](https://github.com/Sthakur27/corekeeper-mods/blob/main/Overhaul/CHANGELOG.md).
 

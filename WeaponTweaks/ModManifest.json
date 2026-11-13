@@ -1,0 +1,17 @@
+{
+    "guid": "3b8f2c6e91d44a7fa0c5e2d917b46a53",
+    "name": "WeaponTweaks",
+    "displayName": "Weapon Tweaks",
+    "skipSafetyChecks": false,
+    "disableScripts": false,
+    "accessesExtraAssemblies": true,
+    "disableHarmonyPatching": true,
+    "requiredOn": 3,
+    "files": [
+        {
+            "path": "Scripts/WeaponTweaksMod.cs",
+            "guid": ""
+        }
+    ],
+    "dependencies": []
+}

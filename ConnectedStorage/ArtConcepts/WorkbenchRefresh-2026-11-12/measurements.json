@@ -1,0 +1,20 @@
+{
+  "size": [
+    16,
+    16
+  ],
+  "alpha_levels": [
+    0,
+    255
+  ],
+  "opaque_pixels": 216,
+  "visible_colors": 16,
+  "crop": [
+    161,
+    160,
+    1092,
+    1135
+  ],
+  "alpha_threshold": 240,
+  "state": "review-only; front/down only"
+}

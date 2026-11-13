@@ -38,7 +38,7 @@ for path in paths:
    diff=sum(abs(x-y) for x,y in zip(a.tobytes(),b.tobytes()))/len(a.tobytes())
    assert diff<12, f'{label}: downsampled art differs from approved art (mean {diff:.1f}/255)'
  # Prove the approved art is what ships and high-resolution meshes stay one tile wide.
- for name,filename in [('CopperChest','RunicKilnReview/copper-node.png'),('Terminal','RunicKilnReview/terminal.png')] + [(n, 'StorageFamily/'+n+'.png') for n in ['Workbench']+[t+'Chest' for t in CAPACITY if t!='Copper']]:
+ for name,filename in [('CopperChest','RunicKilnReview/copper-node.png'),('Terminal','RunicKilnReview/terminal.png')] + [(n, 'StorageFamily/'+n+'.png') for n in ['Workbench']+[t+'Chest' for t in CAPACITY if t!='Copper']] + [(t+'Gem', 'UpgradeGems/'+t+'.png') for t in CAPACITY if t!='Copper']:
   art=Image.open(Path(__file__).parent/'Art'/(name+'.png')).convert('RGBA')
   if art.width<=32:
    # Native art: one texel per game pixel, so nothing between XScaler and the sprite may scale it.
@@ -78,11 +78,6 @@ for path in paths:
    assert abs(scale.x-scale.y)<0.000001, name+': distorted aspect ratio'
    found=True
   assert found, name+': scaled visual missing'
- for tier in ('Tin','Iron','Scarlet','Octarine','Galaxite','Solarite','Pandorium','Relucite'):
-  source=Image.open(Path(__file__).parents[1]/'ArtConcepts/UpgradeGems'/(tier+'.png')).convert('RGBA')
-  crop=source.crop(source.getchannel('A').point(lambda a:255 if a>=128 else 0).getbbox())
-  art=Image.open(Path(__file__).parent/'Art'/(tier+'Gem.png')).convert('RGBA')
-  assert_resample_of(art, crop, tier+'Gem')
  for o in env.objects:
   if o.type.name != 'MonoBehaviour': continue
   data=o.read(); tree=o.read_typetree()

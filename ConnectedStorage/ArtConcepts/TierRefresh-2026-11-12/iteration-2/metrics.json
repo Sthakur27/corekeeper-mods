@@ -1,0 +1,333 @@
+{
+  "changed_units": {
+    "Copper": {
+      "changed_pixels": 10,
+      "coordinates": [
+        [
+          6,
+          4
+        ],
+        [
+          7,
+          4
+        ],
+        [
+          8,
+          4
+        ],
+        [
+          9,
+          4
+        ],
+        [
+          6,
+          5
+        ],
+        [
+          9,
+          5
+        ],
+        [
+          6,
+          6
+        ],
+        [
+          7,
+          6
+        ],
+        [
+          8,
+          6
+        ],
+        [
+          9,
+          6
+        ]
+      ],
+      "alpha_identical": true,
+      "bottom_half_identical": true,
+      "source_sha256": "a4fced21449e20aaddd484043ba58c024dfa11e4afb82c3fe72d7eef26cdc7ce",
+      "candidate_sha256": "b1058c487c32d303c878422bf30377e210a04adbde8b0a5d7a86be1ec86eaa5e"
+    },
+    "Tin": {
+      "changed_pixels": 13,
+      "coordinates": [
+        [
+          7,
+          3
+        ],
+        [
+          8,
+          3
+        ],
+        [
+          6,
+          4
+        ],
+        [
+          7,
+          4
+        ],
+        [
+          8,
+          4
+        ],
+        [
+          9,
+          4
+        ],
+        [
+          6,
+          5
+        ],
+        [
+          7,
+          5
+        ],
+        [
+          8,
+          5
+        ],
+        [
+          9,
+          5
+        ],
+        [
+          7,
+          6
+        ],
+        [
+          8,
+          6
+        ],
+        [
+          9,
+          6
+        ]
+      ],
+      "alpha_identical": true,
+      "bottom_half_identical": true,
+      "source_sha256": "f1c00b21dd9701602823fd5f4769da71f384de1801668428c1d71fb5087afb99",
+      "candidate_sha256": "def73762a50a5c3ebca3125774a0c8bab5c02c1e26b55d74126888e77942e328"
+    },
+    "Scarlet": {
+      "changed_pixels": 10,
+      "coordinates": [
+        [
+          7,
+          3
+        ],
+        [
+          8,
+          3
+        ],
+        [
+          6,
+          4
+        ],
+        [
+          7,
+          4
+        ],
+        [
+          9,
+          4
+        ],
+        [
+          6,
+          5
+        ],
+        [
+          9,
+          5
+        ],
+        [
+          6,
+          6
+        ],
+        [
+          7,
+          6
+        ],
+        [
+          8,
+          6
+        ]
+      ],
+      "alpha_identical": true,
+      "bottom_half_identical": true,
+      "source_sha256": "7ede7e9e16d660647d0729761724055a08e7561b9b7bdb153d4bb0b084e42756",
+      "candidate_sha256": "e5ef8c32e9cac7b012dfa1f3a956d9e3bf6776215a6ec25627ec6648feea646f"
+    },
+    "Octarine": {
+      "changed_pixels": 10,
+      "coordinates": [
+        [
+          7,
+          3
+        ],
+        [
+          8,
+          3
+        ],
+        [
+          6,
+          4
+        ],
+        [
+          9,
+          4
+        ],
+        [
+          6,
+          5
+        ],
+        [
+          8,
+          5
+        ],
+        [
+          9,
+          5
+        ],
+        [
+          6,
+          6
+        ],
+        [
+          7,
+          6
+        ],
+        [
+          8,
+          6
+        ]
+      ],
+      "alpha_identical": true,
+      "bottom_half_identical": true,
+      "source_sha256": "7c91c8ae68c32d33e596cd7ed1d589b988065660429d6ae387c30106582e36e0",
+      "candidate_sha256": "28c87254fc0e9e4f33a345c7b51eb4660a9de1f944620f009074b44dd61c0481"
+    },
+    "Solarite": {
+      "changed_pixels": 14,
+      "coordinates": [
+        [
+          6,
+          3
+        ],
+        [
+          7,
+          3
+        ],
+        [
+          8,
+          3
+        ],
+        [
+          9,
+          3
+        ],
+        [
+          6,
+          4
+        ],
+        [
+          8,
+          4
+        ],
+        [
+          9,
+          4
+        ],
+        [
+          6,
+          5
+        ],
+        [
+          8,
+          5
+        ],
+        [
+          9,
+          5
+        ],
+        [
+          6,
+          6
+        ],
+        [
+          7,
+          6
+        ],
+        [
+          8,
+          6
+        ],
+        [
+          9,
+          6
+        ]
+      ],
+      "alpha_identical": true,
+      "bottom_half_identical": true,
+      "source_sha256": "a342ea49813dd30238a3f77810d47be14c92f95d8586669988091045473506e9",
+      "candidate_sha256": "57d9fb2701b6f90113514504750264a8cd208b95e11bcd2adb88c482c04c74dd"
+    }
+  },
+  "locked_assets": {
+    "TinGem-16.png": {
+      "byte_identical": true,
+      "sha256": "f3cf8b36c39ac51e078dfbd7eefb0681f6b486215b43246d7c6dc1c814abbe04"
+    },
+    "IronChest-16.png": {
+      "byte_identical": true,
+      "sha256": "4d746a3b4333395adfeecc4dad3c8421eda6e202dca8525f4df7a7f4d855dbfe"
+    },
+    "IronGem-16.png": {
+      "byte_identical": true,
+      "sha256": "8e0eaf4abc19ae6596468fc9f08ad65f95e0a355627a5fec1d1a3a02261c57a0"
+    },
+    "ScarletGem-16.png": {
+      "byte_identical": true,
+      "sha256": "3287ce84e0266ae7ea1f13ffe512f3f28460994f85506774efd03ec1a8a396ad"
+    },
+    "OctarineGem-16.png": {
+      "byte_identical": true,
+      "sha256": "eeefcafa0597fc5e44abc177ed2c0537a7a41084b26ffbc2a5a196b71937a8fd"
+    },
+    "GalaxiteChest-16.png": {
+      "byte_identical": true,
+      "sha256": "57073c4e2578f20bb57bf8d27778634c0878f6765284f6742ed688e9d839a120"
+    },
+    "GalaxiteGem-16.png": {
+      "byte_identical": true,
+      "sha256": "97b3095c84f27423608937380e1732fa01df3523885305fcd1f37e9aa6a77307"
+    },
+    "SolariteGem-16.png": {
+      "byte_identical": true,
+      "sha256": "b8b8d5377a427d4481f374842f6c4c01bf740fcccabebda982eef981cd6e524f"
+    },
+    "PandoriumChest-16.png": {
+      "byte_identical": true,
+      "sha256": "ab9ddf86bdf8f4549c4eb95ee6626c7b3658a2433d436c606d20ebe2c3bf28d1"
+    },
+    "PandoriumGem-16.png": {
+      "byte_identical": true,
+      "sha256": "45e4a0c429878fc7cd7e49f359fefffe094c14afbf7d22b9f54725132af8e90c"
+    },
+    "ReluciteChest-16.png": {
+      "byte_identical": true,
+      "sha256": "5c063fafaeeded96111d42c3ae83fa6b25ffecc09dfb059a2d852a53f2d986de"
+    },
+    "ReluciteGem-16.png": {
+      "byte_identical": true,
+      "sha256": "34c85ef4f8ff23ee2e58d9d03af748e657c0c047155289ead7153ee3fa0872c6"
+    }
+  },
+  "edit_region_inclusive": [
+    5,
+    3,
+    10,
+    7
+  ]
+}

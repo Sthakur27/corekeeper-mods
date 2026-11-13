@@ -82,6 +82,40 @@ namespace Enchanting
         public static bool IsOurs(in Condition c) =>
             float.IsPositiveInfinity(c.conditionData.duration) && Mathf.Approximately(c.conditionData.valueMultiplier, Marker);
 
+        /// <summary>
+        /// A copy of one of our entries that lost its marker in a save (2026-11-13). The character save keeps a
+        /// condition's id, value, duration and timer but not valueMultiplier (ConditionSerialized), so on every world
+        /// load our entries came back unmarked and permanent, and Apply added fresh ones next to them: one extra copy
+        /// of every enchant bonus per session, all counted by the stat system. Recognised as: infinite duration,
+        /// valueMultiplier 0, and a condition only enchants put on a player with infinite duration
+        /// (<see cref="LeakIds"/>; glows left out since a stray glow copy is harmless). Apply removes them.
+        /// </summary>
+        public static bool IsOrphan(in Condition c) =>
+            float.IsPositiveInfinity(c.conditionData.duration) && c.conditionData.valueMultiplier == 0f
+            && LeakIds.Contains(c.conditionData.conditionID);
+
+        private static HashSet<ConditionID> _leakIds;
+        private static HashSet<ConditionID> LeakIds
+        {
+            get
+            {
+                if (_leakIds != null) return _leakIds;
+                var set = new HashSet<ConditionID>();
+                foreach (var d in Enchants.All)
+                    if (!d.FollowsLight && !d.OnMinions && d.Condition != ConditionID.None) set.Add(d.Condition);
+                foreach (var id in new[]
+                {
+                    ConditionID.PhysicalMeleeDamageIncrease, ConditionID.PhysicalRangeDamageIncrease,
+                    ConditionID.IncreasedMagicDamagePercentage, ConditionID.MeleeAttackSpeedIncrease,
+                    ConditionID.RangeAttackSpeedIncrease, ConditionID.IncreasedMinionDamagePercentage,
+                    ConditionID.IncreasedMinionAttackSpeed, ConditionID.AllDamageIncrease, ConditionID.AttackSpeed,
+                    ConditionID.IncreasedMagicDamageToMinionDamage,
+                }) set.Add(id);
+                foreach (var g in EnchantMath.GlowConditions) set.Remove(g);
+                return _leakIds = set;
+            }
+        }
+
         /// <summary>Server: absolute inventory slot of the player's carried summoning tome, or -1.</summary>
         public static int CarriedSlot(Entity player) => States.TryGetValue(player, out var s) ? s.CarriedSlot : -1;
 
@@ -314,6 +348,7 @@ namespace Enchanting
             for (int i = 0; i < conditions.Length; i++)
             {
                 var c = conditions[i].condition;
+                if (IsOrphan(c)) { duplicate = true; continue; }
                 if (!IsOurs(c)) continue;
                 if (c.toBeRemoved || _ours.ContainsKey(c.conditionData.conditionID)) duplicate = true;
                 _ours[c.conditionData.conditionID] = c.conditionData.value;
@@ -361,9 +396,16 @@ namespace Enchanting
             // Rewrite only what changed: drop stale/duplicate entries, update values in place, add new ones.
             var rw = EntityManager.GetBuffer<ConditionsBuffer>(player);
             var kept = new HashSet<ConditionID>();
+            int orphans = 0;
             for (int i = rw.Length - 1; i >= 0; i--)
             {
                 var elem = rw[i];
+                if (IsOrphan(elem.condition))
+                {
+                    rw.RemoveAt(i);
+                    orphans++;
+                    continue;
+                }
                 if (!IsOurs(elem.condition)) continue;
                 var id = elem.condition.conditionData.conditionID;
                 if (elem.condition.toBeRemoved || !_wanted.TryGetValue(id, out int want) || !kept.Add(id))
@@ -395,6 +437,8 @@ namespace Enchanting
                 });
             }
             state.LastWrite = _update;
+            if (orphans > 0)
+                Debug.Log($"[{EnchantingMod.Name}] player {player.Index}: removed {orphans} enchant bonus copies left over from earlier sessions");
         }
     }
 }

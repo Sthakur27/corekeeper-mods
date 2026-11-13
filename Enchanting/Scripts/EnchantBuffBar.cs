@@ -10,7 +10,7 @@ namespace Enchanting
     /// Client HUD (2026-11-13): the buff bar above the health bar draws one icon per ConditionsBuffer entry, capped at
     /// 18. With many enchant/food/potion entries it fills up with look-alike icons and hides the rest. This replaces
     /// ConditionsContainerUI.UpdateConditions with the same drawing, but entries that share a condition ID, or a
-    /// description (ConditionInfo.useSameDescAsId: different IDs the game words identically), become one icon: additive conditions show the sum, non-additive ones the strongest; a timed buff keeps the longest time
+    /// description (ConditionInfo.useSameDescAsId: different IDs the game words identically), become one icon showing the sum (what the stat system applies); a timed buff keeps the longest time
     /// left (a permanent entry wins). Stack-type conditions (GetStacks &gt; 0) stay one icon per entry, as in vanilla.
     ///
     /// Cost: one pass over the player's buffer per frame, same as vanilla, plus a small dictionary.
@@ -92,9 +92,9 @@ namespace Enchanting
                 }
                 var g = _groups[at];
                 if (!_memberLists[at].Contains(id)) _memberLists[at].Add(id);
-                int merged = info.isAdditiveWithSelf
-                    ? g.Shown.conditionData.value + c.conditionData.value
-                    : (Mathf.Abs(c.conditionData.value) > Mathf.Abs(g.Shown.conditionData.value) ? c.conditionData.value : g.Shown.conditionData.value);
+                // The stat system adds every entry up (SummarizeConditionsSystem.AddConditionToSummarizedBuffers sums
+                // regardless of isAdditiveWithSelf, which only decides how AddOrRefreshCondition merges new buffs).
+                int merged = g.Shown.conditionData.value + c.conditionData.value;
                 if (remaining > g.Remaining) { g.Shown = c; g.Remaining = remaining; }
                 g.Shown.conditionData.value = merged;
                 g.Sources++;
@@ -176,15 +176,18 @@ namespace Enchanting
     }
 
     /// <summary>
-    /// Hover text of a buff icon: says how many buffs it merges, and the stat's real total from every source (gear,
-    /// rings, skills, food, enchants) when that differs from the icon. Enchant multipliers are already stored as
-    /// plain amounts, so this total is the effective value.
+    /// Hover text of a buff icon: where the value comes from, one line per source, then the stat's real total.
+    /// Sources: each enchant on the held item, worn gear and accessories (name, level, item); timed buff entries
+    /// (food, potions); other buff-list entries; the gear's own stats (GivesConditionsWhenEquipped); and whatever is
+    /// left over (skills, set bonuses, reinforcement) as one line. Enchant multipliers are stored as plain amounts,
+    /// so the total is the effective value the game uses.
     /// </summary>
     [HarmonyPatch(typeof(ConditionUI), nameof(ConditionUI.GetHoverStats))]
     public static class EnchantBuffBarHover
     {
         private static readonly Color Info = new Color(0.78f, 0.55f, 1f);
-        private static readonly Color Hint = new Color(0.66f, 0.62f, 0.75f);
+        private static readonly Color Source = new Color(0.66f, 0.62f, 0.75f);
+        private static readonly List<ConditionID> _single = new List<ConditionID>(1);
 
         public static void Postfix(Condition ___activeCondition, ref List<TextAndFormatFields> __result)
         {
@@ -192,32 +195,187 @@ namespace Enchanting
             if (id == ConditionID.None || __result == null) return;
             try
             {
-                if (EnchantBuffBar.Sources.TryGetValue(id, out int n) && n > 1)
-                    __result.Add(EnchantTableFigurineHover.Line($"Combined from {n} buffs", Hint));
-
-                var player = Manager.main.player;
-                if (player == null || !player.entityExist) return;
-                var em = player.world.EntityManager;
-                if (!em.HasBuffer<SummarizedConditionsBuffer>(player.entity)) return;
-                var sum = em.GetBuffer<SummarizedConditionsBuffer>(player.entity, true);
-                int total = 0;
-                if (EnchantBuffBar.Members.TryGetValue(id, out var members) && members.Count > 0)
-                {
-                    foreach (var m in members) if ((int)m < sum.Length) total += sum[(int)m].value;
-                }
-                else if ((int)id < sum.Length) total = sum[(int)id].value;
-                if (total == ___activeCondition.conditionData.value || total == 0) return;
-                var line = ConditionUI.GetConditionTextAndFormatFields(default, new ConditionData { conditionID = id, value = total },
-                    previewReinforced: false, isReinforced: false, previewUpgraded: false);
-                line.color = Info;
-                line.additionalText = "(total, all sources)";
-                line.additionalTextColor = Info;
-                __result.Add(line);
+                Add(id, ___activeCondition.conditionData.value, __result);
             }
             catch (System.Exception e)
             {
                 if (EnchantDebug.On) Debug.LogWarning($"[{EnchantingMod.Name}] buff hover: {e.Message}");
             }
+        }
+
+        private static void Add(ConditionID id, int shown, List<TextAndFormatFields> result)
+        {
+            var player = Manager.main.player;
+            if (player == null || !player.entityExist) return;
+            var em = player.world.EntityManager;
+            if (!EnchantBuffBar.Members.TryGetValue(id, out var members) || members.Count == 0)
+            {
+                _single.Clear();
+                _single.Add(id);
+                members = _single;
+            }
+
+            var lines = new List<TextAndFormatFields>();
+            int listed = 0;
+
+            // 1. The buff list itself (what the icon sums).
+            var buffer = EntityUtility.GetConditions(player.entity, player.world);
+            NetworkTick tick = EntityUtility.GetCurrentTickOnClient(player.entity, player.world, out var fraction);
+            uint rate = (uint)PlatformConfiguration.Instance.SessionConfiguration.SimulationTickRate;
+            int ours = 0;
+            bool hasOurs = false;
+            for (int i = 0; i < buffer.Length; i++)
+            {
+                var c = buffer[i].condition;
+                if (!members.Contains(c.conditionData.conditionID)) continue;
+                if (EnchantEffectSystem.IsOurs(c)) { ours += c.conditionData.value; hasOurs = true; continue; }
+                var d = c.conditionData;
+                bool timed = d.duration > 0f && !float.IsPositiveInfinity(d.duration);
+                string label = timed ? "food or potion" : float.IsPositiveInfinity(d.duration) ? "permanent buff" : "effect";
+                if (timed) d.duration = Mathf.Max(1f, NetworkTimeUtilities.TimeToFutureTickInSeconds(tick, fraction, c.removeTick, rate));
+                lines.Add(SourceLine(d, label));
+                listed += c.conditionData.value;
+            }
+
+            // 2. Enchants (one marked buff entry per stat, split back into the items that grant it).
+            if (hasOurs)
+            {
+                int before = lines.Count;
+                AddEnchantSources(em, player.entity, members, lines);
+                if (lines.Count == before) lines.Add(SourceLine(new ConditionData { conditionID = id, value = ours }, "enchantments"));
+                listed += ours;
+            }
+
+            // 3. The gear's own stats (not on the buff list; part of the game's total).
+            int gear = AddGearSources(em, player.entity, members, lines);
+
+            // 4. Total from the game's stat summary, and whatever no line above explains.
+            int total = 0;
+            bool hasTotal = em.HasBuffer<SummarizedConditionsBuffer>(player.entity);
+            if (hasTotal)
+            {
+                var sum = em.GetBuffer<SummarizedConditionsBuffer>(player.entity, true);
+                foreach (var m in members) if ((int)m < sum.Length) total += sum[(int)m].value;
+                int other = total - listed - gear;
+                if (other != 0) lines.Add(SourceLine(new ConditionData { conditionID = id, value = other }, "skills, set bonuses, reinforcement"));
+            }
+
+            if (lines.Count < 2 && (!hasTotal || total == shown)) return; // a single source: the icon line says it all
+            result.Add(EnchantTableFigurineHover.Line("From:", Source));
+            result.AddRange(lines);
+            if (hasTotal && total != 0)
+            {
+                var t = ConditionUI.GetConditionTextAndFormatFields(default, new ConditionData { conditionID = id, value = total },
+                    previewReinforced: false, isReinforced: false, previewUpgraded: false);
+                t.color = Info;
+                t.additionalText = "(total)";
+                t.additionalTextColor = Info;
+                result.Add(t);
+            }
+        }
+
+        private static TextAndFormatFields SourceLine(ConditionData d, string label)
+        {
+            var line = ConditionUI.GetConditionTextAndFormatFields(default, d, previewReinforced: false, isReinforced: false, previewUpgraded: false);
+            line.color = Source;
+            line.additionalText = "(" + label + ")";
+            line.additionalTextColor = Source;
+            return line;
+        }
+
+        private static List<int> Slots(EntityManager em, Entity player, out int held)
+        {
+            var slots = new List<int>();
+            held = -1;
+            if (em.HasComponent<EquippedObjectCD>(player))
+            {
+                held = em.GetComponentData<EquippedObjectCD>(player).equippedSlotIndex;
+                slots.Add(held);
+            }
+            if (em.HasComponent<EquipmentCD>(player))
+            {
+                var eq = em.GetComponentData<EquipmentCD>(player);
+                slots.Add(eq.helmSlotIndex);
+                slots.Add(eq.breastSlotIndex);
+                slots.Add(eq.pantsSlotIndex);
+                slots.Add(eq.ring1SlotIndex);
+                slots.Add(eq.ring2SlotIndex);
+                slots.Add(eq.necklaceSlotIndex);
+                slots.Add(eq.offHandIndex);
+                slots.Add(eq.bagIndex);     // same slot list SummarizeConditionsSystem reads
+                slots.Add(eq.lanternIndex);
+            }
+            return slots;
+        }
+
+        private static void AddEnchantSources(EntityManager em, Entity player, List<ConditionID> members, List<TextAndFormatFields> lines)
+        {
+            if (!em.HasBuffer<ContainedObjectsBuffer>(player)) return;
+            var items = em.GetBuffer<ContainedObjectsBuffer>(player, true);
+            var slots = Slots(em, player, out int held);
+            var heldId = held >= 0 && held < items.Length ? items[held].objectID : ObjectID.None;
+            foreach (int slot in slots)
+            {
+                if (slot < 0 || slot >= items.Length || items[slot].objectID == ObjectID.None) continue;
+                var item = items[slot];
+                foreach (var e in EnchantStorage.ReadClient(item))
+                {
+                    var def = e.Def;
+                    if (def == null || def.OnMinions || def.FollowsLight) continue;
+                    var cond = def.Mode == EnchantMode.Relative
+                        ? EnchantMath.WriteCondition(def, EnchantMath.BucketWeapon(def, item.objectID, heldId))
+                        : def.Condition;
+                    if (!members.Contains(cond)) continue;
+                    string label = def.Name + " " + Enchants.Roman(e.Level) + ", " + ItemName(item);
+                    if (def.Mode == EnchantMode.Relative)
+                    {
+                        lines.Add(new TextAndFormatFields
+                        {
+                            text = EnchantingMod.PlainTerm,
+                            formatFields = new[] { EnchantMath.MultiplierText(def, e.Level, item.objectID) },
+                            dontLocalizeFormatFields = true,
+                            color = Source,
+                            additionalText = "(" + label + ")",
+                            additionalTextColor = Source,
+                        });
+                    }
+                    else
+                    {
+                        lines.Add(SourceLine(new ConditionData { conditionID = cond, value = EnchantMath.Raw(def, e.Level, item.objectData) }, label));
+                    }
+                }
+            }
+        }
+
+        private static int AddGearSources(EntityManager em, Entity player, List<ConditionID> members, List<TextAndFormatFields> lines)
+        {
+            if (!em.HasBuffer<ContainedObjectsBuffer>(player)) return 0;
+            var items = em.GetBuffer<ContainedObjectsBuffer>(player, true);
+            int total = 0;
+            foreach (int slot in Slots(em, player, out _))
+            {
+                if (slot < 0 || slot >= items.Length || items[slot].objectID == ObjectID.None) continue;
+                var item = items[slot];
+                foreach (var d in ConditionUIExtensions.GetConditionsOnEquip(item.objectData))
+                {
+                    if (!members.Contains(d.conditionID) || d.value == 0) continue;
+                    lines.Add(SourceLine(d, ItemName(item)));
+                    total += d.value;
+                }
+            }
+            return total;
+        }
+
+        private static string ItemName(ContainedObjectsBuffer item)
+        {
+            try
+            {
+                var tf = PlayerController.GetObjectName(item, localize: true);
+                if (tf != null && !string.IsNullOrEmpty(tf.text))
+                    return tf.dontLocalize ? tf.text : PugText.ProcessText(tf.text, tf.formatFields, true, false);
+            }
+            catch (System.Exception) { }
+            return item.objectID.ToString();
         }
     }
 }

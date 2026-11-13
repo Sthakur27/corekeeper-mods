@@ -81,6 +81,10 @@
             "guid": ""
         },
         {
+            "path": "Scripts/EnchantBuffBar.cs",
+            "guid": ""
+        },
+        {
             "path": "Bundles/Enchanting_Windows.assetbundle",
             "guid": ""
         },

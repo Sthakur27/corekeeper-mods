@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using HarmonyLib;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
@@ -91,7 +92,7 @@ namespace Enchanting
     /// Hover text of the table's roll button: how many figurines the table sees and the odds for a new enchant,
     /// plus a hint to place more. ButtonUIElement owns the description; only UpgradeForgeButtons on our table change.
     /// </summary>
-    [HarmonyLib.HarmonyPatch(typeof(ButtonUIElement), nameof(ButtonUIElement.GetHoverDescription))]
+    [HarmonyPatch(typeof(ButtonUIElement), nameof(ButtonUIElement.GetHoverDescription))]
     public static class EnchantTableFigurineHover
     {
         private static readonly Color Info = new Color(0.78f, 0.55f, 1f);

@@ -4,6 +4,8 @@
 
 These are my Core Keeper mods. Some take care of things like replanting crops or switching gear; others add items, merchants, or settings for how hard you want the game to be. Pick the ones you want below.
 
+Looking up a drop rate, merchant, recipe, or control? The [mod wiki](https://docs.google.com/document/d/1dp9O_5eAnKm_d1RYUdeyESk8o58MceBOP7w9vl0kneg/edit) has searchable reference tables and guides, organized into tabs. It follows the current source, so some entries may be newer than the published release.
+
 ## Choose how to install
 
 - **One package:** [Sid's Overhaul on Steam Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=3813043354). Bundles most of these mods, with Mod Options built in. Check its page for the full list. Subscribe to CoreLib too.

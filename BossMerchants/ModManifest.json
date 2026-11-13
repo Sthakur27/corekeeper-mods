@@ -9,6 +9,14 @@
     "requiredOn": 3,
     "files": [
         {
+            "path": "Scripts/DecorStock.cs",
+            "guid": ""
+        },
+        {
+            "path": "Scripts/MerchantCommands.cs",
+            "guid": ""
+        },
+        {
             "path": "Scripts/BossMerchantsConfig.cs",
             "guid": ""
         },
@@ -22,6 +30,14 @@
         },
         {
             "path": "Scripts/MerchantStock.cs",
+            "guid": ""
+        },
+        {
+            "path": "Scripts/MerchantMapMarkers.cs",
+            "guid": ""
+        },
+        {
+            "path": "Scripts/NpcNameplates.cs",
             "guid": ""
         },
         {

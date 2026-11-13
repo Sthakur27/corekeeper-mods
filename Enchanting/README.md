@@ -32,6 +32,12 @@ Accessory enchantments are small, and they add up: two rings with Precision III 
 
 There are also limits across all your gear: 12% less damage taken, 15% extra max health, 8 extra dodge, 12% extra movement speed, 60% extra regeneration, and 9% less boss damage. The total reduction in damage taken from enchantments is capped at 25%. Once you hit a limit, adding more of that bonus won't help.
 
+## Buff bar
+
+Buffs of the same kind share one icon on the buff bar, showing their combined value. Hover over an icon to see each source (enchantment and item, gear, food or potion, skills and other bonuses) and the total.
+
+Version 0.4.0 also removes extra copies of enchantment bonuses that earlier versions left on your character each time you loaded a world. If your stats drop after updating, that's the duplicates going away; your gear still gives what it should.
+
 ## Before you install
 
 Requires **CoreLib**. Multiplayer hasn't been tested.

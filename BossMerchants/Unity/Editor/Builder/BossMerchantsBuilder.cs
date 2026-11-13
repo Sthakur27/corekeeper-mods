@@ -87,6 +87,12 @@ public static class BossMerchantsBuilder
     static void BuildSkin(Vanilla.Theme t, List<Vanilla.SkinSlot> slots)
     {
         if (slots.Count == 0) throw new Exception(t.key + ": spriteAsset base without skin slots");
+        // SpriteObject indexes skins by native animation index, NOT by the GUID lookup.
+        // voidMerchant's order is idle, emote, move. A move/emote swap draws 27/6 frames at once.
+        var nativeOrder = new[] { "580fae3f-66dc-4b7a-900c-ee7986f742e6", "e1e86c38-70e3-402a-a63f-ecb6d1f3edf0", "7128f66e-0c6d-4aed-949e-93fdcd9f5138" };
+        if (slots.Count != nativeOrder.Length || slots.Any(s => Array.IndexOf(nativeOrder, s.guid) < 0))
+            throw new Exception("Unexpected merchant skin animations; verify native ordering before building");
+        slots = slots.OrderBy(s => Array.IndexOf(nativeOrder, s.guid)).ToList();
         var target = (slots[0].lo, slots[0].hi);
         var idle = slots.FirstOrDefault(s => s.texture.EndsWith("_idle")) ?? slots[0];
         CreateBlock("SpriteAssetSkin", Root + "/Data/SpriteAssetSkin/bossMerchant_" + t.key + "_skin.asset", so =>

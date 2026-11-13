@@ -1,0 +1,424 @@
+theme,item,id,price,stock,nativeSellValue
+Home and everyday furnishings,WoodStool,135,75,10,-1
+Home and everyday furnishings,WoodTable,136,75,10,-1
+Home and everyday furnishings,FloorPillow,139,75,10,-1
+Home and everyday furnishings,Bed,4760,75,10,-1
+Home and everyday furnishings,Rug,4750,50,10,-1
+Home and everyday furnishings,WovenMat,4751,75,10,-1
+Home and everyday furnishings,Painting,137,100,10,0
+Home and everyday furnishings,Tapestry,4777,75,10,10
+Home and everyday furnishings,Banner,4778,50,10,-1
+Home and everyday furnishings,DecorativePot,120,50,10,-1
+Home and everyday furnishings,Pedestal,125,75,10,-1
+Home and everyday furnishings,WoodPillar,138,75,10,-1
+Home and everyday furnishings,WashBasin,188,75,10,-1
+Home and everyday furnishings,Dresser,4029,75,10,-1
+Home and everyday furnishings,Mannequin,4039,75,10,-1
+Home and everyday furnishings,MusicSheetStand,187,75,10,-1
+Home and everyday furnishings,Speaker,145,75,10,-1
+Lights and lanterns,Torch,110,100,10,0
+Lights and lanterns,DecorativeTorch1,112,100,10,1
+Lights and lanterns,Campfire,111,100,10,-1
+Lights and lanterns,Candle,10213,25,10,-1
+Lights and lanterns,Lamp,140,75,10,-1
+Lights and lanterns,LampPost,4779,100,10,-1
+Lights and lanterns,CrystalLamp,115,150,10,0
+Lights and lanterns,StoneLantern,5987,100,10,-1
+Lights and lanterns,SirenLamp,4800,150,10,-1
+Lights and lanterns,WallLightBulb,4801,100,10,-1
+Lights and lanterns,Lantern,8300,50,10,0
+Lights and lanterns,SmallLantern,8302,50,10,0
+Lights and lanterns,OrbLantern,8301,100,10,0
+Lights and lanterns,PearlLantern,8304,150,10,0
+Lights and lanterns,SoulLantern,8305,200,10,0
+Lights and lanterns,PumpkinLantern,8303,100,10,0
+Garden and potted plants,PlanterBox,121,150,10,-1
+Garden and potted plants,PottedLandKelp,5580,150,10,-1
+Garden and potted plants,PottedFlowerTree,5581,150,10,-1
+Garden and potted plants,PottedPlumeTree,5582,150,10,-1
+Garden and potted plants,PottedCherryTree,5583,150,10,-1
+Garden and potted plants,PottedLushTree,5584,150,10,-1
+Garden and potted plants,PottedPuffSticks,5585,150,10,-1
+Garden and potted plants,PottedLushBush,5586,150,10,-1
+Garden and potted plants,PottedMagmaTulip,5587,150,10,-1
+Garden and potted plants,PottedGlowberryTree,5588,150,10,-1
+Garden and potted plants,PottedGoldenOrbBush,5589,150,10,-1
+Garden and potted plants,PottedLucentTree,5590,150,10,-1
+Garden and potted plants,PottedAlienFlower,5591,150,10,-1
+Garden and potted plants,PottedEnvelopeTree,16009,150,10,-1
+Terrariums and aquariums,Terrarium,195,200,10,-1
+Terrariums and aquariums,Aquarium,196,200,10,-1
+Terrariums and aquariums,TerrariumNature,199,200,10,-1
+Terrariums and aquariums,AquariumNature,204,200,10,-1
+Terrariums and aquariums,TerrariumBeach,197,200,10,-1
+Terrariums and aquariums,AquariumBeach,202,200,10,-1
+Terrariums and aquariums,TerrariumDesert,198,200,10,-1
+Terrariums and aquariums,AquariumDesert,203,200,10,-1
+Terrariums and aquariums,TerrariumCrystal,200,200,10,-1
+Terrariums and aquariums,AquariumCrystal,205,200,10,-1
+Terrariums and aquariums,TerrariumPassage,201,200,10,-1
+Terrariums and aquariums,AquariumPassage,206,200,10,-1
+Terrariums and aquariums,PetBed,1204,200,10,-1
+Terrariums and aquariums,PetBedBirdStick,1205,200,10,-1
+Terrariums and aquariums,PetBedCatTree,1206,200,10,-1
+Terrariums and aquariums,PetBedDogHouse,1207,200,10,-1
+Wood and stone architecture,WoodFloor,4700,25,10,0
+Wood and stone architecture,StoneFloor,4704,25,10,0
+Wood and stone architecture,PaintableFloor,4708,25,10,0
+Wood and stone architecture,PaintableLitFloor,4713,25,10,0
+Wood and stone architecture,GlassFloor,4722,25,10,0
+Wood and stone architecture,ThinWallGlass,4723,25,10,0
+Wood and stone architecture,WovenStrawFloor,4725,25,10,0
+Wood and stone architecture,WoodFence,4702,25,10,0
+Wood and stone architecture,WoodFenceGate,4701,25,10,-1
+Wood and stone architecture,StoneFence,4706,25,10,0
+Wood and stone architecture,StoneFenceGate,4705,25,10,-1
+Wood and stone architecture,WoodDoor,4770,25,10,-1
+Wood and stone architecture,StoneDoor,4771,25,10,-1
+Wood and stone architecture,WoodBridge,4703,25,10,0
+Wood and stone architecture,StoneBridge,4707,25,10,0
+Wood and stone architecture,GlassBridge,4724,25,10,0
+Colorful architecture,ScarletFloor,4709,50,10,0
+Colorful architecture,ScarletFence,4711,50,10,0
+Colorful architecture,ScarletFenceGate,4710,50,10,-1
+Colorful architecture,ScarletDoor,4772,50,10,-1
+Colorful architecture,ScarletBridge,4712,50,10,0
+Colorful architecture,CoralFloor,4714,50,10,0
+Colorful architecture,CoralFence,4716,50,10,0
+Colorful architecture,CoralFenceGate,4715,50,10,-1
+Colorful architecture,CoralDoor,4775,50,10,-1
+Colorful architecture,CoralBridge,4717,50,10,0
+Colorful architecture,GalaxiteFloor,4718,50,10,0
+Colorful architecture,GalaxiteFence,4720,50,10,0
+Colorful architecture,GalaxiteFenceGate,4719,50,10,-1
+Colorful architecture,GalaxiteDoor,4776,50,10,-1
+Colorful architecture,GalaxiteBridge,4721,50,10,0
+Colorful architecture,GleamWoodFloor,4726,50,10,0
+Colorful architecture,GleamWoodFence,4728,50,10,0
+Colorful architecture,GleamWoodFenceGate,4727,50,10,-1
+Colorful architecture,GleamWoodDoor,4774,50,10,-1
+Colorful architecture,GleamWoodBridge,4729,50,10,0
+Caveling settlement,CavelingChair,5704,50,10,-1
+Caveling settlement,CavelingTable,5703,75,10,-1
+Caveling settlement,CavelingBed,5706,125,10,-1
+Caveling settlement,CavelingToilet,5705,125,10,-1
+Caveling settlement,CavelingThrone,5711,125,10,-1
+Caveling settlement,CavelingPot,5702,50,10,-1
+Caveling settlement,ClayPot,5722,50,10,-1
+Caveling settlement,CavelingFloorTile,5700,125,10,-1
+Caveling settlement,CavelingFloorTileDark,5710,125,10,-1
+Caveling settlement,BrokenStonePillar,5701,125,10,-1
+Caveling settlement,WaterWell,5709,125,10,-1
+Caveling settlement,LarvaBBQ,5712,125,10,-1
+Caveling settlement,LarvaSkewer,5713,125,10,-1
+Caveling settlement,LarvaskinTent,5714,125,10,-1
+Caveling settlement,LarvaskinRug,5718,75,10,-1
+Caveling settlement,LarvaskinRugRed,5719,125,10,-1
+Caveling settlement,SpearRack,5715,125,10,-1
+Caveling settlement,Kiln1,5716,125,10,-1
+Caveling settlement,Kiln2,5717,125,10,-1
+Caveling settlement,LeatherFrameSmall,5720,125,10,-1
+Caveling settlement,LeatherFrame,5721,125,10,-1
+Camping and signs,AbandonedCampTent,5624,100,10,-1
+Camping and signs,AbandonedCampMatress,5625,100,10,-1
+Camping and signs,SignArrow,4151,100,10,-1
+Camping and signs,SignText,4154,100,10,-1
+Camping and signs,SignSkull,4152,100,10,-1
+Camping and signs,SignBrute,4153,100,10,-1
+Camping and signs,WoodenSign1,5809,100,10,-1
+Camping and signs,WoodenSign2,5810,100,10,-1
+Coast and coral,DriftwoodStool,5808,75,10,-1
+Coast and coral,DriftwoodTable,5807,100,10,-1
+Coast and coral,FishingNetRack,5806,175,10,-1
+Coast and coral,GlowingCoral,5802,175,10,-1
+Coast and coral,LandKelp,5803,175,10,-1
+Coast and coral,TallLandKelp,5804,175,10,-1
+Coast and coral,KelpTree,5805,175,10,-1
+Coast and coral,SurfaceCoral1Large,5844,175,10,-1
+Coast and coral,SurfaceCoral1Medium,5845,175,10,-1
+Coast and coral,SurfaceCoral1Small,5846,175,10,-1
+Coast and coral,SurfaceCoral2Large,5847,175,10,-1
+Coast and coral,SurfaceCoral2Small,5848,175,10,-1
+Coast and coral,SurfaceCoral3Large,5849,175,10,-1
+Coast and coral,SurfaceCoral3Small,5850,175,10,-1
+Coast and coral,TurtleRock,5813,175,10,-1
+Sunken city and ancient ruins,RuinsStool,5829,300,10,-1
+Sunken city and ancient ruins,RuinsTableSmall,5828,300,10,-1
+Sunken city and ancient ruins,RuinsTable,5827,150,10,-1
+Sunken city and ancient ruins,RuinsShelfSmall,5830,300,10,-1
+Sunken city and ancient ruins,RuinsShelfLarge,5831,300,10,-1
+Sunken city and ancient ruins,RuinsFireplace,5832,300,10,-1
+Sunken city and ancient ruins,RuinsPedestal,127,300,10,-1
+Sunken city and ancient ruins,RuinsCavelingPillar,5833,300,10,-1
+Sunken city and ancient ruins,RuinsPiece1,5570,300,10,-1
+Sunken city and ancient ruins,RuinsPiece2,5571,300,10,-1
+Sunken city and ancient ruins,RuinsPiece3,5572,300,10,-1
+Sunken city and ancient ruins,RuinsPiece4,5573,300,10,-1
+Sunken city and ancient ruins,RuinsGate,5819,300,10,-1
+Sunken city and ancient ruins,RuinsCoreRelief,5820,300,10,-1
+Sunken city and ancient ruins,CavelingMonument,5814,300,10,-1
+Sunken city and ancient ruins,CavelingMonumentBroken,5815,300,10,-1
+Sunken city and ancient ruins,ChronicleGallery,5817,300,10,-1
+Sunken city and ancient ruins,BigFloorTileGemstone,5821,300,10,-1
+Sunken city and ancient ruins,BigFloorTileCaveling,5822,300,10,-1
+Sunken city and ancient ruins,BigFloorTileScholar,5823,300,10,-1
+Sunken city and ancient ruins,InfoBoardSmall,5824,300,10,-1
+Sunken city and ancient ruins,InfoBoardLarge,5825,300,10,-1
+Sunken city and ancient ruins,InfoBoardBroken,5826,300,10,-1
+Sunken city and ancient ruins,SignTextMetropolis,4155,300,10,-1
+Sunken city and ancient ruins,VendingMachineBroken,5835,300,10,-1
+Sunken city and ancient ruins,AncientFountain,4001,300,10,-1
+Desert temple,SmallTempleRug,5884,150,10,-1
+Desert temple,LargeTempleRug,5885,250,10,-1
+Desert temple,TemplePillar,5881,350,10,-1
+Desert temple,TempleThrone,5900,350,10,-1
+Desert temple,TemplePedestal,5901,350,10,-1
+Desert temple,TempleAzeosUrn,5902,350,10,-1
+Desert temple,TempleRaAkarUrn,5903,350,10,-1
+Desert temple,TempleOmorothUrn,5904,350,10,-1
+Desert temple,TempleGlyphWall1,5882,350,10,-1
+Desert temple,TempleGlyphWall2,5883,350,10,-1
+Desert temple,TempleGlyphBlock,5888,350,10,-1
+Desert temple,TempleGlyphBlockBroken,5889,350,10,-1
+Desert temple,TempleGuardianStatue,5886,350,10,-1
+Desert temple,TempleGuardianStatueRaided,5887,350,10,-1
+Lava forge,LavaRock,5916,250,10,-1
+Lava forge,EmberPit,5917,250,10,-1
+Lava forge,SmithingBellow,5918,250,10,-1
+Lava forge,LavaPost1,5919,250,10,-1
+Lava forge,LavaPost2,5920,250,10,-1
+Lava forge,Wheelbarrow,5921,250,10,-1
+Lava forge,LiquidMetalBasin,5925,250,10,-1
+Lava forge,LiquidMetalVent,5926,250,10,-1
+Crystal and alien architecture,CrystalTent,5952,400,10,-1
+Crystal and alien architecture,GeodeWallDisplay,5954,400,10,10
+Crystal and alien architecture,ObeliskSmall,5955,400,10,-1
+Crystal and alien architecture,ObeliskTall,5956,400,10,-1
+Crystal and alien architecture,SingingCrystal,5957,400,10,-1
+Crystal and alien architecture,AlienTechSpire,5958,400,10,-1
+Crystal and alien architecture,AlienTechCrystalLight,5959,400,10,-1
+Crystal and alien architecture,AlienFloorVent,5960,400,10,-1
+Crystal and alien architecture,AlienObeliskSmall,5961,400,10,-1
+Crystal and alien architecture,AlienObeliskTall,5962,400,10,-1
+Passage and forgotten libraries,GrimyStonePillar,5985,350,10,-1
+Passage and forgotten libraries,GrimyStoneFloor,5986,350,10,0
+Passage and forgotten libraries,GrimyStoneBookshelf,6800,350,10,-1
+Passage and forgotten libraries,GrimyStoneBookshelfLarge,6801,350,10,-1
+Passage and forgotten libraries,GrimyStoneTable,6803,350,10,-1
+Industrial and excavation,MetalTable,209,300,10,-1
+Industrial and excavation,BigIndustrialTable,4057,300,10,-1
+Industrial and excavation,SmallIndustrialTable,4058,300,10,-1
+Industrial and excavation,MetalGrateBridge,4773,300,10,0
+Industrial and excavation,WallThermostat,6852,300,10,0
+Industrial and excavation,WallGauge,6853,300,10,0
+Industrial and excavation,WallMetalSheet,6854,300,10,0
+Industrial and excavation,ExcavationSign,6858,300,10,-1
+Industrial and excavation,MetalBarricade,6862,300,10,-1
+Industrial and excavation,MetalPallet,6863,300,10,-1
+Industrial and excavation,ColumnMonument,6865,300,10,-1
+Industrial and excavation,SahabarMonument,6866,300,10,-1
+Industrial and excavation,GearMonument,6867,300,10,-1
+Industrial and excavation,DrillMonument,6868,300,10,-1
+Industrial and excavation,ExcavationStatue,6870,300,10,-1
+Industrial and excavation,ExcavationPedestal,6871,300,10,-1
+Industrial and excavation,CandleStick,6872,300,10,-1
+Industrial and excavation,SignYellowWarning,4156,300,10,-1
+Industrial and excavation,SignRedWarning,4157,300,10,-1
+Industrial and excavation,AFWhiteBoard,6823,300,10,-1
+Industrial and excavation,AFWaterCooler,6824,300,10,-1
+Industrial and excavation,AFBottledAnomaly,6825,300,10,8
+Forest and meadow landscaping,Bush,5619,100,10,-1
+Forest and meadow landscaping,TallGrass,5620,100,10,-1
+Forest and meadow landscaping,Fern,5641,100,10,-1
+Forest and meadow landscaping,MossPlant,5642,100,10,-1
+Forest and meadow landscaping,PineTree,5646,100,10,-1
+Forest and meadow landscaping,PineTreeBig,5650,100,10,-1
+Forest and meadow landscaping,BigJungleTree,5639,100,10,-1
+Forest and meadow landscaping,MeadowTree,15500,100,10,-1
+Forest and meadow landscaping,MeadowBush,15501,100,10,-1
+Forest and meadow landscaping,MeadowTallGrass,15502,100,10,-1
+Forest and meadow landscaping,WhiteCherryTree,10502,100,10,-1
+Forest and meadow landscaping,PinkCherryTree,10503,100,10,-1
+Forest and meadow landscaping,WaterKelp,5613,100,10,-1
+Forest and meadow landscaping,WaterLily,5614,100,10,-1
+Forest and meadow landscaping,WaterReed,5992,100,10,-1
+Forest and meadow landscaping,Stalagmite,5610,100,10,-1
+Desert and oasis landscaping,DesertBush,5868,150,10,-1
+Desert and oasis landscaping,DesertRock1,5869,150,10,-1
+Desert and oasis landscaping,DesertRock2Left,5870,150,10,-1
+Desert and oasis landscaping,DesertRock2Right,5922,150,10,-1
+Desert and oasis landscaping,DesertRock3Left,5923,150,10,-1
+Desert and oasis landscaping,DesertRock3Right,5871,150,10,-1
+Desert and oasis landscaping,DesertRockSmall,5877,150,10,-1
+Desert and oasis landscaping,PlumeTree,5874,150,10,-1
+Desert and oasis landscaping,OasisStalagmite,5988,150,10,-1
+Desert and oasis landscaping,OasisSucculent,5990,150,10,-1
+Desert and oasis landscaping,OasisSucculentLarge,5991,150,10,-1
+Strange and glowing gardens,MoldTree,5750,200,10,-1
+Strange and glowing gardens,MoldWell,5751,200,10,-1
+Strange and glowing gardens,MoldPillar,5752,200,10,-1
+Strange and glowing gardens,LucentOakTree,5949,200,10,-1
+Strange and glowing gardens,TallCrystalGrass,5950,200,10,-1
+Strange and glowing gardens,SmallCrystalGrass,5951,200,10,-1
+Strange and glowing gardens,SulfurTree,5970,200,10,-1
+Strange and glowing gardens,FeatherTree,5972,200,10,-1
+Strange and glowing gardens,SmallFeatherTree,5973,200,10,-1
+Strange and glowing gardens,FeatherTreeCyan,5974,200,10,-1
+Strange and glowing gardens,SmallFeatherTreeCyan,5975,200,10,-1
+Strange and glowing gardens,TallBarnacleGrass,5976,200,10,-1
+Strange and glowing gardens,SmallBarnacleGrass,5977,200,10,-1
+Graveyard,GraveTree,5622,200,10,-1
+Graveyard,DeadTree,6864,200,10,-1
+Graveyard,EmptyGrave,5908,200,10,-1
+Graveyard,BrokenGrave,5909,200,10,-1
+Graveyard,IntactGrave,5910,200,10,-1
+Graveyard,TiltedGrave,5911,200,10,-1
+Graveyard,SkeletonPedestal,128,200,10,-1
+Graveyard,SkeletonPedestal2,129,200,10,-1
+Graveyard,StonePedestal,126,200,10,-1
+Easter meadow,EasterPillar,10011,200,10,-1
+Easter meadow,EasterEggFlowerpot,10012,200,10,-1
+Easter meadow,EasterDaisyFloorspread,10013,200,10,-1
+Easter meadow,EasterGarland,10014,200,10,-1
+Easter meadow,EasterMeadowTable,10015,200,10,-1
+Easter meadow,EasterMeadowStool,10017,200,10,-1
+Easter meadow,EasterEggLamp,10016,200,10,0
+Easter meadow,EasterPedestal,10018,200,10,-1
+Halloween,EerieFloor,10103,250,10,0
+Halloween,EerieTable,10104,250,10,-1
+Halloween,EerieStool,10105,250,10,-1
+Halloween,EerieDresser,10106,250,10,-1
+Halloween,EerieTreeLight,10108,250,10,-1
+Halloween,EerieRug,10109,250,10,-1
+Halloween,CandleStack,10110,250,10,-1
+Winter festivities,ChristmasWallDecorationA,10201,200,10,0
+Winter festivities,ChristmasWallDecorationB,10202,200,10,0
+Winter festivities,ChristmasWallDecorationC,10203,200,10,0
+Winter festivities,ChristmasWallDecorationD,10204,200,10,0
+Winter festivities,ChristmasWallDecorationE,10205,200,10,0
+Winter festivities,ChristmasTree,10207,200,10,-1
+Winter festivities,ChristmasTable,10208,200,10,-1
+Winter festivities,ChristmasStool,10209,200,10,-1
+Winter festivities,ChristmasFireplace,10210,200,10,-1
+Winter festivities,ChristmasSnowman,10211,200,10,-1
+Winter festivities,SnowballPyramid,10212,200,10,-1
+Winter festivities,ChristmasLightDecorationMix,10214,200,10,0
+Winter festivities,ChristmasLightDecorationPaintable,10215,200,10,0
+Valentine collection,ValentineFloorPetals,4753,250,10,-1
+Valentine collection,ValentineRug,10302,250,10,-1
+Valentine collection,ValentineCandles,10303,250,10,-1
+Valentine collection,ValentineWallHearts,10304,250,10,-1
+Valentine collection,ValentinePainting,10305,250,10,0
+Valentine collection,ValentinePlushie,10306,250,10,-1
+Valentine collection,PinkRoseBouquet,5193,495,10,99
+Valentine collection,WhiteRoseBouquet,5194,495,10,99
+Valentine collection,GoldenRoseBouquet,5195,745,10,149
+Lunar New Year,ChineseLantern,10600,250,10,-1
+Lunar New Year,ChineseGuardianLion,10602,250,10,-1
+Lunar New Year,ChineseKnot,10603,250,10,0
+Lunar New Year,ChineseWallLantern,10604,250,10,0
+Lunar New Year,ChineseFoldingScreen,10607,250,10,-1
+Lunar New Year,LuckyCat,10608,250,10,-1
+Themed storage,InventoryChest,100,300,10,-1
+Themed storage,InventoryLarvaHiveChest,101,300,10,-1
+Themed storage,InventoryMoldDungeonChest,102,300,10,-1
+Themed storage,InventoryAncientChest,103,300,10,-1
+Themed storage,InventorySeaBiomeChest,104,300,10,-1
+Themed storage,InventoryDesertBiomeChest,105,300,10,-1
+Themed storage,InventoryLavaChest,106,300,10,-1
+Themed storage,InventoryExcavationBiomeChest,6869,300,10,-1
+Themed storage,GingerbreadChest,107,300,10,-1
+Themed storage,ValentineChest,108,300,10,-1
+Themed storage,EerieChest,10107,300,10,-1
+Themed storage,AlienChest,109,300,10,-1
+Rare display pieces,OceanKingFossil,5812,1500,5,-1
+Rare display pieces,MammothFossil,5873,1500,5,-1
+Rare display pieces,HuntingSceneRock,5876,1500,5,-1
+Rare display pieces,AncientGiant,5621,1500,5,-1
+Rare display pieces,ColossCicada,5601,1500,5,-1
+Rare display pieces,MoldCicadaWithoutSickle,5756,1500,5,-1
+Rare display pieces,CultistColossCicada,5993,1500,5,-1
+Rare display pieces,ContributorItem0,19000,1500,5,-1
+Rare display pieces,ContributorItem1,19004,1500,5,-1
+Uncommon figurines,SlimeTrophy,5088,1000,3,50
+Uncommon figurines,PurpleSlimeTrophy,5089,1000,3,50
+Uncommon figurines,RedSlimeTrophy,5090,1000,3,50
+Uncommon figurines,LarvaTrophy,5092,1000,3,50
+Uncommon figurines,BigLarvaTrophy,5093,1000,3,50
+Uncommon figurines,HiveLarvaTrophy,5094,1000,3,100
+Uncommon figurines,HiveBigLarvaTrophy,5095,1000,3,150
+Uncommon figurines,CavelingTrophy,5096,1000,3,50
+Uncommon figurines,CavelingFarmerTrophy,5097,1000,3,100
+Uncommon figurines,CavelingHunterTrophy,5098,1000,3,100
+Uncommon figurines,CavelingInfectedTrophy,5100,1000,3,50
+Uncommon figurines,TentacleTrophy,5104,1000,3,100
+Uncommon figurines,MoldTentacleTrophy,5105,1000,3,100
+Uncommon figurines,SnarePlantTrophy,5106,1000,3,50
+Uncommon figurines,BlueSlimeTrophy,5107,1000,3,50
+Uncommon figurines,CocoonTrophy,5126,1000,3,100
+Uncommon figurines,CrabTrophy,5128,1000,3,150
+Uncommon figurines,MushroomEnemyTrophy,5136,1000,3,50
+Uncommon figurines,BombScarabTrophy,5162,1000,3,100
+Uncommon figurines,LavaButterflyTrophy,5163,1000,3,100
+Uncommon figurines,CavelingAssassinTrophy,5164,1000,3,100
+Uncommon figurines,LavaSlimeTrophy,5165,1000,3,50
+Uncommon figurines,GhostBlanketCavelingTrophy,5178,1000,3,50
+Uncommon figurines,BigLarvaVampireTrophy,5179,1000,3,50
+Uncommon figurines,CavelingSkirmisherTrophy,5180,1000,3,50
+Uncommon figurines,CavelingSpearmanTrophy,5181,1000,3,50
+Uncommon figurines,ChristmasSlimeTrophy,5187,1000,3,50
+Uncommon figurines,ChristmasSpikedSlimeTrophy,5188,1000,3,100
+Uncommon figurines,ChristmasCavelingTrophy,5190,1000,3,100
+Uncommon figurines,ChristmasShroomanTrophy,5191,1000,3,50
+Uncommon figurines,MimiteTrophy,5212,1000,3,100
+Uncommon figurines,OrbitalTurretTrophy,5213,1000,3,200
+Uncommon figurines,NilipedeTrophy,5214,1000,3,200
+Uncommon figurines,ColossalAmoebaTrophy,5221,1000,3,50
+Uncommon figurines,SulfurWormTrophy,5222,1000,3,50
+Uncommon figurines,CavelingMummyTrophy,5224,1000,3,100
+Uncommon figurines,ShroomanBruteTrophy,5225,1000,3,100
+Uncommon figurines,GoldenBombScarabTrophy,5226,1000,3,100
+Uncommon figurines,CicadaNymphTrophy,5227,1000,3,100
+Uncommon figurines,CicadaNatureTrophy,5228,1000,3,150
+Uncommon figurines,VoidLarvaTrophy,5231,1000,3,50
+Uncommon figurines,VoidLarvaCocoonTrophy,5232,1000,3,100
+Uncommon figurines,RobotMinerTrophy,5233,1000,3,50
+Uncommon figurines,RobotPatrollerTrophy,5234,1000,3,50
+Uncommon figurines,RobotSwarmerTrophy,5235,1000,3,50
+Uncommon figurines,VoidCavelingMinerTrophy,5236,1000,3,50
+Uncommon figurines,VoidCavelingShamanTrophy,5237,1000,3,50
+Uncommon figurines,VoidCavelingBruteTrophy,5238,1000,3,50
+Uncommon figurines,WinglingTrophy,5240,1000,3,100
+Uncommon figurines,SerpentTrophy,5241,1000,3,200
+Uncommon figurines,AFPestElectricTrophy,6840,1000,3,120
+Rare figurines,AcidLarvaTrophy,5091,2500,3,100
+Rare figurines,CavelingShamanTrophy,5099,2500,3,100
+Rare figurines,CavelingBruteTrophy,5101,2500,3,150
+Rare figurines,ScholarTrophy,5130,2500,3,200
+Rare figurines,FrankensteinCavelingBruteTrophy,5176,2500,3,150
+Rare figurines,PumpkinHeadCavelingShamanTrophy,5177,2500,3,150
+Rare figurines,ChristmasShamanTrophy,5186,2500,3,150
+Rare figurines,ChristmasBruteTrophy,5189,2500,3,150
+Epic and boss figurines,GlurchTrophy,5084,5000,3,150
+Epic and boss figurines,IvyTrophy,5085,5000,3,200
+Epic and boss figurines,GhormTrophy,5086,5000,3,200
+Epic and boss figurines,HivemotherTrophy,5087,5000,3,200
+Epic and boss figurines,AzeosTrophy,5102,5000,3,250
+Epic and boss figurines,MalugazTrophy,5103,5000,3,250
+Epic and boss figurines,EasterAzeosTrophy,5110,5000,3,150
+Epic and boss figurines,CoreTrophy,5124,5000,3,150
+Epic and boss figurines,MorphaTrophy,5125,5000,3,200
+Epic and boss figurines,OmorothTrophy,5127,5000,3,300
+Epic and boss figurines,GolemTrophy,5129,5000,3,250
+Epic and boss figurines,KingSlimeTrophy,5137,5000,3,150
+Epic and boss figurines,IgneousTrophy,5160,5000,3,200
+Epic and boss figurines,RaAkarTrophy,5161,5000,3,200
+Epic and boss figurines,HiveHalloweenBossTrophy,5175,5000,3,150
+Epic and boss figurines,AtlantianWormTrophy,5210,5000,3,250
+Epic and boss figurines,HydraBossNatureTrophy,5216,5000,3,250
+Epic and boss figurines,HydraBossDesertTrophy,5217,5000,3,300
+Epic and boss figurines,HydraBossSeaTrophy,5218,5000,3,250
+Epic and boss figurines,CoreCommanderTrophy,5219,5000,3,350
+Epic and boss figurines,UnleashedCoreCommanderTrophy,5220,5000,3,500
+Epic and boss figurines,WallBossTrophy,5223,5000,3,350
+Epic and boss figurines,HydraBossVoidTrophy,5239,5000,3,250

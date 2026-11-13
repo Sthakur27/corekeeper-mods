@@ -1,0 +1,38 @@
+{
+    "guid": "4c1d8e7a2b9f4a63b5e0d6c3f8a91e27",
+    "name": "StatsHud",
+    "displayName": "Stats HUD",
+    "skipSafetyChecks": false,
+    "disableScripts": false,
+    "accessesExtraAssemblies": true,
+    "disableHarmonyPatching": false,
+    "requiredOn": 0,
+    "files": [
+        {
+            "path": "Scripts/StatsHudMod.cs",
+            "guid": ""
+        },
+        {
+            "path": "Scripts/HudView.cs",
+            "guid": ""
+        },
+        {
+            "path": "Scripts/StatsHudGui.cs",
+            "guid": ""
+        },
+        {
+            "path": "Scripts/DamageMeter.cs",
+            "guid": ""
+        }
+    ],
+    "dependencies": [
+        {
+            "modName": "CoreLib",
+            "required": true
+        },
+        {
+            "modName": "ModOptions",
+            "required": true
+        }
+    ]
+}

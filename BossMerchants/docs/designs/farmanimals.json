@@ -121,6 +121,126 @@
    "name": "Wool",
    "price": 10,
    "stock": 20
+  },
+  {
+   "name": "CritterBeetle",
+   "price": 10,
+   "stock": 20
+  },
+  {
+   "name": "CritterLarva",
+   "price": 10,
+   "stock": 20
+  },
+  {
+   "name": "CritterCockroach",
+   "price": 15,
+   "stock": 15
+  },
+  {
+   "name": "CritterGrasshopper",
+   "price": 15,
+   "stock": 15
+  },
+  {
+   "name": "CritterCrab",
+   "price": 25,
+   "stock": 10
+  },
+  {
+   "name": "CritterCrab2",
+   "price": 25,
+   "stock": 10
+  },
+  {
+   "name": "CritterScorpion",
+   "price": 40,
+   "stock": 10
+  },
+  {
+   "name": "CritterCentipede",
+   "price": 40,
+   "stock": 10
+  },
+  {
+   "name": "CritterTinySnail",
+   "price": 50,
+   "stock": 5
+  },
+  {
+   "name": "CritterSnootFly",
+   "price": 50,
+   "stock": 5
+  },
+  {
+   "name": "CritterNewt",
+   "price": 50,
+   "stock": 5
+  },
+  {
+   "name": "CritterShrew",
+   "price": 75,
+   "stock": 5
+  },
+  {
+   "name": "CritterPassageFly",
+   "price": 100,
+   "stock": 3
+  },
+  {
+   "name": "CritterLarvaVoid",
+   "price": 150,
+   "stock": 3
+  },
+  {
+   "name": "ButterflyBase",
+   "price": 15,
+   "stock": 10
+  },
+  {
+   "name": "ButterflySunset",
+   "price": 25,
+   "stock": 10
+  },
+  {
+   "name": "ButterflyDreamy",
+   "price": 25,
+   "stock": 10
+  },
+  {
+   "name": "ButterflyCitrus",
+   "price": 25,
+   "stock": 10
+  },
+  {
+   "name": "ButterflyIcy",
+   "price": 50,
+   "stock": 5
+  },
+  {
+   "name": "YellowFirefly",
+   "price": 20,
+   "stock": 10
+  },
+  {
+   "name": "BlueFireFly",
+   "price": 30,
+   "stock": 10
+  },
+  {
+   "name": "GreenFireFly",
+   "price": 30,
+   "stock": 10
+  },
+  {
+   "name": "RedFireFly",
+   "price": 40,
+   "stock": 5
+  },
+  {
+   "name": "PurpleFireFly",
+   "price": 50,
+   "stock": 5
   }
  ]
 }

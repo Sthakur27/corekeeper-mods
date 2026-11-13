@@ -65,6 +65,12 @@ def check(path, combined=False):
                 continue
             if 'm_targetAssetRef' in t:
                 skins.add(t.get('m_Name'))
+                if t.get('m_Name') == 'bossMerchant_Eggs_skin':
+                    native_order = ['580fae3f-66dc-4b7a-900c-ee7986f742e6',
+                                    'e1e86c38-70e3-402a-a63f-ecb6d1f3edf0',
+                                    '7128f66e-0c6d-4aed-949e-93fdcd9f5138']
+                    if [r['m_guid'] for r in t['m_replacementData']] != native_order:
+                        bad.append(f'{path}: egg merchant skin order must match native idle/emote/move')
     names = [name for name, _ in ghosts]
     if len(names) != len(set(names)):
         bad.append(f'{path}: duplicate ghost prefab names {sorted(n for n in set(names) if names.count(n) > 1)}')

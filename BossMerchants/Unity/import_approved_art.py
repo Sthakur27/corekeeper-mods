@@ -38,6 +38,16 @@ NAMES = {'blocks': 'Grout', 'decor': 'Ottoline', 'explosives': 'Fizzwick',
 
 def cutouts(key):
     p = ART / 'approved_sources' / key / 'source.png'
+    parts, digest = source_cutouts(p)
+    # An approved NPC-only revision must not replace its companion item's art.
+    override = p.with_name('npc_source.png')
+    if override.exists():
+        revised, _ = source_cutouts(override)
+        parts[0] = revised[0]
+    return parts, digest
+
+
+def source_cutouts(p):
     rgba = np.array(Image.open(p).convert('RGBA'))
     # Generated files may have maximum alpha 254 and RGB in invisible pixels.
     rgba[rgba[:, :, 3] < 200] = 0
@@ -52,7 +62,7 @@ def cutouts(key):
             if start > 0 and x > rgba.shape[1] * .35 and start < rgba.shape[1] * .85:
                 runs.append((x - start, start, x))
             start = None
-    assert runs, f'{key}: no transparent gutter between NPC and idol'
+    assert runs, f'{p}: no transparent gutter between NPC and idol'
     _, left, right = max(runs)
     split = (left + right) // 2
     im = Image.fromarray(rgba)
@@ -60,7 +70,7 @@ def cutouts(key):
     for box in [(0, 0, split, im.height), (split, 0, im.width, im.height)]:
         crop = im.crop(box)
         bb = crop.getbbox()
-        assert bb, f'{key}: missing object'
+        assert bb, f'{p}: missing object'
         parts.append(crop.crop(bb))
     return parts, hashlib.sha256(p.read_bytes()).hexdigest()
 

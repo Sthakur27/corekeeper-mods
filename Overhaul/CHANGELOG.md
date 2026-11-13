@@ -1,5 +1,9 @@
 # Sid's Overhaul release history
 
+**New in 1.16.8:** New Stats HUD feature: FPS, DPS, movement speed and distance to the Core beside the health bar, under the buff icons or in the bottom left corner (F3 to toggle). Enchanting 0.4.0: buffs of the same kind merge into one icon whose tooltip lists every source; fixes enchantment bonuses being copied again on every world load; the remove button takes off the newest enchantment; accessory enchantments stack; figurines near the table improve the odds; weapon tooltips include enchantment multipliers. More NPCs 0.1.3: Wren sells all 25 critters and has a new face, Ottoline sells 423 decor items, NPC nameplates, merchant map markers and a host-only /morenpcs killall command. Item Spawner 1.1.2: spawned pets are set up properly instead of showing as empty slots.
+
+**New in 1.16.7:** Build Tools 0.6.7: the block brush now sits in front of you, on the side your mouse points to, instead of around your character. It starts at the tile next to you and shifts one tile (or up to half the brush) toward your mouse.
+
 **New in 1.16.6:** More NPCs 0.1.2: Tridra the Haggler now sells boss summoning items, including the three Titans, the Haunted Hive Mother, King Slime and Easter Azeos, each unlocked after that boss is beaten. Runic Storage 0.10.3: a new Storage Workbench, redrawn upgrade gems, gem-tinted lids and matching corner clamps on every tier, and the Octarine unit recolored to match Octarine ore. New Weapon Tweaks feature: the Burnzooka's rocket explodes on the first enemy it hits.
 
 **New in 1.16.5:** Boss Bonus Loot 1.9.0: Omoroth drops the Rusted Necklace 20% of the time and Bubble Crabs drop the Topaz Ring 3% of the time; each replaces that item's usual roll.

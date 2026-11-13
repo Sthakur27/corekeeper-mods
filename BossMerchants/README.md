@@ -16,10 +16,34 @@ Prices below are in Ancient Coins at the default 1x setting.
 | Ivy the Poisonous Mass | Ivy Culture Jar | Old Hemlock | Every potion, the Recall Idol and the food and drinks both vending machines dispense: Cave Coffee, sodas and snacks (40–500 coins; 2,500 for the Potion of Return) |
 | Ra-Akar the Sand Titan | Brood Egg Idol | Ankhra the Clutch-Keeper | Pet eggs (500–5,000 coins, 1–3 per restock) and cooking eggs (25 coins, 20 per restock) |
 | Druidra, Crydra or Pyrdra (any of the three hydras) | Triune Idol | Tridra the Haggler | Hydra baits, hydra crafting drops, gemstones, scanners, trophies, hydra jewellery and the Hydra Workbench (55–2,750 coins, 1–50 per restock), plus boss summoning items for bosses you have beaten (200–2,900 coins, 3 per restock) |
-| Azeos the Sky Titan | Skyherd Bell | Wren Hayfeather | Baby farm animals, cattle cages, leashes, feed trays, saddles, animal food, fences and gates, straw blocks, milk and wool (5–970 coins) |
+| Azeos the Sky Titan | Skyherd Bell | Wren Hayfeather | Baby farm animals, all 25 catchable critters, cattle cages, leashes, feed trays, saddles, animal food, fences and gates, straw blocks, milk and wool (5–970 coins) |
 | Hive Mother | Brood Seedpot | Tilly the Seedgrub | Every crop seed, planter boxes, watering cans, a seeder, the seed extractor, sprinklers and seed pouches (5–2,500 coins) |
 
 Old Hemlock also sells Sid's Potion of Return for 2,500 coins when that mod is installed; it is optional.
+
+### Wren's critters
+
+Wren sells all 25 native bug-net critter types, including five butterflies and five firefly colors. Her shop now has 47 wares; scroll over the buy window to see the remaining rows. Existing Wrens receive the expanded stock automatically after loading the updated mod; no new idol or replacement NPC is needed.
+
+| Critters | Coins each | Per restock |
+|---|---:|---:|
+| Worm, beetle, larva | 10 | 20 |
+| Cockroach, grasshopper | 15 | 15 |
+| Base butterfly | 15 | 10 |
+| Sunset, dreamy and citrus butterflies | 25 | 10 |
+| Icy butterfly | 50 | 5 |
+| Both crab types | 25 | 10 |
+| Scorpion, centipede | 40 | 10 |
+| Tiny snail, snoot fly, newt | 50 | 5 |
+| Shrew | 75 | 5 |
+| Passage fly | 100 | 3 |
+| Void larva | 150 | 3 |
+| Yellow firefly | 20 | 10 |
+| Blue and green fireflies | 30 | 10 |
+| Red firefly | 40 | 5 |
+| Purple firefly | 50 | 5 |
+
+These are balance choices based on availability and biome progression, not native rarity labels. All are available once Wren moves in. The existing price multiplier applies; resale is one-fifth of the base price, as with her other wares. Critter stock amounts are fixed.
 
 ### Tridra's boss summons
 
@@ -47,6 +71,20 @@ Each summoning item shows up in Tridra's shop once its boss has been killed in y
 The seasonal bosses work all year. The game doesn't check the season when they are summoned, and they keep their seasonal look and loot. The seasonal items unlock once you beat the regular boss, because the seasonal version can't be fought without its item.
 
 ## Prices and stock
+
+### Finding your merchants
+
+Ottoline's decor shop contains **423 items in 29 consecutive theme groups**. Scroll the buy window with the mouse wheel to browse home furniture, lighting, potted plants, aquariums, architecture, biome furniture, ruins, seasonal sets, themed storage and collectible figurines. Kelp Trees, Alien Floor Vents, pillars, rugs, shelves, monuments and temple props are included. Theme grouping is the order of the stock, not separate tabs.
+
+Common furnishings generally cost 25–400 Ancient Coins, rare display pieces 1,500, and uncommon/rare/epic figurines 1,000/2,500/5,000 before the price multiplier. Original stock retains its previous prices. Furniture restocks in lots of 10, rare display pieces 5, and figurines 3. The [full decor catalog](docs/decor-stock.csv) lists every item, theme and base price. As with other More NPCs goods, pricing uses the global item value, so sale values and other shops selling the same items are affected. This is a broad curated selection; machinery, boss summons, scene-only objects and separate cosmetic variations are not exhaustively included.
+
+Nearby merchants appear on the map and minimap with their own idol icon; hover over a full-map icon to see the merchant's name. Markers follow the game's normal NPC synchronization range, so distant merchants disappear until you return nearby. This does not keep NPCs active across the whole world or add network messages.
+
+Vanilla merchants also appear: Slime, Caveling, Fishing, Seasonal, Crystal and Void merchants use their respective summoning-item icons. Existing native markers are preserved.
+
+Names appear above NPCs within eight tiles of your character, including vanilla merchants. Labels hide outside that range, with the full map, or in the game's hidden-UI mode. Each multiplayer client uses its own character's proximity; map/minimap markers are unaffected.
+
+Host cleanup command: **`/morenpcs killall`** removes every More NPCs merchant currently loaded on the server, including earned merchants and duplicates. Vanilla NPCs, summoning idols and health values are unchanged. Existing valid idol rooms can summon replacements. Only the host/single-player user can run it; nothing runs automatically. The command reports the number queued for native removal.
 
 Open **Settings > Mod Options > More NPCs** to change prices or stock:
 

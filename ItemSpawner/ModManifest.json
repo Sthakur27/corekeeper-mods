@@ -23,6 +23,10 @@
         {
             "path": "Scripts/Cooking.cs",
             "guid": ""
+        },
+        {
+            "path": "Scripts/PetInitRepairSystem.cs",
+            "guid": ""
         }
     ],
     "dependencies": [

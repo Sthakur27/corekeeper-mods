@@ -21,7 +21,7 @@ namespace SidsOverhaul
     public sealed class SidsOverhaulMod : IMod
     {
         public const string Name = "SidsOverhaul";
-        public const string Version = "1.16.7";
+        public const string Version = "1.16.8";
 
         public void EarlyInit()
         {
@@ -65,6 +65,7 @@ namespace SidsOverhaul
             Page("BuildTools", "Build Tools", "Build Tools: ", BuildTools.BuildToolsMod.SettingsHint, BuildTools.BuildToolsMod.RegisterSettings);
             Page("MushroomSlayer", "Mushroom Slayer", "Mushroom Slayer: ", MushroomSlayer.MushroomSlayerMod.SettingsHint, MushroomSlayer.MushroomSlayerMod.RegisterSettings);
             Page("BossMerchants", "More NPCs", "Boss Merchants: ", BossMerchants.BossMerchantsMod.SettingsHint, BossMerchants.BossMerchantsMod.RegisterSettings);
+            Page("StatsHud", "Stats HUD", "Stats HUD: ", StatsHud.StatsHudMod.SettingsHint, StatsHud.StatsHudMod.RegisterSettings);
             Debug.Log($"[{Name}] Loaded all features.");
         }
 

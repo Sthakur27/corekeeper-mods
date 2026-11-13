@@ -126,6 +126,11 @@ def find_targets(env, names):
 def updated_skin(obj, tree, textures, eggs):
     result = copy.deepcopy(tree)
     replacements = result['m_replacementData']
+    # SpriteObject.GetReplacementAt uses the native animation INDEX, not the GUID lookup.
+    native_order = ['580fae3f-66dc-4b7a-900c-ee7986f742e6',
+                    'e1e86c38-70e3-402a-a63f-ecb6d1f3edf0',
+                    '7128f66e-0c6d-4aed-949e-93fdcd9f5138']
+    replacements.sort(key=lambda r: native_order.index(r['m_guid']))
     require(len(replacements) == 3, 'Egg skin must have three animation replacements')
     require({r['m_guid'] for r in replacements} == set(eggs), 'Egg skin animation GUID mismatch')
     address = result['m_targetAssetRef']['m_address']

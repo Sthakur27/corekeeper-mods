@@ -77,19 +77,7 @@ namespace BossMerchants
             {
                 Key = "Decor", MerchantName = "BossMerchants_DecorMerchant", IdolName = "BossMerchants_DecorIdol",
                 Bosses = new[] { ObjectID.OctopusBoss },
-                Stock = new[]
-                {
-                    E(ObjectID.Candle, 25, 10), E(ObjectID.Lantern, 50, 10), E(ObjectID.SmallLantern, 50, 10),
-                    E(ObjectID.Lamp, 75, 10), E(ObjectID.OrbLantern, 100, 10), E(ObjectID.StoneLantern, 100, 10),
-                    E(ObjectID.CrystalLamp, 150, 10), E(ObjectID.SirenLamp, 150, 10),
-                    E(ObjectID.PearlLantern, 150, 10), E(ObjectID.SoulLantern, 200, 10),
-                    E(ObjectID.DecorativePot, 50, 10), E(ObjectID.ClayPot, 50, 10), E(ObjectID.CavelingPot, 50, 10),
-                    E(ObjectID.Rug, 50, 10), E(ObjectID.Banner, 50, 10), E(ObjectID.LarvaskinRug, 75, 10),
-                    E(ObjectID.SmallTempleRug, 150, 10), E(ObjectID.LargeTempleRug, 250, 10),
-                    E(ObjectID.Painting, 100, 10), E(ObjectID.CavelingChair, 50, 10),
-                    E(ObjectID.CavelingTable, 75, 10), E(ObjectID.DriftwoodStool, 75, 10),
-                    E(ObjectID.DriftwoodTable, 100, 10), E(ObjectID.RuinsTable, 150, 10),
-                },
+                Stock = DecorStock.Create(),
             },
             // Fizzwick, the Molten Bombardier (Igneous Fuse Core): dropped by LavaSlimeBoss.
             new Merchant
@@ -207,6 +195,16 @@ namespace BossMerchants
                     E(ObjectID.WoodFence, 5, 99), E(ObjectID.WoodFenceGate, 10, 20), E(ObjectID.StoneFence, 5, 99),
                     E(ObjectID.StoneFenceGate, 35, 20), E(ObjectID.WallStrawBlock, 5, 99),
                     E(ObjectID.WovenStrawFloor, 5, 99), E(ObjectID.Milk, 10, 10), E(ObjectID.Wool, 10, 20),
+                    // All other bug-net critters; worms are listed above as animal feed.
+                    // Prices follow biome progression/availability, not native rarity (all are common).
+                    E(ObjectID.CritterBeetle, 10, 20), E(ObjectID.CritterLarva, 10, 20), E(ObjectID.CritterCockroach, 15, 15),
+                    E(ObjectID.CritterGrasshopper, 15, 15), E(ObjectID.CritterCrab, 25, 10), E(ObjectID.CritterCrab2, 25, 10),
+                    E(ObjectID.CritterScorpion, 40, 10), E(ObjectID.CritterCentipede, 40, 10), E(ObjectID.CritterTinySnail, 50, 5),
+                    E(ObjectID.CritterSnootFly, 50, 5), E(ObjectID.CritterNewt, 50, 5), E(ObjectID.CritterShrew, 75, 5),
+                    E(ObjectID.CritterPassageFly, 100, 3), E(ObjectID.CritterLarvaVoid, 150, 3), E(ObjectID.ButterflyBase, 15, 10),
+                    E(ObjectID.ButterflySunset, 25, 10), E(ObjectID.ButterflyDreamy, 25, 10), E(ObjectID.ButterflyCitrus, 25, 10),
+                    E(ObjectID.ButterflyIcy, 50, 5), E(ObjectID.YellowFirefly, 20, 10), E(ObjectID.BlueFireFly, 30, 10),
+                    E(ObjectID.GreenFireFly, 30, 10), E(ObjectID.RedFireFly, 40, 5), E(ObjectID.PurpleFireFly, 50, 5),
                 },
             },
             // Tilly the Seedgrub (Brood Seedpot): dropped by LarvaHiveBoss.

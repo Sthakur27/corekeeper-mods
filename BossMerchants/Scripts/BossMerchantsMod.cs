@@ -1,4 +1,6 @@
 using System.Linq;
+using CoreLib;
+using CoreLib.Submodule.Command;
 using ModOptions;
 using PugMod;
 using Unity.Entities;
@@ -24,7 +26,7 @@ namespace BossMerchants
     public sealed class BossMerchantsMod : IMod
     {
         public const string Name = "BossMerchants";
-        public const string Version = "0.1.2";
+        public const string Version = "0.1.3";
 
         private static bool _appliedViaDatabase;
         private static Setting<string> _price;
@@ -34,6 +36,12 @@ namespace BossMerchants
 
         public void EarlyInit()
         {
+            CoreLibMod.LoadSubmodule(typeof(CommandModule));
+            if (!InOverhaul(this))
+            {
+                var owner = API.ModLoader.LoadedMods.FirstOrDefault(m => m.Handlers.Contains(this));
+                if (owner != null) CommandModule.AddCommands(owner.ModId, Name);
+            }
             API.Authoring.OnObjectTypeAdded += OnObjectTypeAdded;
             Debug.Log($"[{Name}] v{Version} loaded: {Catalog.Merchants.Length} boss merchants, grid {MerchantStock.Columns}x{MerchantStock.Rows}.");
         }

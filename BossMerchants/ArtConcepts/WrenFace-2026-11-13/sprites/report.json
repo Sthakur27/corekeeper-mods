@@ -1,0 +1,21 @@
+[
+  {
+    "key": "farmanimals",
+    "sourceSha256": "13b4829174c6f69101ccc863b3dc4b0df595ebfc803b59d66f8910d3447efa0d",
+    "nativeBounds": [
+      23,
+      36
+    ],
+    "idolBounds": [
+      12,
+      16
+    ],
+    "frames": {
+      "Merchant": 24,
+      "Merchant_Light": 24,
+      "Merchant_Eye": 18
+    },
+    "paletteLimit": 48,
+    "animation": "pixel-aligned idle compression, alternating walk sway, greeting nod; slime arrival reveal"
+  }
+]

@@ -49,7 +49,7 @@ Mod Options can also show settings from some other CoreLib mods. If a page hasn'
 
 ## Latest update
 
-**1.16.14:** Boss Bonus Loot 1.11.0: Infected Cavelings drop the Tome of the Dead 5% of the time (vanilla 0.43%), as part of their normal loot roll.
+**1.16.15:** Boss Bonus Loot 1.12.0: Infected Cavelings drop the Mold Ring and Mold Vein Necklace 4% of the time each (vanilla 0.2%) and the Moth pet egg 2% (vanilla 1.7%). The Tome of the Dead stays at 5%, and these chances now come out of the empty roll only, so their other drops are back to their vanilla chances.
 
 Older updates are in the [release history](https://github.com/Sthakur27/corekeeper-mods/blob/main/Overhaul/CHANGELOG.md).
 

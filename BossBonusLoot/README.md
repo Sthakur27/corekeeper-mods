@@ -25,7 +25,7 @@ The extra items drop where the boss dies, alongside its normal loot chest. Each 
 
 Mimites and Orbital Turrets each roll a **10% chance per gemstone** for a Jungle Emerald, Ocean Sapphire and Desert Ruby. Void Larvae have a **20% chance** to drop an Oblivion Fragment. Bubble Crabs have a **3% chance** to drop a Topaz Ring. These chances replace the usual random rolls for those items; they are not extra rolls on top of them.
 
-Infected Cavelings drop the Tome of the Dead **5%** of the time (vanilla 0.43%). This raises the tome's share of their normal loot roll; the other drops keep their relative odds, only the empty roll gets smaller.
+Infected Cavelings drop the Tome of the Dead **5%** of the time (vanilla 0.43%), the Mold Ring and Mold Vein Necklace **4%** each (vanilla 0.2%) and the Moth pet egg **2%** (vanilla 1.7%). These raise each item's share of their normal loot roll, taken from the chance of dropping nothing, so their other drops keep their vanilla chances.
 
 ## Larva Meat
 

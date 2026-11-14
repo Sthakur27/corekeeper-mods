@@ -92,11 +92,11 @@ namespace Enchanting
             gained = false;
             var parts = new List<string>();
             foreach (var e in now)
-                if (!Contains(before, e) && e.Def != null) parts.Add($"{e.Def.Name} {Enchants.Roman(e.Level)}: {Effect(e, item)}");
+                if (!Contains(before, e) && e.Def != null) parts.Add($"{e.Def.Name} {Enchants.Roman(e.Level)}");
             if (parts.Count > 0)
             {
                 gained = true;
-                return "Rolled " + string.Join(", ", parts);
+                return string.Join(", ", parts); // just the name, e.g. "Resilience III" (Sid, 2026-11-13)
             }
             foreach (var e in before)
                 if (!Contains(now, e) && e.Def != null) parts.Add($"{e.Def.Name} {Enchants.Roman(e.Level)}");

@@ -1,5 +1,7 @@
 # Sid's Overhaul release history
 
+**New in 1.16.14:** Boss Bonus Loot 1.11.0: Infected Cavelings drop the Tome of the Dead 5% of the time (vanilla 0.43%), as part of their normal loot roll.
+
 **New in 1.16.13:** Build Tools 0.6.9: block and floor brushes follow your cursor the way a resized hoe or shovel does, so a bigger brush can be pushed further away from you instead of staying centered next to your character. Seeds and other objects keep the centered brush.
 
 **New in 1.16.12:** Better Fishing Loot 1.2.0: Core Iris is a flat 2.5% of every Molten Quarry loot catch at any setting (vanilla about 0.35%). Boss Bonus Loot 1.10.0: Igneous drops the Core Iris 20% of the time and Morpha drops the Topaz Ring 10% of the time; each replaces that item's usual roll. Build Tools 0.6.8: the block brush is centred on your aim again. More NPCs 0.1.5: Tilly sells Farmer's Hat (500 coins), Eostre Necklace (1,500) and Petal Ring (1,000), one each per restock at 1x, available year-round. Use mouse-wheel scrolling to reach the three added wares.

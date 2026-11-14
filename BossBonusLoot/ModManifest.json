@@ -23,6 +23,10 @@
         {
             "path": "Scripts/Systems/LarvaMeatSystem.cs",
             "guid": "c4d92e7a1b6f4e83a0f5d2b9e8c71a46"
+        },
+        {
+            "path": "Scripts/Systems/TomeDropSystem.cs",
+            "guid": "7f3a9c2e5b1d4e86a0c4f2d8b9e61a37"
         }
     ],
     "dependencies": [

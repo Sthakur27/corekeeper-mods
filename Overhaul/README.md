@@ -49,7 +49,7 @@ Mod Options can also show settings from some other CoreLib mods. If a page hasn'
 
 ## Latest update
 
-**1.16.13:** Build Tools 0.6.9: block and floor brushes follow your cursor the way a resized hoe or shovel does, so a bigger brush can be pushed further away from you instead of staying centered next to your character. Seeds and other objects keep the centered brush.
+**1.16.14:** Boss Bonus Loot 1.11.0: Infected Cavelings drop the Tome of the Dead 5% of the time (vanilla 0.43%), as part of their normal loot roll.
 
 Older updates are in the [release history](https://github.com/Sthakur27/corekeeper-mods/blob/main/Overhaul/CHANGELOG.md).
 

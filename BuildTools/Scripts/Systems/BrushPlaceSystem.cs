@@ -282,7 +282,9 @@ namespace BuildTools.Systems
             bool hasPickaxe = free || HasToolType(player, blob, ObjectType.MiningPick);
             bool hasShovel = free || HasToolType(player, blob, ObjectType.Shovel);
 
-            var cells = Brush.Cells(anchor, job.bits.Shape, job.bits.Size);
+            var input = EntityManager.GetComponentData<ClientInput>(player);
+            var cells = Brush.Cells(anchor, job.bits.Shape, job.bits.Size, Brush.FollowsMouse(isTile, in input), playerPos,
+                input.mouseOrJoystickWorldPoint);
             bool groundPass = isTile && ToggleNeedsGround(cells, job, ref info, in shared);
 
             int placed = 0;

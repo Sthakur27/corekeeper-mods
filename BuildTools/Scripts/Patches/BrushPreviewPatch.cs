@@ -1,6 +1,9 @@
 using HarmonyLib;
 using PlayerEquipment;
+using PugMod;
+using PugTilemap;
 using Unity.Entities;
+using Unity.Mathematics;
 using UnityEngine;
 
 namespace BuildTools.Patches
@@ -27,6 +30,14 @@ namespace BuildTools.Patches
             var extent = Brush.Extent(BuildToolsMod.ClientBrush.Shape, BuildToolsMod.ClientBrush.Edge);
             var anchor = placementCD.bestPositionToPlaceAt;
             var corner = Brush.Corner(anchor, extent);
+            var world = API.Client.World;
+            var player = Manager.main != null ? Manager.main.player : null;
+            if (world != null && player != null && world.EntityManager.HasComponent<ClientInput>(player.entity))
+            {
+                var input = world.EntityManager.GetComponentData<ClientInput>(player.entity);
+                if (Brush.FollowsMouse(world.EntityManager.HasComponent<TileCD>(placementPrefab), in input))
+                    corner = Brush.AimedCorner(anchor, extent, player.WorldPosition, input.mouseOrJoystickWorldPoint);
+            }
             Shift = EntityMonoBehaviour.ToRenderFromWorld(new Vector3Int(corner.x, corner.y, corner.z))
                     - EntityMonoBehaviour.ToRenderFromWorld(new Vector3Int(anchor.x, anchor.y, anchor.z));
             ShiftIcon = __instance.placeableIcon;

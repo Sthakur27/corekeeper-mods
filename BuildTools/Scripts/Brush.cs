@@ -87,17 +87,48 @@ namespace BuildTools
             return anchor - new int3((extent.x - 1) / 2, 0, (extent.y - 1) / 2);
         }
 
-        /// <summary>Cells of the brush, nearest to the aimed cell first (so a short stack fills the middle).</summary>
-        public static List<int3> Cells(int3 anchor, BrushShape shape, int edge)
+        /// <summary>Extra reach the game gives a placeable beyond its own size (PlacementHandler.GetMaxReachDistance).</summary>
+        private const float AimReach = 1.5f;
+
+        /// <summary>
+        /// Min corner of a block brush aimed with the mouse, the way the game aims a resized hoe or shovel
+        /// (PlacementHandler.FindPlaceablePositionFromMouseOrJoystick with the brush's size): the mouse point,
+        /// shifted so it sits in the middle of the brush, is clamped into a box of the brush size plus
+        /// <see cref="AimReach"/> centred on the player. A bigger brush can therefore be pushed further out
+        /// with the cursor, while a 1x1 block's aimed cell stays next to the player.
+        /// </summary>
+        public static int3 AimedCorner(int3 anchor, int2 extent, float3 player, float2 mouse)
+        {
+            var size = new float2(extent.x, extent.y);
+            var half = (size - 1f) / 2f;
+            var center = player.xz - half;
+            var box = (size + AimReach) / 2f;
+            var p = math.clamp(mouse - half, center - box, center + box);
+            return new int3((int)math.round(p.x), anchor.y, (int)math.round(p.y));
+        }
+
+        /// <summary>
+        /// Cells of the brush. Mouse-aimed (blocks and floors with keyboard and mouse) it uses
+        /// <see cref="AimedCorner"/> and fills nearest the player first; otherwise it is centred on the
+        /// game's aimed cell and fills from there (seeds and objects, whose aimed cell the game places itself).
+        /// </summary>
+        public static List<int3> Cells(int3 anchor, BrushShape shape, int edge, bool aimed, float3 player, float2 mouse)
         {
             var extent = Extent(shape, edge);
-            var corner = Corner(anchor, extent);
+            var corner = aimed ? AimedCorner(anchor, extent, player, mouse) : Corner(anchor, extent);
+            var from = aimed ? new int3((int)math.round(player.x), anchor.y, (int)math.round(player.z)) : anchor;
             var cells = new List<int3>(extent.x * extent.y);
             for (int x = 0; x < extent.x; x++)
                 for (int z = 0; z < extent.y; z++)
                     cells.Add(corner + new int3(x, 0, z));
-            cells.Sort((a, b) => DistanceSq(a, anchor).CompareTo(DistanceSq(b, anchor)));
+            cells.Sort((a, b) => DistanceSq(a, from).CompareTo(DistanceSq(b, from)));
             return cells;
+        }
+
+        /// <summary>Whether the brush follows the mouse (<see cref="AimedCorner"/>): tile items aimed with keyboard and mouse.</summary>
+        public static bool FollowsMouse(bool isTile, in ClientInput input)
+        {
+            return isTile && (input.prefersKeyboardAndMouse || input.wasAiming);
         }
 
         private static int DistanceSq(int3 a, int3 b)

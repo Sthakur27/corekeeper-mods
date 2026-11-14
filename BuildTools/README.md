@@ -24,7 +24,7 @@ If you also use **Bigger Watering Cans**, its 2x2 and 4x4 limits still apply. Yo
 
 ## Placing blocks and seeds
 
-Hold a block, floor, seed, or another one-tile object and press **Keypad +** or **Keypad multiply (*)** to turn on the brush. Aim where you want it and right-click. The preview shows the area you'll fill, and each free spot uses one item from your stack.
+Hold a block, floor, seed, or another one-tile object and press **Keypad +** or **Keypad multiply (*)** to turn on the brush. Aim where you want it and right-click. Like a resized hoe or shovel, a block or floor brush follows your cursor, and a bigger brush reaches further out. The preview shows the area you'll fill, and each free spot uses one item from your stack.
 
 Blocks, floors, seeds, and other objects each remember their own brush size and shape. Placement still follows the usual rules: you need to be in reach, nothing can be in the way, and seeds need tilled ground. Wall-mounted items and objects larger than one tile still place one at a time.
 

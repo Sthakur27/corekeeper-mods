@@ -49,7 +49,7 @@ Mod Options can also show settings from some other CoreLib mods. If a page hasn'
 
 ## Latest update
 
-**1.16.9:** Stats HUD 0.2.0: F4 shows or hides the buff icons and the minion counter under the health bar. It only changes what you see: buffs keep running, and the icons come back as they were. Rebind it under Controls; the new setting "Show buff icons under the health bar" does the same.
+**1.16.13:** Build Tools 0.6.9: block and floor brushes follow your cursor the way a resized hoe or shovel does, so a bigger brush can be pushed further away from you instead of staying centered next to your character. Seeds and other objects keep the centered brush.
 
 Older updates are in the [release history](https://github.com/Sthakur27/corekeeper-mods/blob/main/Overhaul/CHANGELOG.md).
 

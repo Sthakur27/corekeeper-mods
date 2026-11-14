@@ -26,13 +26,14 @@ namespace BossMerchants
     public sealed class BossMerchantsMod : IMod
     {
         public const string Name = "BossMerchants";
-        public const string Version = "0.1.3";
+        public const string Version = "0.1.5";
 
         private static bool _appliedViaDatabase;
         private static Setting<string> _price;
         private static Setting<int> _stock;
+        private static Setting<string> _health;
 
-        public const string SettingsHint = "Bosses drop a merchant idol: Morpha (blocks), Omoroth (decor), Igneous (explosives), Ivy (potions), Ra-Akar (pet eggs). Place it in a room with a free bed and the merchant moves in. Price multiplier scales buy prices; stock applies to potions and explosives (blocks, decor and eggs have fixed amounts). In multiplayer the host's values count.";
+        public const string SettingsHint = "Bosses drop a merchant idol: Morpha (blocks), Omoroth (decor), Igneous (explosives), Ivy (potions), Ra-Akar (pet eggs). Place it in a room with a free bed and the merchant moves in. Price multiplier scales buy prices; stock applies to potions and explosives (blocks, decor and eggs have fixed amounts). NPC max health sets the health of every merchant NPC, vanilla ones included: 1,000, 10,000, default 100,000 or 1,000,000. In multiplayer the host's values count.";
 
         public void EarlyInit()
         {
@@ -60,6 +61,14 @@ namespace BossMerchants
             section
                 .Choice(out _price, "Price multiplier", BossMerchantsConfig.PriceLadder, BossMerchantsConfig.DefaultPriceToken)
                 .Stepper(out _stock, "Potions and explosives per restock", BossMerchantsConfig.MinStock, BossMerchantsConfig.MaxStock, BossMerchantsConfig.DefaultStock);
+
+            section.Choice(out _health, "NPC max health", BossMerchantsConfig.HealthLadder, BossMerchantsConfig.VanillaHealthToken);
+            BossMerchantsConfig.SetHealthTarget(BossMerchantsConfig.ParseHealth(_health.Value));
+            _health.OnChanged += token =>
+            {
+                BossMerchantsConfig.SetHealthTarget(BossMerchantsConfig.ParseHealth(token));
+                Debug.Log($"[{Name}] NPC max health set to {(BossMerchantsConfig.HealthTarget > 0 ? BossMerchantsConfig.HealthTarget.ToString() : "default")}");
+            };
 
             BossMerchantsConfig.SetPriceMultiplier(BossMerchantsConfig.ParseMultiplier(_price.Value));
             BossMerchantsConfig.SetStock(_stock.Value);

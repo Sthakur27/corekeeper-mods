@@ -21,7 +21,7 @@ namespace SidsOverhaul
     public sealed class SidsOverhaulMod : IMod
     {
         public const string Name = "SidsOverhaul";
-        public const string Version = "1.16.9";
+        public const string Version = "1.16.12";
 
         public void EarlyInit()
         {
@@ -66,7 +66,17 @@ namespace SidsOverhaul
             Page("MushroomSlayer", "Mushroom Slayer", "Mushroom Slayer: ", MushroomSlayer.MushroomSlayerMod.SettingsHint, MushroomSlayer.MushroomSlayerMod.RegisterSettings);
             Page("BossMerchants", "More NPCs", "Boss Merchants: ", BossMerchants.BossMerchantsMod.SettingsHint, BossMerchants.BossMerchantsMod.RegisterSettings);
             Page("StatsHud", "Stats HUD", "Stats HUD: ", StatsHud.StatsHudMod.SettingsHint, StatsHud.StatsHudMod.RegisterSettings);
+            // "Minimum stock per item" lives on the Merchant Restock page; Fish Seller and More NPCs apply it to their own lists.
+            MerchantRestock.RestockSettings.FloorChanged += PushStockFloor;
+            PushStockFloor();
             Debug.Log($"[{Name}] Loaded all features.");
+        }
+
+        private static void PushStockFloor()
+        {
+            int floor = MerchantRestock.RestockSettings.StockFloor;
+            FishSeller.ShopItems.SetStockFloor(floor);
+            BossMerchants.BossMerchantsConfig.SetStockFloor(floor);
         }
 
         private void Page(string feature, string title, string keyPrefix, string hint, System.Action<SettingsPage> register)

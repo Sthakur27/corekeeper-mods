@@ -61,7 +61,7 @@ namespace BossMerchants
                         items.Add(new MerchantItemInfoBuffer
                         {
                             objectID = entry.id,
-                            amount = entry.stock > 0 ? entry.stock : stock,
+                            amount = BossMerchantsConfig.AmountFor(entry.stock, stock),
                             requirementToBeAvailable = MerchantItemRequirement.None
                         });
                 changed = true;
@@ -114,7 +114,7 @@ namespace BossMerchants
             {
                 if (!Listed(list[i], isBeaten)) continue;
                 if (j >= items.Length) return true;
-                int amount = list[i].stock > 0 ? list[i].stock : stock;
+                int amount = BossMerchantsConfig.AmountFor(list[i].stock, stock);
                 if (items[j].objectID != list[i].id || items[j].amount != amount
                     || items[j].requirementToBeAvailable != MerchantItemRequirement.None) return true;
                 j++;

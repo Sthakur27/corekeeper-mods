@@ -98,6 +98,11 @@ namespace FishSeller
 
         public static void SetPriceMultiplier(string token) => PriceMultiplier = ParseMultiplier(token);
 
+        /// <summary>Minimum stock per stackable item, 0 = off. Set by Sid's Overhaul's "Minimum stock per item" (Merchant Restock page); the standalone mod never sets it.</summary>
+        public static int StockFloor { get; private set; }
+
+        public static void SetStockFloor(int floor) => StockFloor = floor < 0 ? 0 : floor;
+
         public static void SetStock(int stock)
         {
             if (stock < MinStock) stock = MinStock;

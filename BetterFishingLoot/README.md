@@ -12,6 +12,8 @@ The boost applies to armor, accessories, tools, pets, and items marked Rare or b
 
 A 5x setting doesn't mean exactly five times the chance of a particular item. It gives those items more weight in the loot roll, so you're more likely to get them and less likely to get common loot. It doesn't give you extra copies of a catch.
 
+**Core Iris** is the exception: in Molten Quarry water it is a flat **2.5%** of every loot catch at any setting (normally about 0.35%).
+
 ## What stays the same
 
 You won't get more loot bites instead of fish bites, and the fish you can catch stay the same. Bait, legendary fish, and the fishing minigame work as usual. This only affects fishing loot, so it won't change chests or enemy drops.

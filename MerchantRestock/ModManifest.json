@@ -5,7 +5,7 @@
     "skipSafetyChecks": false,
     "disableScripts": false,
     "accessesExtraAssemblies": true,
-    "disableHarmonyPatching": true,
+    "disableHarmonyPatching": false,
     "requiredOn": 3,
     "files": [
         {
@@ -18,6 +18,14 @@
         },
         {
             "path": "Scripts/Systems/MerchantRestockSystem.cs",
+            "guid": ""
+        },
+        {
+            "path": "Scripts/Systems/MerchantStockFloorSystem.cs",
+            "guid": ""
+        },
+        {
+            "path": "Scripts/Patches/QuickBuyPatch.cs",
             "guid": ""
         }
     ],

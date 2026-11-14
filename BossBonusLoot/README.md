@@ -12,7 +12,8 @@ The extra items drop where the boss dies, alongside its normal loot chest. Each 
 |---|---|
 | Ghorm | 80 Larva Meat and 80 Golden Larva Meat, guaranteed. Amber Larva: 10% (replaces its usual roll in Ghorm's loot). |
 | Glurch | Adventurer's Hat: 30% (replaces its usual roll in Glurch's loot). Anniversary Cake: 15%. |
-| Igneous | Splendid Amalgam: 15% |
+| Igneous | Core Iris: 20% (replaces its usual roll in Igneous's loot). Splendid Amalgam: 15%. |
+| Morpha | Topaz Ring: 10% (replaces its usual roll in Morpha's loot). |
 | Crydra the Ice Titan | Golden Chocolate: 15% |
 | Druidra the Wild Titan | Paradise Fruit Basket: 15% |
 | Azeos | 1 Jungle Emerald, guaranteed. Chipped Blade and Clear Gemstone: 25% each. Large Seed and Crop Pouch: 40%. Large Critter Pouch: 40%. |

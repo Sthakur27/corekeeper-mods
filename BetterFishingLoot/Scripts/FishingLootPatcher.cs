@@ -37,6 +37,16 @@ namespace BetterFishingLoot
         private static readonly Dictionary<LootTableID, bool> _isFishingLootTable = new Dictionary<LootTableID, bool>();
         private static float _lastLoggedMultiplier = float.NaN;
 
+        /// <summary>
+        /// Items whose share of a fishing loot catch is pinned to a fixed chance instead of being
+        /// scaled by the multiplier. Core Iris (CoreEye) is weight 0.002 in LavaFishingLoot, about
+        /// 0.35% per loot catch in vanilla; it is pinned to 2.5% at every multiplier setting.
+        /// </summary>
+        private static readonly Dictionary<ObjectID, float> PinnedChance = new Dictionary<ObjectID, float>
+        {
+            [ObjectID.CoreEye] = 0.025f,
+        };
+
         public static bool IsFishingLootTable(LootTableID id)
         {
             if (!_isFishingLootTable.TryGetValue(id, out bool result))
@@ -62,6 +72,18 @@ namespace BetterFishingLoot
             return false;
         }
 
+        /// <summary>Vanilla weight of a slot, remembered the first time the slot is seen.</summary>
+        private static float VanillaWeight(LootTableID table, int slot, float current, ObjectID objectID)
+        {
+            Key key = new Key { table = table, slot = slot, objectID = objectID };
+            if (!_vanillaWeights.TryGetValue(key, out float vanilla))
+            {
+                vanilla = current;
+                _vanillaWeights[key] = vanilla;
+            }
+            return vanilla;
+        }
+
         /// <summary>Applies <paramref name="multiplier"/> to every rare entry of every fishing loot table in the blob.</summary>
         public static void Apply(BlobAssetReference<LootTableBankBlob> bank, float multiplier, string worldName)
         {
@@ -80,18 +102,27 @@ namespace BetterFishingLoot
                 float totalBefore = 0f, totalAfter = 0f, rareBefore = 0f, rareAfter = 0f;
                 List<string> lines = log ? new List<string>() : null;
 
+                // Pinned items take a fixed share of the table: their weight is solved from the sum of
+                // every other entry's target weight, so it holds at any multiplier.
+                float othersTarget = 0f, pinnedShare = 0f;
                 for (int n = 0; n < table.lootTable.Length; n++)
                 {
                     ref EntityLootInfo entry = ref table.lootTable[n];
-                    Key key = new Key { table = table.lootTableID, slot = n, objectID = entry.objectID };
-                    if (!_vanillaWeights.TryGetValue(key, out float vanilla))
-                    {
-                        vanilla = entry.weight;
-                        _vanillaWeights[key] = vanilla;
-                    }
+                    float vanilla = VanillaWeight(table.lootTableID, n, entry.weight, entry.objectID);
+                    if (PinnedChance.TryGetValue(entry.objectID, out float chance)) { pinnedShare += chance; continue; }
+                    othersTarget += IsRareEntry(entry.objectID, out _) ? vanilla * multiplier : vanilla;
+                }
+                float pinnedScale = pinnedShare > 0f && pinnedShare < 1f ? othersTarget / (1f - pinnedShare) : 0f;
+
+                for (int n = 0; n < table.lootTable.Length; n++)
+                {
+                    ref EntityLootInfo entry = ref table.lootTable[n];
+                    float vanilla = VanillaWeight(table.lootTableID, n, entry.weight, entry.objectID);
 
                     bool rare = IsRareEntry(entry.objectID, out ObjectInfo info);
                     float target = rare ? vanilla * multiplier : vanilla;
+                    if (pinnedScale > 0f && PinnedChance.TryGetValue(entry.objectID, out float pinned))
+                        target = pinned * pinnedScale;
                     if (entry.weight != target) entry.weight = target;
 
                     totalBefore += vanilla;

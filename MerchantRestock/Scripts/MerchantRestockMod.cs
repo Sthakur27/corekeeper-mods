@@ -13,13 +13,18 @@ namespace MerchantRestock
     public sealed class MerchantRestockMod : IMod
     {
         public const string Name = "MerchantRestock";
-        public const string Version = "1.1.1";
+        public const string Version = "1.2.0";
 
         public const string SettingsHint = "How often merchants refill their stock (vanilla: every 25-35 min). "
             + "'All merchants' applies to every merchant set to 'Same as all'. Applies right away, including to the current countdown. "
+            + "'Minimum stock per item' raises how many of each regular stackable item a merchant stocks per restock "
+            + "(gear and premium items stocked at 1-3 stay as they are). "
+            + "Shift- or Ctrl-click on a shop slot buys the whole stack, or as many as you can afford. "
             + "In multiplayer the host's values count.";
 
         private static Setting<string> _all;
+        private static Setting<string> _floor;
+        private static Setting<bool> _quickBuy;
         private static readonly Setting<string>[] _perMerchant = new Setting<string>[RestockSettings.Merchants.Length];
 
         public void EarlyInit()
@@ -41,6 +46,14 @@ namespace MerchantRestock
             section.Choice(out _all, "All merchants", RestockSettings.Ladder, RestockSettings.Vanilla);
             for (int i = 0; i < RestockSettings.Merchants.Length; i++)
                 section.Choice(out _perMerchant[i], RestockSettings.Merchants[i].label, RestockSettings.MerchantLadder, RestockSettings.SameAsAll);
+
+            section.Toggle(out _quickBuy, "Shift/Ctrl-click buys the whole stack", true);
+            Patches.QuickBuyPatch.Enabled = _quickBuy.Value;
+            _quickBuy.OnChanged += v => Patches.QuickBuyPatch.Enabled = v;
+
+            section.Choice(out _floor, "Minimum stock per item", RestockSettings.FloorLadder, RestockSettings.FloorOff);
+            _floor.OnChanged += v => RestockSettings.SetFloor(RestockSettings.ParseFloor(v));
+            RestockSettings.SetFloor(RestockSettings.ParseFloor(_floor.Value));
 
             Apply();
             _all.OnChanged += _ => Apply();

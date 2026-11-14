@@ -72,6 +72,8 @@ The seasonal bosses work all year. The game doesn't check the season when they a
 
 ## Prices and stock
 
+Tilly also sells the **Farmer's Hat (500 Ancient Coins)**, **Eostre Necklace (1,500)** and **Petal Ring (1,000)** at the default 1x price, with one of each per restock. They are available year-round once Tilly arrives, with no extra boss unlock. Scroll down with the mouse wheel to reach these three items beyond her first 24 wares.
+
 ### Finding your merchants
 
 Ottoline's decor shop contains **423 items in 29 consecutive theme groups**. Scroll the buy window with the mouse wheel to browse home furniture, lighting, potted plants, aquariums, architecture, biome furniture, ruins, seasonal sets, themed storage and collectible figurines. Kelp Trees, Alien Floor Vents, pillars, rugs, shelves, monuments and temple props are included. Theme grouping is the order of the stock, not separate tabs.
@@ -90,6 +92,7 @@ Open **Settings > Mod Options > More NPCs** to change prices or stock:
 
 - **Price multiplier** starts at 1x. Choices range from 0.25x to 4x and affect every buy price set by this mod.
 - **Potions and explosives per restock** starts at 20 and can be set from 1 to 99. It also covers Old Hemlock's Recall Idol, vending snacks and drinks, and optional Potion of Return. Other items have fixed stock amounts.
+- **NPC max health** sets the health of every merchant NPC, both this mod's and the game's own merchants. It starts at Default (100,000, the game's value). The other choices are 1,000, 10,000 and 1,000,000. Merchants already living in your world change within a few seconds and keep their share of health.
 
 Sell prices stay at one fifth of the listed 1x buy price, regardless of the multiplier. The mod changes these items' prices everywhere they are traded, including vending machines. Vending items absent from these shops keep their vanilla prices; the Pest Egg is included in Ankhra's stock and does receive its new price.
 

@@ -24,6 +24,49 @@ namespace MerchantRestock
             (ObjectID.SeasonalMerchant, "Seasonal Merchant"),
         };
 
+        // ---------------------------------------------------------------- minimum stock
+
+        public const string FloorOff = "Off (vanilla)";
+        public static readonly string[] FloorLadder = { FloorOff, "10", "25", "50", "99" };
+
+        /// <summary>Entries the game stocks fewer than this per restock are premium goods and are left alone.</summary>
+        public const int RareBelow = 4;
+
+        /// <summary>Highest stock a stackable item is raised to (the largest stock any of our merchants uses).</summary>
+        public const int MaxFloor = 99;
+
+        /// <summary>Minimum stock per stackable item, 0 = off (vanilla amounts).</summary>
+        public static int StockFloor { get; private set; }
+
+        /// <summary>Raised when <see cref="StockFloor"/> changes; Sid's Overhaul forwards it to the other merchant mods.</summary>
+        public static event System.Action FloorChanged;
+
+        public static void SetFloor(int floor)
+        {
+            if (floor < 0) floor = 0;
+            if (floor > MaxFloor) floor = MaxFloor;
+            if (floor == StockFloor) return;
+            StockFloor = floor;
+            FloorChanged?.Invoke();
+        }
+
+        /// <summary>"25" -> 25; "Off (vanilla)" or unknown -> 0.</summary>
+        public static int ParseFloor(string token) => int.TryParse(token, out int n) && n > 0 ? n : 0;
+
+        /// <summary>Items Fish Seller owns on the Fishing / Caveling Merchant: it manages their amounts itself.</summary>
+        public static bool IsFishSellerItem(ObjectID id)
+            => (id >= ObjectID.OrangeCaveGuppy && id <= ObjectID.RiftianLampfish) || id == ObjectID.GoldenLarvaMeat;
+
+        /// <summary>
+        /// The amount a list entry should have: its vanilla amount, raised to the floor when it is a regular
+        /// stackable entry (not premium, not gated at 0, not unstackable).
+        /// </summary>
+        public static int TargetAmount(int vanilla, bool stackable, int floor)
+        {
+            if (floor <= 0 || !stackable || vanilla < RareBelow) return vanilla;
+            return vanilla >= floor ? vanilla : floor;
+        }
+
         private static readonly Dictionary<ObjectID, int> _caps = new Dictionary<ObjectID, int>();
 
         /// <summary>Longest restock time in seconds for that merchant, 0 = vanilla.</summary>

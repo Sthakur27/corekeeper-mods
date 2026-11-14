@@ -34,8 +34,9 @@ namespace BossBonusLoot.Systems
                 // Glurch also: Adventurer's Hat (ExplorerHelm) flat 30%; any entry for it in Glurch's own
                 // loot table is zeroed by HydraGemSystem so this roll is the whole chance.
                 [ObjectID.SlimeBoss] = new[] { (ObjectID.AnniversaryCake, 1, 0.15f), (ObjectID.ExplorerHelm, 1, 0.3f) },
-                // Igneous the Molten Mass (Molten Quarry, home of the Amalgam Basins) -> Splendid Amalgam
-                [ObjectID.LavaSlimeBoss] = new[] { (ObjectID.LiquidMetal, 1, 0.15f) },
+                // Igneous the Molten Mass (Molten Quarry, home of the Amalgam Basins) -> Splendid Amalgam.
+                // Core Iris flat 20%; any entry for it in Igneous' own loot table is zeroed by HydraGemSystem.
+                [ObjectID.LavaSlimeBoss] = new[] { (ObjectID.LiquidMetal, 1, 0.15f), (ObjectID.CoreEye, 1, 0.2f) },
                 // Crydra the Ice Titan: the cold-season treat -> Golden Chocolate
                 [ObjectID.HydraBossSea] = new[] { (ObjectID.GoldenChocolate, 1, 0.15f) },
                 // Druidra the Wild Titan -> Paradise Fruit Basket
@@ -55,6 +56,8 @@ namespace BossBonusLoot.Systems
                     (ObjectID.LargeFishPouch, 1, 0.4f), (ObjectID.LargePotionPouch, 1, 0.4f),
                     (ObjectID.RustedNecklace, 1, 0.2f),
                 },
+                // Morpha the Aquatic Mischief: Topaz Ring flat 10%; its own loot table entry is zeroed the same way.
+                [ObjectID.SlipperySlimeBoss] = new[] { (ObjectID.TopazRing, 1, 0.1f) },
                 // Bubble Crab (not a boss): Topaz Ring flat 3%; its own loot table entry is zeroed the same way.
                 [ObjectID.CrabEnemy] = new[] { (ObjectID.TopazRing, 1, 0.03f) },
                 // Ra-Akar the Sand Titan (Desert of Beginnings): Desert Ruby, pouches
@@ -88,7 +91,7 @@ namespace BossBonusLoot.Systems
         {
             // Dying enemies, not just BossCD ones: the table also lists regular enemies (Mimite, Orbital
             // Turret, Void Larva). EnemyCD keeps plants, chests, stations and other destructibles out of
-            // the query. Every entity in Bonus is an enemy (Ghorm, Glurch, Igneous, the Hydras, the
+            // the query. Every entity in Bonus is an enemy (Ghorm, Glurch, Igneous, Morpha, the Hydras, the
             // Titans, Mimite, Orbital Turret, Void Larva). A new non-enemy entry in Bonus would need its own query.
             _deadBosses = GetEntityQuery(
                 ComponentType.ReadOnly<EnemyCD>(),

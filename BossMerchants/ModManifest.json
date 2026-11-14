@@ -99,6 +99,10 @@
         {
             "path": "Bundles/BossMerchants_Linux.assetbundle.manifest",
             "guid": ""
+        },
+        {
+            "path": "Scripts/Systems/MerchantHealthSystem.cs",
+            "guid": ""
         }
     ],
     "dependencies": [

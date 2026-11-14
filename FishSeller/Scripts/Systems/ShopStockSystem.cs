@@ -120,7 +120,7 @@ namespace FishSeller.Systems
                     _amounts[id] = 0;
                     continue;
                 }
-                _amounts[id] = info.isStackable ? ShopItems.Stock : 1;
+                _amounts[id] = info.isStackable ? System.Math.Max(ShopItems.Stock, ShopItems.StockFloor) : 1;
             }
             if (skipped != null)
             {

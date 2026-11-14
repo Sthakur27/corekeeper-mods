@@ -226,6 +226,8 @@ namespace BossMerchants
                     E(ObjectID.SeedExtractor, 300, 1), E(ObjectID.Sprinkler, 400, 3),
                     E(ObjectID.SeedAndCropsPouch, 250, 1), E(ObjectID.MediumSeedAndCropsPouch, 750, 1),
                     E(ObjectID.LargeSeedAndCropsPouch, 2500, 1),
+                    E(ObjectID.FarmerHelm, 500, 1), E(ObjectID.EostreNecklace, 1500, 1),
+                    E(ObjectID.PetalRing, 1000, 1),
                 },
             },
         };

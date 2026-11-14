@@ -37,7 +37,9 @@ namespace BossBonusLoot.Systems
             [LootTableID.VoidLarva] = new HashSet<ObjectID> { ObjectID.HydraBossVoidCraftingItem }, // Oblivion Fragment
             [LootTableID.Bosslarva] = new HashSet<ObjectID> { ObjectID.AmberLarva }, // Ghorm: flat 10% roll instead
             [LootTableID.SlimeBoss] = new HashSet<ObjectID> { ObjectID.ExplorerHelm }, // Glurch: flat 30% Adventurer's Hat
+            [LootTableID.LavaSlimeBoss] = new HashSet<ObjectID> { ObjectID.CoreEye }, // Igneous: flat 20% Core Iris
             [LootTableID.OctopusBoss] = new HashSet<ObjectID> { ObjectID.RustedNecklace }, // Omoroth: flat 20%
+            [LootTableID.SlipperySlimeBoss] = new HashSet<ObjectID> { ObjectID.TopazRing }, // Morpha: flat 10%
             [LootTableID.CrabEnemy] = new HashSet<ObjectID> { ObjectID.TopazRing }, // Bubble Crab: flat 3%
         };
 
